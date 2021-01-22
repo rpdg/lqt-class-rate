@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,
+ minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body>
+<!--
+<div class='js-signature' style="background-image: url('http://pub3.lqtedu.com/upload/attachment/spacepic/2020-04-10/3c60607b-f247-493b-b24e-51d6b9ac5d4a.jpg')" ></div>
+-->
+<div class='js-signature' style="background-image: url('./3c60607b-f247-493b-b24e-51d6b9ac5d4a.jpg')" ></div>
+
+<button   onclick="clear222()" >清除</button>
+<button onclick="save()">保存</button>
+<div id="demo"></div>
+<img id="show" src=""/>
+<script src="jquery.min.js"></script>
+<script src="jq-signature.js"></script>
+<script src="https://cdn.bootcss.com/html2canvas/0.5.0-beta4/html2canvas.js"></script>
+<script>
+  $('.js-signature').jqSignature({autoFit: true,background: 'transparent',height: 300});
+
+  function myFunction(){
+    debugger
+
+    document.getElementById("demo").innerHTML="Hello World";
+  }
+
+  //清除
+  function clear222(){
+    debugger
+    //document.getElementById("demo").innerHTML="Hello World";
+
+    $('.js-signature').jqSignature('clearCanvas');
+    debugger
+  }
+  //保存
+  function save() {
+    let data = $('.js-signature').jqSignature('getDataURL');
+    //$("#show").attr("src",data);
+    convertHtml2Canvas();
+  }
+
+  function convertHtml2Canvas() {
+    html2canvas(document.getElementsByClassName("js-signature"), {
+      allowTaint: false,
+      taintTest: true
+    }).then(function(canvas) {
+      $("#demo").empty();
+      var img = convertCanvasToImage(canvas);
+      //document.body.appendChild(img);
+      $("#demo").append(img);
+      img.onload = function() {
+        img.onload = null;
+        canvas = convertImageToCanvas(img, 0, 0, 384, 696);
+        img.src = convertCanvasToImage(canvas).src;
+        $(img).css({
+          display: 'block',
+
+        });
+      }
+    }).catch(function(e) {
+      console.error('error', e);
+    });
+  }
+
+  function convertCanvasToImage(canvas) {
+    var image = new Image();
+    image.src = canvas.toDataURL("image/png", 0.1);
+    return image;
+  }
+  // Converts image to canvas; returns new canvas element
+  function convertImageToCanvas(image, startX, startY, width, height) {
+    var canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    canvas.getContext("2d").drawImage(image, startX, startY, width, height, 0, 0, width, height);
+    return canvas;
+  }
+</script>
+</body>
+</html>

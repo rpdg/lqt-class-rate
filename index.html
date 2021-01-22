@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Access-Control-Allow-Origin" content="lqtedu.com" />
+  <meta name="viewport" content="initial-scale=1, maximum-scale= 1, minimum-scale=1, user-scalable=no">
+  <meta content="no" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no" name="format-detection">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+
+  <title>个人中心</title>
+  <style lang="">
+    body,html{
+      background: #FFFFFF !important;
+    }
+    .payroll-title .weui-cell {
+      padding: 0;
+    }
+
+    .payroll-title .weui-cell__ft {
+      display: none;
+    }
+
+    .payroll-title .vux-popup-picker-select {
+      display: none;
+    }
+
+    .vux-popup-picker-cancel {
+      display: none;
+    }
+
+    /*.vux-flexbox .vux-flexbox-item:first-child{*/
+
+    /*width: 25%;*/
+
+    /*flex:none;*/
+
+    /*float: left;*/
+
+    /*}*/
+
+    /*.vux-flexbox .vux-flexbox-item:last-child{*/
+
+    /*width: 75%;*/
+
+    /*flex:none;*/
+
+    /*float: right;*/
+
+    /*text-align: left;*/
+
+    /*}*/
+
+    /*#vux-picker-bfafo-1 .scroller-content .scroller-item{*/
+
+    /*text-align: left;*/
+
+    /*}*/
+
+    #pay-list .vux-picker .vux-flexbox .vux-flexbox-item:first-child{
+      width: 25%;
+      flex:initial;
+      float: left;
+    }
+    #pay-list .vux-picker .vux-flexbox .vux-flexbox-item:last-child{
+     width: 75%;
+     flex:initial;
+     float: left;
+   }
+   #pay-list .vux-picker .vux-flexbox .vux-flexbox-item:last-child .scroller-item{
+     text-align: left
+   }
+
+   #pay-list .vux-popup-picker-header,#pay-list .vux-popup-dialog{
+     background: #FFFFFF;
+   }
+   #pay-list .vux-popup-picker-header{
+     color: #424242;
+   }
+
+    #vjs_video_3 {
+      width: 352px !important;
+      height: 264px !important;
+    }
+
+    .vux-cell-box:before{
+      left: 0 !important;
+    }
+
+  </style>
+  <script>
+     //const roterPath = "http://192.168.1.24:8080/lqtedu"
+     //const roterPath = "/api";//"http://gz.lqtedu.com/api/"
+     const roterPath = "http://gz.lqtedu.com"
+
+     //const roterPath = process.env.ROUTER_PATH;
+     const roterImgPath = roterPath+'/weixin/wechat/dist'
+     const roterOssPath = "http://pub3.lqtedu.com"
+
+
+
+  </script>
+  <script>
+    ;
+    (function (w) {
+      comFuc = {
+        init: function () {
+          var self = this;
+          self.configRem();
+        },
+        configRem: function () {
+          fixRem();
+          window.addEventListener('resize', fixRem, false);
+        },
+        fixRem: function () {
+          var windowWidth = document.documentElement.clientWidth || window.innerWidth || document.body.clientWidth;
+          var rootSize = 28 * (windowWidth / 375);
+          var htmlNode = document.getElementsByTagName("html")[0];
+          htmlNode.style.fontSize = rootSize + 'px';
+        }
+      };
+
+      //通过window width 修改html font-size
+      function fixRem() {
+        var windowWidth = document.documentElement.clientWidth || window.innerWidth || document.body.clientWidth;
+        var rootSize = 28 * (windowWidth / 375);
+        var htmlNode = document.getElementsByTagName("html")[0];
+        htmlNode.style.fontSize = rootSize + 'px';
+      }
+      // fixRem();
+
+      comFuc.init();
+
+    })(window);
+
+  </script>
+</head>
+
+<body style="background:#FFFFFF !important">
+  <div id="app"></div>
+  <!-- built files will be auto injected -->
+</body>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+  var reg = /payrolllist/;
+  var path = reg.test(window.location.href);
+  if (path) {
+    $(function () {
+      $(".v-transfer-dom").attr("id","pay-list");
+      $(".vux-popup-picker-header-menu-right").html("确定");
+    })
+  }
+
+</script>
+
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta http-equiv="Access-Control-Allow-Origin" content="lqtedu.com" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale= 1, minimum-scale=1, user-scalable=no">
+    <meta content="no" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no" name="format-detection">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+</head>
+<style>
+    .title-header{
+        width: 100%;
+        height: 55px;
+        line-height: 55px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: #fff;
+        z-index: 1;
+        border-bottom: 1px solid #dedede;
+        padding: 3px 0;
+        box-sizing: border-box;
+    }
+
+    .title-header .vux-header-left, .title-header .vux-header-right {
+        left: 18px;
+        position: absolute;
+        top: 14px;
+        display: block;
+        font-size: 14px;
+        line-height: 21px;
+        color: #38f;
+    }
+
+    .title-header .vux-header-back {
+        padding-left: 16px;
+    }
+
+
+    .title-header .vux-header-left .left-arrow {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        top: -5px;
+        left: -5px;
+    }
+
+    .title-header .vux-header-left .left-arrow:before {
+        content: "";
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        border: 1px solid #38f;
+        border-width: 1px 0 0 1px;
+        -webkit-transform: rotate(315deg);
+        transform: rotate(315deg);
+        top: 8px;
+        left: 7px;
+    }
+
+    .title-header .vux-header-title {
+        color: #333;
+        line-height: 46px;
+        text-align: center;
+        margin: 0 88px;
+        height: 40px;
+        width: auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 18px;
+    }
+
+
+</style>
+<body>
+<div class="vux-header title-header">
+    <div class="vux-header-left">
+        <a class="vux-header-back" >返回</a>
+        <div class="left-arrow"></div>
+    </div>
+    <h1 class="vux-header-title">通知</h1>
+    <div class="vux-header-right"></div>
+</div>
+
+</body>
+</html>
