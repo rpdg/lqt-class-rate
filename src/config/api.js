@@ -4,6 +4,7 @@
  * 定义常量  - 网络接口请求
  *
  */
+const roterPath = '/api';
 
 const apiRouter = {
   NOTICE_TYPE: roterPath + "/app/notice/type",
@@ -155,7 +156,11 @@ const apiRouter = {
 
 
 
-
+  /**
+   * 班级综评
+   */
+  CLASS_RATE_LIST : roterPath + "/app/dyrate/dyTaskList",
+  TASK_LIST : roterPath + '/app/dyrate/dyrate_fill_list',
 
 }
 export default apiRouter;

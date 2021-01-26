@@ -9,3 +9,10 @@ yarn-error.log*
 test/unit/coverage
 test/e2e/reports
 selenium-debug.log
+build/
+common/
+demo/
+error/
+service/
+test/
+wechat/

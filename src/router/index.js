@@ -83,6 +83,10 @@ import CurEnrollList from "../page/curriculum/list.vue"
 import EleList from "../page/elective/list.vue"
 import EleSubList from "../page/elective/subList.vue"
 import EleStudentList from "../page/elective/studentList.vue"
+
+import DyRateList from '../page/dyRate/RateList/index.vue'
+import DyRateForm from '../page/dyRate/RateForm/index.vue'
+
 //////////
 import UpClassList from '../page/evaluation/UpClassList.vue'
 import UpEvaList from '../page/evaluation/UpEvaList.vue'
@@ -436,6 +440,16 @@ export default new Router({
       path: '/cur-list',
       name: 'curEnrollList',
       component: CurEnrollList
+    },
+    {
+      path: '/dyRate-list',
+      name: 'dyRateList',
+      component: DyRateList
+    },
+    {
+      path: '/dyrate-form',
+      name: 'dyRateForm',
+      component: DyRateForm
     },
     {
       path: '/ele-list',
