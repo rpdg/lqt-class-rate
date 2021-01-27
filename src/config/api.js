@@ -160,7 +160,8 @@ const apiRouter = {
    * 班级综评
    */
   CLASS_RATE_LIST : roterPath + "/app/dyrate/dyTaskList",
-  TASK_LIST : roterPath + '/app/dyrate/dyrate_fill_list',
+  CLASS_RATE_TASK_LIST : roterPath + '/app/dyrate/dyrate_fill_list',
+  CLASS_RATE_SUBMIT : roterPath + '/app/dyrate/dyrate_do_fill',
 
 }
 export default apiRouter;

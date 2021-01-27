@@ -1,68 +1,90 @@
 <template>
-    <div class="panel">
-      <table> 
-        <tr>
-          <td>班级：{{task.CLASS_NAME}}</td>
-          <td>评分项：{{task.NAME}}</td>
-        </tr>
-        <tr>
-          <td>日期：{{task.ID}}</td>
-          <td>评分范围：{{task.ID}}</td>
-        </tr>
-        <tr>
-          <td>评分：
-            <van-stepper class="inline-stepper" v-model="task.SCORE" />
-          </td>
-          <td rowspan="2">
-            添加图片：<br>
-            <van-uploader class="inline-uploader" v-model="task.IMG_LIST" multiple max-count="4" preview-size="12vw" />
-          </td>
-        </tr>
-        <tr>
-          <td valign="top">
-            备注：  
-            <textarea maxlength="50" v-model="task.COMMENT"> </textarea>
-          </td>
-        </tr>
-      </table>
-    </div>
+  <div class="panel">
+    <table>
+      <tr>
+        <td>班级：{{task.CLASS_NAME}}</td>
+        <td>评分项：{{task.NAME}}</td>
+      </tr>
+      <tr>
+        <td>日期：{{task.END_TIME}}</td>
+        <td>评分范围：{{task.SCORE_UP}}~{{task.SCORE_DN}}分</td>
+      </tr>
+      <tr>
+        <td>
+          评分：
+          <van-stepper
+            class="inline-stepper"
+            disable-input
+            :min="task.SCORE_UP"
+            :max="task.SCORE_DN"
+            :step="task.STEP_VALUE || 1"
+            v-model="task.SCORE"
+          />
+        </td>
+        <td rowspan="2">
+          添加图片：
+          <br />
+          <van-uploader
+            class="inline-uploader"
+            v-model="task.IMG_LIST"
+            multiple
+            max-count="4"
+            preview-size="12vw"
+          />
+        </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          备注：
+          <textarea maxlength="50" v-model="task.COMMENT"></textarea>
+        </td>
+      </tr>
+    </table>
+  </div>
 </template>
 <script>
-import { Stepper, Uploader, Toast, Dialog } from "vant";
+import { Stepper, Uploader, Toast, Dialog } from 'vant'
+// import Task from './Task';
 
-function Task() {
-  this.ID = "";
-  this.NAME = "";
-  this.SCORE = "";
-  this.CLASS_NAME = "";
-}
+// class Task {
+//   ID = "";
+//   NAME = "";
+//   SCORE = "";
+//   CLASS_NAME = "";
+
+//   constructor() {
+//     this.ID = "";
+//     this.NAME = "";
+//     this.SCORE = "";
+//     this.CLASS_NAME = "";
+//   }
+// }
 
 export default {
   props: {
     task: {
-      type: Task,
+      type: Object,
       required: true,
-      default: 0
-    }
+      default: 0,
+    },
   },
   components: {
     [Stepper.name]: Stepper,
     [Uploader.name]: Uploader,
-    [Toast.name]: Toast
+    [Toast.name]: Toast,
   },
-  computed:{
+  computed: {
     // fileList(){
-
     // }
   },
   data() {
     return {
       value: 1,
-      fileList: []
-    };
+      fileList: [],
+    }
   },
-  methods: {}
-};
+  methods: {},
+}
 </script>
 <style lang="less">
 .inline-uploader {
