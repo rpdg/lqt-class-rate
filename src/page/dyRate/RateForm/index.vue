@@ -26,7 +26,7 @@
 
     <div class="wapper">
       <div class="content">
-        <FormPanel v-for="item in taskList" :task="item" :step="step" :key="item.ID" />
+        <FormPanel v-for="(item, index) in taskList" :key="`${Date.now()}-${item.ID}`" :task="item" :index="index" :step="step" :io="io" />
       </div>
       <div class="footer">
         <van-button class="error" @click="doAbanden">放弃</van-button>
@@ -108,7 +108,22 @@ export default {
      */
     this.seq_id = this.$route.query.id;
 
+    let that = this;
+
     return {
+      io: new IntersectionObserver((entries, observer) => {
+        // console.log(entries);
+        entries.forEach(entry => {
+            // debugger;
+          if (entry.intersectionRatio > 0) {
+            console.log('change' , entry.target.getAttribute('data-index'));
+            let taskIndex = entry.target.getAttribute("data-index");
+            let task = that.taskList[taskIndex];
+            task.__shown = true;
+            observer.unobserve(entry.target);
+          }
+        });
+      }),
       /**
        * 选择0显示状态
        */
@@ -175,8 +190,16 @@ export default {
           let respBody = resp.body;
           if (respBody.code === 200) {
             // debugger;
-            let { class_list, data_list, detail_list , step_value } = respBody.data;
+            let {
+              class_list,
+              data_list,
+              detail_list,
+              step_value
+            } = respBody.data;
 
+            data_list.forEach(task => {
+              task.__shown = false;
+            });
             this.taskList = data_list;
 
             detail_list.unshift(defaultOptionChecked);
@@ -186,7 +209,6 @@ export default {
             this.classList = class_list;
 
             this.step = Number(step_value);
-
           } else {
             alert(respBody.message);
           }
@@ -219,18 +241,17 @@ export default {
 
       try {
         // debugger;
-        const sendData = ({
+        const sendData = {
           seq_id: this.seq_id,
           is_give_up,
-          detail_arr : JSON.stringify(detail_arr)
-        });
+          detail_arr: JSON.stringify(detail_arr)
+        };
 
         let resp = await this.$http.post(apiRouter.CLASS_RATE_SUBMIT, sendData);
 
         if (resp.status === 200) {
           let respBody = resp.body;
           if (respBody.code === 200) {
-            
           } else {
             alert(respBody.message);
           }

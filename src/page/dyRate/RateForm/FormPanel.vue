@@ -1,6 +1,6 @@
 <template>
-  <div class="panel">
-    <table>
+  <div class="panel" ref="panel" :data-index="index">
+    <table v-if="task.__shown">
       <tr>
         <td>班级：{{task.CLASS_NAME}}</td>
         <td>评分项：{{task.NAME}}</td>
@@ -119,6 +119,15 @@ export default {
       type: Object,
       required: true,
       default: 0
+    },
+    io: {
+      type: IntersectionObserver,
+      required: true
+    },
+    index: {
+      type: Number,
+      required: true,
+      default: 0
     }
   },
   components: {
@@ -135,6 +144,14 @@ export default {
     return {
       fileList: []
     };
+  },
+  mounted() {
+    // console.log("mounted", this.task.ID, this.$refs.panel);
+    this.io.observe(this.$refs.panel);
+  },
+  beforeDestroy() {
+    // console.log("beforeDestory", this.task.ID);
+    this.io.unobserve(this.$refs.panel);
   },
   methods: {
     async beforeRead(imgItem) {
@@ -244,6 +261,7 @@ export default {
 <style lang="less" scoped>
 .panel {
   width: 94.7vw;
+  min-height: 50vw;
   // height: 53vw;
   margin: 10px auto 20px auto;
   border-radius: 12px;
