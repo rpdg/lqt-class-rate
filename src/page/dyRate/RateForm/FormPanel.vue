@@ -17,7 +17,7 @@
             disable-input
             :min="task.SCORE_UP"
             :max="task.SCORE_DN"
-            :step="task.STEP_VALUE || 1"
+            :step="step"
             v-model="task.SCORE"
           />
         </td>
@@ -27,9 +27,11 @@
           <van-uploader
             class="inline-uploader"
             v-model="task.IMG_LIST"
-            multiple
             max-count="4"
             preview-size="12vw"
+             :before-read="beforeRead"
+             :after-read="afterRead"
+             @delete="deleteImg"
           />
         </td>
       </tr>
@@ -43,7 +45,8 @@
   </div>
 </template>
 <script>
-import { Stepper, Uploader, Toast, Dialog } from 'vant'
+import { Stepper, Uploader, Toast, Lazyload } from "vant";
+import apiRouter from "../../../config/api.js";
 // import Task from './Task';
 
 // class Task {
@@ -60,18 +63,69 @@ import { Stepper, Uploader, Toast, Dialog } from 'vant'
 //   }
 // }
 
+function imgCompress(src, callback) {
+  //图片超过尺寸压缩
+  let img = new Image();
+  img.src = src;
+  img.onload = function() {
+    let w = this.naturalWidth,
+      h = this.naturalHeight,
+      resizeW = 0,
+      resizeH = 0;
+    let maxSize = {
+      width: 1000,
+      height: 1000,
+      level: 0.5
+    };
+    if (w > maxSize.width || h > maxSize.height) {
+      let multiple = Math.max(w / maxSize.width, h / maxSize.height);
+      resizeW = w / multiple;
+      resizeH = h / multiple;
+    } else {
+      // 如果图片尺寸小于最大限制，则不压缩直接上传
+      return callback();
+    }
+    let canvas = document.createElement("canvas");
+    let ctx = canvas.getContext("2d");
+    canvas.width = resizeW;
+    canvas.height = resizeH;
+    ctx.drawImage(img, 0, 0, resizeW, resizeH);
+    let base64 = canvas.toDataURL("image/jpeg", maxSize.level);
+    callback(base64);
+  };
+}
+
+async function getBase64(blob, callback) {
+  return new Promise((resolve, reject) => {
+    let reader = new FileReader();
+    reader.onloadend = () => {
+      resolve(reader.result);
+    };
+    reader.onerror = error => {
+      reject(error);
+    };
+    reader.readAsDataURL(new Blob(blob));
+  });
+}
+
 export default {
   props: {
+    step: {
+      type: Number,
+      required: true,
+      default: 1
+    },
     task: {
       type: Object,
       required: true,
-      default: 0,
-    },
+      default: 0
+    }
   },
   components: {
     [Stepper.name]: Stepper,
     [Uploader.name]: Uploader,
     [Toast.name]: Toast,
+    Lazyload
   },
   computed: {
     // fileList(){
@@ -79,12 +133,84 @@ export default {
   },
   data() {
     return {
-      value: 1,
-      fileList: [],
-    }
+      fileList: []
+    };
   },
-  methods: {},
-}
+  methods: {
+    async beforeRead(imgItem) {
+      return new Promise((resolve, reject) => {
+        // let imageUrl = getObjectURL(imgItem.file);
+        resolve(imgItem);
+      });
+    },
+
+    async afterRead(imgItem) {
+      try {
+        imgItem.status = "uploading";
+
+        // let base64 = await getBase64(imgItem.file);
+        // console.log(base64);
+
+        const sendData = {
+          detail_id: this.task.ID,
+          baseImg: imgItem.content
+        };
+
+        let resp = await this.$http.post(
+          apiRouter.CLASS_RATE_UPLOAD_IMG,
+          sendData
+        );
+
+        if (resp.status === 200) {
+          let respBody = resp.body;
+          if (respBody.code === 200) {
+            imgItem.id = respBody.data.id;
+            imgItem.status = "done";
+          } else {
+            imgItem.status = "failed";
+          }
+        } else {
+          imgItem.status = "failed";
+        }
+      } catch (e) {
+        imgItem.status = "failed";
+      }
+    },
+
+    async deleteImg(imgItem) {
+      console.log(imgItem);
+
+      try {
+        imgItem.status = "uploading";
+
+        const sendData = {
+          detail_id: this.task.ID,
+          id: imgItem.id
+        };
+
+        let resp = await this.$http.post(
+          apiRouter.CLASS_RATE_DEL_IMG,
+          sendData
+        );
+
+        if (resp.status === 200) {
+          let respBody = resp.body;
+          if (respBody.code === 200) {
+            imgItem.status = "done";
+            // let index = this.fileList.indexOf(imgItem);
+            // this.fileList.splice(index , 1);
+          } else {
+            imgItem.status = "failed";
+          }
+        } else {
+          imgItem.status = "failed";
+        }
+      } catch (e) {
+        imgItem.status = "failed";
+      }
+    }
+  }
+};
 </script>
 <style lang="less">
 .inline-uploader {

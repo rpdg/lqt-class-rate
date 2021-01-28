@@ -162,6 +162,8 @@ const apiRouter = {
   CLASS_RATE_LIST : roterPath + "/app/dyrate/dyTaskList",
   CLASS_RATE_TASK_LIST : roterPath + '/app/dyrate/dyrate_fill_list',
   CLASS_RATE_SUBMIT : roterPath + '/app/dyrate/dyrate_do_fill',
+  CLASS_RATE_UPLOAD_IMG : roterPath + '/app/dyrate/upload_pic',
+  CLASS_RATE_DEL_IMG : roterPath + '/app/dyrate/dyrate_del_pic',
 
 }
 export default apiRouter;

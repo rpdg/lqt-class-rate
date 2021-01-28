@@ -26,7 +26,7 @@
 
     <div class="wapper">
       <div class="content">
-        <FormPanel v-for="item in taskList" :task="item" :key="item.ID" />
+        <FormPanel v-for="item in taskList" :task="item" :step="step" :key="item.ID" />
       </div>
       <div class="footer">
         <van-button class="error" @click="doAbanden">放弃</van-button>
@@ -124,6 +124,11 @@ export default {
       viewMode: 0,
 
       /**
+       * 数字评分的步进长
+       */
+      step: 1,
+
+      /**
        * 评分表单数组
        */
       taskList: [],
@@ -170,7 +175,7 @@ export default {
           let respBody = resp.body;
           if (respBody.code === 200) {
             // debugger;
-            let { class_list, data_list, detail_list } = respBody.data;
+            let { class_list, data_list, detail_list , step_value } = respBody.data;
 
             this.taskList = data_list;
 
@@ -179,6 +184,9 @@ export default {
 
             class_list.unshift(defaultClassChecked);
             this.classList = class_list;
+
+            this.step = Number(step_value);
+
           } else {
             alert(respBody.message);
           }
