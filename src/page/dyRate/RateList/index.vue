@@ -37,11 +37,15 @@ export default {
       pageIndex: 0
     };
   },
-  // async activated() {
-  //   // console.log("list-length: ", this.listData.length);
-  //   // this.pageIndex = 0;
+  async activated() {
+    // console.log("list-length: ", this.listData.length);
+    this.loading = false;
+    this.finished = false;
+    this.listData = [];
+    this.pageIndex = 0;
 
-  // },
+    this.fetchList();
+  },
   methods: {
     async fetchList() {
       ++this.pageIndex;
@@ -74,11 +78,9 @@ export default {
       } catch (e) {
         alert(e.message);
       }
-
     }
   }
 };
-
 </script>
 <style lang="less" scoped>
 @import "../../../style/minxin.less";
