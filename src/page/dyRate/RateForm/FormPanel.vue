@@ -37,7 +37,8 @@
       </tr>
       <tr>
         <td valign="top">
-          备注：
+         
+          <span style="float:left;"> 备注：<br>{{statusText}}</span>
           <textarea maxlength="50" v-model="task.COMMENT"></textarea>
         </td>
       </tr>
@@ -137,8 +138,15 @@ export default {
     Lazyload
   },
   computed: {
-    // fileList(){
-    // }
+    statusText() {
+      const { WRITE_STATUS } = this.task;
+
+      return WRITE_STATUS === "0"
+        ? "未填"
+        : WRITE_STATUS === "-1"
+          ? "弃填"
+          : "已填";
+    }
   },
   data() {
     return {
