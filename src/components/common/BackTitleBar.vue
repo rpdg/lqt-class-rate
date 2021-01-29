@@ -1,5 +1,5 @@
 <template>
-  <x-header><b>{{title}}</b></x-header>
+  <x-header>{{title}}</x-header>
 </template>
 <script>
 import { XHeader } from "vux";
@@ -50,6 +50,6 @@ export default {
   border-color: #38f !important;
   width: 8px !important;
   height: 8px !important;
-  top: 11px !important;
+  top: 12px !important;
 }
 </style>

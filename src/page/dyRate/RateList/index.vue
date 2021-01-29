@@ -1,6 +1,11 @@
 <template>
     <div class="box">
       <back-title-bar title="班级综评列表" />
+      <!-- <van-nav-bar
+  title="班级综评列表"
+  left-text="返回"
+  left-arrow
+/> -->
       <div class="wapper">
         <van-list v-model="loading" :finished="finished" @load="fetchList">
             <rate-list v-if="listData" :listData="listData" />
@@ -10,7 +15,7 @@
 </template>
 <script>
 import { ViewBox } from "vux";
-import { Loading, List } from "vant";
+import { Loading, List,NavBar  } from "vant";
 import BackTitleBar from "../../../components/common/BackTitleBar";
 import RateList from "./components/List";
 import apiRouter from "../../../config/api.js";
@@ -27,6 +32,7 @@ export default {
     BackTitleBar,
     [Loading.name]: Loading,
     [List.name]: List,
+    [NavBar.name]: NavBar ,
     RateList
   },
   data() {

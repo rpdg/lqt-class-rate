@@ -33,7 +33,7 @@ export default {
 .vux-header.bList /deep/ .vux-header-title {
   color: #333;
   text-align: left;
-  margin: 0 1em 0 88px;
+  margin: 0 1.5em 0 88px;
 
   white-space: unset;
   line-height: unset;
@@ -51,11 +51,14 @@ export default {
     display: inline-block;
     vertical-align: middle;
     font-size: 16px;
+    font-weight: 400;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-inline-box;
     -webkit-line-clamp: 2; /* number of lines to show */
     -webkit-box-orient: vertical;
+    -webkit-user-select: none;
+    user-select: none;
   }
 }
 
@@ -73,6 +76,6 @@ export default {
   border-color: #38f !important;
   width: 8px !important;
   height: 8px !important;
-  top: 11px !important;
+  top: 12px !important;
 }
 </style>

@@ -37,7 +37,7 @@
         />
       </div>
       <div class="footer">
-        <van-button class="error" @click="doAbanden">放弃</van-button>
+        <van-button class="error" @click="doAbanden">弃填</van-button>
         <van-button class="submit" @click="doSubmit(0)">提交</van-button>
       </div>
     </div>

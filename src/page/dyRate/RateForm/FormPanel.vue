@@ -78,8 +78,8 @@ async function imgCompress(src) {
         resizeH = 0
 
       let option = {
-        maxSize: 1000,
-        level: 0.5,
+        maxSize: 1600,
+        level: 0.6,
       }
 
       if (w > option.maxSize || h > option.maxSize) {
