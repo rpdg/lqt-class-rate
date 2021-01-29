@@ -25,13 +25,23 @@
           添加图片：
           <br />
           <van-uploader
+            ref="fcc"
             class="inline-uploader"
             v-model="task.IMG_LIST"
             max-count="4"
             preview-size="12vw"
-            :before-read="beforeRead"
+            :capture="cameraOnly"
             :after-read="afterRead"
             @delete="deleteImg"
+            @click-preview="setPreviewState(true)"
+            @close-preview="setPreviewState(false)"
+          />
+          <van-action-sheet
+            v-model="showActions"
+            cancel-text="取消"
+            close-on-click-action
+            :actions="[{ name: '拍摄' }, { name: '从相册选择' }]"
+            @select="onSelectAction"
           />
         </td>
       </tr>
@@ -40,7 +50,7 @@
           <span style="float:left;">
             备注：
             <br />
-            <van-tag 
+            <van-tag
               plain
               :type="task.WRITE_STATUS=='-1'?'danger':'primary'"
               size="medium"
@@ -53,52 +63,57 @@
   </div>
 </template>
 <script>
-import { Stepper, Uploader, Toast, Tag } from 'vant'
-import apiRouter from '../../../config/api.js'
+import { Stepper, Uploader, Toast, Tag, ActionSheet, Button } from "vant";
+import apiRouter from "../../../config/api.js";
 
-function imgCompress(src, callback) {
-  //图片超过尺寸压缩
-  let img = new Image()
-  img.src = src
-  img.onload = function () {
-    let w = this.naturalWidth,
-      h = this.naturalHeight,
-      resizeW = 0,
-      resizeH = 0
-    let maxSize = {
-      width: 1000,
-      height: 1000,
-      level: 0.5,
-    }
-    if (w > maxSize.width || h > maxSize.height) {
-      let multiple = Math.max(w / maxSize.width, h / maxSize.height)
-      resizeW = w / multiple
-      resizeH = h / multiple
-    } else {
-      // 如果图片尺寸小于最大限制，则不压缩直接上传
-      return callback()
-    }
-    let canvas = document.createElement('canvas')
-    let ctx = canvas.getContext('2d')
-    canvas.width = resizeW
-    canvas.height = resizeH
-    ctx.drawImage(img, 0, 0, resizeW, resizeH)
-    let base64 = canvas.toDataURL('image/jpeg', maxSize.level)
-    callback(base64)
-  }
+async function imgCompress(src) {
+  return new Promise((resolve, reject) => {
+    let img = new Image();
+    img.src = src;
+
+    img.onload = function() {
+      let w = this.naturalWidth,
+        h = this.naturalHeight,
+        resizeW = 0,
+        resizeH = 0;
+
+      let option = {
+        maxSize: 1000,
+        level: 0.5
+      };
+
+      if (w > option.maxSize || h > option.maxSize) {
+        const multiple = Math.max(w / option.maxSize, h / option.maxSize);
+        resizeW = w / multiple;
+        resizeH = h / multiple;
+
+        const imgType =
+          src.indexOf("image/jpeg") > -1 ? "image/jpeg" : "image/png";
+        let canvas = document.createElement("canvas");
+        let ctx = canvas.getContext("2d");
+        canvas.width = resizeW;
+        canvas.height = resizeH;
+        ctx.drawImage(img, 0, 0, resizeW, resizeH);
+        let base64 = canvas.toDataURL(imgType, option.level);
+        resolve(base64);
+      } else {
+        resolve(src);
+      }
+    };
+  });
 }
 
-async function getBase64(blob, callback) {
+async function getBase64(blob) {
   return new Promise((resolve, reject) => {
-    let reader = new FileReader()
+    let reader = new FileReader();
     reader.onloadend = () => {
-      resolve(reader.result)
-    }
-    reader.onerror = (error) => {
-      reject(error)
-    }
-    reader.readAsDataURL(new Blob(blob))
-  })
+      resolve(reader.result);
+    };
+    reader.onerror = error => {
+      reject(error);
+    };
+    reader.readAsDataURL(new Blob(blob));
+  });
 }
 
 export default {
@@ -106,125 +121,169 @@ export default {
     step: {
       type: Number,
       required: true,
-      default: 1,
+      default: 1
     },
     task: {
       type: Object,
       required: true,
-      default: 0,
+      default: 0
     },
     io: {
       type: IntersectionObserver,
-      required: true,
+      required: true
     },
     index: {
       type: Number,
       required: true,
-      default: 0,
+      default: 0
     },
+    setPreviewState:{
+      type: Function,
+      required: true,
+    }
   },
   components: {
     [Stepper.name]: Stepper,
     [Uploader.name]: Uploader,
     [Toast.name]: Toast,
     [Tag.name]: Tag,
+    [Button.name]: Button,
+    [ActionSheet.name]: ActionSheet
   },
   computed: {
     statusText() {
-      const { WRITE_STATUS } = this.task
+      const { WRITE_STATUS } = this.task;
 
-      return WRITE_STATUS === '0'
-        ? '未填'
-        : WRITE_STATUS === '-1'
-        ? '已弃填'
-        : '已填'
-    },
+      return WRITE_STATUS === "0"
+        ? "未填"
+        : WRITE_STATUS === "-1"
+          ? "弃填"
+          : "已填";
+    }
   },
   data() {
     return {
       fileList: [],
-    }
+      showActions: false,
+      cameraOnly: ""
+    };
   },
   mounted() {
     // console.log("mounted", this.task.ID, this.$refs.panel);
-    this.io.observe(this.$refs.panel)
+    this.io.observe(this.$refs.panel);
   },
   beforeDestroy() {
     // console.log("beforeDestory", this.task.ID);
-    this.io.unobserve(this.$refs.panel)
+    this.io.unobserve(this.$refs.panel);
+  },
+  updated() {
+    // patch vant-uploader to use wechat image choose style
+    let vUploader = this.$refs.fcc;
+    if (vUploader) {
+      const fileIpt = vUploader.$refs.input;
+
+      if (fileIpt.style.visibility !== "hidden") {
+        fileIpt.style.visibility = "hidden";
+
+        const iptWrapper = fileIpt.parentNode;
+        let placeholder = document.createElement("div");
+        placeholder.className = "photoChooser";
+        placeholder.addEventListener("click", () => {
+          this.showActions = true;
+        });
+
+        iptWrapper.appendChild(placeholder);
+        // console.log("fcc", iptWrapper);
+      }
+    }
   },
   methods: {
-    async beforeRead(imgItem) {
-      return new Promise((resolve, reject) => {
-        // let imageUrl = getObjectURL(imgItem.file);
-        resolve(imgItem)
-      })
-    },
+    // async beforeRead(imgItem) {
+    //   return new Promise((resolve, reject) => {
+    //     debugger;
+    //     resolve(imgItem);
+    //   });
+    // },
 
     async afterRead(imgItem) {
       try {
-        imgItem.status = 'uploading'
+        imgItem.status = "uploading";
 
         // let base64 = await getBase64(imgItem.file);
         // console.log(base64);
 
+        let compressedImg = await imgCompress(imgItem.content);
+
         const sendData = {
           detail_id: this.task.ID,
-          baseImg: imgItem.content,
-        }
+          baseImg: compressedImg
+        };
 
         let resp = await this.$http.post(
           apiRouter.CLASS_RATE_UPLOAD_IMG,
           sendData
-        )
+        );
 
         if (resp.status === 200) {
-          let respBody = resp.body
+          let respBody = resp.body;
           if (respBody.code === 200) {
-            imgItem.id = respBody.data.id
-            imgItem.status = 'done'
+            imgItem.id = respBody.data.id;
+            imgItem.status = "done";
           } else {
-            imgItem.status = 'failed'
+            imgItem.status = "failed";
           }
         } else {
-          imgItem.status = 'failed'
+          imgItem.status = "failed";
         }
       } catch (e) {
-        imgItem.status = 'failed'
+        imgItem.status = "failed";
       }
     },
 
     async deleteImg(imgItem) {
-      console.log(imgItem)
+      // console.log(imgItem);
 
       try {
-        imgItem.status = 'uploading'
+        imgItem.status = "uploading";
 
         const sendData = {
           detail_id: this.task.ID,
-          id: imgItem.id,
-        }
+          id: imgItem.id
+        };
 
-        let resp = await this.$http.post(apiRouter.CLASS_RATE_DEL_IMG, sendData)
+        let resp = await this.$http.post(
+          apiRouter.CLASS_RATE_DEL_IMG,
+          sendData
+        );
 
         if (resp.status === 200) {
-          let respBody = resp.body
+          let respBody = resp.body;
           if (respBody.code === 200) {
-            imgItem.status = 'done'
+            imgItem.status = "done";
             // let index = this.fileList.indexOf(imgItem);
             // this.fileList.splice(index , 1);
           } else {
-            imgItem.status = 'failed'
+            imgItem.status = "failed";
           }
         } else {
-          imgItem.status = 'failed'
+          imgItem.status = "failed";
         }
       } catch (e) {
-        imgItem.status = 'failed'
+        imgItem.status = "failed";
       }
     },
-  },
-}
+
+    onSelectAction(item, i) {
+      this.cameraOnly = i === 0 ? "camera" : null;
+      setTimeout(() => {
+        this.$refs.fcc.chooseFile();
+      }, 2e2);
+    },
+    // handlePreview(status){
+    //   window.alert(status)
+    // }
+  }
+};
 </script>
 <style lang="less">
 .inline-uploader {
@@ -232,6 +291,14 @@ export default {
     width: 12vw;
     height: 12vw;
     border: 1px solid #ccc;
+
+    .photoChooser {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 12vw;
+      height: 12vw;
+    }
   }
 }
 .inline-stepper {
@@ -264,10 +331,10 @@ export default {
   border-radius: 12px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
   padding: 5vw 7vw;
-  
-  .van-tag{
+
+  .van-tag {
     font-size: 10px;
-    margin-right:0.5em;
+    margin-right: 0.5em;
   }
 
   table {
