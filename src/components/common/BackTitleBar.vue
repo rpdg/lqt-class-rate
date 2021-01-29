@@ -1,0 +1,55 @@
+<template>
+  <x-header><b>{{title}}</b></x-header>
+</template>
+<script>
+import { XHeader } from "vux";
+
+export default {
+  components: {
+    XHeader
+  },
+  props: {
+    title: {
+      type: String,
+      required: false,
+      default: ""
+    }
+  }
+};
+</script>
+<style lang="less" scoped>
+@import "../../style/minxin.less";
+.vux-header {
+  background-color: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  // height: 100 / @baseSize;
+  // line-height: 100 / @baseSize;
+  z-index: 1;
+  border-bottom: solid 1px #dedede;
+}
+
+.vux-header /deep/ .vux-header-title {
+  color: #333;
+  // font-size: @fontSize30;
+}
+
+.vux-header /deep/ .vux-header-left {
+  top: 14px !important;
+}
+
+.vux-header /deep/ .vux-header-back {
+  color: #38f;
+  font-size: 14px;
+  padding-left: 14px !important;
+}
+
+.vux-header /deep/ .left-arrow:before {
+  border-color: #38f !important;
+  width: 8px !important;
+  height: 8px !important;
+  top: 11px !important;
+}
+</style>
