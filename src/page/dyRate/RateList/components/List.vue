@@ -15,35 +15,35 @@
 </template>
 
 <script>
-import { ViewBox } from 'vux'
+import { ViewBox } from "vux";
 
 export default {
   components: {
-    ViewBox,
+    ViewBox
   },
   props: {
     listData: {
       type: Array,
       required: true,
-      default: () => [],
-    },
+      default: () => []
+    }
   },
   methods: {
     goCheck(id, title) {
       this.$router.push({
-        path: '/dyrate-form',
+        path: "/dyrate-form",
         query: {
           id,
-          title,
-        },
-      })
-    },
-  },
-}
+          title
+        }
+      });
+    }
+  }
+};
 </script>
     
 <style lang="less" scoped>
-@import '../../../../style/minxin.less';
+@import "../../../../style/minxin.less";
 @color-gray: #a7a7a7;
 
 .message {
@@ -51,7 +51,7 @@ export default {
 
   .new::before {
     right: -3px;
-    content: '';
+    content: "";
     width: 8px;
     height: 8px;
     background-color: #ff4d33;
@@ -73,7 +73,7 @@ export default {
 .message-icon {
   width: 100 / @baseSize;
   height: 100 / @baseSize;
-  background: url('./dyRate07.png') no-repeat left;
+  background: url("./dyRate07.png") no-repeat left;
   background-size: 100% 100%;
   position: absolute;
   top: 30 / @baseSize;

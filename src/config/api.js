@@ -4,7 +4,7 @@
  * 定义常量  - 网络接口请求
  *
  */
-const roterPath = '/api';
+const roterPath = process.env.API_BASE_URL;
 
 const apiRouter = {
   NOTICE_TYPE: roterPath + "/app/notice/type",

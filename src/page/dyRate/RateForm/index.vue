@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <title-bar :title="this.$route.query.title" />
+    <title-bar :title="this.$route.query.title" @willBack="handleWillBack" />
 
     <van-tabs class="dy-rate-tab" v-model="viewMode" @change="toggleViewStyle">
       <van-tab title="评分项目视角"></van-tab>
@@ -34,6 +34,7 @@
           :step="step"
           :io="io"
           :setPreviewState="setPreviewState"
+          @modify="handleModify"
         />
       </div>
       <div class="footer">
@@ -67,8 +68,8 @@
 </template>
 <script>
 import { ViewBox, XButton } from "vux";
-import TitleBar from "./TitleBar";
-import FormPanel from "./FormPanel";
+import TitleBar from "./components/TitleBar";
+import FormPanel from "./components/FormPanel";
 import apiRouter from "../../../config/api.js";
 
 import {
@@ -153,6 +154,11 @@ export default {
       viewMode: 0,
 
       /**
+       * 数据是否改变
+       */
+      dataModified: false,
+
+      /**
        * 数字评分的步进长
        */
       step: 1,
@@ -179,6 +185,7 @@ export default {
     // console.log("form", this.$route.query);
     // debugger;
     this.viewMode = 0;
+    this.dataModified = false;
     this.taskList = [];
     this.optionIndex = 0;
     this.optionList = [defaultOptionChecked];
@@ -188,7 +195,21 @@ export default {
     this.fetchList();
   },
   beforeRouteLeave(to, from, next) {
-    next(!this.previewOn);
+    if (this.previewOn) {
+      next(false);
+    }
+    // else if (this.dataModified) {
+    //   const answer = window.confirm("已有录入数据，确定放弃数据并离开页面？");
+    //   if (answer) {
+    //     next();
+    //   } else {
+    //     next(false);
+    //   }
+    // }
+    else {
+      window.onbeforeunload = null;
+      next();
+    }
   },
   computed: {
     optionChecked() {
@@ -199,6 +220,35 @@ export default {
     }
   },
   methods: {
+    async handleWillBack() {
+      if (this.dataModified) {
+        let answer = await Dialog.confirm({
+          className: "dy-rate-dialog",
+          title: "关闭页面提醒",
+          message: "页面已录入部分数据，关闭页面后数据将被清空。",
+          confirmButtonText: "确定",
+          messageAlign: "left"
+        });
+        if (answer === "confirm") {
+          this.$router.back();
+        }
+      } else {
+        this.$router.back();
+      }
+    },
+    handleModify(b) {
+      this.dataModified = b;
+
+      if (b) {
+        window.onbeforeunload = function(e) {
+          e.preventDefault();
+          e.returnValue = "已有录入数据，确定放弃数据并离开页面？";
+        };
+      }
+      else{
+        window.onbeforeunload = null;
+      }
+    },
     async fetchList() {
       let see_mode = this.viewMode === 0 ? "DETAIL" : "CLASS";
       let detail_id = this.optionChecked.CODE;
@@ -251,7 +301,9 @@ export default {
     async doAbanden() {
       Dialog.confirm({
         className: "dy-rate-dialog",
-        message: "<h3>确定将这些项目标记为弃填？</h3>"
+        title: "弃填",
+        message: "确定将这些项目标记为弃填？",
+        confirmButtonText: "确定"
       }).then(() => {
         this.doSubmit(1);
       });
@@ -281,6 +333,8 @@ export default {
         if (resp.status === 200) {
           let respBody = resp.body;
           if (respBody.code === 200) {
+            alert("操作成功");
+            this.$router.back();
           } else {
             alert(respBody.message);
           }
@@ -360,13 +414,20 @@ export default {
 .dy-rate-dialog {
   border-radius: 6px;
 
-  h3 {
-    font-size: 18px;
-    font-weight: 900;
+  .van-dialog__header {
+    font-weight: bold;
+  }
+  .van-dialog__message {
+    font-size: 16px;
+    font-weight: normal;
+    color: #333;
   }
 
-  .van-dialog__footer {
-    background-color: #f5a99e;
+  .van-button__text {
+    font-weight: bold;
+  }
+  .van-dialog__confirm {
+    // color: #ED561B;
   }
 }
 </style>

@@ -19,16 +19,18 @@
             :max="task.SCORE_DN"
             :step="step"
             v-model="task.SCORE"
+             @change="handleChange"
           />
         </td>
         <td rowspan="2">
-          添加图片：
+          添加图片：<span style="color:#999;">(最多4张)</span>
           <br />
           <van-uploader
             ref="fcc"
             class="inline-uploader"
             v-model="task.IMG_LIST"
             max-count="4"
+            multiple
             preview-size="12vw"
             :capture="cameraOnly"
             :after-read="afterRead"
@@ -56,64 +58,65 @@
               size="medium"
             >{{statusText}}</van-tag>
           </span>
-          <textarea maxlength="50" v-model="task.COMMENT"></textarea>
+          <textarea maxlength="50" v-model="task.COMMENT" @change="handleChange"></textarea>
         </td>
       </tr>
     </table>
   </div>
 </template>
 <script>
-import { Stepper, Uploader, Toast, Tag, ActionSheet, Button } from 'vant'
-import apiRouter from '../../../config/api.js'
+import { Stepper, Uploader, Toast, Tag, ActionSheet, Button } from "vant";
+import ImageUploader from './Uploader';
+import apiRouter from "../../../../config/api.js";
 
 async function imgCompress(src) {
   return new Promise((resolve, reject) => {
-    let img = new Image()
-    img.src = src
+    let img = new Image();
+    img.src = src;
 
-    img.onload = function () {
+    img.onload = function() {
       let w = this.naturalWidth,
         h = this.naturalHeight,
         resizeW = 0,
-        resizeH = 0
+        resizeH = 0;
 
       let option = {
         maxSize: 1600,
-        level: 0.6,
-      }
+        level: 0.6
+      };
 
       if (w > option.maxSize || h > option.maxSize) {
-        const multiple = Math.max(w / option.maxSize, h / option.maxSize)
-        resizeW = w / multiple
-        resizeH = h / multiple
+        const multiple = Math.max(w / option.maxSize, h / option.maxSize);
+        resizeW = w / multiple;
+        resizeH = h / multiple;
 
         const imgType =
-          src.indexOf('image/jpeg') > -1 ? 'image/jpeg' : 'image/png'
-        let canvas = document.createElement('canvas')
-        let ctx = canvas.getContext('2d')
-        canvas.width = resizeW
-        canvas.height = resizeH
-        ctx.drawImage(img, 0, 0, resizeW, resizeH)
-        let base64 = canvas.toDataURL(imgType, option.level)
-        resolve(base64)
+          src.indexOf("image/jpeg") > -1 ? "image/jpeg" : "image/png";
+        let canvas = document.createElement("canvas");
+        let ctx = canvas.getContext("2d");
+        canvas.width = resizeW;
+        canvas.height = resizeH;
+        ctx.drawImage(img, 0, 0, resizeW, resizeH);
+        let base64 = canvas.toDataURL(imgType, option.level);
+        resolve(base64);
       } else {
-        resolve(src)
+        resolve(src);
       }
-    }
-  })
+    };
+  });
 }
 
 async function getBase64(blob) {
   return new Promise((resolve, reject) => {
-    let reader = new FileReader()
+    let reader = new FileReader();
     reader.onloadend = () => {
-      resolve(reader.result)
-    }
-    reader.onerror = (error) => {
-      reject(error)
-    }
-    reader.readAsDataURL(new Blob(blob))
-  })
+      resolve(reader.result);
+    };
+    reader.onerror = error => {
+      reject(error);
+    };
+    reader.readAsDataURL(new Blob(blob));
+  });
 }
 
 export default {
@@ -121,78 +124,79 @@ export default {
     step: {
       type: Number,
       required: true,
-      default: 1,
+      default: 1
     },
     task: {
       type: Object,
       required: true,
-      default: 0,
+      default: 0
     },
     io: {
       type: IntersectionObserver,
-      required: true,
+      required: true
     },
     index: {
       type: Number,
       required: true,
-      default: 0,
+      default: 0
     },
     setPreviewState: {
       type: Function,
-      required: true,
-    },
+      required: true
+    }
   },
   components: {
+    ImageUploader,
     [Stepper.name]: Stepper,
     [Uploader.name]: Uploader,
     [Toast.name]: Toast,
     [Tag.name]: Tag,
     [Button.name]: Button,
-    [ActionSheet.name]: ActionSheet,
+    [ActionSheet.name]: ActionSheet
   },
   computed: {
     statusText() {
-      const { WRITE_STATUS } = this.task
+      const { WRITE_STATUS } = this.task;
 
-      return WRITE_STATUS === '0'
-        ? '未填'
-        : WRITE_STATUS === '-1'
-        ? '弃填'
-        : '已填'
-    },
+      return WRITE_STATUS === "0"
+        ? "未填"
+        : WRITE_STATUS === "-1"
+          ? "弃填"
+          : "已填";
+    }
   },
   data() {
     return {
       fileList: [],
       showActions: false,
-      cameraOnly: '',
-    }
+      cameraOnly: ""
+    };
   },
   mounted() {
     // console.log("mounted", this.task.ID, this.$refs.panel);
-    this.io.observe(this.$refs.panel)
+    this.io.observe(this.$refs.panel);
   },
   beforeDestroy() {
     // console.log("beforeDestory", this.task.ID);
-    this.io.unobserve(this.$refs.panel)
+    this.io.unobserve(this.$refs.panel);
   },
   updated() {
     // patch vant-uploader to use wechat image choose style
-    let vUploader = this.$refs.fcc
+    let vUploader = this.$refs.fcc;
     if (vUploader) {
-      const fileIpt = vUploader.$refs.input
+      const fileIpt = vUploader.$refs.input;
 
-      if (fileIpt.style.visibility !== 'hidden') {
-        fileIpt.style.visibility = 'hidden'
+      if (fileIpt.style.visibility !== "hidden") {
+        fileIpt.style.visibility = "hidden";
 
-        const iptWrapper = fileIpt.parentNode
-        let placeholder = document.createElement('div')
-        placeholder.className = 'photoChooser'
-        placeholder.addEventListener('click', () => {
-          this.showActions = true
-        })
+        const iptWrapper = fileIpt.parentNode;
+        let placeholder = document.createElement("div");
+        placeholder.className = "photoChooser";
+        placeholder.addEventListener("click", () => {
+          this.showActions = true;
+        });
 
-        iptWrapper.appendChild(placeholder)
+        iptWrapper.appendChild(placeholder);
         // console.log("fcc", iptWrapper);
       }
     }
@@ -205,38 +209,46 @@ export default {
     //   });
     // },
 
-    async afterRead(imgItem) {
+    async afterRead(imgItems) {
+      debugger;
+      if (imgItems instanceof Array) {
+        imgItems.forEach(imgItem => {
+          this.uploadImage(imgItem);
+        });
+      } else {
+        this.uploadImage(imgItems);
+      }
+    },
+
+    async uploadImage(imgItem) {
       try {
-        imgItem.status = 'uploading'
+        imgItem.status = "uploading";
 
-        // let base64 = await getBase64(imgItem.file);
-        // console.log(base64);
-
-        let compressedImg = await imgCompress(imgItem.content)
+        let compressedImg = await imgCompress(imgItem.content);
 
         const sendData = {
           detail_id: this.task.ID,
-          baseImg: compressedImg,
-        }
+          baseImg: compressedImg
+        };
 
         let resp = await this.$http.post(
           apiRouter.CLASS_RATE_UPLOAD_IMG,
           sendData
-        )
+        );
 
         if (resp.status === 200) {
-          let respBody = resp.body
+          let respBody = resp.body;
           if (respBody.code === 200) {
-            imgItem.id = respBody.data.id
-            imgItem.status = 'done'
+            imgItem.id = respBody.data.id;
+            imgItem.status = "done";
           } else {
-            imgItem.status = 'failed'
+            imgItem.status = "failed";
           }
         } else {
-          imgItem.status = 'failed'
+          imgItem.status = "failed";
         }
       } catch (e) {
-        imgItem.status = 'failed'
+        imgItem.status = "failed";
       }
     },
 
@@ -244,45 +256,57 @@ export default {
       // console.log(imgItem);
 
       try {
-        imgItem.status = 'uploading'
+        imgItem.status = "uploading";
 
         const sendData = {
           detail_id: this.task.ID,
-          id: imgItem.id,
-        }
+          id: imgItem.id
+        };
 
-        let resp = await this.$http.post(apiRouter.CLASS_RATE_DEL_IMG, sendData)
+        let resp = await this.$http.post(
+          apiRouter.CLASS_RATE_DEL_IMG,
+          sendData
+        );
 
         if (resp.status === 200) {
-          let respBody = resp.body
+          let respBody = resp.body;
           if (respBody.code === 200) {
-            imgItem.status = 'done'
+            imgItem.status = "done";
             // let index = this.fileList.indexOf(imgItem);
             // this.fileList.splice(index , 1);
           } else {
-            imgItem.status = 'failed'
+            imgItem.status = "failed";
           }
         } else {
-          imgItem.status = 'failed'
+          imgItem.status = "failed";
         }
       } catch (e) {
-        imgItem.status = 'failed'
+        imgItem.status = "failed";
       }
     },
 
     onSelectAction(item, i) {
-      this.cameraOnly = i === 0 ? 'camera' : null
+      this.cameraOnly = i === 0 ? "camera" : null;
       setTimeout(() => {
-        this.$refs.fcc.chooseFile()
-      }, 2e2)
+        this.$refs.fcc.chooseFile();
+      }, 2e2);
     },
+
+    handleChange(){
+      this.$emit("modify", true);
+    }
     // handlePreview(status){
     //   window.alert(status)
     // }
-  },
-}
+  }
+};
 </script>
 <style lang="less">
+.box{
+  .van-cell__right-icon{
+    color: #ddd;
+  }
+}
 .inline-uploader {
   .van-uploader__upload {
     width: 12vw;
@@ -301,7 +325,7 @@ export default {
 .inline-stepper {
   vertical-align: middle;
   display: inline-flex;
-  border: 1px solid #979797;
+  border: 1px solid #ddd;
   border-radius: 4px;
   height: 22px;
 
@@ -312,7 +336,7 @@ export default {
 
   input {
     margin: 0;
-    border: solid #979797;
+    border: solid #ddd;
     border-width: 0 1px;
     height: 20px;
   }
@@ -354,12 +378,14 @@ export default {
     }
 
     textarea {
-      border: 1px solid #979797;
+      border: 1px solid #999;
       width: 26.7vw;
       height: 22.4vw;
       vertical-align: top;
       resize: none;
       box-shadow: none;
+      font-size: 14px;
+      line-height: 1.5em;
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <x-header class="bList"><b>{{title}}</b></x-header>
+  <x-header class="bList" :left-options="{preventGoBack:true}" @on-click-back="handleBack"><b>{{title}}</b></x-header>
 </template>
 <script>
 import { XHeader } from "vux";
@@ -14,11 +14,16 @@ export default {
       required: false,
       default: ""
     }
+  },
+  methods:{
+    handleBack(){
+      this.$emit("willBack");
+    }
   }
 };
 </script>
 <style lang="less" scoped>
-@import "../../../style/minxin.less";
+@import "../../../../style/minxin.less";
 
 .vux-header {
   background-color: #fff;
