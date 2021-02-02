@@ -19,11 +19,12 @@
             :max="task.SCORE_DN"
             :step="step"
             v-model="task.SCORE"
-             @change="handleChange"
+            @change="handleChange"
           />
         </td>
         <td rowspan="2">
-          添加图片：<span style="color:#999;">(最多4张)</span>
+          添加图片：
+          <span style="color:#999;">(最多4张)</span>
           <br />
           <van-uploader
             ref="fcc"
@@ -66,7 +67,8 @@
 </template>
 <script>
 import { Stepper, Uploader, Toast, Tag, ActionSheet, Button } from "vant";
-import ImageUploader from './Uploader';
+// import ImageUploader from './Uploader';
+import wx from "weixin-js-sdk";
 import apiRouter from "../../../../config/api.js";
 
 async function imgCompress(src) {
@@ -119,6 +121,26 @@ async function getBase64(blob) {
   });
 }
 
+function dataURLtoFile(dataurl, filename) {
+  let arr = dataurl.split(","),
+    mime = arr[0].match(/:(.*?);/)[1],
+    bstr = atob(arr[1]),
+    n = bstr.length,
+    u8arr = new Uint8Array(n);
+
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+
+  return new File([u8arr], filename, { type: mime });
+}
+
+async function dataUrlToFile(dataUrl, fileName) {
+  const res = await fetch(dataUrl);
+  const blob = await res.blob();
+  return new File([blob], fileName, { type: "image/png" });
+}
+
 export default {
   props: {
     step: {
@@ -146,7 +168,7 @@ export default {
     }
   },
   components: {
-    ImageUploader,
+    // ImageUploader,
     [Stepper.name]: Stepper,
     [Uploader.name]: Uploader,
     [Toast.name]: Toast,
@@ -169,12 +191,33 @@ export default {
     return {
       fileList: [],
       showActions: false,
-      cameraOnly: ""
+      cameraOnly: "",
+      localIdImgs: []
     };
   },
   mounted() {
     // console.log("mounted", this.task.ID, this.$refs.panel);
     this.io.observe(this.$refs.panel);
+
+    //
+    // Uploader.methods.chooseFile = function() {
+    //   alert("aa");
+    //   let _this = this;
+
+    //   wx.chooseImage({
+    //     count: 4 - _this.localIdImgs.length, // 默认9
+    //     sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
+    //     sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
+    //     success: function(res) {
+    //       let localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+    //       alert(localIds.length);
+    //     },
+    //     fail: function(res) {
+    //       console.log("失败");
+    //     }
+    //   });
+    // };
+    // console.log(Uploader);
   },
   beforeDestroy() {
     // console.log("beforeDestory", this.task.ID);
@@ -186,17 +229,33 @@ export default {
     if (vUploader) {
       const fileIpt = vUploader.$refs.input;
 
-      if (fileIpt.style.visibility !== "hidden") {
+      if (fileIpt&& fileIpt.style.visibility !== "hidden") {
         fileIpt.style.visibility = "hidden";
 
         const iptWrapper = fileIpt.parentNode;
         let placeholder = document.createElement("div");
         placeholder.className = "photoChooser";
+        iptWrapper.appendChild(placeholder);
         placeholder.addEventListener("click", () => {
-          this.showActions = true;
+          // this.showActions = true;
+
+          let _this = this;
+
+          wx.chooseImage({
+            count: 4 - this.localIdImgs.length, // 默认9
+            sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
+            sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
+
+            success: async function(res) {
+              // 返回选定照片的本地ID列表
+              _this.readImages(res.localIds);
+            },
+            fail: function(err) {
+              console.log(err);
+            }
+          });
         });
 
-        iptWrapper.appendChild(placeholder);
         // console.log("fcc", iptWrapper);
       }
     }
@@ -209,8 +268,55 @@ export default {
     //   });
     // },
 
+    doReadImage(item) {
+      return new Promise(resolve => {
+        wx.getLocalImgData({
+          localId: item,
+          success: function(res) {
+            let { localData } = res;
+
+            if (localData.indexOf("data:image") != 0) {
+              //判断是否有这样的头部
+              localData = "data:image/jpeg;base64," + localData;
+            }
+
+            localData = localData
+              .replace(/\r|\n/g, "")
+              .replace("data:image/jgp", "data:image/jpeg");
+
+            resolve(localData);
+          },
+          fail: function(err) {
+            console.error(err);
+          }
+        });
+      });
+    },
+    async readImages(localIds) {
+      let files = [];
+      for (let i = 0; i < localIds.length; i++) {
+        let base64 = await this.doReadImage(localIds[i]);
+        let file = await dataUrlToFile(base64);
+        files.push(file);
+      }
+      this.localIdImgs = files;
+      // console.log(file);
+      this.$refs.fcc.readFile(files);
+    },
+
     async afterRead(imgItems) {
-      debugger;
+      // debugger;
+
+      // let sendData = [];
+      // imgItems.forEach(imgItem => {
+      //   sendData.push(imgItem.content);
+      // });
+
+      // let resp = await this.$http.post(
+      //   apiRouter.CLASS_RATE_BATCH_UPLOAD_IMG,
+      //   {file:sendData}
+      // );
+
       if (imgItems instanceof Array) {
         imgItems.forEach(imgItem => {
           this.uploadImage(imgItem);
@@ -292,7 +398,7 @@ export default {
       }, 2e2);
     },
 
-    handleChange(){
+    handleChange() {
       this.$emit("modify", true);
     }
     // handlePreview(status){
@@ -302,8 +408,8 @@ export default {
 };
 </script>
 <style lang="less">
-.box{
-  .van-cell__right-icon{
+.box {
+  .van-cell__right-icon {
     color: #ddd;
   }
 }

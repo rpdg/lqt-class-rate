@@ -50,6 +50,6 @@ export default {
   border-color: #38f !important;
   width: 8px !important;
   height: 8px !important;
-  top: 12px !important;
+  top: 10px !important;
 }
 </style>

@@ -71,6 +71,7 @@ import { ViewBox, XButton } from "vux";
 import TitleBar from "./components/TitleBar";
 import FormPanel from "./components/FormPanel";
 import apiRouter from "../../../config/api.js";
+import wx from "weixin-js-sdk";
 
 import {
   Col,
@@ -126,6 +127,7 @@ export default {
     let that = this;
 
     return {
+      urlPath: "",
       io: new IntersectionObserver((entries, observer) => {
         // console.log(entries);
         entries.forEach(entry => {
@@ -181,6 +183,11 @@ export default {
       classIndex: 0
     };
   },
+  mounted() {
+    //this.loadData();
+    this.urlPath = window.location.href.split("#")[0];
+    this.getUrlConfigTrue();
+  },
   activated() {
     // console.log("form", this.$route.query);
     // debugger;
@@ -220,6 +227,41 @@ export default {
     }
   },
   methods: {
+    getUrlConfigTrue() {
+      let wiexin = apiRouter.GET_CONFIG + encodeURIComponent(this.urlPath);
+      // let wiexin =
+      //   "http://opg.vaiwan.com/api/wechat?url=" +
+      //   encodeURIComponent(this.urlPath);
+      this.$http.get(wiexin).then(
+        response => {
+          let data = response.body;
+          // debugger;
+          wx.config({
+            debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+            appId: data.appId, // 必填，企业号的唯一标识，此处填写企业号corpid
+            timestamp: data.timestamp, // 必填，生成签名的时间戳
+            nonceStr: data.nonceStr, // 必填，生成签名的随机串
+            signature: data.signature, // 必填，签名，见附录1
+            jsApiList: [
+              "chooseImage",
+              "uploadImage",
+              "downloadImage",
+              "getLocalImgData",
+              "previewImage",
+              "getFileSystemManager",
+              "chooseWXPay"
+            ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+          });
+          wx.error(function(res) {
+            console.log(res);
+            // alert(res.errMsg);
+          });
+        },
+        response => {
+          // console.log("请求失败了!!!!")
+        }
+      );
+    },
     async handleWillBack() {
       if (this.dataModified) {
         let answer = await Dialog.confirm({
@@ -244,8 +286,7 @@ export default {
           e.preventDefault();
           e.returnValue = "已有录入数据，确定放弃数据并离开页面？";
         };
-      }
-      else{
+      } else {
         window.onbeforeunload = null;
       }
     },
@@ -333,7 +374,7 @@ export default {
         if (resp.status === 200) {
           let respBody = resp.body;
           if (respBody.code === 200) {
-            alert("操作成功");
+            alert(is_give_up ? "弃填成功" : "提交成功");
             this.$router.back();
           } else {
             alert(respBody.message);

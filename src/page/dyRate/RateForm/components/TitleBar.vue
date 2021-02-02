@@ -68,7 +68,7 @@ export default {
 }
 
 .vux-header /deep/ .vux-header-left {
-  top: 14px !important;
+  top: 10px !important;
 }
 
 .vux-header /deep/ .vux-header-back {
@@ -81,6 +81,6 @@ export default {
   border-color: #38f !important;
   width: 8px !important;
   height: 8px !important;
-  top: 12px !important;
+  top: 10px !important;
 }
 </style>
