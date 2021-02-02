@@ -39,13 +39,13 @@
             @click-preview="setPreviewState(true)"
             @close-preview="setPreviewState(false)"
           />
-          <van-action-sheet
+          <!-- <van-action-sheet
             v-model="showActions"
             cancel-text="取消"
             close-on-click-action
             :actions="[{ name: '拍摄' }, { name: '从相册选择' }]"
             @select="onSelectAction"
-          />
+          /> -->
         </td>
       </tr>
       <tr>
@@ -192,32 +192,12 @@ export default {
       fileList: [],
       showActions: false,
       cameraOnly: "",
-      localIdImgs: []
+      leftImageCount: () => 4 - this.task.IMG_LIST.length
     };
   },
   mounted() {
     // console.log("mounted", this.task.ID, this.$refs.panel);
     this.io.observe(this.$refs.panel);
-
-    //
-    // Uploader.methods.chooseFile = function() {
-    //   alert("aa");
-    //   let _this = this;
-
-    //   wx.chooseImage({
-    //     count: 4 - _this.localIdImgs.length, // 默认9
-    //     sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
-    //     sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
-    //     success: function(res) {
-    //       let localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-    //       alert(localIds.length);
-    //     },
-    //     fail: function(res) {
-    //       console.log("失败");
-    //     }
-    //   });
-    // };
-    // console.log(Uploader);
   },
   beforeDestroy() {
     // console.log("beforeDestory", this.task.ID);
@@ -229,7 +209,7 @@ export default {
     if (vUploader) {
       const fileIpt = vUploader.$refs.input;
 
-      if (fileIpt&& fileIpt.style.visibility !== "hidden") {
+      if (fileIpt && fileIpt.style.visibility !== "hidden") {
         fileIpt.style.visibility = "hidden";
 
         const iptWrapper = fileIpt.parentNode;
@@ -242,7 +222,7 @@ export default {
           let _this = this;
 
           wx.chooseImage({
-            count: 4 - this.localIdImgs.length, // 默认9
+            count: this.leftImageCount, // max: 9
             sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
             sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
 
@@ -299,9 +279,9 @@ export default {
         let file = await dataUrlToFile(base64);
         files.push(file);
       }
-      this.localIdImgs = files;
       // console.log(file);
       this.$refs.fcc.readFile(files);
+      this.leftImageCount = 4 - files.length;
     },
 
     async afterRead(imgItems) {
@@ -378,6 +358,7 @@ export default {
           let respBody = resp.body;
           if (respBody.code === 200) {
             imgItem.status = "done";
+            this.leftImageCount += 1;
             // let index = this.fileList.indexOf(imgItem);
             // this.fileList.splice(index , 1);
           } else {
@@ -391,12 +372,12 @@ export default {
       }
     },
 
-    onSelectAction(item, i) {
-      this.cameraOnly = i === 0 ? "camera" : null;
-      setTimeout(() => {
-        this.$refs.fcc.chooseFile();
-      }, 2e2);
-    },
+    // onSelectAction(item, i) {
+    //   this.cameraOnly = i === 0 ? "camera" : null;
+    //   setTimeout(() => {
+    //     this.$refs.fcc.chooseFile();
+    //   }, 2e2);
+    // },
 
     handleChange() {
       this.$emit("modify", true);

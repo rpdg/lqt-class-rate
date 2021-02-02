@@ -191,11 +191,15 @@ export default {
   activated() {
     // console.log("form", this.$route.query);
     // debugger;
+    this.seq_id = this.$route.query.id;
     this.viewMode = 0;
+    this.previewOn = false;
     this.dataModified = false;
     this.taskList = [];
+
     this.optionIndex = 0;
     this.optionList = [defaultOptionChecked];
+    
     this.classIndex = 0;
     this.classList = [defaultClassChecked];
 
@@ -328,6 +332,12 @@ export default {
             class_list.unshift(defaultClassChecked);
             this.classList = class_list;
 
+            if (this.viewMode === 1) {
+              this.$refs.picker1 && this.$refs.picker1.setColumnIndex(1, 1);
+            } else {
+              this.$refs.picker0 && this.$refs.picker0.setColumnIndex(1, 1);
+            }
+
             this.step = Number(step_value);
           } else {
             alert(respBody.message);
@@ -374,16 +384,31 @@ export default {
         if (resp.status === 200) {
           let respBody = resp.body;
           if (respBody.code === 200) {
-            alert(is_give_up ? "弃填成功" : "提交成功");
-            this.$router.back();
+            // alert();
+
+            try {
+              let answer = await Dialog.confirm({
+                className: "dy-rate-dialog",
+                title: is_give_up ? "弃填成功" : "提交成功",
+                message: "返回列表页吗？",
+                confirmButtonText: "确定",
+                confirmButtonColor: "#54B331",
+                cancelButtonText:'不返回'
+              });
+
+              if (answer === "confirm") {
+                this.handleModify(false);
+                this.$router.back();
+              }
+            } catch (e) {}
           } else {
-            alert(respBody.message);
+            alert("server.error ", respBody.message);
           }
         } else {
           alert("请求失败!");
         }
       } catch (e) {
-        alert(e.message);
+        alert("server.error ", e.message);
       }
     },
     toggleViewStyle() {
