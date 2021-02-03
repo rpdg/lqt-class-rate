@@ -67,9 +67,9 @@ export default {
   }
 }
 
-.vux-header /deep/ .vux-header-left {
-  top: 10px !important;
-}
+// .vux-header /deep/ .vux-header-left {
+//   top: 10px !important;
+// }
 
 .vux-header /deep/ .vux-header-back {
   color: #38f;

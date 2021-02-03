@@ -82,9 +82,9 @@ async function imgCompress(src) {
         resizeW = 0,
         resizeH = 0;
 
-      let option = {
-        maxSize: 1600,
-        level: 0.6
+      const option = {
+        maxSize: 1200,
+        level: 0.5
       };
 
       if (w > option.maxSize || h > option.maxSize) {
@@ -122,23 +122,33 @@ async function getBase64(blob) {
 }
 
 function dataURLtoFile(dataurl, filename) {
-  let arr = dataurl.split(","),
-    mime = arr[0].match(/:(.*?);/)[1],
-    bstr = atob(arr[1]),
-    n = bstr.length,
-    u8arr = new Uint8Array(n);
-
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n);
+  // convert base64/URLEncoded data component to raw binary data held in a string
+  let byteString;
+  if (dataURI.split(",")[0].indexOf("base64") >= 0) {
+    byteString = atob(dataURI.split(",")[1]);
+  } else {
+    byteString = unescape(dataURI.split(",")[1]);
   }
 
-  return new File([u8arr], filename, { type: mime });
+  // separate out the mime component
+  let mimeString = dataURI
+    .split(",")[0]
+    .split(":")[1]
+    .split(";")[0];
+
+  // write the bytes of the string to a typed array
+  let ia = new Uint8Array(byteString.length);
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+
+  return new Blob([ia], { type: mimeString });
 }
 
 async function dataUrlToFile(dataUrl, fileName) {
   const res = await fetch(dataUrl);
   const blob = await res.blob();
-  return new File([blob], fileName, { type: "image/png" });
+  return new File([blob], fileName, { type: "image/jpeg" });
 }
 
 export default {
@@ -185,14 +195,15 @@ export default {
         : WRITE_STATUS === "-1"
           ? "弃填"
           : "已填";
+    },
+    leftImageCount() {
+      return 4 - this.task.IMG_LIST.length;
     }
   },
   data() {
     return {
-      fileList: [],
       showActions: false,
-      cameraOnly: "",
-      leftImageCount: () => 4 - this.task.IMG_LIST.length
+      cameraOnly: ""
     };
   },
   mounted() {
@@ -220,6 +231,7 @@ export default {
           // this.showActions = true;
 
           let _this = this;
+          // alert("count: " + JSON.stringify(this.leftImageCount));
 
           wx.chooseImage({
             count: this.leftImageCount, // max: 9
@@ -281,26 +293,19 @@ export default {
       }
       // console.log(file);
       this.$refs.fcc.readFile(files);
-      this.leftImageCount = 4 - files.length;
+      //
+      //// this.leftImageCount = 4 - files.length;
     },
 
     async afterRead(imgItems) {
-      // debugger;
-
-      // let sendData = [];
-      // imgItems.forEach(imgItem => {
-      //   sendData.push(imgItem.content);
-      // });
-
-      // let resp = await this.$http.post(
-      //   apiRouter.CLASS_RATE_BATCH_UPLOAD_IMG,
-      //   {file:sendData}
-      // );
-
       if (imgItems instanceof Array) {
         imgItems.forEach(imgItem => {
-          this.uploadImage(imgItem);
+          imgItem.status = "uploading";
         });
+
+        for (let i = 0, l = imgItems.length; i < l; i++) {
+          await this.uploadImage(imgItems[i]);
+        }
       } else {
         this.uploadImage(imgItems);
       }
@@ -338,8 +343,8 @@ export default {
       }
     },
 
-    async deleteImg(imgItem) {
-      // console.log(imgItem);
+    async deleteImg(imgItem, info) {
+      // console.log(imgItem, info);
 
       try {
         imgItem.status = "uploading";
@@ -358,9 +363,9 @@ export default {
           let respBody = resp.body;
           if (respBody.code === 200) {
             imgItem.status = "done";
-            this.leftImageCount += 1;
-            // let index = this.fileList.indexOf(imgItem);
-            // this.fileList.splice(index , 1);
+            //// this.leftImageCount = this.leftImageCount + 1;
+            // let index = info.index;
+            // this.task.IMG_LIST.splice(index , 1);
           } else {
             imgItem.status = "failed";
           }
@@ -443,6 +448,7 @@ export default {
   .van-tag {
     font-size: 10px;
     margin-right: 0.5em;
+    padding-top: 3px;
   }
 
   table {
@@ -471,7 +477,7 @@ export default {
       vertical-align: top;
       resize: none;
       box-shadow: none;
-      font-size: 14px;
+      font-size: 14px !important;
       line-height: 1.5em;
     }
   }

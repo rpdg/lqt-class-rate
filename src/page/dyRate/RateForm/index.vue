@@ -199,7 +199,7 @@ export default {
 
     this.optionIndex = 0;
     this.optionList = [defaultOptionChecked];
-    
+
     this.classIndex = 0;
     this.classList = [defaultClassChecked];
 
@@ -232,16 +232,18 @@ export default {
   },
   methods: {
     getUrlConfigTrue() {
-      let wiexin = apiRouter.GET_CONFIG + encodeURIComponent(this.urlPath);
-      // let wiexin =
-      //   "http://opg.vaiwan.com/api/wechat?url=" +
-      //   encodeURIComponent(this.urlPath);
+      let wiexin =
+        (process.env.NODE_ENV === "development"
+          ? "http://opg.vaiwan.com/api/wechat?url="
+          : apiRouter.GET_CONFIG) +
+        encodeURIComponent(this.urlPath);
+        
       this.$http.get(wiexin).then(
         response => {
           let data = response.body;
           // debugger;
           wx.config({
-            debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+            debug: (process.env.NODE_ENV === "development"), // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
             appId: data.appId, // 必填，企业号的唯一标识，此处填写企业号corpid
             timestamp: data.timestamp, // 必填，生成签名的时间戳
             nonceStr: data.nonceStr, // 必填，生成签名的随机串
@@ -393,14 +395,16 @@ export default {
                 message: "返回列表页吗？",
                 confirmButtonText: "确定",
                 confirmButtonColor: "#54B331",
-                cancelButtonText:'不返回'
+                cancelButtonText: "不返回"
               });
 
               if (answer === "confirm") {
-                this.handleModify(false);
                 this.$router.back();
               }
             } catch (e) {}
+            finally{
+                this.handleModify(false);
+            }
           } else {
             alert("server.error ", respBody.message);
           }
@@ -531,6 +535,7 @@ export default {
     width: 26.7vw;
     color: #fff;
     margin: 5px 4vw 3vw;
+    padding-top: 2px;
     border-radius: 0;
     font-size: 18px;
 
