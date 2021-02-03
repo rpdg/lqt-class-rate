@@ -43,7 +43,12 @@
       </div>
     </div>
 
-    <van-popup position="bottom" :style1="{ height: '36%' }" v-model="pickerShow0">
+    <van-popup
+      position="bottom"
+      :style1="{ height: '36%' }"
+      v-model="pickerShow0"
+      :lazy-render="false"
+    >
       <van-picker
         ref="picker0"
         value-key="NAME"
@@ -54,7 +59,12 @@
       />
     </van-popup>
 
-    <van-popup position="bottom" :style1="{ height: '36%' }" v-model="pickerShow1">
+    <van-popup
+      position="bottom"
+      :style1="{ height: '36%' }"
+      v-model="pickerShow1"
+      :lazy-render="false"
+    >
       <van-picker
         ref="picker1"
         value-key="CLASS_NAME"
@@ -186,24 +196,19 @@ export default {
   mounted() {
     //this.loadData();
     this.urlPath = window.location.href.split("#")[0];
-    this.getUrlConfigTrue();
+    this.configWechat();
   },
   activated() {
     // console.log("form", this.$route.query);
     // debugger;
     this.seq_id = this.$route.query.id;
+
     this.viewMode = 0;
     this.previewOn = false;
+
     this.dataModified = false;
-    this.taskList = [];
 
-    this.optionIndex = 0;
-    this.optionList = [defaultOptionChecked];
-
-    this.classIndex = 0;
-    this.classList = [defaultClassChecked];
-
-    this.fetchList();
+    this.init();
   },
   beforeRouteLeave(to, from, next) {
     if (this.previewOn) {
@@ -231,19 +236,18 @@ export default {
     }
   },
   methods: {
-    getUrlConfigTrue() {
+    configWechat() {
       let wiexin =
         (process.env.NODE_ENV === "development"
           ? "http://opg.vaiwan.com/api/wechat?url="
-          : apiRouter.GET_CONFIG) +
-        encodeURIComponent(this.urlPath);
-        
+          : apiRouter.GET_CONFIG) + encodeURIComponent(this.urlPath);
+
       this.$http.get(wiexin).then(
         response => {
           let data = response.body;
           // debugger;
           wx.config({
-            debug: (process.env.NODE_ENV === "development"), // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+            debug: process.env.NODE_ENV === "development", // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
             appId: data.appId, // 必填，企业号的唯一标识，此处填写企业号corpid
             timestamp: data.timestamp, // 必填，生成签名的时间戳
             nonceStr: data.nonceStr, // 必填，生成签名的随机串
@@ -296,6 +300,70 @@ export default {
         window.onbeforeunload = null;
       }
     },
+    async init() {
+      // reset
+      this.taskList = [];
+
+      this.optionIndex = 0;
+      this.optionList = [defaultOptionChecked];
+
+      this.classIndex = 0;
+      this.classList = [defaultClassChecked];
+
+      // fetch and auto select the first option
+      let see_mode = this.viewMode === 0 ? "DETAIL" : "CLASS";
+      let detail_id = this.optionChecked.CODE;
+      let class_id = this.classChecked.CLASS_ID;
+      let { seq_id } = this;
+
+      // alert(JSON.stringify({ seq_id, detail_id, class_id, see_mode }));
+      try {
+        let result = await this.$http.get(
+          `${
+            apiRouter.CLASS_RATE_TASK_LIST
+          }?seq_id=${seq_id}&class_id=${class_id}&detail_id=${detail_id}&see_mode=${see_mode}`
+        );
+
+        if (result.status === 200) {
+          let respBody = result.body;
+          if (respBody.code === 200) {
+            let { class_list, detail_list } = respBody.data;
+
+            class_list.unshift(defaultClassChecked);
+            this.classList = class_list;
+
+            detail_list.unshift(defaultOptionChecked);
+            this.optionList = detail_list;
+
+            this.$nextTick(() => {
+              // debugger;
+              if (this.viewMode === 1) {
+                if (this.$refs.picker1) {
+                  // let a = this.$refs.picker1.getColumnIndex(0);
+                  this.$refs.picker1.setColumnIndex(0, 1);
+                  this.classIndex = 1;
+                }
+              } else {
+                if (this.$refs.picker0) {
+                  // let a = this.$refs.picker0.getColumnIndex(0);
+                  this.$refs.picker0.setColumnIndex(0, 1);
+                  this.optionIndex = 1;
+                }
+              }
+              this.fetchList();
+            });
+          } else {
+            alert(respBody.message);
+          }
+        } else {
+          alert(respBody.message);
+        }
+      } catch (e) {
+        alert(e.message);
+      }
+
+      // 
+    },
     async fetchList() {
       let see_mode = this.viewMode === 0 ? "DETAIL" : "CLASS";
       let detail_id = this.optionChecked.CODE;
@@ -333,12 +401,6 @@ export default {
 
             class_list.unshift(defaultClassChecked);
             this.classList = class_list;
-
-            if (this.viewMode === 1) {
-              this.$refs.picker1 && this.$refs.picker1.setColumnIndex(1, 1);
-            } else {
-              this.$refs.picker0 && this.$refs.picker0.setColumnIndex(1, 1);
-            }
 
             this.step = Number(step_value);
           } else {
@@ -401,9 +463,9 @@ export default {
               if (answer === "confirm") {
                 this.$router.back();
               }
-            } catch (e) {}
-            finally{
-                this.handleModify(false);
+            } catch (e) {
+            } finally {
+              this.handleModify(false);
             }
           } else {
             alert("server.error ", respBody.message);
@@ -417,11 +479,11 @@ export default {
     },
     toggleViewStyle() {
       // console.log(this.viewMode);
-      this.classIndex = 0;
-      this.optionIndex = 0;
-      this.classList = [defaultClassChecked];
-      this.optionList = [defaultOptionChecked];
-      this.fetchList();
+      // this.classIndex = 0;
+      // this.optionIndex = 0;
+      // this.classList = [defaultClassChecked];
+      // this.optionList = [defaultOptionChecked];
+      this.init();
     },
     showPicker(i) {
       // console.log(i, this.viewMode);
@@ -434,7 +496,7 @@ export default {
 
         if (this.viewMode === 1) {
           this.optionIndex = 0;
-          this.$refs.picker0 && this.$refs.picker0.setColumnIndex(0);
+          this.$refs.picker0 && this.$refs.picker0.setColumnIndex(0, 0);
         }
 
         this.fetchList();
@@ -449,7 +511,7 @@ export default {
 
         if (this.viewMode === 0) {
           this.classIndex = 0;
-          this.$refs.picker1 && this.$refs.picker1.setColumnIndex(0);
+          this.$refs.picker1 && this.$refs.picker1.setColumnIndex(0, 0);
         }
 
         this.fetchList();
