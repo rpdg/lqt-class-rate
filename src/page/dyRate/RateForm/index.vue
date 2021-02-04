@@ -26,7 +26,9 @@
 
     <div class="wapper">
       <div class="content" ref="container">
+        <center v-if="loading" style="margin-top:1em;"><van-loading size="24px">加载中...</van-loading></center>
         <FormPanel
+          v-else
           v-for="(item, index) in taskList"
           :key="`${item.__hash}`"
           :task="item"
@@ -82,7 +84,6 @@ import TitleBar from "./components/TitleBar";
 import FormPanel from "./components/FormPanel";
 import apiRouter from "../../../config/api.js";
 import wx from "weixin-js-sdk";
-
 import {
   Col,
   Row,
@@ -137,6 +138,7 @@ export default {
     let that = this;
 
     return {
+      loading: false,
       urlPath: "",
       io: new IntersectionObserver((entries, observer) => {
         // console.log(entries);
@@ -301,6 +303,7 @@ export default {
       }
     },
     async init() {
+      this.loading = true;
       // reset
       this.taskList = [];
 
@@ -327,13 +330,17 @@ export default {
         if (result.status === 200) {
           let respBody = result.body;
           if (respBody.code === 200) {
-            let { class_list, detail_list } = respBody.data;
+            let { class_list, detail_list, step_value } = respBody.data;
 
-            class_list.unshift(defaultClassChecked);
-            this.classList = class_list;
+            if (this.viewMode === 0) {
+              detail_list.unshift(defaultOptionChecked);
+              this.optionList = detail_list;
+            } else {
+              class_list.unshift(defaultClassChecked);
+              this.classList = class_list;
+            }
 
-            detail_list.unshift(defaultOptionChecked);
-            this.optionList = detail_list;
+            this.step = Number(step_value);
 
             this.$nextTick(() => {
               // debugger;
@@ -350,6 +357,7 @@ export default {
                   this.optionIndex = 1;
                 }
               }
+
               this.fetchList();
             });
           } else {
@@ -362,9 +370,10 @@ export default {
         alert(e.message);
       }
 
-      // 
+      //
     },
     async fetchList() {
+      this.loading = true;
       let see_mode = this.viewMode === 0 ? "DETAIL" : "CLASS";
       let detail_id = this.optionChecked.CODE;
       let class_id = this.classChecked.CLASS_ID;
@@ -396,13 +405,13 @@ export default {
             });
             this.taskList = data_list;
 
-            detail_list.unshift(defaultOptionChecked);
-            this.optionList = detail_list;
-
-            class_list.unshift(defaultClassChecked);
-            this.classList = class_list;
-
-            this.step = Number(step_value);
+            if (this.viewMode === 1) {
+              detail_list.unshift(defaultOptionChecked);
+              this.optionList = detail_list;
+            } else {
+              class_list.unshift(defaultClassChecked);
+              this.classList = class_list;
+            }
           } else {
             alert(respBody.message);
           }
@@ -411,6 +420,8 @@ export default {
         }
       } catch (e) {
         alert(e.message);
+      } finally {
+        this.loading = false;
       }
     },
     async doAbanden() {

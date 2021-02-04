@@ -81,7 +81,7 @@
           );
       },
       submitTeacher(e){
-        this.$http.get('api/app/profile/teacher')
+        this.$http.get('/api/app/profile/teacher')
           .then(
             (response) => {
               if( response.body.status === 200 ){
@@ -99,7 +99,7 @@
       submitStudent(e){
         //
         var sendObj = this.obj;
-        this.$http.get('api/app/profile/student')
+        this.$http.get('/api/app/profile/student')
           .then(
             (response) => {
               if( response.body.status === 200 ){
@@ -117,7 +117,7 @@
       submitStudent1(e){
         //
         var sendObj = this.obj;
-        this.$http.get('api/app/profile/student1')
+        this.$http.get('/api/app/profile/student1')
           .then(
             (response) => {
               if( response.body.status === 200 ){
@@ -135,7 +135,7 @@
       submitStudent2(e){
         //
         var sendObj = this.obj;
-        this.$http.get('api/app/profile/student2')
+        this.$http.get('/api/app/profile/student2')
           .then(
             (response) => {
               if( response.body.status === 200 ){
@@ -152,7 +152,7 @@
       },
       submitParent(e){
         //
-        this.$http.get('api/app/profile/parent')
+        this.$http.get('/api/app/profile/parent')
           .then(
             (response) => {
               if( response.body.status === 200 ){
