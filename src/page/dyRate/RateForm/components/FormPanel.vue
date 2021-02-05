@@ -471,7 +471,7 @@ export default {
     }
 
     textarea {
-      border: 1px solid #999;
+      border: 1px solid #ddd;
       width: 26.7vw;
       height: 22.4vw;
       vertical-align: top;
@@ -479,6 +479,10 @@ export default {
       box-shadow: none;
       font-size: 14px !important;
       line-height: 1.5em;
+
+      &:focus{
+        border-color: #999;
+      }
     }
   }
 }
