@@ -7,7 +7,7 @@
   left-arrow
 /> -->
       <div class="wapper">
-        <van-list v-model="loading" :finished="finished" @load="fetchList">
+        <van-list v-model="loading" :finished="finished" @load="fetchList" :immediate-check="false">
             <rate-list v-if="listData" :listData="listData" />
         </van-list>
       </div>
@@ -54,6 +54,7 @@ export default {
   },
   methods: {
     async fetchList() {
+      
       ++this.pageIndex;
       // console.log("list", this.$http);
 
@@ -63,7 +64,7 @@ export default {
 
       try {
         let resp = await this.$http.get(
-          `${apiRouter.CLASS_RATE_LIST}?page_index_str=${this.pageIndex}`
+          `${apiRouter.CLASS_RATE_LIST}?page_index_str=${this.pageIndex}&__=${Date.now()}`
         );
         // console.log(resp);
         // debugger;

@@ -47,7 +47,6 @@
 
     <van-popup
       position="bottom"
-      :style1="{ height: '36%' }"
       v-model="pickerShow0"
       :lazy-render="false"
     >
@@ -63,7 +62,6 @@
 
     <van-popup
       position="bottom"
-      :style1="{ height: '36%' }"
       v-model="pickerShow1"
       :lazy-render="false"
     >
@@ -573,6 +571,10 @@ export default {
     // color: #ED561B;
   }
 }
+.van-picker__confirm {
+  font-size: 16px;
+  color: #333;
+}
 </style>
 <style lang="less" scoped>
 @import "../../../style/minxin.less";
@@ -620,6 +622,10 @@ export default {
       background-color: #48b319;
       float: right;
     }
+  }
+  
+  .van-button--default {
+    border: 1px solid transparent;
   }
 }
 </style>

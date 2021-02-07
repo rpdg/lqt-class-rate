@@ -25,6 +25,7 @@
     "vux": "^2.2.1",
     "vux-uploader": "^0.1.7",
     "vant": "^2.10.3",
+    "weixin-js-sdk": "^1.2.0",
     "fabric": "3.6.0",
     "tui-image-editor": "^3.8.0"
   },
@@ -89,7 +90,6 @@
     "webpack-dev-middleware": "^1.10.0",
     "webpack-hot-middleware": "^2.16.1",
     "webpack-merge": "^2.6.1",
-    "weixin-js-sdk": "^1.2.0",
     "yaml-loader": "^0.4.0"
   },
   "engines": {
