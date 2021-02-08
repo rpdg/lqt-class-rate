@@ -7,26 +7,30 @@
       <van-tab title="班级视角"></van-tab>
     </van-tabs>
 
-    <van-row v-if="viewMode===0">
-      <van-col span="12">
-        <van-cell :title="optionChecked.NAME" is-link @click="showPicker(0)" />
-      </van-col>
-      <van-col span="12">
-        <van-cell :title="classChecked.CLASS_NAME" is-link @click="showPicker(1)" />
-      </van-col>
-    </van-row>
-    <van-row v-else>
-      <van-col span="12">
-        <van-cell :title="classChecked.CLASS_NAME" is-link @click="showPicker(1)" />
-      </van-col>
-      <van-col span="12">
-        <van-cell :title="optionChecked.NAME" is-link @click="showPicker(0)" />
-      </van-col>
-    </van-row>
+    <div v-if="inited">
+      <van-row v-if="viewMode===0">
+        <van-col span="12">
+          <van-cell :title="optionChecked.NAME" is-link @click="showPicker(0)" />
+        </van-col>
+        <van-col span="12">
+          <van-cell :title="classChecked.CLASS_NAME" is-link @click="showPicker(1)" />
+        </van-col>
+      </van-row>
+      <van-row v-else>
+        <van-col span="12">
+          <van-cell :title="classChecked.CLASS_NAME" is-link @click="showPicker(1)" />
+        </van-col>
+        <van-col span="12">
+          <van-cell :title="optionChecked.NAME" is-link @click="showPicker(0)" />
+        </van-col>
+      </van-row>
+    </div>
 
     <div class="wapper">
       <div class="content" ref="container">
-        <center v-if="loading" style="margin-top:1em;"><van-loading size="24px">加载中...</van-loading></center>
+        <center v-if="loading" style="margin-top:1em;">
+          <van-loading size="24px">加载中...</van-loading>
+        </center>
         <FormPanel
           v-else
           v-for="(item, index) in taskList"
@@ -45,11 +49,7 @@
       </div>
     </div>
 
-    <van-popup
-      position="bottom"
-      v-model="pickerShow0"
-      :lazy-render="false"
-    >
+    <van-popup position="bottom" v-model="pickerShow0" :lazy-render="false">
       <van-picker
         ref="picker0"
         value-key="NAME"
@@ -60,11 +60,7 @@
       />
     </van-popup>
 
-    <van-popup
-      position="bottom"
-      v-model="pickerShow1"
-      :lazy-render="false"
-    >
+    <van-popup position="bottom" v-model="pickerShow1" :lazy-render="false">
       <van-picker
         ref="picker1"
         value-key="CLASS_NAME"
@@ -128,6 +124,16 @@ export default {
      */
     this.seq_id = this.$route.query.id;
 
+    /**
+     * 第一个选项ID
+     */
+    this.first_optionId = this.$route.query.foId;
+
+    /**
+     * 第一个班级ID
+     */
+    this.first_classId = this.$route.query.fcId;
+
     this.previewOn = false;
     this.setPreviewState = s => {
       this.previewOn = s;
@@ -136,6 +142,7 @@ export default {
     let that = this;
 
     return {
+      inited: false,
       loading: false,
       urlPath: "",
       io: new IntersectionObserver((entries, observer) => {
@@ -202,9 +209,12 @@ export default {
     // console.log("form", this.$route.query);
     // debugger;
     this.seq_id = this.$route.query.id;
+    this.first_optionId = this.$route.query.foId;
+    this.first_classId = this.$route.query.fcId;
 
     this.viewMode = 0;
     this.previewOn = false;
+    this.inited = false;
 
     this.dataModified = false;
 
@@ -311,11 +321,11 @@ export default {
       this.classIndex = 0;
       this.classList = [defaultClassChecked];
 
+      const seq_id = this.seq_id;
       // fetch and auto select the first option
-      let see_mode = this.viewMode === 0 ? "DETAIL" : "CLASS";
-      let detail_id = this.optionChecked.CODE;
-      let class_id = this.classChecked.CLASS_ID;
-      let { seq_id } = this;
+      const see_mode = this.viewMode === 0 ? "DETAIL" : "CLASS";
+      const detail_id = this.viewMode === 0 ? this.first_optionId : "";
+      const class_id = this.viewMode === 0 ? "" : this.first_classId;
 
       // alert(JSON.stringify({ seq_id, detail_id, class_id, see_mode }));
       try {
@@ -328,17 +338,31 @@ export default {
         if (result.status === 200) {
           let respBody = result.body;
           if (respBody.code === 200) {
-            let { class_list, detail_list, step_value } = respBody.data;
+            let {
+              class_list,
+              detail_list,
+              step_value,
+              data_list
+            } = respBody.data;
 
-            if (this.viewMode === 0) {
-              detail_list.unshift(defaultOptionChecked);
-              this.optionList = detail_list;
-            } else {
-              class_list.unshift(defaultClassChecked);
-              this.classList = class_list;
-            }
+            detail_list.unshift(defaultOptionChecked);
+            this.optionList = detail_list;
+
+            class_list.unshift(defaultClassChecked);
+            this.classList = class_list;
 
             this.step = Number(step_value);
+
+            data_list.forEach(task => {
+              task.__shown = true;
+              // task.__shown = false;
+              task.__hash = task.ID + "-" + Date.now() + "-" + Math.random();
+
+              if (task.IMG_LIST.length > 4) {
+                task.IMG_LIST.length = 4;
+              }
+            });
+            this.taskList = data_list;
 
             this.$nextTick(() => {
               // debugger;
@@ -356,7 +380,9 @@ export default {
                 }
               }
 
-              this.fetchList();
+              this.inited = true;
+
+              // this.fetchList();
             });
           } else {
             alert(respBody.message);
@@ -366,6 +392,8 @@ export default {
         }
       } catch (e) {
         alert(e.message);
+      } finally {
+        this.loading = false;
       }
 
       //
@@ -398,8 +426,13 @@ export default {
             } = respBody.data;
 
             data_list.forEach(task => {
-              task.__shown = false;
+              task.__shown = true;
+              // task.__shown = false;
               task.__hash = task.ID + "-" + Date.now() + "-" + Math.random();
+
+              if (task.IMG_LIST.length > 4) {
+                task.IMG_LIST.length = 4;
+              }
             });
             this.taskList = data_list;
 
@@ -623,7 +656,7 @@ export default {
       float: right;
     }
   }
-  
+
   .van-button--default {
     border: 1px solid transparent;
   }

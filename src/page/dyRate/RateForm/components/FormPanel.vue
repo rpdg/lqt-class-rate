@@ -208,11 +208,11 @@ export default {
   },
   mounted() {
     // console.log("mounted", this.task.ID, this.$refs.panel);
-    this.io.observe(this.$refs.panel);
+    // this.io.observe(this.$refs.panel);
   },
   beforeDestroy() {
     // console.log("beforeDestory", this.task.ID);
-    this.io.unobserve(this.$refs.panel);
+    // this.io.unobserve(this.$refs.panel);
   },
   updated() {
     // patch vant-uploader to use wechat image choose style

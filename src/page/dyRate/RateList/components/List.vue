@@ -2,7 +2,11 @@
   <ul class="message">
     <li class="clearfix" v-for="item in listData" :key="item.ID">
       <div :class="`message-icon ${item.STATUS==='0'?'new':''}`"></div>
-      <a href="javascript:void(0);" @click="goCheck(item.ID , item.TASK_NAME)" class="message-info">
+      <a
+        href="javascript:void(0);"
+        @click="goCheck(item.ID , item.TASK_NAME1 ,item.F_DETAIL_ID, item.F_CLASS_ID)"
+        class="message-info"
+      >
         <h3>{{item.TASK_NAME}}</h3>
         <p>{{item.DEPT_NAME}}</p>
       </a>
@@ -29,12 +33,14 @@ export default {
     }
   },
   methods: {
-    goCheck(id, title) {
+    goCheck(id, title, foId, fcId) {
       this.$router.push({
         path: "/dyrate-form",
         query: {
           id,
-          title
+          title,
+          foId,
+          fcId
         }
       });
     }
