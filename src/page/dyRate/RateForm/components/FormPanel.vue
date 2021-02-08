@@ -206,7 +206,7 @@ export default {
       cameraOnly: ""
     };
   },
-  mounted() {
+  mounted_old() {
     // console.log("mounted", this.task.ID, this.$refs.panel);
     // this.io.observe(this.$refs.panel);
   },
@@ -214,7 +214,7 @@ export default {
     // console.log("beforeDestory", this.task.ID);
     // this.io.unobserve(this.$refs.panel);
   },
-  updated() {
+  mounted() {
     // patch vant-uploader to use wechat image choose style
     let vUploader = this.$refs.fcc;
     if (vUploader) {

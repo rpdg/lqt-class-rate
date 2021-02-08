@@ -292,9 +292,11 @@ export default {
           messageAlign: "left"
         });
         if (answer === "confirm") {
+          this.viewMode = 0;
           this.$router.back();
         }
       } else {
+        this.viewMode = 0;
         this.$router.back();
       }
     },
@@ -311,6 +313,7 @@ export default {
       }
     },
     async init() {
+      this.inited = false;
       this.loading = true;
       // reset
       this.taskList = [];
@@ -393,6 +396,7 @@ export default {
       } catch (e) {
         alert(e.message);
       } finally {
+        this.inited = true;
         this.loading = false;
       }
 

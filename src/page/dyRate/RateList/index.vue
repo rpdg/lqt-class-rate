@@ -7,8 +7,8 @@
   left-arrow
 /> -->
       <div class="wapper">
-        <van-list v-model="loading" :finished="finished" @load="fetchList" :immediate-check="false">
-            <rate-list v-if="listData" :listData="listData" />
+        <van-list v-model="loading" :finished="finished" :finished-text="listData.length?`没有更多了`:`暂无数据`" @load="fetchList" :immediate-check="false">
+            <rate-list v-if="listData.length" :listData="listData" />
         </van-list>
       </div>
     </div>
