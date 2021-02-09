@@ -14,12 +14,12 @@
           评分：
           <van-stepper
             class="inline-stepper"
-            disable-input
             :min="task.SCORE_UP"
             :max="task.SCORE_DN"
             :step="step"
             v-model="task.SCORE"
-            @change="handleChange"
+            @change="handleChange(true)"
+            @blur="handleStepBlur"
           />
         </td>
         <td rowspan="2">
@@ -59,7 +59,7 @@
               size="medium"
             >{{statusText}}</van-tag>
           </span>
-          <textarea maxlength="50" v-model="task.COMMENT" @change="handleChange"></textarea>
+          <textarea maxlength="50" v-model="task.COMMENT" @change="handleChange(false)"></textarea>
         </td>
       </tr>
     </table>
@@ -215,42 +215,10 @@ export default {
     // this.io.unobserve(this.$refs.panel);
   },
   mounted() {
-    // patch vant-uploader to use wechat image choose style
-    let vUploader = this.$refs.fcc;
-    if (vUploader) {
-      const fileIpt = vUploader.$refs.input;
-
-      if (fileIpt && fileIpt.style.visibility !== "hidden") {
-        fileIpt.style.visibility = "hidden";
-
-        const iptWrapper = fileIpt.parentNode;
-        let placeholder = document.createElement("div");
-        placeholder.className = "photoChooser";
-        iptWrapper.appendChild(placeholder);
-        placeholder.addEventListener("click", () => {
-          // this.showActions = true;
-
-          let _this = this;
-          // alert("count: " + JSON.stringify(this.leftImageCount));
-
-          wx.chooseImage({
-            count: this.leftImageCount, // max: 9
-            sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
-            sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
-
-            success: async function(res) {
-              // 返回选定照片的本地ID列表
-              _this.readImages(res.localIds);
-            },
-            fail: function(err) {
-              console.log(err);
-            }
-          });
-        });
-
-        // console.log("fcc", iptWrapper);
-      }
-    }
+    this.patchVant();
+  },
+  updated() {
+    this.patchVant();
   },
   methods: {
     // async beforeRead(imgItem) {
@@ -259,6 +227,46 @@ export default {
     //     resolve(imgItem);
     //   });
     // },
+
+    patchVant() {
+      // patch vant-uploader to use wechat image choose style
+      // if using lazy-render, this should be trigged at "updated"
+      let vUploader = this.$refs.fcc;
+      if (vUploader) {
+        const fileIpt = vUploader.$refs.input;
+
+        if (fileIpt && fileIpt.style.visibility !== "hidden") {
+          fileIpt.style.visibility = "hidden";
+
+          const iptWrapper = fileIpt.parentNode;
+          let placeholder = document.createElement("div");
+          placeholder.className = "photoChooser";
+          iptWrapper.appendChild(placeholder);
+          placeholder.addEventListener("click", () => {
+            // this.showActions = true;
+
+            let _this = this;
+            // alert("count: " + JSON.stringify(this.leftImageCount));
+
+            wx.chooseImage({
+              count: this.leftImageCount, // max: 9
+              sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
+              sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
+
+              success: async function(res) {
+                // 返回选定照片的本地ID列表
+                _this.readImages(res.localIds);
+              },
+              fail: function(err) {
+                console.log(err);
+              }
+            });
+          });
+
+          // console.log("fcc", iptWrapper);
+        }
+      }
+    },
 
     doReadImage(item) {
       return new Promise(resolve => {
@@ -384,7 +392,15 @@ export default {
     //   }, 2e2);
     // },
 
-    handleChange() {
+    handleStepBlur(e) {
+      // console.log(this.task.SCORE);
+      let v = ~~(this.task.SCORE * 100) / 100;
+      this.task.SCORE = v;
+    },
+    handleChange(isFromStepper) {
+      // if(isFromStepper){
+      //   console.log('aa')
+      // }
       this.$emit("modify", true);
     }
     // handlePreview(status){
@@ -404,14 +420,13 @@ export default {
     width: 12vw;
     height: 12vw;
     border: 1px solid #ccc;
-
-    .photoChooser {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 12vw;
-      height: 12vw;
-    }
+  }
+  .photoChooser {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 12vw;
+    height: 12vw;
   }
 }
 .inline-stepper {
@@ -480,7 +495,7 @@ export default {
       font-size: 14px !important;
       line-height: 1.5em;
 
-      &:focus{
+      &:focus {
         border-color: #999;
       }
     }
