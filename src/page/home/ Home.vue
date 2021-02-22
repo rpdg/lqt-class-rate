@@ -92,12 +92,12 @@
 import apiRouter from "../../config/api.js";
 export default {
   mounted() {
-    this.showList();
+    // this.showList();
   },
   activated() {
     this.key += 1;
     this.showList();
-    $(".vux-x-dialog").hide();
+    // $(".vux-x-dialog").hide();
   },
   methods: {
     closedSend() {
@@ -110,7 +110,7 @@ export default {
     //  获取首页列表数据
 
     showList() {
-      this.$http.get(apiRouter.GET_LIST).then(function(response) {
+      this.$http.get(apiRouter.GET_LIST+'?__='+Date.now()).then(function(response) {
         //    console.log(response)
         if (response.body.status === 200) {
           this.myIcon = response.body.data.myIcon;

@@ -215,9 +215,11 @@ export default {
     // this.io.unobserve(this.$refs.panel);
   },
   mounted() {
+    // console.log("mmm");
     this.patchVant();
   },
   updated() {
+    // console.log("upup");
     this.patchVant();
   },
   methods: {
@@ -235,10 +237,23 @@ export default {
       if (vUploader) {
         const fileIpt = vUploader.$refs.input;
 
-        if (fileIpt && fileIpt.style.visibility !== "hidden") {
+        if (
+          fileIpt &&
+          fileIpt.tagName === "INPUT" &&
+          fileIpt.style.visibility !== "hidden"
+        ) {
           fileIpt.style.visibility = "hidden";
+          fileIpt.style.display = "none";
 
           const iptWrapper = fileIpt.parentNode;
+          let doms = iptWrapper.parentNode.querySelectorAll(".van-uploader__preview > .photoChooser");
+          if (doms) {
+            // debugger;
+            // iptWrapper.appendChild(dom);
+            // console.log(doms);
+            doms.forEach(dom=>dom.remove())
+          }
+
           let placeholder = document.createElement("div");
           placeholder.className = "photoChooser";
           iptWrapper.appendChild(placeholder);
@@ -427,6 +442,12 @@ export default {
     left: 0;
     width: 12vw;
     height: 12vw;
+  }
+
+  .van-uploader__preview {
+    .photoChooser {
+      display: none;
+    }
   }
 }
 .inline-stepper {
