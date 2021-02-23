@@ -110,7 +110,7 @@ export default {
     //  获取首页列表数据
 
     showList() {
-      this.$http.get(apiRouter.GET_LIST+'?__='+Date.now()).then(function(response) {
+      this.$http.post(apiRouter.GET_LIST+'?__='+Date.now()).then(function(response) {
         //    console.log(response)
         if (response.body.status === 200) {
           this.myIcon = response.body.data.myIcon;

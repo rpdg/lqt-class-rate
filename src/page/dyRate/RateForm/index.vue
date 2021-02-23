@@ -38,7 +38,6 @@
           :task="item"
           :index="index"
           :step="step"
-          :io="io"
           :setPreviewState="setPreviewState"
           @modify="handleModify"
         />
@@ -145,19 +144,21 @@ export default {
       inited: false,
       loading: false,
       urlPath: "",
-      io: new IntersectionObserver((entries, observer) => {
-        // console.log(entries);
-        entries.forEach(entry => {
-          // debugger;
-          if (entry.intersectionRatio > 0) {
-            // console.log('change', entry.target.getAttribute('data-index'));
-            let taskIndex = entry.target.getAttribute("data-index");
-            let task = that.taskList[taskIndex];
-            task.__shown = true;
-            observer.unobserve(entry.target);
-          }
-        });
-      }),
+      
+      // io: new IntersectionObserver((entries, observer) => {
+      //   // console.log(entries);
+      //   entries.forEach(entry => {
+      //     // debugger;
+      //     if (entry.intersectionRatio > 0) {
+      //       // console.log('change', entry.target.getAttribute('data-index'));
+      //       let taskIndex = entry.target.getAttribute("data-index");
+      //       let task = that.taskList[taskIndex];
+      //       task.__shown = true;
+      //       observer.unobserve(entry.target);
+      //     }
+      //   });
+      // }),
+
       /**
        * 选择0显示状态
        */

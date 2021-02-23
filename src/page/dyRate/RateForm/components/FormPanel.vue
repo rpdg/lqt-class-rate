@@ -163,10 +163,10 @@ export default {
       required: true,
       default: 0
     },
-    io: {
-      type: IntersectionObserver,
-      required: true
-    },
+    // io: {
+    //   type: IntersectionObserver,
+    //   required: true
+    // },
     index: {
       type: Number,
       required: true,

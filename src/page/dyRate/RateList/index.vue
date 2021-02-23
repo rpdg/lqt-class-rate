@@ -72,7 +72,7 @@ export default {
           let response = resp.body;
           if (response.code === 200) {
             this.listData.push(...response.data.page_list);
-            this.loading = false;
+            // this.loading = false;
             if (response.data.pageIndex + 1 === response.data.pageCount) {
               this.finished = true;
             }
@@ -84,6 +84,9 @@ export default {
         }
       } catch (e) {
         alert(e.message);
+      }
+      finally{
+        this.loading = false;
       }
     }
   }
