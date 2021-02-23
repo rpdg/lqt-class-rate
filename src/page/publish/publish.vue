@@ -203,7 +203,7 @@ export default {
         this.localIdImgs = [];
     },
   mounted() {
-      this.getStorage();
+      // this.getStorage();
       this.titleDate();
     // console.log(apiRouter.POST_SEND)
     this.localIdImgs = [];
@@ -221,6 +221,7 @@ export default {
     },
 
     getStorage() {
+      debugger;
       this.classList = JSON.parse(window.localStorage.CLAEEINFO);
       this.getTitle = this.classList[0].COURSE_NAME;
       this.newSpaceId = this.classList[0].SPACE_ID;
