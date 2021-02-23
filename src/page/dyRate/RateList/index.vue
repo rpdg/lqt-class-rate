@@ -15,9 +15,9 @@
 </template>
 <script>
 import { ViewBox } from "vux";
-import { Loading, List,NavBar  } from "vant";
-import BackTitleBar from "../../../components/common/BackTitleBar";
-import RateList from "./components/List";
+import { Loading, List, NavBar } from "vant";
+import BackTitleBar from "../../../components/common/BackTitleBar.vue";
+import RateList from "./components/List.vue";
 import apiRouter from "../../../config/api.js";
 
 async function delay(t, v) {
@@ -32,11 +32,12 @@ export default {
     BackTitleBar,
     [Loading.name]: Loading,
     [List.name]: List,
-    [NavBar.name]: NavBar ,
+    [NavBar.name]: NavBar,
     RateList
   },
   data() {
     return {
+      ajaxLoading: false,
       loading: false,
       finished: false,
       listData: [],
@@ -45,6 +46,7 @@ export default {
   },
   async activated() {
     // console.log("list-length: ", this.listData.length);
+    this.ajaxLoading = false;
     this.loading = false;
     this.finished = false;
     this.listData = [];
@@ -54,39 +56,42 @@ export default {
   },
   methods: {
     async fetchList() {
-      
-      ++this.pageIndex;
-      // console.log("list", this.$http);
+      if (!this.ajaxLoading) {
+        this.ajaxLoading = true;
+        ++this.pageIndex;
+        // console.log("list", this.$http);
 
-      // this.loading = true;
-      // await delay(3e3);
-      // this.listData.push(...testData);
+        // await delay(3e3);
+        // this.listData.push(...testData);
 
-      try {
-        let resp = await this.$http.get(
-          `${apiRouter.CLASS_RATE_LIST}?page_index_str=${this.pageIndex}&__=${Date.now()}`
-        );
-        // console.log(resp);
-        // debugger;
-        if (resp.status === 200) {
-          let response = resp.body;
-          if (response.code === 200) {
-            this.listData.push(...response.data.page_list);
-            // this.loading = false;
-            if (response.data.pageIndex + 1 === response.data.pageCount) {
-              this.finished = true;
+        try {
+          let resp = await this.$http.get(
+            `${apiRouter.CLASS_RATE_LIST}?page_index_str=${
+              this.pageIndex
+            }&__=${Date.now()}`
+          );
+          // console.log(resp);
+          // debugger;
+          if (resp.status === 200) {
+            let response = resp.body;
+            if (response.code === 200) {
+              this.listData.push(...response.data.page_list);
+              // this.loading = false;
+              if (response.data.pageIndex + 1 === response.data.pageCount) {
+                this.finished = true;
+              }
+            } else {
+              alert(response.message);
             }
           } else {
-            alert(response.message);
+            alert("请求失败!");
           }
-        } else {
-          alert("请求失败!");
+        } catch (e) {
+          alert(e.message);
+        } finally {
+          this.ajaxLoading = false;
+          this.loading = false;
         }
-      } catch (e) {
-        alert(e.message);
-      }
-      finally{
-        this.loading = false;
       }
     }
   }
