@@ -65,7 +65,7 @@
 
         <group class="scope-title-box">
           <div style="text-align: center;">
-            <img  v-if="courseDetail.IMG_FILE && courseDetail.IMG_FILE.URL" style="max-width: 90%;margin: 1em auto" :src="roterPath+courseDetail.IMG_FILE.URL">
+            <img  v-if="courseDetail.IMG_FILE && courseDetail.IMG_FILE.URL" style="max-width: 90%;margin: 1em auto" :src="roterPath+'/upload'+courseDetail.IMG_FILE.URL">
           </div>
           <!--          <cell :title="'已报名人数：'+detail.userCount" style="padding-left: 0;">-->
           <!--            <img slot="icon" width="20" style="display:block;margin-right:5px;" src="@/assets/question/people-group.png">-->
