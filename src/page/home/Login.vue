@@ -37,7 +37,7 @@
 </template>
 
 <script type="es6">
-  import apiRouter from "../../config/api.js"
+  import {apiPath} from "../../config/api.js"
 
   export default {
     components: {
@@ -66,7 +66,7 @@
     },
     methods: {
       clearLogin(){
-        this.$http.get('/api/app/profile/clean')
+        this.$http.get(apiPath + '/app/profile/clean')
           .then(
             (response) => {
               if( response.status === 200 ){
@@ -81,7 +81,7 @@
           );
       },
       submitTeacher(e){
-        this.$http.get('/api/app/profile/teacher')
+        this.$http.get(apiPath+'/app/profile/teacher')
           .then(
             (response) => {
               if( response.body.status === 200 ){
@@ -99,7 +99,7 @@
       submitStudent(e){
         //
         var sendObj = this.obj;
-        this.$http.get('/api/app/profile/student')
+        this.$http.get(apiPath+'/app/profile/student')
           .then(
             (response) => {
               if( response.body.status === 200 ){
@@ -117,7 +117,7 @@
       submitStudent1(e){
         //
         var sendObj = this.obj;
-        this.$http.get('/api/app/profile/student1')
+        this.$http.get(apiPath+'/app/profile/student1')
           .then(
             (response) => {
               if( response.body.status === 200 ){
@@ -135,7 +135,7 @@
       submitStudent2(e){
         //
         var sendObj = this.obj;
-        this.$http.get('/api/app/profile/student2')
+        this.$http.get(apiPath+'/app/profile/student2')
           .then(
             (response) => {
               if( response.body.status === 200 ){
@@ -152,7 +152,7 @@
       },
       submitParent(e){
         //
-        this.$http.get('/api/app/profile/parent')
+        this.$http.get(apiPath+'/app/profile/parent')
           .then(
             (response) => {
               if( response.body.status === 200 ){

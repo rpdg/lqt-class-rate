@@ -121,7 +121,7 @@ async function getBase64(blob) {
   });
 }
 
-function dataURLtoFile(dataurl, filename) {
+function dataURLtoFile(dataURI, filename) {
   // convert base64/URLEncoded data component to raw binary data held in a string
   let byteString;
   if (dataURI.split(",")[0].indexOf("base64") >= 0) {
@@ -485,6 +485,9 @@ export default {
     font-size: 10px;
     margin-right: 0.5em;
     padding-top: 3px;
+  }
+  .van-tag--success{
+    color: #48b319;
   }
 
   table {
