@@ -473,10 +473,10 @@ export default {
 
 <style lang="less" scoped>
 .panel {
-  width: 94.7vw;
+  // width: 94.7vw;
   min-height: 50vw;
   // height: 53vw;
-  margin: 10px auto 20px auto;
+  margin: 10px 15px 20px 15px;
   border-radius: 12px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
   padding: 5vw 7vw;

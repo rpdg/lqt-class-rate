@@ -647,13 +647,13 @@ export default {
     height: 10.7vw;
     width: 26.7vw;
     color: #fff;
-    margin: 5px 4vw 3vw;
+    margin: 5px 15px 3vw;
     padding-top: 2px;
     border-radius: 0;
     font-size: 18px;
 
     &.error {
-      background-color: #e12727;
+      background-color: #ee0a24;
     }
 
     &.submit {
@@ -664,6 +664,7 @@ export default {
 
   .van-button--default {
     border: 1px solid transparent;
+    border-radius: 3px;
   }
 }
 </style>

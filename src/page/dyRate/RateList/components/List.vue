@@ -60,7 +60,7 @@ export default {
     content: "";
     width: 8px;
     height: 8px;
-    background-color: #ff4d33;
+    background-color: #ee0a24;
     border-radius: 100%;
     position: absolute;
     top: -3px;
@@ -70,7 +70,7 @@ export default {
 }
 
 .message li {
-  .mixin-padding(30 / @baseSize, 30 / @baseSize);
+  padding: 0 15px;
   border-bottom: 1px solid @colorDD;
   height: 160 / @baseSize;
   position: relative;
@@ -125,7 +125,7 @@ export default {
   display: block;
 }
 .btn-red {
-  color: #ff5e5e;
+  color: #ee0a24;
 }
 .btn-gray {
   color: @color-gray;
