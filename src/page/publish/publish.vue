@@ -298,7 +298,7 @@ export default {
           CLASS_IDS: this.newClassIds,
           OUTDATE: dataDatime,
           TITLE: this.newTitle,
-          CONTENT: this.newContent,
+          CONTENT: this.newContent.replace(/</g, "&lt").replace(/>/g, "&gt").replace(/\n/g , '<br>'),
           IMG_LIST: JSON.stringify(this.serverId)
         };
         console.log(JSON.stringify(sendObj));
