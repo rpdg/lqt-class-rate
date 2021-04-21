@@ -144,7 +144,7 @@ export default {
       inited: false,
       loading: false,
       urlPath: "",
-      
+
       // io: new IntersectionObserver((entries, observer) => {
       //   // console.log(entries);
       //   entries.forEach(entry => {
@@ -496,6 +496,10 @@ export default {
           let respBody = resp.body;
           if (respBody.code === 200) {
             // alert();
+
+            this.taskList.forEach(task => {
+              task.WRITE_STATUS = is_give_up ? "-1" : "1";
+            });
 
             try {
               let answer = await Dialog.confirm({
