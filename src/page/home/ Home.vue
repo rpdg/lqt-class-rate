@@ -93,6 +93,7 @@ import apiRouter from "../../config/api.js";
 export default {
   mounted() {
     // this.showList();
+    window.localStorage.removeItem("lqt_login_errorTimes");
   },
   activated() {
     this.key += 1;
@@ -110,35 +111,37 @@ export default {
     //  获取首页列表数据
 
     showList() {
-      this.$http.post(apiRouter.GET_LIST+'?__='+Date.now()).then(function(response) {
-        //    console.log(response)
-        if (response.body.status === 200) {
-          this.myIcon = response.body.data.myIcon;
-          let mgrIcon = response.body.data.mgrIcon;
-          let isTeach = response.body.data.userType;
-          this.userType = response.body.data.userType;
-          this.spaceUrl = response.body.data.spaceUrl;
-          this.noticeUrl = response.body.data.noticeUrl;
-          window.localStorage.setItem("USER_TYPE", isTeach);
-          window.localStorage.setItem(
-            "USER",
-            JSON.stringify(response.body.data)
-          );
-          if (isTeach === "T_TEACHER") {
-            this.isTeach = true;
+      this.$http
+        .post(apiRouter.GET_LIST + "?__=" + Date.now())
+        .then(function(response) {
+          //    console.log(response)
+          if (response.body.status === 200) {
+            this.myIcon = response.body.data.myIcon;
+            let mgrIcon = response.body.data.mgrIcon;
+            let isTeach = response.body.data.userType;
+            this.userType = response.body.data.userType;
+            this.spaceUrl = response.body.data.spaceUrl;
+            this.noticeUrl = response.body.data.noticeUrl;
+            window.localStorage.setItem("USER_TYPE", isTeach);
+            window.localStorage.setItem(
+              "USER",
+              JSON.stringify(response.body.data)
+            );
+            if (isTeach === "T_TEACHER") {
+              this.isTeach = true;
+            } else {
+              this.isTeach = false;
+            }
+            if (mgrIcon.length !== 0) {
+              this.isShow = true;
+              this.mgrIcon = response.body.data.mgrIcon;
+            } else {
+              this.isShow = false;
+            }
           } else {
-            this.isTeach = false;
+            alert(response.data.message);
           }
-          if (mgrIcon.length !== 0) {
-            this.isShow = true;
-            this.mgrIcon = response.body.data.mgrIcon;
-          } else {
-            this.isShow = false;
-          }
-        } else {
-          alert(response.data.message);
-        }
-      });
+        });
     },
     typeBtn() {
       if (this.isActive === false) {
