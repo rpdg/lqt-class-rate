@@ -28,7 +28,7 @@
       <h2 class="mune-title">我的应用</h2>
       <ul class="iocn-list">
         <li v-for="(item,index) in myIcon" :type="item.code" :keyNumber="key" :key="index">
-          <a class="link-class" :class="item.newFlag?'new':''" :href="(item.pageUrl.indexOf('#')> -1 ? '#' + item.pageUrl.split('#')[1]: wwwUrl + item.pageUrl)">
+          <a class="link-class" :class="item.newFlag?'new':''" :href="(wwwUrl + item.pageUrl)">
             <div
               :style="{background:item.color,display:'block',borderRadius: '5px'}"
             >
