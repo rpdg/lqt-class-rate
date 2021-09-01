@@ -1,101 +1,88 @@
 <template>
-  <div class="form-info clearfix">
-      <x-header class="title-header" :left-options="{preventGoBack: true}"
-                @on-click-back="goBack()">发布作业
-      </x-header>
-<!--    <p class="cancel-btn" @click="cancel()">取消发布</p>-->
-    <!--<form action="/" method="post">-->
-    <div class="scope clearfix">
-<!--      <div @click="goBack()">-->
-<!--        <cell class="scope-box" :title="this.getTitle" :value="this.objType.objectName" is-link></cell>-->
-<!--      </div>-->
-      <!--<input type="hidden" name="type" v-model="type">-->
-      <!-- <input type="hidden" name="objectId" v-model="objectId"> -->
-      <div class="span-cell clearfix">
-        <span v-for="(item,index) in classList" :key="index">{{item.CLASS_NAME}}</span>
-      </div>
-      <!-- <input type="hidden" name="userList" v-model="userList">-->
+	<div class="form-info clearfix">
+		<x-header
+			class="title-header"
+			:left-options="{preventGoBack: true}"
+			@on-click-back="goBack()"
+		>发布作业</x-header>
+		<!--    <p class="cancel-btn" @click="cancel()">取消发布</p>-->
+		<!--<form action="/" method="post">-->
+		<div class="scope clearfix">
+			<!--      <div @click="goBack()">-->
+			<!--        <cell class="scope-box" :title="this.getTitle" :value="this.objType.objectName" is-link></cell>-->
+			<!--      </div>-->
+			<!--<input type="hidden" name="type" v-model="type">-->
+			<!-- <input type="hidden" name="objectId" v-model="objectId"> -->
+			<div class="span-cell clearfix">
+				<span v-for="(item,index) in classList" :key="index">{{item.CLASS_NAME}}</span>
+			</div>
+			<!-- <input type="hidden" name="userList" v-model="userList">-->
+		</div>
+		<div class="scope-title-box">
+			<p class="scope-title">作业标题</p>
+			<x-textarea
+				:max="20"
+				@on-focus="onEvent('focus')"
+				@on-blur="onEvent('blur')"
+				class="x-textarea"
+				placeholder="请输入作业标题"
+				:rows="2"
+				v-model="newTitle"
+			></x-textarea>
+			<!--<input type="hidden" name="title" v-model="titleValue">-->
+		</div>
 
+		<div class="scope-data-box">
+			<x-address
+				:title="title2"
+				v-model="timeData"
+				raw-value
+				hide-district
+				value-text-align="right"
+				:list="addressData"
+				class="x-address"
+			></x-address>
+		</div>
 
-    </div>
-    <div class="scope-title-box">
-      <p class="scope-title">作业标题</p>
-      <x-textarea
-        :max="20"
-        @on-focus="onEvent('focus')"
-        @on-blur="onEvent('blur')"
-        class="x-textarea"
-        placeholder="请输入作业标题"
+		<div class="scope-title-box">
+			<p class="scope-title">作业内容</p>
+			<x-textarea
+				:max="1000"
+				@on-focus="onEvent('focus')"
+				@on-blur="onEvent('blur')"
+				class="x-textarea"
+				placeholder="请输入作业内容"
+				:rows="7"
+				v-model="newContent"
+			></x-textarea>
+		</div>
+		<div class="accessory-box">
+			<p class="accessory-title">上传图片作业</p>
+			<div class="accessory-img clearfix">
+				<ul class="photo-img">
+					<li v-for="(item,index) in localIdImgs" :key="index">
+						<img :src="item" alt class="imgud" />
+						<img src="../../assets/cancel.png" alt class="cancel" @click="clodesd(index)" />
+					</li>
+				</ul>
+				<a class="up-photo" href="javascript:;" @click="onClickUp()" v-show="imgLenght">
+					<img src="../../assets/addup.jpg" alt />
+				</a>
+			</div>
+		</div>
 
-        :rows="2"
-        v-model="newTitle"
-      >
-      </x-textarea>
-      <!--<input type="hidden" name="title" v-model="titleValue">-->
-    </div>
+		<button @click="goUploder()" class="btn-uploder right" type="submit" :disabled="loading">发布作业</button>
 
+		<toast
+			v-model="showPositionValue"
+			type="text"
+			:time="800"
+			is-show-mask
+			:position="position"
+		>{{toastMessage}}</toast>
 
-    <div class="scope-data-box">
-      <x-address
-        :title="title2"
-        v-model="timeData"
-        raw-value
-        hide-district
-        value-text-align="right"
-        :list="addressData"
-        class="x-address"
-      >
-      </x-address>
-    </div>
-
-    <div class="scope-title-box">
-      <p class="scope-title">作业内容</p>
-      <x-textarea
-        :max="1000"
-        @on-focus="onEvent('focus')"
-        @on-blur="onEvent('blur')"
-        class="x-textarea"
-        placeholder="请输入作业内容"
-        :rows="7"
-        v-model="newContent"
-      >
-      </x-textarea>
-    </div>
-    <div class="accessory-box">
-      <p class="accessory-title">上传图片作业</p>
-      <div class="accessory-img clearfix">
-        <ul class="photo-img">
-          <li v-for="(item,index) in localIdImgs" :key="index">
-            <img :src="item" alt="" class="imgud">
-            <img src="../../assets/cancel.png" alt="" class="cancel" @click="clodesd(index)">
-          </li>
-        </ul>
-          <a class="up-photo" href="javascript:;" @click="onClickUp()" v-show="imgLenght">
-            <img src="../../assets/addup.jpg" alt="">
-          </a>
-      </div>
-    </div>
-
-    <button
-      @click="goUploder()"
-      class="btn-uploder right"
-      type="submit"
-    >发布作业
-    </button>
-
-    <toast
-      v-model="showPositionValue"
-      type="text"
-      :time="800"
-      is-show-mask
-      :position="position"
-    >
-      {{toastMessage}}
-    </toast>
-
-    <!-- </form>-->
-
-  </div>
+		<!-- </form>-->
+	</div>
 </template>
 
 <script>
@@ -120,7 +107,6 @@ import wx from "weixin-js-sdk";
 import { getSelectTimes } from "../../utils/TimeUtils";
 import apiRouter from "../../config/api.js";
 export default {
-
   components: {
     Toast,
     Group,
@@ -144,6 +130,8 @@ export default {
         localId: [],
         serverId: []
       },
+
+      loading: false,
 
       itemId: "",
 
@@ -192,19 +180,18 @@ export default {
     };
   },
 
-
   activated() {
     this.getStorage();
   },
-    created() {
-        //getSelectDates();
-        //timeData()
-        this.showTop();
-        this.localIdImgs = [];
-    },
+  created() {
+    //getSelectDates();
+    //timeData()
+    this.showTop();
+    this.localIdImgs = [];
+  },
   mounted() {
-      // this.getStorage();
-      this.titleDate();
+    // this.getStorage();
+    this.titleDate();
     // console.log(apiRouter.POST_SEND)
     this.localIdImgs = [];
     this.urlPath = window.location.href.split("#")[0];
@@ -215,9 +202,12 @@ export default {
   methods: {
     titleDate() {
       var myDate = new Date();
-      var currtMonth = myDate.getMonth() + 1
-      var currtDate = myDate.getDate()
-      this.newTitle = (currtMonth < 10 ? '0' + currtMonth : currtMonth) + '.' + (currtDate < 10 ? '0' + currtDate : currtDate)
+      var currtMonth = myDate.getMonth() + 1;
+      var currtDate = myDate.getDate();
+      this.newTitle =
+        (currtMonth < 10 ? "0" + currtMonth : currtMonth) +
+        "." +
+        (currtDate < 10 ? "0" + currtDate : currtDate);
     },
 
     getStorage() {
@@ -298,33 +288,46 @@ export default {
           CLASS_IDS: this.newClassIds,
           OUTDATE: dataDatime,
           TITLE: this.newTitle,
-          CONTENT: this.newContent.replace(/</g, "&lt").replace(/>/g, "&gt").replace(/\n/g , '<br>'),
+          CONTENT: this.newContent
+            .replace(/</g, "&lt")
+            .replace(/>/g, "&gt")
+            .replace(/\n/g, "<br>"),
           IMG_LIST: JSON.stringify(this.serverId)
         };
         console.log(JSON.stringify(sendObj));
         console.log(sendObj);
-      //  return;
+        //  return;
         let _this = this;
-        _this.$http.post(apiRouter.POST_HOMEWORKPUBLISH, sendObj).then(
-          response => {
-            if (response.status === 200) {
-              _this.position = position;
-              _this.toastMessage = "发布成功";
-              _this.showPositionValue = true;
-              window.localStorage.clear();
-              setTimeout(_this.backHome, 1200);
-            } else {
+
+        this.loading = true;
+
+        _this.$http
+          .post(apiRouter.POST_HOMEWORKPUBLISH, sendObj)
+          .then(
+            response => {
+              if (response.status === 200) {
+                _this.position = position;
+                _this.toastMessage = "发布成功";
+                _this.showPositionValue = true;
+                window.localStorage.clear();
+                setTimeout(_this.backHome, 1200);
+              } else {
+                _this.position = position;
+                _this.toastMessage = "发布失败";
+                _this.showPositionValue = true;
+              }
+            },
+            error => {
               _this.position = position;
               _this.toastMessage = "发布失败";
               _this.showPositionValue = true;
             }
-          },
-          error => {
-            _this.position = position;
-            _this.toastMessage = "发布失败";
-            _this.showPositionValue = true;
-          }
-        );
+          )
+          .then(() => {
+            setTimeout(function() {
+              _this.loading = false;
+            }, 2000);
+          });
       }
     },
     backHome() {
@@ -430,9 +433,7 @@ export default {
               }, 10);
             }
           },
-          fail: function(error) {
-
-          }
+          fail: function(error) {}
         });
       };
       upload();
@@ -527,7 +528,7 @@ export default {
   font-size: @fontSize30;
   color: @color42;
   line-height: 1.5rem;
-  .mixin-padding(50/@baseSize, 50/@baseSize);
+  .mixin-padding(50 / @baseSize, 50 / @baseSize);
 }
 
 .x-textarea {
@@ -550,9 +551,8 @@ export default {
 //   left:0 !important;
 // }
 
-
 .span-cell {
-  .mixin-padding(30/@baseSize, 30/@baseSize);
+  .mixin-padding(30 / @baseSize, 30 / @baseSize);
   margin-top: 20 / @baseSize;
   margin-bottom: 20 / @baseSize;
   padding-top: 20 / @baseSize;
@@ -561,7 +561,7 @@ export default {
 .span-cell span {
   border: 1px solid @green;
   border-radius: 4px;
-  .mixin-padding(20/@baseSize, 20/@baseSize);
+  .mixin-padding(20 / @baseSize, 20 / @baseSize);
   font-size: @fontSize24;
   color: @color42;
   height: 50 / @baseSize;
@@ -598,7 +598,7 @@ export default {
 .write-back {
   line-height: 90 / @baseSize;
   height: 90 / @baseSize;
-  .mixin-padding(30/@baseSize, 30/@baseSize);
+  .mixin-padding(30 / @baseSize, 30 / @baseSize);
   position: relative;
 }
 
@@ -622,7 +622,7 @@ export default {
   display: inline-block;
   line-height: 52 / @baseSize;
   font-size: @fontSize24;
-  .mixin-padding(30/@baseSize, 30/@baseSize);
+  .mixin-padding(30 / @baseSize, 30 / @baseSize);
   color: @color97;
   border-radius: 4px;
 }
@@ -636,7 +636,7 @@ export default {
 }
 
 .accessory-box {
-  .mixin-padding(30/@baseSize, 30/@baseSize);
+  .mixin-padding(30 / @baseSize, 30 / @baseSize);
 }
 
 .accessory-title {
@@ -701,28 +701,27 @@ export default {
   display: block;
 }
 .title-header {
-    background-color: #fff;;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100/@baseSize;
-    line-height: 100/@baseSize;
-    z-index: 1;
-    border-bottom: solid 1px #dedede;
+  background-color: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100 / @baseSize;
+  line-height: 100 / @baseSize;
+  z-index: 1;
+  border-bottom: solid 1px #dedede;
 }
 
 .title-header /deep/ .vux-header-title {
-    color: #333;
-    line-height: 46px;
-
+  color: #333;
+  line-height: 46px;
 }
 
 .title-header /deep/ .vux-header-back {
-    color: #38f;
+  color: #38f;
 }
 
 .title-header /deep/ .left-arrow:before {
-    border-color: #38f !important;
+  border-color: #38f !important;
 }
 </style>
