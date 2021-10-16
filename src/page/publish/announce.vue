@@ -29,7 +29,8 @@
             <em
              :class="{ icon: item.selected }"
             ><i></i></em>
-            <span>{{item.CLASS_NAME}}</span>
+            <span style="flex:1;">{{item.CLASS_NAME}}</span>
+            <span>今日书面作业总时长：50'</span>
           </li>
         </ul>
       </div>

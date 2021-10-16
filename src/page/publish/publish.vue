@@ -247,12 +247,16 @@ export default {
       //   this.timeMinus,
       //   this.timeMinus > 0 ? this.timeMinus + "分钟" : ""
       // );
-      this.timeCode = this.timeMinus > 0 ? this.timeMinus + "分钟" : "";
-      // console.log(e , this.timeCode);
-      if (e && !this.timeCode) {
-        // console.log(e.target);
-        e.target.value = "";
+      if (this.timeMinus < 0 || this.timeMinus > 200) {
+        alert("请输入0 - 200之间的整数");
+        this.timeMinus = 0;
       }
+      this.timeCode = this.timeMinus + "分钟";
+      // console.log(e , this.timeCode);
+      // if (e && !this.timeCode) {
+      //   // console.log(e.target);
+      //   e.target.value = "";
+      // }
       // this.timeInputer = 0;
       // // setTimeout(()=>{
       // //   this.timeInputer = 1;
@@ -260,7 +264,7 @@ export default {
     },
     removeSurfix() {
       if (this.timeInputer === 1) {
-        this.timeCode = this.timeMinus > 0 ? this.timeMinus : "";
+        this.timeCode = this.timeMinus;
       }
     },
     titleDate() {
