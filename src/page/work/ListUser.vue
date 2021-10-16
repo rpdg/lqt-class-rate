@@ -12,7 +12,7 @@
 <!--    />-->
     <div class="lqt-wrapper" style="margin-top: 2rem">
       <ul class="lqt-list" id="homework" data-page="1" style="display: block;">
-        <li v-for="item in dataList" @click="goDetail(item)" class="it clearfix it-m" style="display: list-item;">
+        <li v-for="item in dataList" :key="item.ID" @click="goDetail(item)" class="it clearfix it-m" style="display: list-item;">
           <div class="list-title"><a class="link" href="javascript:void(0)">
             <span :class="'title-common single-line '+ ((item.CAN_CHANGE == 1 || !item.ANID )?'new':'')"
                   :style="'background-color:'+item.COLOR"><p>{{item.NAME}}</p></span>

@@ -359,7 +359,8 @@ export default {
             .replace(/</g, "&lt")
             .replace(/>/g, "&gt")
             .replace(/\n/g, "<br>"),
-          IMG_LIST: JSON.stringify(this.serverId)
+          IMG_LIST: JSON.stringify(this.serverId),
+          FIN_OF_TIME : this.timeMinus
         };
         console.log(JSON.stringify(sendObj));
         console.log(sendObj);
