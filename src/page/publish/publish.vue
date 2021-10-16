@@ -56,6 +56,21 @@
 				v-model="newContent"
 			></x-textarea>
 		</div>
+		<div class="scope-title-box">
+			<p class="scope-title">
+				书面作业时长 &nbsp;
+				<input
+					type="text"
+					:value="timeCode"
+					placeholder="请输入时长"
+					:readonly="timeInputer===0"
+					@input="inputTime"
+          @blur="addSurfix"
+          @focus="removeSurfix"
+				/>
+			</p>
+			<time-setter @check="setTimecode" />
+		</div>
 		<div class="accessory-box">
 			<p class="accessory-title">上传图片作业</p>
 			<div class="accessory-img clearfix">
@@ -87,6 +102,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import TimeSetter from "./TimeSetter.vue";
 import {
   Toast,
   Checker,
@@ -118,11 +134,15 @@ export default {
     CheckerItem,
     Radio,
     Datetime,
-    XHeader
+    XHeader,
+    TimeSetter
   },
 
   data() {
     return {
+      timeMinus: 0,
+      timeInputer: 0,
+      timeCode: "",
       imgLenght: true,
       imgaesMaxLenght: 9,
       value7: "",
@@ -179,7 +199,18 @@ export default {
       newClassIds: ""
     };
   },
-
+  // computed: {
+  //   timecode: {
+  //     get: function() {
+  //       if (this.timeInputer === 0) {
+  //         return this.timeMinus ? this.timeMinus + "分钟" : "";
+  //       }
+  //     },
+  //     set: function(v) {
+  //       this.timeMinus = v;
+  //     }
+  //   }
+  // },
   activated() {
     this.getStorage();
   },
@@ -200,6 +231,38 @@ export default {
     this.titleDate();
   },
   methods: {
+    setTimecode(obj) {
+      // alert(this.timeMinus)
+      this.timeMinus = ~~obj.val;
+      this.timeInputer = obj.ipt;
+      this.addSurfix();
+    },
+    inputTime(e) {
+      // console.log(e);
+      this.timeMinus = ~~e.target.value;
+      // this.addSurfix()
+    },
+    addSurfix(e) {
+      // console.log(
+      //   this.timeMinus,
+      //   this.timeMinus > 0 ? this.timeMinus + "分钟" : ""
+      // );
+      this.timeCode = this.timeMinus > 0 ? this.timeMinus + "分钟" : "";
+      // console.log(e , this.timeCode);
+      if (e && !this.timeCode) {
+        // console.log(e.target);
+        e.target.value = "";
+      }
+      // this.timeInputer = 0;
+      // // setTimeout(()=>{
+      // //   this.timeInputer = 1;
+      // // }, 1e2)
+    },
+    removeSurfix() {
+      if (this.timeInputer === 1) {
+        this.timeCode = this.timeMinus > 0 ? this.timeMinus : "";
+      }
+    },
     titleDate() {
       var myDate = new Date();
       var currtMonth = myDate.getMonth() + 1;
@@ -211,7 +274,7 @@ export default {
     },
 
     getStorage() {
-      debugger;
+      // debugger;
       this.classList = JSON.parse(window.localStorage.CLAEEINFO);
       this.getTitle = this.classList[0].COURSE_NAME;
       this.newSpaceId = this.classList[0].SPACE_ID;
