@@ -32,7 +32,7 @@ export default {
       timecodeInputer: 0
     };
   },
-  mounted: function() {
+  activated: function() {
     // alert(this.timecodeValue);
     this.$emit("check", { val: this.timecodeValue, ipt: this.timecodeInputer });
   },

@@ -246,7 +246,7 @@ export default {
         setTimeout(() => {
           iptr.setAttribute("autofocus", "autofocus");
           iptr.focus();
-        }, 2e2);
+        }, 3e2);
       } else {
         iptr.removeAttribute("autofocus");
         this.addSurfix();
