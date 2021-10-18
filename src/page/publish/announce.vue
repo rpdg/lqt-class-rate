@@ -30,7 +30,7 @@
              :class="{ icon: item.selected }"
             ><i></i></em>
             <span style="flex:1;">{{item.CLASS_NAME}}</span>
-            <span>今日书面作业总时长：{{item.SUM_HOMEWORK_TIME || 0}}'</span>
+            <span v-if="~~item.SUM_HOMEWORK_TIME">今日书面作业总时长：{{item.SUM_HOMEWORK_TIME || 0}}'</span>
           </li>
         </ul>
       </div>
@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { Toast, Checker, CheckerItem, Checklist,XHeader } from "vux";
+import { Toast, Checker, CheckerItem, Checklist, XHeader } from "vux";
 import Back from "../../components/common/Back.vue";
 import apiRouter from "../../config/api.js";
 import { choose } from "../../utils/utils.js";
@@ -61,7 +61,7 @@ export default {
     Checker,
     CheckerItem,
     Checklist,
-      XHeader
+    XHeader
   },
   data() {
     return {
@@ -239,7 +239,7 @@ export default {
   font-size: @fontSize30;
   color: @white;
   line-height: 60 / @baseSize;
-  margin-top: 100/@baseSize;
+  margin-top: 100 / @baseSize;
 }
 
 .curriculum-list {
@@ -247,7 +247,7 @@ export default {
 }
 
 .curriculum-list h4.titleTop {
-  .mixin-padding(30/@baseSize, 30/@baseSize);
+  .mixin-padding(30 / @baseSize, 30 / @baseSize);
   height: 100 / @baseSize;
   line-height: 100 / @baseSize;
   border-bottom: 1px solid @colorDD;
@@ -278,7 +278,7 @@ export default {
 }
 
 .curriculum-name .liclass {
-  .mixin-padding(30/@baseSize, 30/@baseSize);
+  .mixin-padding(30 / @baseSize, 30 / @baseSize);
   height: 100 / @baseSize;
   border-bottom: 1px solid @colorDD;
   display: flex;
@@ -403,28 +403,27 @@ export default {
   display: block;
 }
 .title-header {
-    background-color: #fff;;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100/@baseSize;
-    line-height: 100/@baseSize;
-    z-index: 1;
-    border-bottom: solid 1px #dedede;
+  background-color: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100 / @baseSize;
+  line-height: 100 / @baseSize;
+  z-index: 1;
+  border-bottom: solid 1px #dedede;
 }
 
 .title-header /deep/ .vux-header-title {
-    color: #333;
-    line-height: 46px;
-
+  color: #333;
+  line-height: 46px;
 }
 
 .title-header /deep/ .vux-header-back {
-    color: #38f;
+  color: #38f;
 }
 
 .title-header /deep/ .left-arrow:before {
-    border-color: #38f !important;
+  border-color: #38f !important;
 }
 </style>

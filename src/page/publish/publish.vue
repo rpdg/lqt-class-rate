@@ -239,11 +239,16 @@ export default {
       this.timeMinus = ~~obj.val;
       this.timeInputer = obj.ipt;
 
+      let iptr = this.$refs.iptr;
       if (obj.ipt === 1 && obj.val === "自定义") {
         this.timeMinus = "";
         this.timeCode = "";
-        this.$refs.iptr.focus();
+        setTimeout(() => {
+          iptr.setAttribute("autofocus", "autofocus");
+          iptr.focus();
+        }, 2e2);
       } else {
+        iptr.removeAttribute("autofocus");
         this.addSurfix();
       }
     },
