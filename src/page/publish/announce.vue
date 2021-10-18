@@ -30,7 +30,7 @@
              :class="{ icon: item.selected }"
             ><i></i></em>
             <span style="flex:1;">{{item.CLASS_NAME}}</span>
-            <span>今日书面作业总时长：{{item.SUM_HOMEWORK_TIME}}'</span>
+            <span>今日书面作业总时长：{{item.SUM_HOMEWORK_TIME || 0}}'</span>
           </li>
         </ul>
       </div>

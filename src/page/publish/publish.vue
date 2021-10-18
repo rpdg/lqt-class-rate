@@ -67,6 +67,7 @@
 					@input="inputTime"
           @blur="addSurfix"
           @focus="removeSurfix"
+          ref="iptr"
 				/>
 			</p>
 			<time-setter @check="setTimecode" />
@@ -233,9 +234,18 @@ export default {
   methods: {
     setTimecode(obj) {
       // alert(this.timeMinus)
+      // debugger;
+
       this.timeMinus = ~~obj.val;
       this.timeInputer = obj.ipt;
-      this.addSurfix();
+
+      if (obj.ipt === 1 && obj.val === "自定义") {
+        this.timeMinus = "";
+        this.timeCode = "";
+        this.$refs.iptr.focus();
+      } else {
+        this.addSurfix();
+      }
     },
     inputTime(e) {
       // console.log(e);
@@ -251,7 +261,9 @@ export default {
         alert("请输入0 - 200之间的整数");
         this.timeMinus = 0;
       }
+
       this.timeCode = this.timeMinus + "分钟";
+
       // console.log(e , this.timeCode);
       // if (e && !this.timeCode) {
       //   // console.log(e.target);
@@ -360,7 +372,7 @@ export default {
             .replace(/>/g, "&gt")
             .replace(/\n/g, "<br>"),
           IMG_LIST: JSON.stringify(this.serverId),
-          FIN_OF_TIME : this.timeMinus
+          FIN_OF_TIME: this.timeMinus
         };
         console.log(JSON.stringify(sendObj));
         console.log(sendObj);

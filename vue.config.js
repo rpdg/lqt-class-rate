@@ -9,11 +9,11 @@ module.exports = {
 		proxy: {
 			'/': {
 				target: 'https://gz.lqtedu.com/',
-				changeOrigin: false,
+				changeOrigin: true,
 			},
 			'/app/':{
 				target: 'https://gz.lqtedu.com/',
-				changeOrigin: false,
+				changeOrigin: true,
 			}
 		},
 	},
