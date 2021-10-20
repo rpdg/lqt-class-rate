@@ -267,7 +267,11 @@ export default {
         this.timeMinus = 0;
       }
 
-      this.timeCode = this.timeMinus + "分钟";
+      if (this.timeMinus==='') {
+        this.timeCode = "";
+      } else {
+        this.timeCode = this.timeMinus + "分钟";
+      }
 
       // console.log(e , this.timeCode);
       // if (e && !this.timeCode) {

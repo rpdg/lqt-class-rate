@@ -7,16 +7,16 @@
 			@click="check(value)"
 		>{{value}}</span>
 	</div>-->
-	<checker
-		v-model="timecodeValue"
-		type="radio"
-		default-item-class="write-back-item"
-		selected-item-class="write-back-selected"
-		radio-required="false"
-		@on-change="handleCheck"
-	>
-		<checker-item v-for="(value,i) in timecodeArray" :key="i" :value="value">{{value}}</checker-item>
-	</checker>
+  <div class="timecodeDiv">
+    <checker
+      v-model="timecodeValue"
+      default-item-class="write-back-item"
+      selected-item-class="write-back-selected"
+      @on-change="handleCheck"
+    >
+      <checker-item v-for="(value,i) in timecodeArray" :key="i" :value="value">{{value}}</checker-item>
+    </checker>
+  </div>
 </template>
 <script>
 import { Checker, CheckerItem } from "vux";
@@ -28,14 +28,14 @@ export default {
   data() {
     return {
       timecodeArray: [10, 20, 30, 60, "自定义"],
-      timecodeValue: 30,
+      timecodeValue: null,
       timecodeInputer: 0
     };
   },
-  activated: function() {
-    // alert(this.timecodeValue);
-    this.$emit("check", { val: this.timecodeValue, ipt: this.timecodeInputer });
-  },
+  // activated: function() {
+  //   // alert(this.timecodeValue);
+  //   this.$emit("check", { val: this.timecodeValue, ipt: this.timecodeInputer });
+  // },
   methods: {
     check(v) {
       this.timecodeValue = v;
