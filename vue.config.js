@@ -4,16 +4,17 @@ module.exports = {
 	css: { requireModuleExtension: true },
 	devServer: {
 		disableHostCheck: true,
-		port: 8008,
 		open: true,
 		proxy: {
 			'/': {
 				target: 'https://gz.lqtedu.com/',
-				changeOrigin: true,
+				secure: true,
+				changeOrigin: false,
 			},
 			'/app/':{
 				target: 'https://gz.lqtedu.com/',
-				changeOrigin: true,
+				secure: true,
+				changeOrigin: false,
 			}
 		},
 	},
