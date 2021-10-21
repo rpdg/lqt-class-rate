@@ -23,14 +23,14 @@
            class="liclass cleafix"
            v-for="(item,qt) in items.CLASS_LIST"
            :key="qt"
-           @click="chooseBtn(item,index,items)"
            ref="reference"
            >
-            <em
-             :class="{ icon: item.selected }"
-            ><i></i></em>
-            <span style="flex:1;">{{item.CLASS_NAME}}</span>
-            <span v-if="~~item.SUM_HOMEWORK_TIME">今日书面作业总时长：{{item.SUM_HOMEWORK_TIME || 0}}'</span>
+              <em
+              :class="{ icon: item.selected }"
+              ><i></i></em>
+              <span @click="chooseBtn(item,index,items)" style="flex:1;">{{item.CLASS_NAME}}</span>
+              <span @click="toggleItemDetailVisible" style="color:#428BCE;" v-if="~~item.SUM_HOMEWORK_TIME">今日书面作业总时长：{{item.SUM_HOMEWORK_TIME || 0}}'</span>
+            <div v-if="item.SUM_HOMEWORK_DETAILS" class="detailDes">{{item.SUM_HOMEWORK_DETAILS}}</div>
           </li>
         </ul>
       </div>
@@ -99,6 +99,20 @@ export default {
 
     change(val, label) {
       console.log("change", val, label);
+    },
+    toggleItemDetailVisible(evt) {
+      // item.showDetail = !item.showDetail;
+      // console.log(item, item.showDetail);
+      let srcElem = evt.target;
+      let x = srcElem.nextElementSibling;
+      // console.log(srcElem ,x );
+      if (x && x.className === 'detailDes') {
+        if (x.style.display === "block") {
+          x.style.display = "none";
+        } else {
+          x.style.display = "block";
+        }
+      }
     },
 
     /**
@@ -279,9 +293,10 @@ export default {
 
 .curriculum-name .liclass {
   .mixin-padding(30 / @baseSize, 30 / @baseSize);
-  height: 100 / @baseSize;
+  line-height: 100 / @baseSize;
   border-bottom: 1px solid @colorDD;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   align-content: center;
   align-self: center;
@@ -322,6 +337,14 @@ export default {
 
 .curriculum-name .liclass span {
   margin-left: 20 / @baseSize;
+  font-size: @fontSize30;
+  color: @color42;
+}
+
+.liclass .detailDes {
+  width: 100%;
+  display: none;
+  margin-left: 58 / @baseSize;
   font-size: @fontSize30;
   color: @color42;
 }
