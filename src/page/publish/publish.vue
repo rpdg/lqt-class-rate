@@ -32,8 +32,19 @@
 			<!--<input type="hidden" name="title" v-model="titleValue">-->
 		</div>
 
+    <div class="scope-data-box">
+			<x-address key="keyPublishData"
+				title="作业日期"
+				v-model="timePublishData"
+				hide-district
+				value-text-align="right"
+				:list="addressPublishData"
+				class="x-address"
+			></x-address>
+		</div>
+
 		<div class="scope-data-box">
-			<x-address
+			<x-address key="keyData"
 				:title="title2"
 				v-model="timeData"
 				raw-value
@@ -140,6 +151,7 @@ export default {
   },
 
   data() {
+    const curDate = new Date;
     return {
       timeMinus: 0,
       timeInputer: 0,
@@ -181,9 +193,11 @@ export default {
       toastMessage: "",
       title: "时间选择",
       title2: "作业截止日期",
-      timeData: [this.getNowFormatDate(3)],
+      timePublishData: [curDate.getTime().toString()],//[(new Date).getTime()],
+      timeData: [this.getNowFormatDate(curDate ,3)],
       isBack: ["允许", "不允许"],
-      addressData: getSelectTimes(),
+      addressPublishData: getSelectTimes(curDate),
+      addressData: getSelectTimes(curDate),
       showAddress: false,
 
       // 发布作业新增字段
@@ -228,8 +242,8 @@ export default {
     this.localIdImgs = [];
     this.urlPath = window.location.href.split("#")[0];
     this.getUrlConfig();
-    this.getNowFormatDate();
-    this.titleDate();
+    // this.getNowFormatDate();
+    // this.titleDate();
   },
   methods: {
     setTimecode(obj) {
@@ -293,9 +307,8 @@ export default {
       var currtMonth = myDate.getMonth() + 1;
       var currtDate = myDate.getDate();
       this.newTitle =
-        (currtMonth < 10 ? "0" + currtMonth : currtMonth) +
-        "." +
-        (currtDate < 10 ? "0" + currtDate : currtDate);
+        (currtMonth < 10 ? "0" + currtMonth : currtMonth) + "月" +
+        (currtDate < 10 ? "0" + currtDate : currtDate) + "日作业";
     },
 
     getStorage() {
@@ -313,8 +326,8 @@ export default {
       console.log(this.newClassIds);
     },
 
-    getNowFormatDate(AddDayCount) {
-      var date = new Date();
+    getNowFormatDate(curDate , AddDayCount) {
+      var date = new Date(curDate);
       date.setDate(date.getDate() + AddDayCount);
       var seperator1 = "-";
       var year = date.getFullYear();
@@ -372,6 +385,7 @@ export default {
         this.showPositionValue = true;
       } else {
         let sendObj = {
+          WORK_DATE: this.format(this.timePublishData[0]),
           SPACE_ID: this.newSpaceId,
           CLASS_IDS: this.newClassIds,
           OUTDATE: dataDatime,
@@ -573,6 +587,12 @@ export default {
   }
 };
 </script>
+<style>
+.vux-cell-box:before{ 
+  border-top: none !important;
+}
+
+</style>
 <style lang="less" scoped>
 @import "../../style/minxin.less";
 
@@ -757,7 +777,7 @@ export default {
   margin-bottom: 20 / @baseSize;
 }
 .up-photo {
-  margin-left: 20 / @baseSize;
+  // margin-left: 20 / @baseSize;
 }
 
 .photo-img li {

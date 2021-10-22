@@ -57,7 +57,7 @@ export default {
 
 .timecodeDiv {
   padding: 0.5em 0;
-  margin-left: (30 / @baseSize);
+  margin-left: (16 / @baseSize);
 }
 .timecodeSpan {
   display: inline-block;

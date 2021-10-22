@@ -19,4 +19,7 @@
   #app{
     height: 100%;
   }
+  .vux-cell-box:before {
+    border-top: none;
+  }
 </style>

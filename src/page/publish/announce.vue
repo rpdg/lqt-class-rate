@@ -25,10 +25,9 @@
            :key="qt"
            ref="reference"
            >
-              <em
+              <em  @click="chooseBtn(item,index,items)"
               :class="{ icon: item.selected }"
-              ><i></i></em>
-              <span @click="chooseBtn(item,index,items)" style="flex:1;">{{item.CLASS_NAME}}</span>
+              ><i></i></em><span @click="chooseBtn(item,index,items)" style="flex:1;">{{item.CLASS_NAME}}</span>
               <span @click="toggleItemDetailVisible" style="color:#428BCE;" v-if="~~item.SUM_HOMEWORK_TIME">今日书面作业总时长：{{item.SUM_HOMEWORK_TIME || 0}}'</span>
             <div v-if="item.SUM_HOMEWORK_DETAILS" class="detailDes">{{item.SUM_HOMEWORK_DETAILS}}</div>
           </li>
@@ -106,7 +105,7 @@ export default {
       let srcElem = evt.target;
       let x = srcElem.nextElementSibling;
       // console.log(srcElem ,x );
-      if (x && x.className === 'detailDes') {
+      if (x && x.className === "detailDes") {
         if (x.style.display === "block") {
           x.style.display = "none";
         } else {
@@ -336,7 +335,7 @@ export default {
 }
 
 .curriculum-name .liclass span {
-  margin-left: 20 / @baseSize;
+  margin-left: 0.26rem;
   font-size: @fontSize30;
   color: @color42;
 }
@@ -347,6 +346,8 @@ export default {
   margin-left: 58 / @baseSize;
   font-size: @fontSize30;
   color: @color42;
+  line-height: 1em;
+  padding-bottom: 10px;
 }
 
 .pltne-btn {

@@ -2,9 +2,9 @@
  * Created by lume on 2017/10/22.
  */
 
-export function getSelectTimes(days = 30) {
+export function getSelectTimes(curDate, days = 30) {
     let dates = [];
-    let currDate = new Date();
+    let currDate = new Date(curDate.getTime());
     for (let i = 0; i < days; i++) {
       let nextDate = new Date(currDate);
       nextDate.setDate(currDate.getDate() + (i));
