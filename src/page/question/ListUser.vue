@@ -511,13 +511,16 @@
     padding-left: 10px;
     overflow: hidden;
     background: #fff;
-    box-shadow: 0 0 3px rgba(9, 9, 9, 0.2)
+    box-shadow: 0 1px 1px rgba(9, 9, 9, 0.2);
   }
 
   .lqt-list .it {
     padding: 10px 10px 10px 1.4rem;
     border-top: solid 1px #dedede;
     margin-top: -1px
+  }
+  .lqt-list .it:nth-of-type(1){
+    border-top: none;
   }
 
   .lqt-list .list-title {

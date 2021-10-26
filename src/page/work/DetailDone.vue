@@ -244,6 +244,7 @@
 
   import {formatDate} from "../../utils/TimeUtils";
 
+var mp3;
 
   export default {
     components: {
@@ -598,7 +599,7 @@
         });
       },
       playVoice(url) {
-        let mp3 = new Audio(url);
+        mp3 = new Audio(url);
         mp3.play();
         // wx.downloadVoice({
         //   serverId: serverId, // 需要下载的音频的服务器端ID，由uploadVoice接口获得
