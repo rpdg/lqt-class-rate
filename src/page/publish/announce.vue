@@ -1,50 +1,57 @@
 <template>
-  <div class="box">
-<!--    <back></back>-->
-      <x-header class="title-header" :left-options="{preventGoBack: true}"
-                @on-click-back="$router.push({path:'/'})">发布作业
-      </x-header>
-    <h3 class="title" style="">请选择作业发布对象</h3>
-    <div class="curriculum clearfix">
-      <div class="curriculum-list clearfix" v-for="(items,index) in scopeData" :key="index">
-        <h4 class="titleTop" ref='isIcon'>
-          <div class="titleTopLeft">
-            <em>{{items.COURSE_SHORT_NAME}}</em><span>{{items.COURSE_NAME}}</span>
-          </div>
-          <div class="chooesAll"
-          @click='chooseAll(items,index,items.COURSE_ID)'
-          ><em
-          :class="{ icon: items.selected }"
-          ><i></i></em><span>全选</span></div>
-        </h4>
-        <ul class="curriculum-name">
-          <li
-           :data-choose = 'items.COURSE_ID'
-           class="liclass cleafix"
-           v-for="(item,qt) in items.CLASS_LIST"
-           :key="qt"
-           ref="reference"
-           >
-              <em  @click="chooseBtn(item,index,items)"
-              :class="{ icon: item.selected }"
-              ><i></i></em><span @click="chooseBtn(item,index,items)" style="flex:1;">{{item.CLASS_NAME}}</span>
-              <span @click="toggleItemDetailVisible" style="color:#428BCE;" v-if="~~item.SUM_HOMEWORK_TIME">今日书面作业总时长：{{item.SUM_HOMEWORK_TIME || 0}}'</span>
-            <div v-if="item.SUM_HOMEWORK_DETAILS" class="detailDes">{{item.SUM_HOMEWORK_DETAILS}}</div>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <p class="pltne-btn" @click="pltneBtn('middle')">完成</p>
-    <toast
-      v-model="showPositionValue"
-      type="text"
-      :time="800"
-      is-show-mask
-      :position="position"
-    >
-      {{toastMessage}}
-    </toast>
-  </div>
+	<div class="box">
+		<!--    <back></back>-->
+		<x-header
+			class="title-header"
+			:left-options="{preventGoBack: true}"
+			@on-click-back="$router.push({path:'/'})"
+		>发布作业</x-header>
+		<h3 class="title" style>请选择作业发布对象</h3>
+		<div class="curriculum clearfix">
+			<div class="curriculum-list clearfix" v-for="(items,index) in scopeData" :key="index">
+				<h4 class="titleTop" ref="isIcon">
+					<div class="titleTopLeft">
+						<em>{{items.COURSE_SHORT_NAME}}</em>
+						<span>{{items.COURSE_NAME}}</span>
+					</div>
+					<div class="chooesAll" @click="chooseAll(items,index,items.COURSE_ID)">
+						<em :class="{ icon: items.selected }">
+							<i></i>
+						</em>
+						<span>全选</span>
+					</div>
+				</h4>
+				<ul class="curriculum-name">
+					<li
+						:data-choose="items.COURSE_ID"
+						class="liclass cleafix"
+						v-for="(item,qt) in items.CLASS_LIST"
+						:key="qt"
+						ref="reference"
+					>
+						<em @click="chooseBtn(item,index,items)" :class="{ icon: item.selected }">
+							<i></i>
+						</em>
+						<span @click="chooseBtn(item,index,items)" style="flex:1;">{{item.CLASS_NAME}}</span>
+						<span
+							@click="toggleItemDetailVisible"
+							style="color:#428BCE;"
+							v-if="~~item.SUM_HOMEWORK_TIME"
+						>今日{{items.WORK_FIN_NAME}}总时长：{{item.SUM_HOMEWORK_TIME || 0}}'</span>
+						<div v-if="item.SUM_HOMEWORK_DETAILS" class="detailDes">{{item.SUM_HOMEWORK_DETAILS}}</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<p class="pltne-btn" @click="pltneBtn('middle')">完成</p>
+		<toast
+			v-model="showPositionValue"
+			type="text"
+			:time="800"
+			is-show-mask
+			:position="position"
+		>{{toastMessage}}</toast>
+	</div>
 </template>
 
 <script>
@@ -214,19 +221,21 @@ export default {
 
     pltneBtn(position) {
       let choices = [];
+      let homeworkName = "书面作业";
       this.scopeData.forEach((scopes, index) => {
         scopes.CLASS_LIST.forEach(scope => {
           if (scope.selected) {
             choices.push(scope);
+            homeworkName = scopes.WORK_FIN_NAME;
           }
         });
       });
 
       if (choices.length > 0) {
-        console.log(choices);
+        console.log("choices==> ", choices);
         let choicesString = JSON.stringify(choices);
         window.localStorage.setItem("CLAEEINFO", choicesString);
-        this.$router.push({ path: "publish" });
+        this.$router.push({ path: "publish", query: { homeworkName } });
       } else {
         this.position = position;
         this.showPositionValue = true;

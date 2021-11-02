@@ -69,7 +69,7 @@
 		</div>
 		<div class="scope-title-box">
 			<p class="scope-title">
-				书面作业时长 &nbsp;
+				{{$route.query.homeworkName}}时长 &nbsp;
 				<input
 					type="text"
 					:value="timeCode"
