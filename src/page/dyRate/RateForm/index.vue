@@ -1,75 +1,103 @@
 <template>
-  <div class="box">
-    <title-bar :title="this.$route.query.title" @willBack="handleWillBack" />
+	<div class="box">
+		<title-bar :title="this.$route.query.title" @willBack="handleWillBack" />
 
-    <van-tabs class="dy-rate-tab" v-model="viewMode" @change="toggleViewStyle">
-      <van-tab title="评分项目视角"></van-tab>
-      <van-tab title="班级视角"></van-tab>
-    </van-tabs>
+		<van-tabs class="dy-rate-tab" v-model="viewMode" @change="toggleViewStyle">
+			<van-tab title="评分项目视角"></van-tab>
+			<van-tab title="班级视角"></van-tab>
+		</van-tabs>
 
-    <div v-if="inited">
-      <van-row v-if="viewMode===0">
-        <van-col span="12">
-          <van-cell :title="optionChecked.NAME" is-link @click="showPicker(0)" />
-        </van-col>
-        <van-col span="12">
-          <van-cell :title="classChecked.CLASS_NAME" is-link @click="showPicker(1)" />
-        </van-col>
-      </van-row>
-      <van-row v-else>
-        <van-col span="12">
-          <van-cell :title="classChecked.CLASS_NAME" is-link @click="showPicker(1)" />
-        </van-col>
-        <van-col span="12">
-          <van-cell :title="optionChecked.NAME" is-link @click="showPicker(0)" />
-        </van-col>
-      </van-row>
-    </div>
+		<div v-if="inited">
+			<van-row v-if="viewMode===0">
+				<van-col span="12">
+					<van-cell :title="optionChecked.NAME" is-link @click="showPicker(0)" />
+				</van-col>
+				<van-col span="12">
+					<van-cell :title="classChecked.CLASS_NAME" is-link @click="showPicker(1)" />
+				</van-col>
+			</van-row>
+			<van-row v-else>
+				<van-col span="12">
+					<van-cell :title="classChecked.CLASS_NAME" is-link @click="showPicker(1)" />
+				</van-col>
+				<van-col span="12">
+					<van-cell :title="optionChecked.NAME" is-link @click="showPicker(0)" />
+				</van-col>
+			</van-row>
+		</div>
 
-    <div class="wapper">
-      <div class="content" ref="container">
-        <center v-if="loading" style="margin-top:1em;">
-          <van-loading size="24px">加载中...</van-loading>
-        </center>
-        <FormPanel
-          v-else
-          v-for="(item, index) in taskList"
-          :key="`${item.__hash}`"
-          :task="item"
-          :index="index"
-          :step="step"
-          :setPreviewState="setPreviewState"
-          @modify="handleModify"
-        />
-      </div>
-      <div class="footer">
-        <van-button class="error" @click="doAbanden">弃填</van-button>
-        <van-button class="submit" @click="doSubmit(0)">提交</van-button>
-      </div>
-    </div>
+		<div class="wapper">
+			<div class="content" ref="container">
+				<center v-if="loading" style="margin-top:1em;">
+					<van-loading size="24px">加载中...</van-loading>
+				</center>
+				<FormPanel
+					v-else
+					v-for="(item, index) in taskList"
+					:key="`${item.__hash}`"
+					:task="item"
+					:index="index"
+					:step="step"
+					:setPreviewState="setPreviewState"
+					@modify="handleModify"
+				/>
+			</div>
+			<div class="footer">
+				<van-button class="error" @click="doAbanden">弃填</van-button>
+				<van-button class="submit" @click="doSubmit(0)">提交</van-button>
+			</div>
+		</div>
 
-    <van-popup position="bottom" v-model="pickerShow0" :lazy-render="false">
-      <van-picker
-        ref="picker0"
-        value-key="NAME"
-        cancel-button-text="　"
-        show-toolbar
-        :columns="optionList"
-        @confirm="onOptionConfirm"
-      />
-    </van-popup>
+		<van-popup position="bottom" v-model="pickerShow0" :lazy-render="false">
+			<!-- <van-picker
+				ref="picker0"
+				value-key="NAME"
+				cancel-button-text="　"
+				show-toolbar
+				:columns="optionList"
+				@confirm="onOptionConfirm"
+			/>-->
+			<div class="popContainer">
+				<section class="popSection">
+					<van-button
+						v-for="(opt , index) in optionList"
+						:key="opt.CODE"
+						:class="getOptionButtonColor(opt.CODE)"
+						block
+						plain
+						hairline
+						size="small"
+						@click="onOptionConfirmNew(index)"
+					>{{opt.NAME}}</van-button>
+				</section>
+			</div>
+		</van-popup>
 
-    <van-popup position="bottom" v-model="pickerShow1" :lazy-render="false">
-      <van-picker
-        ref="picker1"
-        value-key="CLASS_NAME"
-        cancel-button-text="　"
-        show-toolbar
-        :columns="classList"
-        @confirm="onClassConfirm"
-      />
-    </van-popup>
-  </div>
+		<van-popup position="bottom" v-model="pickerShow1" :lazy-render="false">
+			<!-- <van-picker
+				ref="picker1"
+				value-key="CLASS_NAME"
+				cancel-button-text="　"
+				show-toolbar
+				:columns="classList"
+				@confirm="onClassConfirm"
+			/>-->
+			<div class="popContainer">
+				<section class="popSection">
+					<van-button
+						v-for="(cls , index) in classList"
+						:key="cls.CLASS_ID"
+						:class="getClassButtonColor(cls.CLASS_ID)"
+						block
+						plain
+						hairline
+						size="small"
+						@click="onClassConfirmNew(index)"
+					>{{cls.CLASS_NAME}}</van-button>
+				</section>
+			</div>
+		</van-popup>
+	</div>
 </template>
 <script>
 import { ViewBox, XButton } from "vux";
@@ -92,12 +120,12 @@ import {
 
 const defaultOptionChecked = {
   CODE: "",
-  NAME: "全部评分项目"
+  NAME: "所有评价项"
 };
 
 const defaultClassChecked = {
   CLASS_ID: "",
-  CLASS_NAME: "全部班级"
+  CLASS_NAME: "所有班级"
 };
 
 export default {
@@ -193,12 +221,14 @@ export default {
        */
       optionList: [defaultOptionChecked],
       optionIndex: 0,
+      optionFullCheck: defaultOptionChecked,
 
       /**
        * 班级数组
        */
       classList: [defaultClassChecked],
-      classIndex: 0
+      classIndex: 0,
+      classFullCheck: defaultClassChecked
     };
   },
   mounted() {
@@ -240,9 +270,15 @@ export default {
   },
   computed: {
     optionChecked() {
+      if (this.optionIndex === -1) {
+        return this.optionFullCheck;
+      }
       return this.optionList[this.optionIndex];
     },
     classChecked() {
+      if (this.classIndex === -1) {
+        return this.classFullCheck;
+      }
       return this.classList[this.classIndex];
     }
   },
@@ -320,10 +356,10 @@ export default {
       this.taskList = [];
 
       this.optionIndex = 0;
-      this.optionList = [defaultOptionChecked];
+      this.optionList = [];
 
       this.classIndex = 0;
-      this.classList = [defaultClassChecked];
+      this.classList = [];
 
       const seq_id = this.seq_id;
       // fetch and auto select the first option
@@ -349,10 +385,14 @@ export default {
               data_list
             } = respBody.data;
 
-            detail_list.unshift(defaultOptionChecked);
+            if (this.viewMode === 1) {
+              detail_list.unshift(defaultOptionChecked);
+            }
             this.optionList = detail_list;
 
-            class_list.unshift(defaultClassChecked);
+            if (this.viewMode === 0) {
+              class_list.unshift(defaultClassChecked);
+            }
             this.classList = class_list;
 
             this.step = Number(step_value);
@@ -403,6 +443,7 @@ export default {
 
       //
     },
+    async fetchListNew() {},
     async fetchList() {
       this.loading = true;
       let see_mode = this.viewMode === 0 ? "DETAIL" : "CLASS";
@@ -540,41 +581,98 @@ export default {
       // console.log(i, this.viewMode);
       this["pickerShow" + i] = true;
     },
-    onClassConfirm(checkedItem, index) {
+    onClassConfirmNew(index) {
       if (index !== this.classIndex) {
-        // console.log(this.classIndex, index);
         this.classIndex = index;
-
         if (this.viewMode === 1) {
           this.optionIndex = 0;
-          this.$refs.picker0 && this.$refs.picker0.setColumnIndex(0, 0);
+          this["pickerShow0"] = true;
         }
-
         this.fetchList();
       }
-
       this["pickerShow1"] = false;
     },
-    onOptionConfirm(checkedItem, index) {
+    // onClassConfirm(checkedItem, index) {
+    //   if (index !== this.classIndex) {
+    //     this.classIndex = index;
+
+    //     if (this.viewMode === 1) {
+    //       this.optionIndex = 0;
+    //       this.$refs.picker0 && this.$refs.picker0.setColumnIndex(0, 0);
+    //     }
+
+    //     this.fetchList();
+    //   }
+
+    //   this["pickerShow1"] = false;
+    // },
+    onOptionConfirmNew(index) {
       if (index !== this.optionIndex) {
         // console.log(this.optionIndex, index);
         this.optionIndex = index;
 
         if (this.viewMode === 0) {
           this.classIndex = 0;
-          this.$refs.picker1 && this.$refs.picker1.setColumnIndex(0, 0);
+          this["pickerShow1"] = true;
         }
 
         this.fetchList();
       }
 
       this["pickerShow0"] = false;
+    },
+    // onOptionConfirm(checkedItem, index) {
+    //   if (index !== this.optionIndex) {
+    //     // console.log(this.optionIndex, index);
+    //     this.optionIndex = index;
 
-      // console.log(
-      //   "onOptionConfirm",
-      //   JSON.parse(JSON.stringify(checkedItem)),
-      //   index
-      // );
+    //     if (this.viewMode === 0) {
+    //       this.classIndex = 0;
+    //       this.$refs.picker1 && this.$refs.picker1.setColumnIndex(0, 0);
+    //     }
+
+    //     this.fetchList();
+    //   }
+
+    //   this["pickerShow0"] = false;
+
+    //   // console.log(
+    //   //   "onOptionConfirm",
+    //   //   JSON.parse(JSON.stringify(checkedItem)),
+    //   //   index
+    //   // );
+    // },
+    getOptionButtonColor(code) {
+      if (this.viewMode === 0 || !code) {
+        return "btnGrayBorder";
+      }
+      let found = this.optionList.find((v, i) => v.DETAIL_CODE === code);
+      if (found) {
+        if (found.WRITE_STATUS === "0") {
+          return "btnBlueBorder";
+        } else if (found.WRITE_STATUS === "-1") {
+          return "btnRedBorder";
+        } else {
+          return "btnGreenBorder";
+        }
+      }
+      return "btnBlueBorder";
+    },
+    getClassButtonColor(class_id) {
+      if (this.viewMode === 1 || !class_id) {
+        return "btnGrayBorder";
+      } 
+      let found = this.taskList.find((v, i) => v.CLASS_ID === class_id);
+      if (found) {
+        if (found.WRITE_STATUS === "0") {
+          return "btnBlueBorder";
+        } else if (found.WRITE_STATUS === "-1") {
+          return "btnRedBorder";
+        } else {
+          return "btnGreenBorder";
+        }
+      }
+      return "btnBlueBorder";
     }
   }
 };
@@ -670,5 +768,46 @@ export default {
     border: 1px solid transparent;
     border-radius: 3px;
   }
+}
+
+.popContainer {
+  height: 80vh;
+  padding: 20px;
+  overflow-y: auto;
+  // text-align: center;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  grid-gap: 20px;
+  align-content: start;
+}
+.popSection {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  // grid-template-rows: repeat(100, 1fr);
+  grid-gap: 10px 10px;
+  align-items: stretch;
+  justify-items: stretch;
+  align-content: start;
+}
+
+.btnRedBorder {
+  border-color: #ed561b;
+  color: #ed561b;
+}
+
+.btnGreenBorder {
+  border-color: #54b331;
+  color: #54b331;
+}
+
+.btnBlueBorder {
+  border-color: #0093dd;
+  color: #0093dd;
+}
+
+.btnGrayBorder {
+  border-color: #6d6d6d;
+  color: #6d6d6d;
 }
 </style>
