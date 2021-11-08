@@ -536,7 +536,10 @@ export default {
       let class_id = this.lastClickFromGrade
         ? this.gradeChecked.GRADE_CODE
         : this.classChecked.CLASS_ID;
-      const obj_name = this.lastClickFromGrade ? "T_SCHOOL_GRADE" : "T_CLASS";
+      let obj_name = this.lastClickFromGrade ? "T_SCHOOL_GRADE" : "T_CLASS";
+      if(!class_id && obj_name==='T_SCHOOL_GRADE'){
+        obj_name = 'T_CLASS';
+      }
 
       try {
         // debugger;
@@ -676,7 +679,7 @@ export default {
       this["pickerShow" + i] = true;
     },
     onGradeConfirm(grade) {
-      if (this.lastClickFromGrade && grade.GRADE_CODE !== this.gradeChecked.GRADE_CODE) {
+      if (!this.lastClickFromGrade || grade.GRADE_CODE !== this.gradeChecked.GRADE_CODE) {
         this.gradeChecked = grade;
         this.tabLabel = grade.GRADE_NAME + (grade.GRADE_CODE ? "年级" : "");
 
@@ -691,7 +694,7 @@ export default {
     },
     onClassConfirm(cls) {
       let class_id = cls.CLASS_ID;
-      if (!this.lastClickFromGrade && class_id !== this.classChecked.CLASS_ID) {
+      if (this.lastClickFromGrade || class_id !== this.classChecked.CLASS_ID) {
         this.tabLabel = cls.CLASS_NAME;
         this.classChecked = cls;
         this.gradeChecked = this.gradeList.find(
