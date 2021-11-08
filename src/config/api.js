@@ -159,6 +159,7 @@ const apiRouter = {
    */
   CLASS_RATE_LIST: apiPath + "/app/dyrate/dyTaskList",
   CLASS_RATE_TASK_LIST: apiPath + "/app/dyrate/dyrate_fill_list",
+  CLASS_RATE_TASK_LIST2: apiPath + "/app/dyrate/dyrate_fill_list_test",
   CLASS_RATE_SUBMIT: apiPath + "/app/dyrate/dyrate_do_fill",
   CLASS_RATE_UPLOAD_IMG: apiPath + "/app/dyrate/upload_pic",
   CLASS_RATE_DEL_IMG: apiPath + "/app/dyrate/dyrate_del_pic",

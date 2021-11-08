@@ -13,12 +13,12 @@
 					<van-cell :title="optionChecked.NAME" is-link @click="showPicker(0)" />
 				</van-col>
 				<van-col span="12">
-					<van-cell :title="classChecked.CLASS_NAME" is-link @click="showPicker(1)" />
+					<van-cell :title="tabLabel" is-link @click="showPicker(1)" />
 				</van-col>
 			</van-row>
 			<van-row v-else>
 				<van-col span="12">
-					<van-cell :title="classChecked.CLASS_NAME" is-link @click="showPicker(1)" />
+					<van-cell :title="tabLabel" is-link @click="showPicker(1)" />
 				</van-col>
 				<van-col span="12">
 					<van-cell :title="optionChecked.NAME" is-link @click="showPicker(0)" />
@@ -48,6 +48,7 @@
 			</div>
 		</div>
 
+		<!-- 选项列表 -->
 		<van-popup position="bottom" v-model="pickerShow0" :lazy-render="false">
 			<!-- <van-picker
 				ref="picker0"
@@ -58,6 +59,17 @@
 				@confirm="onOptionConfirm"
 			/>-->
 			<div class="popContainer">
+				<section class="popSection" v-if="viewMode===1">
+					<van-button
+						block
+						plain
+						hairline
+						size="small"
+						class="btnGrayBorder"
+						@click="onOptionConfirmNew(-1)"
+					>{{optionFullCheck.NAME}}</van-button>
+				</section>
+
 				<section class="popSection">
 					<van-button
 						v-for="(opt , index) in optionList"
@@ -70,9 +82,17 @@
 						@click="onOptionConfirmNew(index)"
 					>{{opt.NAME}}</van-button>
 				</section>
+
+				<section class="popSection2" v-if="viewMode===1">
+					<span style="vertical-align: sub;">颜色识别</span>
+					<van-button plain hairline size="mini" class="btnGreenBorder">已填</van-button>
+					<van-button plain hairline size="mini" class="btnBlueBorder">未填</van-button>
+					<van-button plain hairline size="mini" class="btnRedBorder">弃填</van-button>
+				</section>
 			</div>
 		</van-popup>
 
+		<!-- 班级列表 -->
 		<van-popup position="bottom" v-model="pickerShow1" :lazy-render="false">
 			<!-- <van-picker
 				ref="picker1"
@@ -83,17 +103,42 @@
 				@confirm="onClassConfirm"
 			/>-->
 			<div class="popContainer">
-				<section class="popSection">
+				<section class="popSection" v-if="viewMode===0">
 					<van-button
-						v-for="(cls , index) in classList"
-						:key="cls.CLASS_ID"
-						:class="getClassButtonColor(cls.CLASS_ID)"
+						v-for="(grade , i) in gradeList"
+						:key="grade.GRADE_CODE"
 						block
 						plain
 						hairline
 						size="small"
-						@click="onClassConfirmNew(index)"
+						class="btnGrayBorder"
+						@click="onGradeConfirm(grade)"
+					>{{grade.GRADE_NAME}}{{i>0?'年级':''}}</van-button>
+				</section>
+
+				<section
+					class="popSection"
+					v-for="(classes , index) in classList"
+					:key="index"
+					v-show="!gradeChecked || !gradeChecked.GRADE_CODE || classes[0].GRADE_CODE===gradeChecked.GRADE_CODE"
+				>
+					<van-button
+						v-for="cls in classes"
+						:key="cls.CLASS_ID"
+						:class="getClassButtonColor(cls)"
+						block
+						plain
+						hairline
+						size="small"
+						@click="onClassConfirm(cls)"
 					>{{cls.CLASS_NAME}}</van-button>
+				</section>
+
+				<section class="popSection2" v-if="viewMode===0">
+					<span style="vertical-align: sub;">颜色识别</span>
+					<van-button plain hairline size="mini" class="btnGreenBorder">已填</van-button>
+					<van-button plain hairline size="mini" class="btnBlueBorder">未填</van-button>
+					<van-button plain hairline size="mini" class="btnRedBorder">弃填</van-button>
 				</section>
 			</div>
 		</van-popup>
@@ -126,6 +171,11 @@ const defaultOptionChecked = {
 const defaultClassChecked = {
   CLASS_ID: "",
   CLASS_NAME: "所有班级"
+};
+
+const defaultGradeChecked = {
+  GRADE_CODE: "",
+  GRADE_NAME: "所有班级"
 };
 
 export default {
@@ -219,16 +269,26 @@ export default {
       /**
        * 评分选项数组
        */
-      optionList: [defaultOptionChecked],
-      optionIndex: 0,
+      optionList: [],
+      optionIndex: -1,
       optionFullCheck: defaultOptionChecked,
 
       /**
        * 班级数组
        */
-      classList: [defaultClassChecked],
-      classIndex: 0,
-      classFullCheck: defaultClassChecked
+      classList: [],
+      // classIndex: -1,
+      classChecked: defaultGradeChecked,
+      classFullCheck: defaultClassChecked,
+
+      /**
+       * 年级数组
+       */
+      gradeList: [],
+      gradeChecked: defaultGradeChecked,
+      gradeFullCheck: defaultGradeChecked,
+
+      tabLabel: defaultGradeChecked.GRADE_NAME
     };
   },
   mounted() {
@@ -275,12 +335,22 @@ export default {
       }
       return this.optionList[this.optionIndex];
     },
-    classChecked() {
-      if (this.classIndex === -1) {
-        return this.classFullCheck;
-      }
-      return this.classList[this.classIndex];
-    }
+    // classChecked() {
+    //   if (this.classCheckedId === -1) {
+    //     return this.classFullCheck;
+    //   }
+    //   return this.classList[this.classIndex];
+    // }
+    // gradeChecked() {
+    //   if (this.gradeCheckedCode === '') {
+    //     return this.gradeFullCheck;
+    //   }
+    //   return this.gradeList[this.gradeIndex];
+    // },
+
+    // classesShouldRender(){
+    //   return this.classList.map((classes)=> (!this.gradeChecked.GRADE_CODE || ))
+    // }
   },
   methods: {
     configWechat() {
@@ -355,45 +425,53 @@ export default {
       // reset
       this.taskList = [];
 
-      this.optionIndex = 0;
+      this.optionIndex = -1;
       this.optionList = [];
 
-      this.classIndex = 0;
+      // this.classIndex = -1;
+      this.classChecked = defaultClassChecked;
       this.classList = [];
+
+      this.gradeChecked = defaultGradeChecked;
+      this.gradeList = [];
 
       const seq_id = this.seq_id;
       // fetch and auto select the first option
       const see_mode = this.viewMode === 0 ? "DETAIL" : "CLASS";
       const detail_id = this.viewMode === 0 ? this.first_optionId : "";
       const class_id = this.viewMode === 0 ? "" : this.first_classId;
+      const obj_name = "T_CLASS";
 
       // alert(JSON.stringify({ seq_id, detail_id, class_id, see_mode }));
       try {
         let result = await this.$http.get(
           `${
-            apiRouter.CLASS_RATE_TASK_LIST
-          }?seq_id=${seq_id}&class_id=${class_id}&detail_id=${detail_id}&see_mode=${see_mode}`
+            apiRouter.CLASS_RATE_TASK_LIST2
+          }?seq_id=${seq_id}&obj_name=${obj_name}&obj_id=${class_id}&detail_id=${detail_id}&see_mode=${see_mode}`
         );
 
         if (result.status === 200) {
           let respBody = result.body;
           if (respBody.code === 200) {
             let {
+              grade_list,
               class_list,
               detail_list,
               step_value,
               data_list
             } = respBody.data;
 
-            if (this.viewMode === 1) {
-              detail_list.unshift(defaultOptionChecked);
-            }
+            // if (this.viewMode === 1) {
+            // 	detail_list.unshift(defaultOptionChecked)
+            // }
             this.optionList = detail_list;
 
-            if (this.viewMode === 0) {
-              class_list.unshift(defaultClassChecked);
-            }
             this.classList = class_list;
+
+            if (this.viewMode === 0) {
+              grade_list.unshift(defaultGradeChecked);
+            }
+            this.gradeList = grade_list;
 
             this.step = Number(step_value);
 
@@ -411,17 +489,25 @@ export default {
             this.$nextTick(() => {
               // debugger;
               if (this.viewMode === 1) {
-                if (this.$refs.picker1) {
-                  // let a = this.$refs.picker1.getColumnIndex(0);
-                  this.$refs.picker1.setColumnIndex(0, 1);
-                  this.classIndex = 1;
+                if(this.classList && this.classList.length && this.classList[0].length){
+                  this.tabLabel = this.classList[0][0].CLASS_NAME;
                 }
+                // this.classIndex = 0;
+                this.optionIndex = -1;
+                // if (this.$refs.picker1) {
+                // 	// let a = this.$refs.picker1.getColumnIndex(0);
+                // 	this.$refs.picker1.setColumnIndex(0, 1)
+                // 	this.classIndex = 1
+                // }
               } else {
-                if (this.$refs.picker0) {
-                  // let a = this.$refs.picker0.getColumnIndex(0);
-                  this.$refs.picker0.setColumnIndex(0, 1);
-                  this.optionIndex = 1;
-                }
+                this.tabLabel = this.gradeList[0].GRADE_NAME;
+                this.optionIndex = 0;
+                // this.classIndex = -1;
+                // if (this.$refs.picker0) {
+                // 	// let a = this.$refs.picker0.getColumnIndex(0);
+                // 	this.$refs.picker0.setColumnIndex(0, 1)
+                // 	this.optionIndex = 1
+                // }
               }
 
               this.inited = true;
@@ -443,19 +529,22 @@ export default {
 
       //
     },
-    async fetchListNew() {},
-    async fetchList() {
+    // async fetchListNew() {},
+    async fetchList(isFromGradeClick) {
       this.loading = true;
       let see_mode = this.viewMode === 0 ? "DETAIL" : "CLASS";
       let detail_id = this.optionChecked.CODE;
-      let class_id = this.classChecked.CLASS_ID;
+      let class_id = isFromGradeClick
+        ? this.gradeChecked.GRADE_CODE
+        : this.classChecked.CLASS_ID;
+      const obj_name = isFromGradeClick ? "T_SCHOOL_GRADE" : "T_CLASS";
 
       try {
         // debugger;
         let resp = await this.$http.get(
-          `${apiRouter.CLASS_RATE_TASK_LIST}?seq_id=${
+          `${apiRouter.CLASS_RATE_TASK_LIST2}?seq_id=${
             this.seq_id
-          }&class_id=${class_id}&detail_id=${detail_id}&see_mode=${see_mode}`
+          }&obj_name=${obj_name}&obj_id=${class_id}&detail_id=${detail_id}&see_mode=${see_mode}`
         );
         if (resp.status === 200) {
           let respBody = resp.body;
@@ -465,6 +554,7 @@ export default {
             container.scrollTop = 0;
             // debugger;
             let {
+              grade_list,
               class_list,
               data_list,
               detail_list,
@@ -483,10 +573,12 @@ export default {
             this.taskList = data_list;
 
             if (this.viewMode === 1) {
-              detail_list.unshift(defaultOptionChecked);
+              // detail_list.unshift(defaultOptionChecked)
               this.optionList = detail_list;
             } else {
-              class_list.unshift(defaultClassChecked);
+              grade_list.unshift(defaultGradeChecked);
+              this.gradeList = grade_list;
+              // class_list.unshift(defaultClassChecked)
               this.classList = class_list;
             }
           } else {
@@ -581,13 +673,33 @@ export default {
       // console.log(i, this.viewMode);
       this["pickerShow" + i] = true;
     },
-    onClassConfirmNew(index) {
-      if (index !== this.classIndex) {
-        this.classIndex = index;
+    onGradeConfirm(grade) {
+      if (grade.GRADE_CODE !== this.gradeChecked.GRADE_CODE) {
+        this.gradeChecked = grade;
+        this.tabLabel = grade.GRADE_NAME +( grade.GRADE_CODE?'年级':'');
+
         if (this.viewMode === 1) {
           this.optionIndex = 0;
           this["pickerShow0"] = true;
         }
+      }
+      this.fetchList(true);
+      this["pickerShow1"] = false;
+    },
+    onClassConfirm(cls) {
+      let class_id = cls.CLASS_ID;
+      if (class_id !== this.classChecked.CLASS_ID) {
+        this.tabLabel = cls.CLASS_NAME;
+        this.classChecked = cls;
+        this.gradeChecked = this.gradeList.find(
+          obj => obj.GRADE_CODE === cls.GRADE_CODE
+        );
+
+        if (this.viewMode === 1) {
+          this.optionIndex = 0;
+          this["pickerShow0"] = true;
+        }
+
         this.fetchList();
       }
       this["pickerShow1"] = false;
@@ -607,16 +719,17 @@ export default {
     //   this["pickerShow1"] = false;
     // },
     onOptionConfirmNew(index) {
-      if (index !== this.optionIndex) {
+      if (index != this.optionIndex) {
         // console.log(this.optionIndex, index);
         this.optionIndex = index;
 
         if (this.viewMode === 0) {
-          this.classIndex = 0;
+          // this.classIndex = 0;
           this["pickerShow1"] = true;
         }
 
         this.fetchList();
+      } else {
       }
 
       this["pickerShow0"] = false;
@@ -646,7 +759,9 @@ export default {
       if (this.viewMode === 0 || !code) {
         return "btnGrayBorder";
       }
-      let found = this.optionList.find((v, i) => v.DETAIL_CODE === code);
+      // let curClass = this.classChecked;
+      // let found = this.optionList.find((v, i) => v.DETAIL_CODE === code);
+      let found = this.taskList.find(val => val.DETAIL_CODE === code);
       if (found) {
         if (found.WRITE_STATUS === "0") {
           return "btnBlueBorder";
@@ -658,11 +773,12 @@ export default {
       }
       return "btnBlueBorder";
     },
-    getClassButtonColor(class_id) {
-      if (this.viewMode === 1 || !class_id) {
+    getClassButtonColor(found) {
+      if (this.viewMode === 1) {
         return "btnGrayBorder";
-      } 
-      let found = this.taskList.find((v, i) => v.CLASS_ID === class_id);
+      }
+      // debugger
+      // let found = this.taskList.find((v, i) => v.CLASS_ID === class_id)
       if (found) {
         if (found.WRITE_STATUS === "0") {
           return "btnBlueBorder";
