@@ -15,6 +15,9 @@ export default {
 };
 </script>
 <style scoped>
+.popSection2{
+  margin-bottom: 20px;
+}
 .btnRedBorder {
   border-color: #ed561b;
   color: #ed561b;

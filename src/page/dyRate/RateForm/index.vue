@@ -676,7 +676,7 @@ export default {
       this["pickerShow" + i] = true;
     },
     onGradeConfirm(grade) {
-      if (grade.GRADE_CODE !== this.gradeChecked.GRADE_CODE) {
+      if (this.lastClickFromGrade && grade.GRADE_CODE !== this.gradeChecked.GRADE_CODE) {
         this.gradeChecked = grade;
         this.tabLabel = grade.GRADE_NAME + (grade.GRADE_CODE ? "年级" : "");
 
