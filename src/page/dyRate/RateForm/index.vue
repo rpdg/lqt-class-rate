@@ -74,7 +74,7 @@
 					<van-button
 						v-for="(opt , index) in optionList"
 						:key="opt.CODE"
-						:class="getOptionButtonColor(opt.CODE)"
+						:class="getOptionButtonColor(opt)"
 						block
 						plain
 						hairline
@@ -83,12 +83,7 @@
 					>{{opt.NAME}}</van-button>
 				</section>
 
-				<section class="popSection2" v-if="viewMode===1">
-					<span style="vertical-align: sub;">颜色识别</span>
-					<van-button plain hairline size="mini" class="btnGreenBorder">已填</van-button>
-					<van-button plain hairline size="mini" class="btnBlueBorder">未填</van-button>
-					<van-button plain hairline size="mini" class="btnRedBorder">弃填</van-button>
-				</section>
+				<color-sign v-if="viewMode===1" />
 			</div>
 		</van-popup>
 
@@ -134,12 +129,7 @@
 					>{{cls.CLASS_NAME}}</van-button>
 				</section>
 
-				<section class="popSection2" v-if="viewMode===0">
-					<span style="vertical-align: sub;">颜色识别</span>
-					<van-button plain hairline size="mini" class="btnGreenBorder">已填</van-button>
-					<van-button plain hairline size="mini" class="btnBlueBorder">未填</van-button>
-					<van-button plain hairline size="mini" class="btnRedBorder">弃填</van-button>
-				</section>
+				<color-sign v-if="viewMode===0" />
 			</div>
 		</van-popup>
 	</div>
@@ -148,6 +138,7 @@
 import { ViewBox, XButton } from "vux";
 import TitleBar from "./components/TitleBar";
 import FormPanel from "./components/FormPanel";
+import ColorSign from "./components/ColorSign";
 import apiRouter from "../../../config/api.js";
 import wx from "weixin-js-sdk";
 import {
@@ -160,6 +151,7 @@ import {
   Tabs,
   Popup,
   Loading,
+  Toast,
   Picker
 } from "vant";
 
@@ -193,7 +185,8 @@ export default {
     ViewBox,
     TitleBar,
     XButton,
-    FormPanel
+    FormPanel,
+    ColorSign
   },
   data() {
     /**
@@ -288,6 +281,8 @@ export default {
       gradeChecked: defaultGradeChecked,
       gradeFullCheck: defaultGradeChecked,
 
+      //
+      lastClickFromGrade: false,
       tabLabel: defaultGradeChecked.GRADE_NAME
     };
   },
@@ -334,7 +329,7 @@ export default {
         return this.optionFullCheck;
       }
       return this.optionList[this.optionIndex];
-    },
+    }
     // classChecked() {
     //   if (this.classCheckedId === -1) {
     //     return this.classFullCheck;
@@ -489,7 +484,11 @@ export default {
             this.$nextTick(() => {
               // debugger;
               if (this.viewMode === 1) {
-                if(this.classList && this.classList.length && this.classList[0].length){
+                if (
+                  this.classList &&
+                  this.classList.length &&
+                  this.classList[0].length
+                ) {
                   this.tabLabel = this.classList[0][0].CLASS_NAME;
                 }
                 // this.classIndex = 0;
@@ -530,14 +529,14 @@ export default {
       //
     },
     // async fetchListNew() {},
-    async fetchList(isFromGradeClick) {
+    async fetchList() {
       this.loading = true;
       let see_mode = this.viewMode === 0 ? "DETAIL" : "CLASS";
       let detail_id = this.optionChecked.CODE;
-      let class_id = isFromGradeClick
+      let class_id = this.lastClickFromGrade
         ? this.gradeChecked.GRADE_CODE
         : this.classChecked.CLASS_ID;
-      const obj_name = isFromGradeClick ? "T_SCHOOL_GRADE" : "T_CLASS";
+      const obj_name = this.lastClickFromGrade ? "T_SCHOOL_GRADE" : "T_CLASS";
 
       try {
         // debugger;
@@ -646,9 +645,12 @@ export default {
 
               if (answer === "confirm") {
                 this.$router.back();
+              } else {
+                Toast("已完成本页所有项目的评分操作。");
               }
             } catch (e) {
             } finally {
+              Toast("已完成本页所有项目的评分操作。");
               this.handleModify(false);
             }
           } else {
@@ -676,14 +678,15 @@ export default {
     onGradeConfirm(grade) {
       if (grade.GRADE_CODE !== this.gradeChecked.GRADE_CODE) {
         this.gradeChecked = grade;
-        this.tabLabel = grade.GRADE_NAME +( grade.GRADE_CODE?'年级':'');
+        this.tabLabel = grade.GRADE_NAME + (grade.GRADE_CODE ? "年级" : "");
 
         if (this.viewMode === 1) {
           this.optionIndex = 0;
           this["pickerShow0"] = true;
         }
+        this.lastClickFromGrade = true;
+        this.fetchList();
       }
-      this.fetchList(true);
       this["pickerShow1"] = false;
     },
     onClassConfirm(cls) {
@@ -699,7 +702,7 @@ export default {
           this.optionIndex = 0;
           this["pickerShow0"] = true;
         }
-
+        this.lastClickFromGrade = false;
         this.fetchList();
       }
       this["pickerShow1"] = false;
@@ -755,13 +758,13 @@ export default {
     //   //   index
     //   // );
     // },
-    getOptionButtonColor(code) {
-      if (this.viewMode === 0 || !code) {
+    getOptionButtonColor(found) {
+      if (this.viewMode === 0) {
         return "btnGrayBorder";
       }
       // let curClass = this.classChecked;
       // let found = this.optionList.find((v, i) => v.DETAIL_CODE === code);
-      let found = this.taskList.find(val => val.DETAIL_CODE === code);
+      // let found = this.taskList.find(val => val.DETAIL_CODE === code);
       if (found) {
         if (found.WRITE_STATUS === "0") {
           return "btnBlueBorder";
