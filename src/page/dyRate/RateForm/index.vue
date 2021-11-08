@@ -691,7 +691,7 @@ export default {
     },
     onClassConfirm(cls) {
       let class_id = cls.CLASS_ID;
-      if (class_id !== this.classChecked.CLASS_ID) {
+      if (!this.lastClickFromGrade && class_id !== this.classChecked.CLASS_ID) {
         this.tabLabel = cls.CLASS_NAME;
         this.classChecked = cls;
         this.gradeChecked = this.gradeList.find(
