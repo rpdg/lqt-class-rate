@@ -489,7 +489,8 @@ export default {
                   this.classList.length &&
                   this.classList[0].length
                 ) {
-                  this.tabLabel = this.classList[0][0].CLASS_NAME;
+                  this.classChecked = this.classList[0][0];
+                  this.tabLabel = this.classChecked.CLASS_NAME;
                 }
                 // this.classIndex = 0;
                 this.optionIndex = -1;
@@ -533,12 +534,16 @@ export default {
       this.loading = true;
       let see_mode = this.viewMode === 0 ? "DETAIL" : "CLASS";
       let detail_id = this.optionChecked.CODE;
-      let class_id = this.lastClickFromGrade
-        ? this.gradeChecked.GRADE_CODE
-        : this.classChecked.CLASS_ID;
+      let class_id =
+        this.viewMode === 0
+          ? this.lastClickFromGrade
+            ? this.gradeChecked.GRADE_CODE
+            : this.classChecked.CLASS_ID
+          : this.classChecked.CLASS_ID;
       let obj_name = this.lastClickFromGrade ? "T_SCHOOL_GRADE" : "T_CLASS";
-      if(!class_id && obj_name==='T_SCHOOL_GRADE'){
-        obj_name = 'T_CLASS';
+
+      if ((!class_id && obj_name === "T_SCHOOL_GRADE") || see_mode === 1) {
+        obj_name = "T_CLASS";
       }
 
       try {
@@ -679,7 +684,10 @@ export default {
       this["pickerShow" + i] = true;
     },
     onGradeConfirm(grade) {
-      if (!this.lastClickFromGrade || grade.GRADE_CODE !== this.gradeChecked.GRADE_CODE) {
+      if (
+        !this.lastClickFromGrade ||
+        grade.GRADE_CODE !== this.gradeChecked.GRADE_CODE
+      ) {
         this.gradeChecked = grade;
         this.tabLabel = grade.GRADE_NAME + (grade.GRADE_CODE ? "年级" : "");
 
