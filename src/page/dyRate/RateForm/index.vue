@@ -644,21 +644,19 @@ export default {
             try {
               let answer = await Dialog.confirm({
                 className: "dy-rate-dialog",
-                title: is_give_up ? "弃填成功" : "提交成功",
-                message: "返回列表页吗？",
-                confirmButtonText: "确定",
+                title: is_give_up ? "弃填成功" : "本页所有项目评分成功",
+                message: "",
+                confirmButtonText: "继续评分",
                 confirmButtonColor: "#54B331",
-                cancelButtonText: "不返回"
+                cancelButtonText: "回到列表页面"
               });
 
               if (answer === "confirm") {
                 this.$router.back();
-              } else {
-                Toast("已完成本页所有项目的评分操作。");
-              }
+              } 
             } catch (e) {
             } finally {
-              Toast("已完成本页所有项目的评分操作。");
+              // Toast("已完成本页所有项目的评分操作。");
               this.handleModify(false);
             }
           } else {
@@ -885,7 +883,7 @@ export default {
     font-size: 18px;
 
     &.error {
-      background-color: #ee0a24;
+      background-color: #ed561b;
     }
 
     &.submit {
