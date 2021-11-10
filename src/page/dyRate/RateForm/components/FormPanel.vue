@@ -1,69 +1,75 @@
 <template>
-  <div class="panel" ref="panel" :data-index="index">
-    <table v-if="task.__shown">
-      <tr>
-        <td>班级：{{task.CLASS_NAME}}</td>
-        <td>评分项：{{task.NAME}}</td>
-      </tr>
-      <tr>
-        <td>日期：{{task.END_TIME}}</td>
-        <td>评分范围：{{task.SCORE_UP}}~{{task.SCORE_DN}}分</td>
-      </tr>
-      <tr>
-        <td>
-          评分：
-          <van-stepper
-            class="inline-stepper"
-            :min="task.SCORE_UP"
-            :max="task.SCORE_DN"
-            :step="step"
-            v-model="task.SCORE"
-            @change="handleChange(true)"
-            @blur="handleStepBlur"
-          />
-        </td>
-        <td rowspan="2">
-          添加图片：
-          <span style="color:#999;">(最多4张)</span>
-          <br />
-          <van-uploader
-            ref="fcc"
-            class="inline-uploader"
-            v-model="task.IMG_LIST"
-            max-count="4"
-            multiple
-            preview-size="12vw"
-            :capture="cameraOnly"
-            :after-read="afterRead"
-            @delete="deleteImg"
-            @click-preview="setPreviewState(true)"
-            @close-preview="setPreviewState(false)"
-          />
-          <!-- <van-action-sheet
+	<div class="panel" ref="panel" :data-index="index">
+		<table v-if="task.__shown">
+			<tr>
+				<td>班级：{{task.CLASS_NAME}}</td>
+				<td>评分项：{{task.NAME}}</td>
+			</tr>
+			<tr>
+				<td>日期：{{task.END_TIME}}</td>
+				<td>评分范围：{{task.SCORE_UP}}~{{task.SCORE_DN}}分</td>
+			</tr>
+			<tr>
+				<td>
+					评分：
+					<van-stepper
+						class="inline-stepper"
+						:min="task.SCORE_UP"
+						:max="task.SCORE_DN"
+						:step="step"
+						v-model="task.SCORE"
+						@change="handleChange(true)"
+						@blur="handleStepBlur"
+					/>
+				</td>
+				<td rowspan="2">
+					添加图片：
+					<span style="color:#999;">(最多4张)</span>
+					<br />
+					<van-uploader
+						ref="fcc"
+						class="inline-uploader"
+						v-model="task.IMG_LIST"
+						max-count="4"
+						multiple
+						preview-size="12vw"
+						:capture="cameraOnly"
+						:after-read="afterRead"
+						@delete="deleteImg"
+						@click-preview="setPreviewState(true)"
+						@close-preview="setPreviewState(false)"
+					/>
+					<!-- <van-action-sheet
             v-model="showActions"
             cancel-text="取消"
             close-on-click-action
             :actions="[{ name: '拍摄' }, { name: '从相册选择' }]"
             @select="onSelectAction"
-          /> -->
-        </td>
-      </tr>
-      <tr>
-        <td valign="top">
-          <span style="float:left;">
-            备注：
-            <br />
-            <van-tag
+					/>-->
+				</td>
+			</tr>
+			<tr>
+				<td valign="top">
+					<span style="float:left;">
+						备注：
+						<br />
+						<van-button
+							plain
+							hairline
+							size="mini"
+							:class="task.WRITE_STATUS=='-1'?'btnRedBorder':task.WRITE_STATUS=='0'?'btnBlueBorder':'btnGreenBorder'"
+						>{{statusText}}</van-button>
+						<!-- <van-tag
               plain
               :type="task.WRITE_STATUS=='-1'?'danger':task.WRITE_STATUS=='0'?'primary':'success'"
               size="medium"
-            >{{statusText}}</van-tag>
-          </span>
-          <textarea maxlength="50" v-model="task.COMMENT" @change="handleChange(false)"></textarea>
-        </td>
-      </tr>
-    </table>
-  </div>
+						>{{statusText}}</van-tag>-->
+					</span>
+					<textarea maxlength="50" v-model="task.COMMENT" @change="handleChange(false)"></textarea>
+				</td>
+			</tr>
+		</table>
+	</div>
 </template>
 <script>
 import { Stepper, Uploader, Toast, Tag, ActionSheet, Button } from "vant";
@@ -246,12 +252,14 @@ export default {
           fileIpt.style.display = "none";
 
           const iptWrapper = fileIpt.parentNode;
-          let doms = iptWrapper.parentNode.querySelectorAll(".van-uploader__preview > .photoChooser");
+          let doms = iptWrapper.parentNode.querySelectorAll(
+            ".van-uploader__preview > .photoChooser"
+          );
           if (doms) {
             // debugger;
             // iptWrapper.appendChild(dom);
             // console.log(doms);
-            doms.forEach(dom=>dom.remove())
+            doms.forEach(dom => dom.remove());
           }
 
           let placeholder = document.createElement("div");
@@ -486,7 +494,7 @@ export default {
     margin-right: 0.5em;
     padding-top: 3px;
   }
-  .van-tag--success{
+  .van-tag--success {
     color: #48b319;
   }
 
@@ -525,4 +533,27 @@ export default {
     }
   }
 }
+</style>
+<style scoped>
+.popSection2{
+  margin-bottom: 20px;
+}
+.btnRedBorder {
+  border-color: #ed561b;
+  color: #ed561b;
+  padding: 0 1em;
+}
+
+.btnGreenBorder {
+  border-color: #54b331;
+  color: #54b331;
+  padding: 0 1em;
+}
+
+.btnBlueBorder {
+  border-color: #0093dd;
+  color: #0093dd;
+  padding: 0 1em;
+}
+
 </style>
