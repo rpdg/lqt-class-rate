@@ -652,11 +652,18 @@ export default {
               });
 
               if (answer === "confirm") {
-                this.$router.back();
-              } 
+                if (this.viewMode === 0) {
+                  this["pickerShow1"] = true;
+                } else {
+                  this["pickerShow0"] = true;
+                }
+              }
             } catch (e) {
-            } finally {
               // Toast("已完成本页所有项目的评分操作。");
+              this.$nextTick(() => {
+                this.$router.back();
+              });
+            } finally {
               this.handleModify(false);
             }
           } else {
