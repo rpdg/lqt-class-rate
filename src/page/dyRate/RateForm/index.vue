@@ -652,6 +652,7 @@ export default {
               });
 
               if (answer === "confirm") {
+                this.init();
                 if (this.viewMode === 0) {
                   this["pickerShow1"] = true;
                 } else {
