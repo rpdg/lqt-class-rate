@@ -652,12 +652,14 @@ export default {
               });
 
               if (answer === "confirm") {
-                this.init();
                 if (this.viewMode === 0) {
+                  this.gradeChecked = defaultGradeChecked;
+                  this.classChecked = defaultClassChecked;
                   this["pickerShow1"] = true;
                 } else {
                   this["pickerShow0"] = true;
                 }
+                this.fetchList();
               }
             } catch (e) {
               // Toast("已完成本页所有项目的评分操作。");
@@ -744,7 +746,8 @@ export default {
         this.optionIndex = index;
 
         if (this.viewMode === 0) {
-          // this.classIndex = 0;
+          this.gradeChecked = defaultGradeChecked;
+          this.classChecked = defaultClassChecked;
           this["pickerShow1"] = true;
         }
 
