@@ -111,12 +111,7 @@
 					>{{grade.GRADE_NAME}}{{i>0?'年级':''}}</van-button>
 				</section>
 
-				<section
-					class="popSection"
-					v-for="(classes , index) in classList"
-					:key="index"
-					v-show="!gradeChecked || !gradeChecked.GRADE_CODE || classes[0].GRADE_CODE===gradeChecked.GRADE_CODE"
-				>
+				<section class="popSection" v-for="(classes , index) in classList" :key="index">
 					<van-button
 						v-for="cls in classes"
 						:key="cls.CLASS_ID"
