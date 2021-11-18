@@ -94,534 +94,578 @@
 </template>
 
 <script>
-import {Confirm, Group, XSwitch, XButton, TransferDomDirective as TransferDom, XHeader,Cell,Toast,Masker,Icon} from 'vux'
-import {Field, Tab, Tabs} from 'vant';
-import Back from "../../components/common/Back.vue"
-import apiRouter from "../../config/api.js"
-import {mapMutations} from 'vuex'
+import {
+  Confirm,
+  Group,
+  XSwitch,
+  XButton,
+  TransferDomDirective as TransferDom,
+  XHeader,
+  Cell,
+  Toast,
+  Masker,
+  Icon
+} from "vux";
+import { Field, Tab, Tabs } from "vant";
+import Back from "../../components/common/Back.vue";
+import apiRouter from "../../config/api.js";
+import { mapMutations } from "vuex";
 export default {
-    directives: {
-        TransferDom
+  directives: {
+    TransferDom
+  },
+  components: {
+    Back,
+    Confirm,
+    Group,
+    XSwitch,
+    XButton,
+    XHeader,
+    Cell,
+    Toast,
+    Masker,
+    Icon,
+    [Tab.name]: Tab,
+    [Tabs.name]: Tabs
+  },
+  mounted() {},
+  activated() {
+    if (this.$route.query.fresh && this.$route.query.fresh == "1") {
+      this.loadData();
+    } else {
+      this.loadData();
+    }
+    let courseId = this.$route.query.courseId;
+    this.courseTitle = this.$route.query.courseTitle;
+
+    //this.loadData();
+    document.title = "选修考勤记录";
+  },
+  deactivated() {
+    document.title = "个人中心";
+  },
+  data() {
+    return {
+      statusView: {
+        1: "到勤",
+        2: "迟到",
+        3: "早退",
+        4: "旷课",
+        5: "病假",
+        6: "事假"
+      },
+      studentInfo: {},
+      showDetail: false,
+      showCheck: false,
+      showCheckDone: false,
+      baseImgUrl: roterPath,
+      courseTitle: "",
+      showPositionValue: false,
+      position: "default",
+
+      toastMessage: "",
+      messageData: [],
+
+      otherCategoryList: [],
+      topListCategory: [],
+
+      active: 0,
+      allCategoryList: [],
+      totalCourselist: [],
+      checkObj: {
+        finalList: [],
+        noDoList: []
+      },
+
+      selectTab: 0,
+      id: "",
+      page: 1,
+      popup: false,
+      isShow: false,
+      showItemNumber: -1,
+      isEndReached: false,
+      totalPage: 1,
+      needShow: false,
+      lastShow: false,
+      wwwUrl:
+        roterPath +
+        "/weixin/wechat/views/homework/homework-view.jsp?homeworkId="
+    };
+  },
+  methods: {
+    editDetail(item) {
+      this.showDetail = true;
+      this.studentInfo = item;
     },
-    components: {
-        Back,
-        Confirm,
-        Group,
-        XSwitch,
-        XButton,
-        XHeader,
-        Cell,
-        Toast,
-        Masker,
-        Icon,
-        [Tab.name]: Tab,
-        [Tabs.name]: Tabs,
+    editCheck(item) {
+      if (item.STATUS == "1") {
+        this.showCheck = true;
+      } else {
+        this.showCheckDone = true;
+      }
+
+      this.studentInfo = item;
     },
-    mounted(){
-
+    onCancel() {
+      debugger;
     },
-    activated() {
-        if (this.$route.query.fresh && this.$route.query.fresh == '1') {
-            this.loadData();
-        } else {
-            this.loadData();
-        }
-        let courseId =  this.$route.query.courseId;
-        this.courseTitle =  this.$route.query.courseTitle;
+    onConfirm5(value) {
+      let vm = this;
+      this.$refs.confirm5.setInputValue("");
+      let student = vm.studentInfo;
+      let courseId = vm.$route.query.courseId;
+      let checkMainId = vm.$route.query.checkMainId;
+      //this.$vux.toast.text('input value: ' + value)
 
+      this.$http
+        .get(
+          apiRouter.GET_CHANGE_TCHECKON_MAIN +
+            "?mainId=" +
+            checkMainId +
+            "&status=" +
+            student.STATUS +
+            "&studentId=" +
+            student.ID +
+            "&remark=" +
+            value
+        )
+        .then(
+          response => {
+            if (response.body.code === 200) {
+              vm.showCheck = false;
+              vm.showCheckDone = false;
 
-        //this.loadData();
-    },
-    data(){
-        return {
-            statusView:{
-                1:"到勤",
-                2:"迟到",
-                3:"早退",
-                4:"旷课",
-                5:"病假",
-                6:"事假"
-            },
-            studentInfo:{},
-            showDetail:false,
-            showCheck:false,
-            showCheckDone:false,
-            baseImgUrl:roterPath,
-            courseTitle:'',
-            showPositionValue: false,
-            position: 'default',
-
-            toastMessage: '',
-            messageData: [],
-
-
-            otherCategoryList:[],
-            topListCategory:[],
-
-            active:0,
-            allCategoryList:[],
-            totalCourselist:[],
-            checkObj:{
-                finalList:[],
-                noDoList:[],
-            },
-
-            selectTab:0,
-            id: '',
-            page: 1,
-            popup: false,
-            isShow: false,
-            showItemNumber: -1,
-            isEndReached: false,
-            totalPage: 1,
-            needShow: false,
-            lastShow:false,
-            wwwUrl:roterPath + '/weixin/wechat/views/homework/homework-view.jsp?homeworkId='
-        }
-    },
-    methods: {
-        editDetail(item){
-            this.showDetail = true;
-            this.studentInfo = item;
-        },
-        editCheck(item){
-            if(item.STATUS == '1'){
-                this.showCheck = true;
-            }else{
-                this.showCheckDone = true;
-
+              vm.toastMessage = "修改学生备注成功";
+              vm.showPositionValue = true;
+              vm.loadData();
+            } else {
+              alert(response.body.message);
             }
-
-            this.studentInfo = item;
-        },
-        onCancel(){
+          },
+          error => {
             debugger;
-        },
-        onConfirm5(value){
-            let vm = this;
-            this.$refs.confirm5.setInputValue('')
-            let student =  vm.studentInfo;
-            let courseId =  vm.$route.query.courseId;
-            let checkMainId =  vm.$route.query.checkMainId;
-            //this.$vux.toast.text('input value: ' + value)
+          }
+        );
+    },
+    hideStatus() {
+      this.showCheck = false;
+      this.showCheckDone = false;
+    },
+    changeStauts(status) {
+      let vm = this;
+      let student = vm.studentInfo;
+      let courseId = vm.$route.query.courseId;
+      let checkMainId = vm.$route.query.checkMainId;
 
-            this.$http.get(apiRouter.GET_CHANGE_TCHECKON_MAIN+"?mainId="+checkMainId + '&status=' + student.STATUS+ '&studentId='+student.ID+'&remark='+ value).then(response => {
-                if (response.body.code === 200) {
-                    vm.showCheck = false;
-                    vm.showCheckDone = false;
+      this.$http
+        .get(
+          apiRouter.GET_CHANGE_TCHECKON_MAIN +
+            "?mainId=" +
+            checkMainId +
+            "&status=" +
+            status +
+            "&studentId=" +
+            student.ID +
+            "&remark="
+        )
+        .then(
+          response => {
+            if (response.body.code === 200) {
+              vm.showCheck = false;
+              vm.showCheckDone = false;
 
-                    vm.toastMessage = "修改学生备注成功";
-                    vm.showPositionValue = true;
-                    vm.loadData();
-                } else {
-                    alert(response.body.message);
-                }
-            }, error => {
-                debugger;
-            });
-        },
-        hideStatus(){
-            this.showCheck = false;
-            this.showCheckDone = false;
-        },
-        changeStauts(status){
-            let vm = this;
-            let student =  vm.studentInfo;
-            let courseId =  vm.$route.query.courseId;
-            let checkMainId =  vm.$route.query.checkMainId;
-
-            this.$http.get(apiRouter.GET_CHANGE_TCHECKON_MAIN+"?mainId="+checkMainId + '&status=' + status+'&studentId='+student.ID+'&remark=' ).then(response => {
-                if (response.body.code === 200) {
-                    vm.showCheck = false;
-                    vm.showCheckDone = false;
-
-                    vm.toastMessage = response.body.message;
-                    vm.showPositionValue = true;
-                    vm.loadData();
-                } else {
-                    alert(response.body.message);
-                }
-            }, error => {
-                debugger;
-            });
-        },
-        goBack(){
-            this.$router.go(-1)
-        },
-        goDetail(e){
-            this.$router.push({path:'/cur-enroll',query: {courseId: e.courseId}})
-        },
-
-        loadData(){
-            let vm = this;
-            let courseId =  vm.$route.query.courseId;
-            let checkMainId =  vm.$route.query.checkMainId;
-            this.$http.get(apiRouter.GET_STUDENT_CHECKON_LIST+"?courseId="+courseId+'&checkMainId=' + checkMainId  ).then(response => {
-                if (response.body.code === 200) {
-                    // let messageData = [
-                    //     {
-                    //         "STATUS": "1", //考勤状态（1：到勤 2：迟到 3：早退 4：旷课 5：病假 6：事假）
-                    //         "ID": "A10328", //学生id
-                    //         "AVATAR": "/ID-PHOTO/2020-09-28/925dc983-e8a2-4d27-929c-e6849c360d37.jpg", //学生照片路径
-                    //         "REMARK": "",
-                    //         "SHORT_NAME": "六1班", //班级名称
-                    //         "NAME": "段延庆" //学生姓名
-                    //     },
-                    //     {
-                    //         "STATUS": "1",
-                    //         "ID": "A11387",
-                    //         "AVATAR": "/ID-PHOTO/2020-08-12/97f7cfa5-0389-4231-8d68-1661c0bda58b.jpg",
-                    //         "REMARK": "",
-                    //         "SHORT_NAME": "六3班",
-                    //         "NAME": "杨扬"
-                    //     },
-                    //     {
-                    //         "STATUS": "1",
-                    //         "ID": "A10331",
-                    //         "AVATAR": "/ID-PHOTO/2020-08-12/dc12a5b9-bac9-4683-b363-2d5d1101e68c.jpg",
-                    //         "REMARK": "",
-                    //         "SHORT_NAME": "六3班",
-                    //         "NAME": "阮星竹"
-                    //     },
-                    //     {
-                    //         "STATUS": "1",
-                    //         "ID": "A11398",
-                    //         "AVATAR": "/ID-PHOTO/2020-08-12/0cc10819-e0ff-4bb7-bcff-4463d7ec3dd3.JPG",
-                    //         "REMARK": "",
-                    //         "SHORT_NAME": "六3班",
-                    //         "NAME": "李杰"
-                    //     }
-                    // ]
-                    //response.body.data.infoList;
-                    let messageData = response.body.data.infoList;
-                    vm.messageData = messageData;
-                } else {
-                    alert(response.body.message);
-                }
-            }, error => {
-                debugger;
-            });
-        },
+              vm.toastMessage = response.body.message;
+              vm.showPositionValue = true;
+              vm.loadData();
+            } else {
+              alert(response.body.message);
+            }
+          },
+          error => {
+            debugger;
+          }
+        );
+    },
+    goBack() {
+      this.$router.push("/ele-list");
+    },
+    goDetail(e) {
+      this.$router.push({
+        path: "/cur-enroll",
+        query: { courseId: e.courseId }
+      });
     },
 
-}
+    loadData() {
+      let vm = this;
+      let courseId = vm.$route.query.courseId;
+      let checkMainId = vm.$route.query.checkMainId;
+      this.$http
+        .get(
+          apiRouter.GET_STUDENT_CHECKON_LIST +
+            "?courseId=" +
+            courseId +
+            "&checkMainId=" +
+            checkMainId
+        )
+        .then(
+          response => {
+            if (response.body.code === 200) {
+              // let messageData = [
+              //     {
+              //         "STATUS": "1", //考勤状态（1：到勤 2：迟到 3：早退 4：旷课 5：病假 6：事假）
+              //         "ID": "A10328", //学生id
+              //         "AVATAR": "/ID-PHOTO/2020-09-28/925dc983-e8a2-4d27-929c-e6849c360d37.jpg", //学生照片路径
+              //         "REMARK": "",
+              //         "SHORT_NAME": "六1班", //班级名称
+              //         "NAME": "段延庆" //学生姓名
+              //     },
+              //     {
+              //         "STATUS": "1",
+              //         "ID": "A11387",
+              //         "AVATAR": "/ID-PHOTO/2020-08-12/97f7cfa5-0389-4231-8d68-1661c0bda58b.jpg",
+              //         "REMARK": "",
+              //         "SHORT_NAME": "六3班",
+              //         "NAME": "杨扬"
+              //     },
+              //     {
+              //         "STATUS": "1",
+              //         "ID": "A10331",
+              //         "AVATAR": "/ID-PHOTO/2020-08-12/dc12a5b9-bac9-4683-b363-2d5d1101e68c.jpg",
+              //         "REMARK": "",
+              //         "SHORT_NAME": "六3班",
+              //         "NAME": "阮星竹"
+              //     },
+              //     {
+              //         "STATUS": "1",
+              //         "ID": "A11398",
+              //         "AVATAR": "/ID-PHOTO/2020-08-12/0cc10819-e0ff-4bb7-bcff-4463d7ec3dd3.JPG",
+              //         "REMARK": "",
+              //         "SHORT_NAME": "六3班",
+              //         "NAME": "李杰"
+              //     }
+              // ]
+              //response.body.data.infoList;
+              let messageData = response.body.data.infoList;
+              vm.messageData = messageData;
+            } else {
+              alert(response.body.message);
+            }
+          },
+          error => {
+            debugger;
+          }
+        );
+    }
+  }
+};
 </script>
 
 <style lang="less" scoped>
-@import '../../style/minxin.less';
+@import "../../style/minxin.less";
 
 .message {
-    width: 100%;
+  width: 100%;
 }
 
 .message li {
-    .mixin-padding(30/@baseSize, 30/@baseSize);
-    border-bottom: 1px solid @colorDD;
-    height: 160/@baseSize;
-    position: relative;
+  .mixin-padding(30 / @baseSize, 30 / @baseSize);
+  border-bottom: 1px solid @colorDD;
+  height: 160 / @baseSize;
+  position: relative;
 }
 
 .message-info {
-    margin-left: 125/@baseSize;
-    margin-right: 100/@baseSize;
-    padding-top: 40/@baseSize;
-    display: block;
+  margin-left: 125 / @baseSize;
+  margin-right: 100 / @baseSize;
+  padding-top: 40 / @baseSize;
+  display: block;
 }
 
 .message-info h3 {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    line-height: 40/@baseSize;
-    font-size: @fontSize30;
-    color: @color42;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 40 / @baseSize;
+  font-size: @fontSize30;
+  color: @color42;
 }
 
 .message-info p {
-    font-size: @fontSize24;
-    color: @color42;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    margin-top: 10/@baseSize;;
+  font-size: @fontSize24;
+  color: @color42;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 10 / @baseSize;
 }
 
 .message-handle {
-    position: absolute;
-    top: 50/@baseSize;
-    right: 30/@baseSize;
-    text-align: right;
+  position: absolute;
+  top: 50 / @baseSize;
+  right: 30 / @baseSize;
+  text-align: right;
 }
 
 .message-handle a {
-    padding-top: 8/@baseSize;
-    padding-bottom: 8/@baseSize;
-    display: block;
+  padding-top: 8 / @baseSize;
+  padding-bottom: 8 / @baseSize;
+  display: block;
 }
 
 .edlit-molde {
-    width: 172/@baseSize;
-    height: 142/@baseSize;
-    position: absolute;
-    right: 130/@baseSize;
-    background: url("../../assets/xbg.png") no-repeat;
-    background-size: 100% 100%;
-    top: 60/@baseSize;
-    z-index:9;
+  width: 172 / @baseSize;
+  height: 142 / @baseSize;
+  position: absolute;
+  right: 130 / @baseSize;
+  background: url("../../assets/xbg.png") no-repeat;
+  background-size: 100% 100%;
+  top: 60 / @baseSize;
+  z-index: 9;
 }
 
 .edlit-molde a {
-    padding-bottom: 16/@baseSize;
-    padding-top: 20/@baseSize;
-    display: block;
-    font-size: @fontSize24;
+  padding-bottom: 16 / @baseSize;
+  padding-top: 20 / @baseSize;
+  display: block;
+  font-size: @fontSize24;
 }
 
 .edlit-molde a.revamp {
-    color: #2196F3;
-
+  color: #2196f3;
 }
 
 .edlit-molde a.revamp em {
-    width: 22/@baseSize;
-    height: 23/@baseSize;
-    background: url("../../assets/new.png") no-repeat 0;
-    background-size: 100% 100%;
-    display: inline-block;
-    float: left;
-    margin-top: 5/@baseSize;
-    margin-left: 30/@baseSize;
-    margin-right: 10/@baseSize;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
+  width: 22 / @baseSize;
+  height: 23 / @baseSize;
+  background: url("../../assets/new.png") no-repeat 0;
+  background-size: 100% 100%;
+  display: inline-block;
+  float: left;
+  margin-top: 5 / @baseSize;
+  margin-left: 30 / @baseSize;
+  margin-right: 10 / @baseSize;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 a.delete em {
-    width: 18/@baseSize;
-    height: 22/@baseSize;
-    background: url("../../assets/trash.png") no-repeat 0;
-    background-size: 100% 100%;
-    display: inline-block;
-    float: left;
-    margin-top: 5/@baseSize;
-    margin-left: 30/@baseSize;
-    margin-right: 10/@baseSize;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    color: #FF5E5E;
+  width: 18 / @baseSize;
+  height: 22 / @baseSize;
+  background: url("../../assets/trash.png") no-repeat 0;
+  background-size: 100% 100%;
+  display: inline-block;
+  float: left;
+  margin-top: 5 / @baseSize;
+  margin-left: 30 / @baseSize;
+  margin-right: 10 / @baseSize;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  color: #ff5e5e;
 }
 
 a.delete {
-    color: #FF5E5E;
+  color: #ff5e5e;
 }
 
 .publis {
-    color: #F09709;
+  color: #f09709;
 }
 
 .inform {
-    color: #48B319;
+  color: #48b319;
 }
 
 .lose {
-    color: #9B9B9B;
+  color: #9b9b9b;
 }
 
 .weui-dialog__title {
-    font-size: @fontSize34;
-    color: #333333;
+  font-size: @fontSize34;
+  color: #333333;
 }
 
-.moreData,.lastShow {
-    height: 80/@baseSize;
-    line-height: 80/@baseSize;
-    text-align: center;
-
+.moreData,
+.lastShow {
+  height: 80 / @baseSize;
+  line-height: 80 / @baseSize;
+  text-align: center;
 }
 
 .moreData span {
-    height: 50/@baseSize;
-    background: url("../../assets/loading.gif") no-repeat;
-    background-size: contain;
-    padding-left: 45/@baseSize;
+  height: 50 / @baseSize;
+  background: url("../../assets/loading.gif") no-repeat;
+  background-size: contain;
+  padding-left: 45 / @baseSize;
 }
 
-
-
-
-.back-div{
-    padding-bottom: 100/@baseSize;
+.back-div {
+  padding-bottom: 100 / @baseSize;
 }
-.up-back{
-    width: 100%;
-    height: 100/@baseSize;
-    font-size:@fontSize36;
-    line-height: 100/@baseSize;
-    color: @white;
-    text-align: center;
-    position: fixed;
-    top:0;
-    left:0;
-    background:rgba(0, 0, 0, 0.6);
-    z-index: 999;
+.up-back {
+  width: 100%;
+  height: 100 / @baseSize;
+  font-size: @fontSize36;
+  line-height: 100 / @baseSize;
+  color: @white;
+  text-align: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 999;
 }
 
-
-.pubisnBtn{
-    color: #E12727
+.pubisnBtn {
+  color: #e12727;
 }
 
-.title-header{
-    background-color: #fff;;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100/@baseSize;
-    line-height: 100/@baseSize;
-    z-index: 1;
-    border-bottom: solid 1px #dedede;
+.title-header {
+  background-color: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  //   height: 100 / @baseSize;
+  height: 46px;
+  //   line-height: 100 / @baseSize;
+  z-index: 1;
+  border-bottom: solid 1px #dedede;
 }
 
-.title-header /deep/ .vux-header-title{
-    color: #333;
-    line-height: 46px;
-
+.title-header /deep/ .vux-header-title {
+  color: #333;
+  //   line-height: 46px;
 }
 
-.title-header /deep/ .vux-header-back{
-    color: #38f;
+.title-header /deep/ .vux-header-back {
+  color: #38f;
 }
 
-.title-header /deep/ .left-arrow:before{
-    border-color: #38f !important;
+.title-header /deep/ .left-arrow:before {
+  border-color: #38f !important;
 }
 
-.tab-check{
-    margin-top: 100/@baseSize;
+.tab-check {
+  margin-top: 100 / @baseSize;
 }
 
-.box /deep/ .van-tab--active{
-    color: #48b319;
-
+.box /deep/ .van-tab--active {
+  color: #48b319;
 }
 
-.box /deep/ .van-tabs__line{
-    background-color: #48b319;
-
+.box /deep/ .van-tabs__line {
+  background-color: #48b319;
 }
-.box /deep/ .van-tab{
-    border-bottom: 1px solid #DDDDDD;
+.box /deep/ .van-tab {
+  border-bottom: 1px solid #dddddd;
 }
 
 .typeBtn {
-    width: 125 / @baseSize;
-    height: 125 / @baseSize;
-    line-height: 125 / @baseSize;
-    text-align: center;
-    border-radius: 50%;
-    font-size: @fontSize36;
-    color: @white;
-    position: fixed;
-    bottom: 45 / @baseSize;
-    right: 40 / @baseSize;
-    background: @green;
-    z-index: 10;
+  width: 125 / @baseSize;
+  height: 125 / @baseSize;
+  line-height: 125 / @baseSize;
+  text-align: center;
+  border-radius: 50%;
+  font-size: @fontSize36;
+  color: @white;
+  position: fixed;
+  bottom: 45 / @baseSize;
+  right: 40 / @baseSize;
+  background: @green;
+  z-index: 10;
 }
 
-
 .m-img {
-    padding-bottom: 33%;
-    display: block;
-    position: relative;
-    max-width: 100%;
-    background-size: cover;
-    background-position: center center;
-    cursor: pointer;
-    border-radius: 2px;
+  padding-bottom: 33%;
+  display: block;
+  position: relative;
+  max-width: 100%;
+  background-size: cover;
+  background-position: center center;
+  cursor: pointer;
+  border-radius: 2px;
 }
 
 .m-title {
-    color: #fff;
-    text-align: center;
-    text-shadow: 0 0 2px rgba(0, 0, 0, .5);
-    font-weight: 500;
-    font-size: 16px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    width: 100%;
-    top: 40%;
-    transform: translateY(-50%);
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+  font-weight: 500;
+  font-size: 16px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  top: 40%;
+  transform: translateY(-50%);
 }
 
 .m-time {
-    font-size: 12px;
-    padding-top: 1rem;
-    display: inline-block;
-    margin-top: 5px;
+  font-size: 12px;
+  padding-top: 1rem;
+  display: inline-block;
+  margin-top: 5px;
 }
-
 
 .listBtn {
-    width: 120/ @baseSize;
-    height: 120 / @baseSize;
-    line-height: 120 / @baseSize;
-    text-align: center;
-    border-radius: 50%;
-    font-size: @fontSize34;
-    bottom: 45 / @baseSize;
-    right: 40 / @baseSize;
-    color: @white;
-    z-index: 10;
-    display: inline-block;
-    margin: 1em 5px;
+  width: 120 / @baseSize;
+  height: 120 / @baseSize;
+  line-height: 120 / @baseSize;
+  text-align: center;
+  border-radius: 50%;
+  font-size: @fontSize34;
+  bottom: 45 / @baseSize;
+  right: 40 / @baseSize;
+  color: @white;
+  z-index: 10;
+  display: inline-block;
+  margin: 1em 5px;
 }
 
-.listBtnRow{
-    width: 120/ @baseSize;
-    height: 120 / @baseSize;
-    text-align: center;
-    border-radius: 50%;
-    font-size: @fontSize30;
-    bottom: 45 / @baseSize;
-    right: 40 / @baseSize;
-    color: @white;
-    z-index: 10;
-    display: inline-block;
-    margin: 1em 5px;
-    padding: 5px 10px;
+.listBtnRow {
+  width: 120 / @baseSize;
+  height: 120 / @baseSize;
+  text-align: center;
+  border-radius: 50%;
+  font-size: @fontSize30;
+  bottom: 45 / @baseSize;
+  right: 40 / @baseSize;
+  color: @white;
+  z-index: 10;
+  display: inline-block;
+  margin: 1em 5px;
+  padding: 5px 10px;
 }
 
 .chidao {
-    background: #fbc02d;
+  background: #fbc02d;
 }
 .zaotui {
-    background: #1ba0e1;
+  background: #1ba0e1;
 }
 .kuangke {
-    background: #ff5e5e;
+  background: #ff5e5e;
 }
 .bingjia {
-    background: #48b31a;
+  background: #48b31a;
 }
 .shijia {
-    background: #9c26b0;
+  background: #9c26b0;
 }
 
 .chenlBtn {
-    width: 120 / @baseSize;
-    height: 120 / @baseSize;
-    line-height: 125 / @baseSize;
-    text-align: center;
-    border-radius: 50%;
-    font-size: @fontSize36;
-    bottom: 45 / @baseSize;
-    right: 40 / @baseSize;
-    background: @green;
-    z-index: 10;
-
+  width: 120 / @baseSize;
+  height: 120 / @baseSize;
+  line-height: 125 / @baseSize;
+  text-align: center;
+  border-radius: 50%;
+  font-size: @fontSize36;
+  bottom: 45 / @baseSize;
+  right: 40 / @baseSize;
+  background: @green;
+  z-index: 10;
 }
 </style>

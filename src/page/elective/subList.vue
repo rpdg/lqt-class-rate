@@ -400,22 +400,22 @@ a.delete {
     color: #E12727
 }
 
-.title-header{
-    background-color: #fff;;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100/@baseSize;
-    line-height: 100/@baseSize;
-    z-index: 1;
-    border-bottom: solid 1px #dedede;
+.title-header {
+  background-color: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  //   height: 100 / @baseSize;
+  height: 46px;
+  //   line-height: 100 / @baseSize;
+  z-index: 1;
+  border-bottom: solid 1px #dedede;
 }
 
-.title-header /deep/ .vux-header-title{
-    color: #333;
-    line-height: 46px;
-
+.title-header /deep/ .vux-header-title {
+  color: #333;
+  //   line-height: 46px;
 }
 
 .title-header /deep/ .vux-header-back{
