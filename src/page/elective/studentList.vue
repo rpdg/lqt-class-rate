@@ -5,9 +5,26 @@
 			:left-options="{preventGoBack: true}"
 			@on-click-back="goBack"
 		>{{courseTitle}}</x-header>
-		<div style="width: 100vw; position: absolute; top: 57px; height: 38px; padding:0 20px; border-bottom: 1px #ddd dashed;">
+		<div
+			style="width: 100vw; position: absolute; top: 57px; height: 38px; padding:0 20px; border-bottom: 1px #ddd dashed;"
+		>
 			考勤日期：10月21日
-			<van-button plain hairline size="mini" type="info" color="orange" style="float:right;">&nbsp; 修改 &nbsp;</van-button>
+			<van-button
+				plain
+				hairline
+				size="mini"
+				type="info"
+				color="orange"
+				style="float:right;"
+				@click="showDatePicker=true"
+			>&nbsp; 修改 &nbsp;</van-button>
+			<van-calendar
+        :color="'#48B319'"
+				v-model="showDatePicker"
+				@confirm="onDatePickerConfirm"
+				:default-date="null"
+				:min-date="new Date(0)"
+			/>
 		</div>
 		<div class="wapper">
 			<ul key="stuListUl">
@@ -137,10 +154,9 @@ import {
   Masker,
   Icon
 } from "vux";
-import { Button, Tab, Tabs } from "vant";
+import { Button, Tab, Tabs, Calendar } from "vant";
 import Back from "../../components/common/Back.vue";
 import apiRouter from "../../config/api.js";
-import { mapMutations } from "vuex";
 export default {
   directives: {
     TransferDom
@@ -156,6 +172,7 @@ export default {
     Toast,
     Masker,
     Icon,
+    [Calendar.name]: Calendar,
     [Tab.name]: Tab,
     [Button.name]: Button,
     [Tabs.name]: Tabs
@@ -187,6 +204,7 @@ export default {
         6: "事假"
       },
       studentInfo: {},
+      showDatePicker: false,
       showDetail: false,
       showCheck: false,
       showCheckDone: false,
@@ -240,6 +258,9 @@ export default {
     },
     onCancel() {
       debugger;
+    },
+    onDatePickerConfirm(date) {
+      console.log(date);
     },
     onConfirm5(value) {
       let vm = this;

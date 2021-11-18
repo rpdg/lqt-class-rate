@@ -75,7 +75,7 @@ import {
   Cell,
   Toast
 } from "vux";
-import { Dialog, Tab, Tabs, Icon } from "vant";
+import { Dialog, Tab, Tabs, Icon,  } from "vant";
 import Back from "../../components/common/Back.vue";
 import apiRouter from "../../config/api.js";
 
@@ -92,8 +92,8 @@ export default {
     XHeader,
     Cell,
     Toast,
-    Icon,
     Dialog,
+    [Icon.name]: Icon,
     [Tab.name]: Tab,
     [Tabs.name]: Tabs
   },
@@ -179,7 +179,7 @@ export default {
         className: "dy-rate-dialog",
         title: "撤销",
         message: "确定要撤销本次考勤吗？",
-        confirmButtonText: "确定",
+        confirmButtonText: "确定"
       });
       if (answer === "confirm") {
         // this.viewMode = 0;
