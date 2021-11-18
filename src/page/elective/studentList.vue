@@ -1,96 +1,127 @@
 <template>
-    <div class="box">
-        <x-header class="title-header" :left-options="{preventGoBack: true}"
-                  @on-click-back="goBack" >{{courseTitle}}</x-header>
+	<div class="box">
+		<x-header
+			class="title-header"
+			:left-options="{preventGoBack: true}"
+			@on-click-back="goBack"
+		>{{courseTitle}}</x-header>
+		<div style="width: 100vw; position: absolute; top: 57px; height: 38px; padding:0 20px; border-bottom: 1px #ddd dashed;">
+			考勤日期：10月21日
+			<van-button plain hairline size="mini" type="info" color="orange" style="float:right;">&nbsp; 修改 &nbsp;</van-button>
+		</div>
+		<div class="wapper">
+			<ul key="stuListUl">
+				<li
+					style="width: 33%;display: inline-block;margin-top: 0.72rem"
+					v-for="(item,index) in messageData"
+					:key="index"
+				>
+					<div style="width: 100%;text-align: center; ">
+						<div
+							@click="editCheck(item)"
+							style="width: 70%;height: 110px;display: inline-block;position: relative;"
+						>
+							<img style="width: 100%;height: 100%" :src="item.AVATAR" />
+							<img
+								v-if="item.STATUS != '1'"
+								style="width: 60%;position: absolute;bottom: 0;right: 0;"
+								src="@/assets/curriculum/duty.png"
+							/>
+						</div>
 
-        <ul ref="onScoll" style="margin-top: 2rem;">
-            <li style="width: 33%;display: inline-block;margin-top: 1.2rem" v-for="(item,index) in messageData" :key="index">
-               <div style="width: 100%;text-align: center; ">
-                   <div @click="editCheck(item)" style="width: 70%;height: 110px;display: inline-block;position: relative;" >
-                       <img style="width: 100%;height: 100%" :src="item.AVATAR">
-                       <img v-if="item.STATUS != '1'" style="width: 60%;position: absolute;bottom: 0;right: 0;" src="@/assets/curriculum/duty.png">
-                   </div>
+						<div>{{item.SHORT_NAME}} {{item.NAME}}</div>
+						<img
+							v-if="!item.REMARK"
+							@click="editDetail(item)"
+							style="width: 20px;margin-top: 5px"
+							src="@/assets/edit.png"
+						/>
+						<span
+							v-else
+							@click="editDetail(item)"
+							style="color: #DDDDDD;margin-top: 8px;display: inline-block;"
+						>{{item.REMARK}}</span>
+					</div>
+				</li>
+			</ul>
 
-                   <div>{{item.SHORT_NAME}} {{item.NAME}}</div>
-                   <img v-if="!item.REMARK" @click="editDetail(item)" style="width: 20px;margin-top: 5px" src="@/assets/edit.png">
-                   <span v-else @click="editDetail(item)" style="color: #DDDDDD;margin-top: 8px;display: inline-block;">{{item.REMARK}}</span>
+			<p class="moreData" v-show="needShow">
+				<span>加载中...</span>
+			</p>
+			<p class="lastShow" v-show="lastShow">
+				<span>已经全部加载</span>
+			</p>
+			<div v-transfer-dom>
+				<confirm
+					v-model="popup"
+					:close-on-confirm="false"
+					:title="('确定删除作业？删除后无法恢复数据？')"
+					@on-confirm="onConfirm()"
+					confirmText="是，我要删除"
+				></confirm>
+			</div>
 
-               </div>
-            </li>
-        </ul>
+			<toast
+				v-model="showPositionValue"
+				type="text"
+				:time="800"
+				is-show-mask
+				width="140px"
+				:position="position"
+			>{{ toastMessage }}</toast>
 
-        <p class="moreData" v-show="needShow"><span>加载中...</span></p>
-        <p class="lastShow" v-show="lastShow"><span>已经全部加载</span></p>
-        <div v-transfer-dom>
-            <confirm
-                v-model="popup"
-                :close-on-confirm="false"
-                :title="('确定删除作业？删除后无法恢复数据？')"
-                @on-confirm="onConfirm()"
-                confirmText="是，我要删除"
-            >
-            </confirm>
-        </div>
+			<div v-transfer-dom>
+				<confirm
+					v-model="showDetail"
+					show-input
+					ref="confirm5"
+					:title="studentInfo.SHORT_NAME+'-'+studentInfo.NAME"
+					@on-cancel="onCancel"
+					@on-confirm="onConfirm5"
+				></confirm>
+			</div>
 
-        <toast
-            v-model="showPositionValue"
-            type="text"
-            :time="800"
-            is-show-mask
-            width="140px"
-            :position="position"
-        >
-            {{ toastMessage }}
-        </toast>
+			<div v-if="showCheck" style="margin: 10px;overflow: hidden;">
+				<masker fullscreen style="border-radius: 2px;" :opacity="0.8">
+					<div slot="content" class="m-title">
+						<span style="font-size: 1.6em">{{ studentInfo.SHORT_NAME}}{{ studentInfo.NAME }} 本次考勤</span>
+						<br />
+						<span class="m-time">
+							<h1 class="listBtn chidao" @click="changeStauts('2')">迟到</h1>
+							<h1 class="listBtn zaotui" @click="changeStauts('3')">早退</h1>
+							<h1 class="listBtn kuangke" @click="changeStauts('4')">旷课</h1>
+							<h1 class="listBtn bingjia" @click="changeStauts('5')">病假</h1>
+							<h1 class="listBtn shijia" @click="changeStauts('6')">事假</h1>
+						</span>
 
-        <div v-transfer-dom>
-            <confirm v-model="showDetail"
-                     show-input
-                     ref="confirm5"
-                     :title="studentInfo.SHORT_NAME+'-'+studentInfo.NAME"
-                     @on-cancel="onCancel"
-                     @on-confirm="onConfirm5"
-                    >
-            </confirm>
-        </div>
+						<span class="m-time">
+							<h1 @click="hideStatus()">
+								<icon style="font-size: 2rem" type="clear"></icon>
+							</h1>
+						</span>
+					</div>
+				</masker>
+			</div>
 
-        <div v-if="showCheck" style="margin: 10px;overflow: hidden;">
-            <masker fullscreen style="border-radius: 2px;" :opacity="0.8">
-                <div slot="content" class="m-title">
-                    <span style="font-size: 1.6em">{{ studentInfo.SHORT_NAME}}{{ studentInfo.NAME }}  本次考勤</span>
-                    <br/>
-                    <span class="m-time">
-                         <h1 class="listBtn chidao" @click="changeStauts('2')">迟到</h1>
-                         <h1 class="listBtn zaotui" @click="changeStauts('3')">早退</h1>
-                         <h1 class="listBtn kuangke" @click="changeStauts('4')">旷课</h1>
-                         <h1 class="listBtn bingjia" @click="changeStauts('5')">病假</h1>
-                         <h1 class="listBtn shijia" @click="changeStauts('6')">事假</h1>
-                    </span>
-
-                    <span class="m-time">
-                         <h1 @click="hideStatus()"><icon style="font-size: 2rem" type="clear"></icon></h1>
-                    </span>
-                </div>
-            </masker>
-        </div>
-
-
-        <div v-if="showCheckDone" style="margin: 10px;overflow: hidden;">
-            <masker fullscreen style="border-radius: 2px;" :opacity="0.8">
-                <div slot="content" class="m-title">
-                    <span style="font-size: 1.6em">{{ studentInfo.SHORT_NAME}}{{ studentInfo.NAME }}  本次考勤</span>
-                    <br/>
-                    <span class="m-time">
-                         <h1 class="listBtnRow bingjia" @click="changeStauts('1')">改为到勤</h1>
-                    </span>
-                    <br/>
-                    <span class="m-time">
-                         <h1 @click="hideStatus()"><icon style="font-size: 2rem" type="clear"></icon></h1>
-                    </span>
-                </div>
-            </masker>
-        </div>
-    </div>
+			<div v-if="showCheckDone" style="margin: 10px;overflow: hidden;">
+				<masker fullscreen style="border-radius: 2px;" :opacity="0.8">
+					<div slot="content" class="m-title">
+						<span style="font-size: 1.6em">{{ studentInfo.SHORT_NAME}}{{ studentInfo.NAME }} 本次考勤</span>
+						<br />
+						<span class="m-time">
+							<h1 class="listBtnRow bingjia" @click="changeStauts('1')">改为到勤</h1>
+						</span>
+						<br />
+						<span class="m-time">
+							<h1 @click="hideStatus()">
+								<icon style="font-size: 2rem" type="clear"></icon>
+							</h1>
+						</span>
+					</div>
+				</masker>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -106,7 +137,7 @@ import {
   Masker,
   Icon
 } from "vux";
-import { Field, Tab, Tabs } from "vant";
+import { Button, Tab, Tabs } from "vant";
 import Back from "../../components/common/Back.vue";
 import apiRouter from "../../config/api.js";
 import { mapMutations } from "vuex";
@@ -126,6 +157,7 @@ export default {
     Masker,
     Icon,
     [Tab.name]: Tab,
+    [Button.name]: Button,
     [Tabs.name]: Tabs
   },
   mounted() {},
@@ -139,7 +171,7 @@ export default {
     this.courseTitle = this.$route.query.courseTitle;
 
     //this.loadData();
-    document.title = "选修考勤记录";
+    document.title = "选修考勤详情";
   },
   deactivated() {
     document.title = "个人中心";
@@ -287,7 +319,7 @@ export default {
         );
     },
     goBack() {
-      this.$router.push("/ele-list");
+      this.$router.go(-1);
     },
     goDetail(e) {
       this.$router.push({
@@ -363,7 +395,14 @@ export default {
 
 <style lang="less" scoped>
 @import "../../style/minxin.less";
-
+.wapper {
+  position: absolute;
+  top: 95px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: scroll;
+}
 .message {
   width: 100%;
 }

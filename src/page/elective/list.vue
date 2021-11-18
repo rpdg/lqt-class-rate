@@ -1,39 +1,39 @@
 <template>
 	<div class="box">
 		<x-header class="title-header" :left-options="{preventGoBack: true}" @on-click-back="goBack">选修列表</x-header>
+		<div class="wapper">
+			<ul class="message" key="kListUl">
+				<li class="clearfix" v-for="(item,index) in messageData" :key="index">
+					<div class="message-icon"></div>
+					<a href="javascript:void(0);" @click="goCheck(item)" class="message-info">
+						<h3>{{ item.NAME }}</h3>
+						<p style="color: #777777">{{ item.PLACE }} {{ item.TIMES }}</p>
+					</a>
+				</li>
+			</ul>
+			<div v-if="pageCount != page" class="more-title" @click="nextPage">
+				<a href="javascript:void(0)">点击查看更多</a>
+			</div>
+			<div v-else class="more-title">
+				<a v-if="!pageLoading" href="javascript:void(0)">到底啦</a>
+				<a v-else href="javascript:void(0)">加载中...</a>
+			</div>
 
-		<ul class="message" ref="onScoll" style="margin-top: 2rem">
-			<li class="clearfix" v-for="(item,index) in messageData" :key="index">
-				<div class="message-icon"></div>
-				<a href="javascript:void(0);" @click="goCheck(item)" class="message-info">
-					<h3>{{ item.NAME }}</h3>
-					<p style="color: #777777">{{ item.PLACE }} {{ item.TIMES }}</p>
-				</a>
-			</li>
-		</ul>
-
-		<div v-if="pageCount != page" class="more-title" @click="nextPage">
-			<a href="javascript:void(0)">点击查看更多</a>
-		</div>
-		<div v-else class="more-title">
-			<a v-if="!pageLoading" href="javascript:void(0)">到底啦</a>
-			<a v-else href="javascript:void(0)">加载中...</a>
-		</div>
-
-		<p class="moreData" v-show="needShow">
-			<span>加载中...</span>
-		</p>
-		<p class="lastShow" v-show="lastShow">
-			<span>已经全部加载</span>
-		</p>
-		<div v-transfer-dom>
-			<confirm
-				v-model="popup"
-				:close-on-confirm="false"
-				:title="('确定删除作业？删除后无法恢复数据？')"
-				@on-confirm="onConfirm()"
-				confirmText="是，我要删除"
-			></confirm>
+			<p class="moreData" v-show="needShow">
+				<span>加载中...</span>
+			</p>
+			<p class="lastShow" v-show="lastShow">
+				<span>已经全部加载</span>
+			</p>
+			<div v-transfer-dom>
+				<confirm
+					v-model="popup"
+					:close-on-confirm="false"
+					:title="('确定删除作业？删除后无法恢复数据？')"
+					@on-confirm="onConfirm()"
+					confirmText="是，我要删除"
+				></confirm>
+			</div>
 		</div>
 	</div>
 </template>
@@ -48,7 +48,7 @@ import {
   XHeader,
   Cell
 } from "vux";
-import { Field, Tab, Tabs } from "vant";
+import { Dialog, Tab, Tabs } from "vant";
 import Back from "../../components/common/Back.vue";
 import apiRouter from "../../config/api.js";
 import XxHeader from "@/components/header/XxHeader";
@@ -212,7 +212,14 @@ export default {
 
 <style lang="less" scoped>
 @import "../../style/minxin.less";
-
+.wapper {
+  position: absolute;
+  top: 47px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: scroll;
+}
 .message {
   width: 100%;
 }
@@ -389,16 +396,16 @@ a.delete {
   top: 0;
   left: 0;
   width: 100%;
-//   height: 100 / @baseSize;
-height: 46px;
-//   line-height: 100 / @baseSize;
+  //   height: 100 / @baseSize;
+  height: 46px;
+  //   line-height: 100 / @baseSize;
   z-index: 1;
   border-bottom: solid 1px #dedede;
 }
 
 .title-header /deep/ .vux-header-title {
   color: #333;
-//   line-height: 46px;
+  //   line-height: 46px;
 }
 
 .title-header /deep/ .vux-header-back {

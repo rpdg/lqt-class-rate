@@ -10,7 +10,8 @@ import store from './store/index'
 import './style/css/style.css' //1.1.10之后的版本，css被放在了单独的文件中，方便替换
 import vueEventCalendar from './components/vue-event-calendar'
 import vueEventCalendarWeek from './components/vue-event-calendar-week'
-
+import { Icon } from 'vant';
+Vue.use(Icon);
 
 //日历控件
 Vue.use(vueEventCalendar, {locale: 'zh',color:'#42BD41'}) //可以设置语言，支持中文和英文
