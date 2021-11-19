@@ -8,7 +8,7 @@
 		<div
 			style="width: 100vw; position: absolute; top: 57px; height: 38px; padding:0 20px; border-bottom: 1px #ddd dashed;"
 		>
-			考勤日期：10月21日
+			考勤日期：{{checkonDate.getMonth()+1}}月{{checkonDate.getDate()}}日
 			<van-button
 				plain
 				hairline
@@ -19,11 +19,12 @@
 				@click="showDatePicker=true"
 			>&nbsp; 修改 &nbsp;</van-button>
 			<van-calendar
-        :color="'#48B319'"
+				:color="'#48B319'"
 				v-model="showDatePicker"
 				@confirm="onDatePickerConfirm"
-				:default-date="null"
-				:min-date="new Date(0)"
+				:default-date="checkonDate"
+				:min-date="new Date(checkonDate.getTime() - 15552000000)"
+				:max-date="new Date"
 			/>
 		</div>
 		<div class="wapper">
@@ -179,13 +180,18 @@ export default {
   },
   mounted() {},
   activated() {
-    if (this.$route.query.fresh && this.$route.query.fresh == "1") {
-      this.loadData();
-    } else {
-      this.loadData();
-    }
-    let courseId = this.$route.query.courseId;
+    // if (this.$route.query.fresh && this.$route.query.fresh == "1") {
+    //   this.loadData();
+    // } else {
+
+    // }
+    this.loadData();
     this.courseTitle = this.$route.query.courseTitle;
+    this.courseId = this.$route.query.courseId;
+    this.mainId = this.$route.query.checkMainId;
+    this.checkonDate = new Date(
+      this.$route.query.checkonDate.replace(/-/g, "/")
+    );
 
     //this.loadData();
     document.title = "选修考勤详情";
@@ -237,6 +243,11 @@ export default {
       totalPage: 1,
       needShow: false,
       lastShow: false,
+
+      mainId: "",
+      courseId: "",
+      checkonDate: new Date(),
+
       wwwUrl:
         roterPath +
         "/weixin/wechat/views/homework/homework-view.jsp?homeworkId="
@@ -261,6 +272,38 @@ export default {
     },
     onDatePickerConfirm(date) {
       console.log(date);
+      let vm = this;
+      let date_str = `${date.getFullYear()}-${date.getMonth() +
+        1}-${date.getDate()}`;
+      this.$http
+        .post(apiRouter.UPDATE_CHECKON_DATE, {
+          main_id: this.mainId,
+          course_id: this.courseId,
+          date_str
+        })
+        .then(
+          response => {
+            this.showDatePicker = false;
+            if (response.body.code === 200) {
+              this.checkonDate = date;
+              //vm.loadData();
+              this.$router.replace({
+                path: "/ele-std",
+                query: {
+                  courseTitle: vm.courseTitle,
+                  courseId: vm.courseId,
+                  checkMainId: vm.mainId,
+                  checkonDate: date_str
+                }
+              });
+            } else {
+              alert(response.body.message);
+            }
+          },
+          error => {
+            debugger;
+          }
+        );
     },
     onConfirm5(value) {
       let vm = this;

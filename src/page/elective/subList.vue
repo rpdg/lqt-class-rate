@@ -17,7 +17,7 @@
 					<div class="message-handle" style="text-align:center;">
 						<a v-if="news.NOCHECK == 0" class="publishBtn inform">全勤</a>
 						<a v-else class="publishBtn pubisnBtn">有缺勤</a>
-						<div class="publishBtn pubisnBtn" style="margin-top:2px;" @click="confirmDelete">
+						<div class="publishBtn pubisnBtn" style="margin-top:2px;" @click="confirmDelete(news.ID)">
 							<van-icon name="delete-o" style="vertical-align: middle;margin-top: -2px;margin-right:3px;" />撤销
 						</div>
 					</div>
@@ -75,7 +75,7 @@ import {
   Cell,
   Toast
 } from "vux";
-import { Dialog, Tab, Tabs, Icon,  } from "vant";
+import { Dialog, Tab, Tabs, Icon } from "vant";
 import Back from "../../components/common/Back.vue";
 import apiRouter from "../../config/api.js";
 
@@ -174,7 +174,7 @@ export default {
     };
   },
   methods: {
-    async confirmDelete() {
+    async confirmDelete(main_id) {
       let answer = await Dialog.confirm({
         className: "dy-rate-dialog",
         title: "撤销",
@@ -182,8 +182,27 @@ export default {
         confirmButtonText: "确定"
       });
       if (answer === "confirm") {
-        // this.viewMode = 0;
-        // this.$router.back();
+        let vm = this;
+        this.$http
+          .post(apiRouter.DEL_EXISTED_CHECKON, {
+            course_id: this.$route.query.courseId,
+            main_id
+          })
+          .then(
+            response => {
+              if (response.body.code === 200) {
+                let index = vm.messageData.findIndex(val => val.ID === main_id);
+                if (index > -1) {
+                  vm.messageData.splice(index, 1);
+                }
+              } else {
+                alert(response.body.message);
+              }
+            },
+            error => {
+              debugger;
+            }
+          );
       }
     },
     goCheck(e) {
@@ -193,7 +212,8 @@ export default {
         query: {
           courseTitle: vm.courseTitle,
           courseId: vm.courseId,
-          checkMainId: e.ID
+          checkMainId: e.ID,
+          checkonDate : e.CHECKON_DATE
         }
       });
     },
@@ -220,7 +240,7 @@ export default {
             }
           },
           error => {
-            debugger;
+            // debugger;
           }
         );
     },
@@ -244,7 +264,7 @@ export default {
             courseId +
             "&curPage=" +
             vm.page +
-            "&pageSize=10"
+            "&pageSize=20"
         )
         .then(
           response => {
@@ -274,7 +294,7 @@ export default {
             courseId +
             "&curPage=" +
             vm.page +
-            "&pageSize=10"
+            "&pageSize=20"
         )
         .then(
           response => {
