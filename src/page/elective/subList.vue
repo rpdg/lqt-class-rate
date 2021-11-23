@@ -15,9 +15,9 @@
 						<p v-else style="color: #777777">缺勤{{news.NOCHECK}}人</p>
 					</a>
 					<div class="message-handle" style="text-align:center;">
-						<a v-if="news.NOCHECK == 0" class="publishBtn inform" style="font-size:13px;">全勤</a>
-						<a v-else class="publishBtn pubisnBtn" style="font-size:13px;">有缺勤</a>
-						<div class="publishBtn pubisnBtn" style="margin-top:5px;font-size:13px;" @click="confirmDelete(news.ID)">
+						<a v-if="news.NOCHECK == 0" class="publishBtn inform" >全勤</a>
+						<a v-else class="publishBtn pubisnBtn" >有缺勤</a>
+						<div class="publishBtn pubisnBtn" style="margin-top:3px; font-size: 0.42857142857142855rem;" @click="confirmDelete(news.ID)">
 							<van-icon name="delete-o" style="vertical-align: middle;margin-top: -2px;margin-right:3px;" />撤销
 						</div>
 					</div>
