@@ -15,8 +15,6 @@ if (env === "development") {
 
 export { apiPath };
 
-
-
 const apiRouter = {
   NOTICE_TYPE: apiPath + "/app/notice/type",
   SCOPE_DEPT: apiPath + "/app/notice/scope",
@@ -124,8 +122,8 @@ const apiRouter = {
   GET_STUDENT_CHECKON_LIST:
     apiPath + "/wechat/selCourseH5/getAllStudentCheckonList",
   GET_CHANGE_TCHECKON_MAIN: apiPath + "/wechat/selCourseH5/changeTcheckonMain",
-  DEL_EXISTED_CHECKON: apiPath + "wechat/selCourseH5/checkon_del",
-  UPDATE_CHECKON_DATE :apiPath + 'wechat/selCourseH5/chg_checkon_date',
+  DEL_EXISTED_CHECKON: apiPath + "/wechat/selCourseH5/checkon_del",
+  UPDATE_CHECKON_DATE: apiPath + "/wechat/selCourseH5/chg_checkon_date",
 
   GET_STU_ZH_INDEX: apiPath + "/app/zh/teacher/stu_zh_index", //学生/家长点击总评榜图标
   GET_STU_ZH_EVAL: apiPath + "/app/zh/teacher/stu_zh_eval", //学生/家长获取体系接口

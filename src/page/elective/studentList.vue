@@ -124,7 +124,9 @@
 			<div v-if="showCheckDone" style="margin: 10px;overflow: hidden;">
 				<masker fullscreen style="border-radius: 2px;" :opacity="0.8">
 					<div slot="content" class="m-title">
-						<span style="font-size: 1.6em">{{ studentInfo.SHORT_NAME}}{{ studentInfo.NAME }} 本次考勤</span>
+						<span
+							style="font-size: 1.6em"
+						>{{ studentInfo.SHORT_NAME}}{{ studentInfo.NAME }} 本次{{statusView[studentInfo.STATUS]}}</span>
 						<br />
 						<span class="m-time">
 							<h1 class="listBtnRow bingjia" @click="changeStauts('1')">改为到勤</h1>
@@ -142,7 +144,9 @@
 	</div>
 </template>
 
-<script>
+<script lang="js">
+
+
 import {
   Confirm,
   Group,
