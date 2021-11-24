@@ -278,10 +278,10 @@ export default {
 .curriculum-list h4.titleTop .titleTopLeft em {
   width: 40 / @baseSize;
   height: 40 / @baseSize;
+  line-height: 42 / @baseSize;
   display: block;
   float: left;
   text-align: center;
-  line-height: 40 / @baseSize;
   background: @green;
   border-radius: 4px;
   color: @white;
