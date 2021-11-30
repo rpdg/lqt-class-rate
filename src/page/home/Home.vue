@@ -41,7 +41,7 @@
           <a class="link-class" href="#/schedule">
             <div :style="{background:'red',display:'block'}"
             >
-              <img class="icon" src='http://gz.lqtedu.com/weixin/wechat/public/images/icon/wage.png' alt="">
+              <img class="icon" src='http://gz2.lqtedu.com/weixin/wechat/public/images/icon/wage.png' alt="">
             </div>
             <p class="name">课程表</p>
           </a>

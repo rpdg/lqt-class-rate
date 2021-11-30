@@ -1,95 +1,84 @@
 <template>
-   <div class="box">
-    <div class="back-div" ref="heightBackPub" v-if="TOPIC_ID.length > 0">
-      <p @click="backHome()" class="up-back">取消编辑</p>
-    </div>
-    <div class="back-div" ref="heightBackPub" v-else>
-      <p @click="backHome()" class="up-back">取消发布</p>
-    </div>
-    <div class="scope-title-box">
-      <x-textarea
-        :max="1000"
-        @on-focus="onEvent('focus')"
-        @on-blur="onEvent('blur')"
-        class="x-textarea"
-        placeholder="说点什么…"
-        :rows="7"
-        v-model="contentValue"
-        style="font-size: 16px"
-      >
-      </x-textarea>
-    </div>
+	<div class="box">
+		<div class="back-div" ref="heightBackPub" v-if="TOPIC_ID.length > 0">
+			<p @click="backHome()" class="up-back">取消编辑</p>
+		</div>
+		<div class="back-div" ref="heightBackPub" v-else>
+			<p @click="backHome()" class="up-back">取消发布</p>
+		</div>
+		<div class="scope-title-box">
+			<x-textarea
+				:max="1000"
+				@on-focus="onEvent('focus')"
+				@on-blur="onEvent('blur')"
+				class="x-textarea"
+				placeholder="说点什么…"
+				:rows="7"
+				v-model="contentValue"
+				style="font-size: 16px"
+			></x-textarea>
+		</div>
 
+		<div class="send-type">
+			<div class="type-video">
+				<div class="accessory-box">
+					<div class="accessory-img clearfix">
+						<a class="up-photo" href="javascript:;" v-if="imgLenght" @click="uploaderInputVideo()">
+							<img src="../../assets/addup.jpg" alt />
+							<div id="image-list" class="mui_uploader">
+								<input
+									ref="videoFileInputer"
+									id="uploaderInputVideo"
+									class="mui_uploader_input"
+									type="file"
+									accept="video/*"
+								/>
+							</div>
+						</a>
+					</div>
+					<div class="video-tnl" v-if="videoImg === true">
+						<img class="up-videos" :src="videoImgSrc" />
+						<!-- <img class="up-videos" src="http://gz2.lqtedu.com/weixin/wechat/public/images/icon/videopng.png" alt=""> -->
+						<!-- <video :src="getimgUrl(videoFiles.videoUrl)" width="200" height="264" controls autobuffer v-if="videoFiles.videoUrl"></video> -->
+						<!-- <img src="../../assets/cancel.png" alt="" class="cancel" @click="clodesVideo(videoFiles)"> -->
+					</div>
+				</div>
 
+				<div class="ps-info">
+					<p>注：视频最大支持100M，发布后需要后端处理，可能需等待几分钟后显示。</p>
+					<div style="text-align: right;">
+						<button @click="downloadVideo()" class="btn-calie" type="submit">下载视频</button>
+						<button @click="delSubmit()" class="btn-calie" type="submit" v-if="this.isDle === true">删除本条</button>
+						<button
+							v-on:click.native="submitVideo"
+							:show-loading="showLoading"
+							:disabled="showLoading"
+							class="btn-uploder right"
+							type="submit"
+						>发布</button>
+					</div>
+				</div>
+			</div>
+		</div>
 
-    <div class="send-type">
-        <div class="type-video">
-            <div class="accessory-box">
-              <div class="accessory-img clearfix">
-                  <a class="up-photo" href="javascript:;" v-if="imgLenght" @click="uploaderInputVideo()">
-                    <img src="../../assets/addup.jpg" alt="">
-                    <div id='image-list' class="mui_uploader">
-                      <input ref="videoFileInputer" id="uploaderInputVideo" class="mui_uploader_input" type="file" accept="video/*" >
-                    </div>
-                  </a>
-              </div>
-              <div class="video-tnl" v-if="this.videoImg === true">
-                  <img class="up-videos" src="http://gz.lqtedu.com/weixin/wechat/public/images/icon/videopng.png" alt="">
-                  <!-- <video :src="getimgUrl(videoFiles.videoUrl)" width="200" height="264" controls autobuffer v-if="videoFiles.videoUrl"></video> -->
-                  <img src="../../assets/cancel.png" alt="" class="cancel" @click="clodesVideo(videoFiles)">
-              </div>
-            </div>
+		<toast
+			v-model="showPositionValue"
+			type="text"
+			:time="800"
+			is-show-mask
+			:position="position"
+		>{{toastMessage}}</toast>
 
-            <div class="ps-info">
-                <p>
-                  注：视频最大支持100M，发布后可能需等待短暂时间后显示。
-                </p>
-                <div style="text-align: right;">
-                    <button
-                        @click="delSubmit()"
-                        class="btn-calie"
-                        type="submit"
-                        v-if="this.isDle === true"
-                        >删除本条
-                    </button>
-                    <x-button
-                        v-on:click.native="submitVideo"
-                        :show-loading="showLoading"
-                        :disabled="showLoading"
-                        class="btn-uploder right"
-                        type="submit"
-                        >发布
-                    </x-button>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <toast
-      v-model="showPositionValue"
-      type="text"
-      :time="800"
-      is-show-mask
-      :position="position"
-    >
-      {{toastMessage}}
-    </toast>
-
-    <div v-transfer-dom>
-      <confirm
-        v-model="popup"
-        :close-on-confirm="false"
-        :title="('是否确认删除？')"
-        @on-confirm="onConfirm()"
-        confirmText="是，我要删除"
-      >
-      </confirm>
-    </div>
-
-
-
-   </div>
+		<div v-transfer-dom>
+			<confirm
+				v-model="popup"
+				:close-on-confirm="false"
+				:title="('是否确认删除？')"
+				@on-confirm="onConfirm()"
+				confirmText="是，我要删除"
+			></confirm>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -108,6 +97,32 @@ import apiRouter from "../../config/api.js";
 import wx from "weixin-js-sdk";
 import { mapMutations } from "vuex";
 //  import 'video.js/dist/video-js.css'
+
+
+function download(href, filename = '')  {
+  const a = document.createElement('a')
+  a.download = filename
+  a.href = href
+  document.body.appendChild(a)  
+  a.click()
+  a.remove()
+}
+
+function downloadFile(url, filename='') {
+  fetch(url, {
+    headers: new Headers({
+      Origin: location.origin,
+    }),
+    mode: 'cors',
+  })
+    .then(res => res.blob())
+    .then(blob => {
+      const blobUrl = window.URL.createObjectURL(blob)
+      download(blobUrl, filename)
+      window.URL.revokeObjectURL(blobUrl)
+    })
+}
+
 export default {
   directives: {
     TransferDom
@@ -124,12 +139,11 @@ export default {
   created: function() {
     this.SPACE_ID = this.$route.query.SPACE_ID;
     this.TOPIC_ID = this.$route.query.TOPIC_ID;
-  },
-  computed: {},
-  mounted() {
+
     this.showLoading = false;
     console.log("videoFiles", this.videoFiles);
     let _this = this;
+
     _this.TOPIC_ID = this.$route.query.TOPIC_ID;
     if (_this.TOPIC_ID) {
       _this.getDetailData();
@@ -151,7 +165,7 @@ export default {
       text1: "Processing",
       loadShow: false,
       isDle: false,
-      videoImg: false,
+      videoImgSrc: false,
       codeArr: [],
       contentValue: "",
       uploadImg: [],
@@ -177,10 +191,37 @@ export default {
       popup: false,
       key: 1,
       videoUrl:
-        "https://gz.lqtedu.com/weixin/VIDEO/5ae9fa28-6313-473b-9817-372680ec9562.mp4"
+        "https://gz2.lqtedu.com/weixin/VIDEO/5ae9fa28-6313-473b-9817-372680ec9562.mp4"
     };
   },
   methods: {
+    downloadVideo() {
+      // prompt形式调用
+      let that = this;
+      this.$vux.confirm.show({
+        title: "下载",
+        content: "确定下载视频",
+        onCancel() {},
+        onConfirm() {
+          // downloadFile(that.videoUrl);
+          const a = document.createElement("a");
+          a.download = "video.mp4",
+          a.href = 'https://pub3.lqtedu.com/upload/weixin/VIDEO/ddd1b579-fa25-4a8c-ba00-370e6c6d47b6.mp4';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          // $("<a/>", {
+          //   href: 'https://pub3.lqtedu.com/upload/weixin/VIDEO/ddd1b579-fa25-4a8c-ba00-370e6c6d47b6.mp4',//that.videoUrl,
+          //   download: "video.mp4",
+          //   id: "videoDownloadLink"
+          // }).appendTo(document.body);
+          // $("#videoDownloadLink")
+          //   .get(0)
+          //   .click()
+          //   .remove();
+        }
+      });
+    },
     onEvent(event) {
       //   console.log('on', event)
     },
@@ -200,6 +241,7 @@ export default {
         _this.TOPIC_ID;
       _this.$http.post(url).then(
         response => {
+          // debugger;
           console.log(response.body);
           if (response.body.status === 200) {
             setTimeout(_this.backHome, 1200);
@@ -246,6 +288,8 @@ export default {
               if (_this.videoFiles.length > 0) {
                 _this.imgLenght = false;
                 _this.videoImg = true;
+                _this.videoImgSrc = roterPath + _this.videoFiles[0].showUrl;
+                _this.videoUrl = roterPath + _this.videoFiles[0].videoPath;
               }
             }
           },
@@ -493,6 +537,8 @@ export default {
   background: @green;
   margin-right: 40 / @baseSize;
   margin-top: 80 / @baseSize;
+
+  border-radius: 2px;
 }
 
 .cancel-btn {
@@ -545,6 +591,7 @@ export default {
   background: #999999;
   margin-right: 40 / @baseSize;
   margin-top: 80 / @baseSize;
+  border-radius: 2px;
 }
 
 .video-tnl {

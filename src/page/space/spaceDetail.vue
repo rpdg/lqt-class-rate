@@ -84,7 +84,7 @@
                   </a>
               </div>
               <div class="video-tnl" v-if="this.videoImg === true">
-                  <img style="" width="120" height="120" src="http://gz.lqtedu.com/weixin/wechat/public/images/icon/videopng.png" alt="">
+                  <img style="" width="120" height="120" src="http://gz2.lqtedu.com/weixin/wechat/public/images/icon/videopng.png" alt="">
                   <!-- <video :src="getimgUrl(videoFiles.videoUrl)" width="200" height="264" controls autobuffer v-if="videoFiles.videoUrl"></video> -->
                   <img src="../../assets/cancel.png" alt="" class="cancel" @click="clodesVideo(videoFiles)">
               </div>
@@ -238,7 +238,7 @@
           toastMessage: "",
           popup: false,
           key:1,
-          videoUrl:'https://gz.lqtedu.com/weixin/VIDEO/5ae9fa28-6313-473b-9817-372680ec9562.mp4',
+          videoUrl:'https://gz2.lqtedu.com/weixin/VIDEO/5ae9fa28-6313-473b-9817-372680ec9562.mp4',
 
 
           playerOptions: {
@@ -248,7 +248,7 @@
           playbackRates: [0.7, 1.0, 1.5, 2.0],
           sources: [{
             type: "video/mp4",
-            src: 'https://gz.lqtedu.com/weixin/VIDEO/5ae9fa28-6313-473b-9817-372680ec9562.mp4'
+            src: 'https://gz2.lqtedu.com/weixin/VIDEO/5ae9fa28-6313-473b-9817-372680ec9562.mp4'
           }],
         //  poster: "/static/images/author.jpg",
         }
@@ -409,7 +409,7 @@
           arrLen.push(_this.imgfileData[index].code);
         }
         let imgStr = arrLen.join(',');
-      //  let url = "http://gz.lqtedu.com/app/space/publish" + "?SPACE_ID=" +  _this.SPACE_ID + '&CONTENT=' + _this.CONTENT + '&IMG_LIST=' + _this.IMG_LIST + '&TOPIC_ID=' + _this.TOPIC_ID + '&DEL_LIST=' + _this.DEL_LIST;
+      //  let url = "http://gz2.lqtedu.com/app/space/publish" + "?SPACE_ID=" +  _this.SPACE_ID + '&CONTENT=' + _this.CONTENT + '&IMG_LIST=' + _this.IMG_LIST + '&TOPIC_ID=' + _this.TOPIC_ID + '&DEL_LIST=' + _this.DEL_LIST;
          let sendObj = {
             SPACE_ID: _this.SPACE_ID,
             CONTENT: _this.contentValue,
