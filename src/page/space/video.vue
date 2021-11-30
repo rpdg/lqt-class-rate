@@ -50,7 +50,7 @@
 						<button @click="downloadVideo()" class="btn-calie" type="submit">下载视频</button>
 						<button @click="delSubmit()" class="btn-calie" type="submit" v-if="this.isDle === true">删除本条</button>
 						<button
-							v-on:click.native="submitVideo"
+							@click="submitVideo()"
 							:show-loading="showLoading"
 							:disabled="showLoading"
 							class="btn-uploder right"
@@ -389,7 +389,7 @@ export default {
       }
     },
 
-    submitVideo(position, msg) {
+    submitVideo( ) {
       let _this = this;
       _this.showLoading = true;
       console.log(_this.videoFiles);
@@ -405,7 +405,7 @@ export default {
       console.log(sendObj);
 
       if (this.contentValue === "") {
-        this.position = position;
+        // this.position = position;
         this.toastMessage = "请填写标题";
         this.showLoading = false;
         this.showPositionValue = true;
@@ -414,13 +414,13 @@ export default {
           response => {
             console.log(response);
             if (response.body.status === 200) {
-              _this.position = position;
+              // _this.position = position;
               _this.toastMessage = "发布成功";
               _this.showPositionValue = true;
               setTimeout(_this.backHome, 1200);
             }
             if (response.body.status === 201) {
-              _this.position = position;
+              // _this.position = position;
               _this.toastMessage = response.body.message;
               _this.showPositionValue = true;
               _this.showLoading = false;
