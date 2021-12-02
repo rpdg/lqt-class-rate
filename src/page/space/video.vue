@@ -47,7 +47,7 @@
 				<div class="ps-info">
 					<p>注：视频最大支持100M，发布后需要后端处理，可能需等待几分钟后显示。</p>
 					<div style="text-align: right;">
-						<button @click="downloadVideo()" class="btn-calie" type="submit">下载视频</button>
+						<!-- <button @click="downloadVideo()" class="btn-calie" type="submit">下载视频</button> -->
 						<button @click="delSubmit()" class="btn-calie" type="submit" v-if="this.isDle === true">删除本条</button>
 						<button
 							@click="submitVideo()"
