@@ -767,7 +767,7 @@ export default {
 }
 
 .accessory-img {
-  margin-top: 50 / @baseSize;
+  margin-top: 12px;
 }
 
 .weui-cell__ft,
