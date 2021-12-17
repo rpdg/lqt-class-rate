@@ -7,12 +7,12 @@ module.exports = {
 		open: true,
 		proxy: {
 			'/': {
-				target: 'https://gz2.lqtedu.com/',
+				target: 'https://gz.lqtedu.com/',
 				secure: true,
 				changeOrigin: false,
 			},
 			'/app/':{
-				target: 'https://gz2.lqtedu.com/',
+				target: 'https://gz.lqtedu.com/',
 				secure: true,
 				changeOrigin: false,
 			}

@@ -1,11 +1,14 @@
 <template>
 	<div class="box">
-		<div class="back-div" ref="heightBackPub" v-if="TOPIC_ID.length > 0">
+    <back-title-bar :title="TOPIC_ID.length > 0 ? '取消编辑': '取消发布'" />
+    <div class="wapper">
+
+		<!-- <div class="back-div" ref="heightBackPub" v-if="TOPIC_ID.length > 0">
 			<p @click="backHome()" class="up-back">取消编辑</p>
 		</div>
 		<div class="back-div" ref="heightBackPub" v-else>
 			<p @click="backHome()" class="up-back">取消发布</p>
-		</div>
+		</div> -->
 		<div class="scope-title-box">
 			<x-textarea
 				:max="1000"
@@ -38,14 +41,14 @@
 					</div>
 					<div class="video-tnl" v-if="videoImg === true">
 						<img class="up-videos" :src="videoImgSrc" />
-						<!-- <img class="up-videos" src="http://gz2.lqtedu.com/weixin/wechat/public/images/icon/videopng.png" alt=""> -->
+						<!-- <img class="up-videos" src="http://gz.lqtedu.com/weixin/wechat/public/images/icon/videopng.png" alt=""> -->
 						<!-- <video :src="getimgUrl(videoFiles.videoUrl)" width="200" height="264" controls autobuffer v-if="videoFiles.videoUrl"></video> -->
 						<!-- <img src="../../assets/cancel.png" alt="" class="cancel" @click="clodesVideo(videoFiles)"> -->
 					</div>
 				</div>
 
 				<div class="ps-info">
-					<p>注：视频最大支持100M，发布后需要后端处理，可能需等待几分钟后显示。</p>
+					<p>注：视频最大支持100M，发布后需要后台处理，可能需等待几分钟后显示。</p>
 					<div style="text-align: right;">
 						<!-- <button @click="downloadVideo()" class="btn-calie" type="submit">下载视频</button> -->
 						<button @click="delSubmit()" class="btn-calie" type="submit" v-if="this.isDle === true">删除本条</button>
@@ -79,6 +82,7 @@
 			></confirm>
 		</div>
 	</div>
+	</div>
 </template>
 
 <script>
@@ -88,39 +92,40 @@ import {
   Group,
   XSwitch,
   XButton,
+  XHeader,
   Toast,
   TransferDomDirective as TransferDom
 } from "vux";
 import Back from "../../components/common/Back.vue";
+import BackTitleBar from "../../components/common/BackTitleBar.vue";
 //import Photo from "./photo.vue"
 import apiRouter from "../../config/api.js";
 import wx from "weixin-js-sdk";
 import { mapMutations } from "vuex";
-//  import 'video.js/dist/video-js.css'
+import img_pubVideo from "../../assets/pubVideo.png";
 
-
-function download(href, filename = '')  {
-  const a = document.createElement('a')
-  a.download = filename
-  a.href = href
-  document.body.appendChild(a)  
-  a.click()
-  a.remove()
+function download(href, filename = "") {
+  const a = document.createElement("a");
+  a.download = filename;
+  a.href = href;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
 }
 
-function downloadFile(url, filename='') {
+function downloadFile(url, filename = "") {
   fetch(url, {
     headers: new Headers({
-      Origin: location.origin,
+      Origin: location.origin
     }),
-    mode: 'cors',
+    mode: "cors"
   })
     .then(res => res.blob())
     .then(blob => {
-      const blobUrl = window.URL.createObjectURL(blob)
-      download(blobUrl, filename)
-      window.URL.revokeObjectURL(blobUrl)
-    })
+      const blobUrl = window.URL.createObjectURL(blob);
+      download(blobUrl, filename);
+      window.URL.revokeObjectURL(blobUrl);
+    });
 }
 
 export default {
@@ -129,10 +134,12 @@ export default {
   },
   components: {
     Back,
+    BackTitleBar,
     Confirm,
     Group,
     XSwitch,
     XButton,
+    XHeader,
     Toast,
     XTextarea
   },
@@ -165,7 +172,7 @@ export default {
       text1: "Processing",
       loadShow: false,
       isDle: false,
-      videoImgSrc: false,
+      videoImgSrc: '',
       codeArr: [],
       contentValue: "",
       uploadImg: [],
@@ -191,7 +198,7 @@ export default {
       popup: false,
       key: 1,
       videoUrl:
-        "https://gz2.lqtedu.com/weixin/VIDEO/5ae9fa28-6313-473b-9817-372680ec9562.mp4"
+        "https://gz.lqtedu.com/weixin/VIDEO/5ae9fa28-6313-473b-9817-372680ec9562.mp4"
     };
   },
   methods: {
@@ -205,8 +212,9 @@ export default {
         onConfirm() {
           // downloadFile(that.videoUrl);
           const a = document.createElement("a");
-          a.download = "video.mp4",
-          a.href = 'https://pub3.lqtedu.com/upload/weixin/VIDEO/ddd1b579-fa25-4a8c-ba00-370e6c6d47b6.mp4';
+          (a.download = "video.mp4"),
+            (a.href =
+              "https://pub3.lqtedu.com/upload/weixin/VIDEO/ddd1b579-fa25-4a8c-ba00-370e6c6d47b6.mp4");
           document.body.appendChild(a);
           a.click();
           a.remove();
@@ -389,7 +397,7 @@ export default {
       }
     },
 
-    submitVideo( ) {
+    submitVideo() {
       let _this = this;
       _this.showLoading = true;
       console.log(_this.videoFiles);
@@ -417,6 +425,7 @@ export default {
               // _this.position = position;
               _this.toastMessage = "发布成功";
               _this.showPositionValue = true;
+              _this.videoImgSrc = img_pubVideo;
               setTimeout(_this.backHome, 1200);
             }
             if (response.body.status === 201) {
@@ -609,5 +618,17 @@ export default {
 .scope-title-box {
   border-bottom: 1px solid @colorDD;
   margin-bottom: 30 / @baseSize;
+}
+</style>
+
+<style lang="less" scoped>
+@import "../../style/minxin.less";
+.wapper {
+  position: absolute;
+  top: 47px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: scroll;
 }
 </style>

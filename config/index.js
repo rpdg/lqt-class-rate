@@ -31,7 +31,7 @@ module.exports = {
     proxyTable: {
       '/api': {
         //target: 'http://192.168.1.5:8080/',
-        target: 'https://gz2.lqtedu.com/',
+        target: 'https://gz.lqtedu.com/',
 				secure: true,
         changeOrigin: true,
         pathRewrite: {

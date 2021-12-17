@@ -3,5 +3,5 @@ var devEnv = require('./dev.env')
 
 module.exports = merge(devEnv, {
   NODE_ENV: '"testing"',
-  API_BASE_URL: '"http://gz2.lqtedu.com/"'
+  API_BASE_URL: '"http://gz.lqtedu.com/"'
 })
