@@ -63,8 +63,8 @@ const apiRouter = {
   BACK_SPACE: apiPath + "/weixin/wechat/views/class/home.jsp?SPACE_ID=", // 返回空间
 
   // 工资单
-  GET_WAGELIST: apiPath + "/app/wage/myWageList",
-  GET_WAGEINFO: apiPath + "/app/wage/myWageData",
+  GET_WAGELIST: apiPath + "/app/wage/myWageData_pro",
+  GET_WAGEINFO: apiPath + "/app/wage/myWageData_detail_pro",
 
   //获取用户日历分类类型
   GET_CALENDAR_TYPE: apiPath + "/app/calendar/type",

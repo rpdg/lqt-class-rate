@@ -4,19 +4,19 @@
 		<!--    <p @click="goBack()" class="up-back">返回</p>-->
 		<!--  </div>-->
 		<x-header class="title-header" :left-options="{preventGoBack: true}" @on-click-back="goBack">工资单</x-header>
-		<div v-if="!this.showEmptyImg">
+		<div v-if="!showEmptyImg">
 			<div class="payroll-div">
 				<div class="payroll-title">
 					<h1>
-						<span>{{titleHead === "全年" ? this.yearCode + "年全年" : titleHead}}</span>
+						<span>{{titleHead === "全年" ? yearCode + "年全年" : titleHead}}</span>
 						<a href="javascript:void(0);">
 							<x-address
 								:title="title"
 								v-model="value"
 								:value="value"
 								:list="addressData"
-								@on-hide="logHide"
-								@on-shadow-change="onShadowChange"
+								@on-hide="handleClose"
+								@on-shadow-change="handleChange"
 								:show.sync="showPicker"
 							></x-address>
 						</a>
@@ -26,7 +26,7 @@
 			<div class="lisnem" v-if="hasData">
 				<ul class="payroll-list-d" v-if="isShowMonthEntry">
 					<li v-for="item in detailList" :class="addclassname(item.AMOUNT)" :key="item.ID">
-						<span>{{ item.NAME }}</span>
+						<span :class="isUnion?'blueLink':''" @click="handleClickDetail(item)">{{ item.NAME }}</span>
 						<i>{{ item.AMOUNT }}</i>
 					</li>
 				</ul>
@@ -50,11 +50,11 @@
 			<span>暂时还没有相关信息哟〜</span>
 		</div>
 
-		<popup v-model="isShowMonthEntry" height="75vh">
+		<popup v-model="showUnionPicker" height="50vh">
 			<div style="height:75vh;display:flex;overflow: auto;">
 				<ul class="payroll-list-d">
-					<li v-for="item in detailList" :class="addclassname(item.AMOUNT)" :key="item.ID">
-						<span>{{ item.NAME }}</span>
+					<li v-for="(item, idx) in unionData" :class="addclassname(item.AMOUNT)" :key="idx">
+						<span>{{ item.NAME || item.ITEM_NAME }}</span>
 						<i>{{ item.AMOUNT }}</i>
 					</li>
 				</ul>
@@ -103,11 +103,15 @@ export default {
       value: [],
       wageID: "",
       wwwUrl: roterPath,
-      yearCode: ""
+      yearCode: "",
+      wageObjectName: "",
+      wageHash: {},
+      showUnionPicker: false,
+      unionData: []
     };
   },
   mounted() {
-    this.getDetailData();
+    this.getListOptions();
     let path = this.$route.name;
     // console.log(path);
     if (path === "payrolllist") {
@@ -120,13 +124,18 @@ export default {
   // updated() {
   //   //    console.log("New",this.yearCode,this.titleHead);
   // },
+  computed: {
+    isUnion: function() {
+      return this.wageObjectName === "T_WAGE_UNION_TOTAL";
+    }
+  },
   methods: {
-    getDetailData() {
+    getListOptions() {
       let _this = this;
 
-      let apiUrl = `${apiRouter.GET_WAGEINFO}?yearCode=${this.yearCode}&id=${
-        this.wageID
-      }`;
+      let apiUrl = `${apiRouter.GET_WAGELIST}?yearCode=${
+        this.yearCode
+      }&object_name=${this.wageObjectName}&object_id=${this.wageID}`;
 
       this.$http.get(apiUrl).then(
         response => {
@@ -139,13 +148,15 @@ export default {
               _this.showEmptyImg = false;
               _this.navTitle = _data.year_code;
               _this.hasData = !!_data.detail_list.length;
+
               _this.detailList = _data.detail_list;
               _this.total = _data.total;
 
               _this.addressData = _this.getSelectDates(_data.sel_list);
 
               _this.currtYear = _data.year_code;
-              _this.currtMonth = _data.wage_id;
+              _this.currtMonth = _data.object_id;
+              _this.wageObjectName = _data.object_name;
 
               _this.value = [_this.currtYear, _this.currtMonth];
               console.log("value", _this.value);
@@ -161,9 +172,11 @@ export default {
       );
     },
 
-    getListData() {
+    getListetail() {
       let _this = this;
-      let pathUrl = apiRouter.GET_WAGELIST + "?yearCode=" + this.yearCode;
+      let pathUrl =
+        apiRouter.GET_WAGEINFO +
+        `?obj_name=${this.wageObjectName}&id=${this.wageID}`;
       this.$http.get(pathUrl).then(
         response => {
           if (response.status === 200) {
@@ -194,9 +207,12 @@ export default {
         });
 
         item.WAGE_LIST.forEach(item_sub => {
+          this.wageHash[item_sub.OBJECT_ID] = item_sub.OBJECT_NAME;
+
           optionArr.push({
-            name: item_sub.WAGE_NAME,
-            value: item_sub.WAGE_ID,
+            name: item_sub.NAME,
+            value: item_sub.OBJECT_ID,
+            // x-address 数据结构必须
             parent: item.YEAR_CODE
           });
         });
@@ -220,20 +236,46 @@ export default {
       }
     },
 
-    onShadowChange(ids, names) {
-      this.yearCode = ids[0];
-      this.wageID = ids[1];
-      this.titleHead = names[1];
+    handleClickDetail(item) {
+      if (this.isUnion) {
+        this.showUnionPicker = true;
+        this.unionData = [];
+        // console.log(item);
+
+        let _this = this;
+
+        this.$http
+          .get(
+            `${apiRouter.GET_WAGEINFO}?obj_name=${item.OBJ_NAME}&id=${item.ID}`
+          )
+          .then(response => {
+            if (response.status === 200) {
+              _this.unionData = response.body.data.TOTAL_LIST;
+            }
+          });
+      }
     },
 
-    logHide(str) {
-      console.log("on-hide", str);
+    handleChange(ids, names) {
+      console.log("ids, names: ", ids, names);
 
-      if (str) {
+      this.yearCode = ids[0];
+
+      this.wageID = ids[1];
+
+      this.titleHead = names[1];
+
+      this.wageObjectName = this.wageHash[ids[1]];
+    },
+
+    handleClose(isConfirm) {
+      // console.log("on-hide", isConfirm);
+
+      if (isConfirm) {
         if (this.wageID) {
-          this.getDetailData();
+          this.getListOptions();
         } else {
-          this.getListData();
+          this.getListetail();
         }
       }
     },
