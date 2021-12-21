@@ -50,7 +50,7 @@
 			<span>暂时还没有相关信息哟〜</span>
 		</div>
 
-		<popup v-model="showUnionPicker" height="50vh">
+		<popup v-model="showUnionPicker" height="80vh">
 			<div style="height:75vh;display:flex;overflow: auto;">
 				<ul class="payroll-list-d">
 					<li v-for="(item, idx) in unionData" :class="addclassname(item.AMOUNT)" :key="idx">
@@ -111,7 +111,7 @@ export default {
     };
   },
   mounted() {
-    this.getListOptions();
+    this.getListOptions(false);
     let path = this.$route.name;
     // console.log(path);
     if (path === "payrolllist") {
@@ -130,7 +130,7 @@ export default {
     }
   },
   methods: {
-    getListOptions() {
+    getListOptions(isFullYear) {
       let _this = this;
 
       let apiUrl = `${apiRouter.GET_WAGELIST}?yearCode=${
@@ -155,8 +155,8 @@ export default {
               _this.addressData = _this.getSelectDates(_data.sel_list);
 
               _this.currtYear = _data.year_code;
-              _this.currtMonth = _data.object_id;
-              _this.wageObjectName = _data.object_name;
+              _this.currtMonth = isFullYear ? "" : _data.object_id;
+              _this.wageObjectName = isFullYear ? "T_WAGE" : _data.object_name;
 
               _this.value = [_this.currtYear, _this.currtMonth];
               console.log("value", _this.value);
@@ -272,11 +272,12 @@ export default {
       // console.log("on-hide", isConfirm);
 
       if (isConfirm) {
-        if (this.wageID) {
-          this.getListOptions();
-        } else {
-          this.getListetail();
-        }
+        // debugger;
+        // if (this.wageID) {
+        this.getListOptions(!this.wageID);
+        // } else {
+        //   this.getListetail();
+        // }
       }
     },
     // logShow(str) {
