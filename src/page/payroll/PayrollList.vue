@@ -36,12 +36,12 @@
 						<i>{{ item.TOTAL }}</i>
 					</li>
 				</ul>
-				<!-- <div class="payroll-bottom">
+				<div class="payroll-bottom" v-if="total">
 					<p>
 						<span>合计金额</span>
 						<span>{{ total }}</span>
 					</p>
-				</div>-->
+				</div>
 			</div>
 		</div>
 
@@ -150,7 +150,7 @@ export default {
               _this.hasData = !!_data.detail_list.length;
 
               _this.detailList = _data.detail_list;
-              _this.total = _data.total;
+              _this.total = isFullYear ? _data.total : '';
 
               _this.addressData = _this.getSelectDates(_data.sel_list);
 
