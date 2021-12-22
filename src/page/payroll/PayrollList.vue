@@ -68,6 +68,9 @@ import Back from "../../components/common/Back.vue";
 import apiRouter from "../../config/api.js";
 import { Group, XAddress, XButton, Cell, XHeader, Popup } from "vux";
 
+function toRaw(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
 export default {
   components: {
     Back,
@@ -97,7 +100,6 @@ export default {
       storYear: "",
       title: "更换工资表",
       titleHead: "",
-      titleName: "",
       total: "",
       url: "",
       value: [],
@@ -118,12 +120,6 @@ export default {
       this.loadUrl();
     }
   },
-  // updated() {
-  //   //  this.showDetailData();
-  // },
-  // updated() {
-  //   //    console.log("New",this.yearCode,this.titleHead);
-  // },
   computed: {
     isUnion: function() {
       return this.wageObjectName === "T_WAGE_UNION_TOTAL";
@@ -150,16 +146,21 @@ export default {
               _this.hasData = !!_data.detail_list.length;
 
               _this.detailList = _data.detail_list;
-              _this.total = isFullYear ? _data.total : '';
+              _this.total = isFullYear ? _data.total : "";
 
               _this.addressData = _this.getSelectDates(_data.sel_list);
+              console.log("addressData", toRaw(_this.addressData));
 
               _this.currtYear = _data.year_code;
               _this.currtMonth = isFullYear ? "" : _data.object_id;
               _this.wageObjectName = isFullYear ? "T_WAGE" : _data.object_name;
 
-              _this.value = [_this.currtYear, _this.currtMonth];
-              console.log("value", _this.value);
+              _this.value = [
+                _this.currtYear,
+                _this.currtMonth || "F-" + _this.currtYear
+              ];
+              console.log("value", toRaw(_this.value));
+
               console.log("titleHead", _this.titleHead);
             } else if (_data.has_wage === "0") {
               _this.showEmptyImg = true;
@@ -207,18 +208,18 @@ export default {
         });
 
         item.WAGE_LIST.forEach(item_sub => {
-          this.wageHash[item_sub.OBJECT_ID] = item_sub.OBJECT_NAME;
+          let value = item_sub.OBJECT_ID || "F-" + item.YEAR_CODE;
+
+          this.wageHash[value] = item_sub.OBJECT_NAME;
 
           optionArr.push({
             name: item_sub.NAME,
-            value: item_sub.OBJECT_ID,
+            value,
             // x-address 数据结构必须
             parent: item.YEAR_CODE
           });
         });
       });
-
-      console.log("option List", optionArr);
 
       return optionArr;
     },
@@ -257,15 +258,19 @@ export default {
     },
 
     handleChange(ids, names) {
-      console.log("ids, names: ", ids, names);
+      console.log("[handleChange]", "ids:", ids, "names:", names);
 
       this.yearCode = ids[0];
 
-      this.wageID = ids[1];
-
+      this.wageID = ids[1].indexOf("F-") === 0 ? "" : ids[1];
       this.titleHead = names[1];
-
       this.wageObjectName = this.wageHash[ids[1]];
+      console.log(
+        "[handleChange]:Value ",
+        this.wageID,
+        this.titleHead,
+        this.wageObjectName
+      );
     },
 
     handleClose(isConfirm) {
