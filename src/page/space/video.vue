@@ -368,6 +368,7 @@ export default {
             if (response.status === 200) {
               let _file = response.body.file;
               callback && callback(_file);
+              _this.videoImgSrc = img_pubVideo;
               _this.$vux.loading.hide();
             }
           },
