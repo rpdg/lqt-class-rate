@@ -110,7 +110,8 @@
             this.$router.push({path: 'ans-scoring',query:{id:e.id}})
           }
         }else{
-          window.location.href=roterPath+"/weixin/wechat/views/profile/qa_detail.jsp?qid="+e.id;//A11260
+          // window.location.href=roterPath+"/weixin/wechat/views/profile/qa_detail.jsp?qid="+e.id;//A11260
+          window.location.href = '/weixin/wechat/v2/index.html#/questionnaire/' + e.id;
         }
       },
       showData() {
