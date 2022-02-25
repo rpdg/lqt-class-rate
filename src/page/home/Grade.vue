@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <back></back>
+    <back-title-bar title="发通知" />
     <h3 class="title">请选择通知范围</h3>
     <div class="curriculum clearfix">
       <div class="curriculum-list clearfix" v-for="(items,index1) in curriculum">
@@ -23,12 +23,12 @@
 </template>
 
 <script>
-  import Back from "../../components/common/Back.vue"
+  import BackTitleBar from "../../components/common/BackTitleBar.vue";
   import {mapGetters,mapMutations} from 'vuex'
   import apiRouter from "../../config/api.js"
   export default {
     components: {
-      Back
+      BackTitleBar
     },
     computed: {
       ...mapGetters([
