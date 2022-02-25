@@ -1,8 +1,9 @@
 <template>
   <div class="form-info clearfix">
+    <back-title-bar :title="`取消${TOPIC_ID.length?'编辑':'发布'}`" />
 
-    <p class="cancel-btn" @click="backHome()" v-if="TOPIC_ID.length > 0">取消编辑</p>
-    <p class="cancel-btn" @click="backHome()" v-else>取消发布</p>
+    <!-- <p class="cancel-btn" @click="backHome()" v-if="TOPIC_ID.length > 0">取消编辑</p>
+    <p class="cancel-btn" @click="backHome()" v-else>取消发布</p> -->
 
     <div class="scope-title-box">
       <x-textarea
@@ -80,7 +81,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+  import BackTitleBar from "../../components/common/BackTitleBar.vue";
 import {
   Toast,
   Checker,
@@ -111,6 +112,7 @@ export default {
       TransferDom
     },
   components: {
+    BackTitleBar,
     Toast,
     Group,
     XAddress,
@@ -173,7 +175,9 @@ export default {
       newContent: "", //  内容
       newImgList: "", // 附件
 
-      newClassIds: ""
+      newClassIds: "",
+      TOPIC_ID: '',
+      SPACE_ID:''
     };
   },
   created() {
