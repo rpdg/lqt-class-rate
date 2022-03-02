@@ -1,6 +1,8 @@
 <template>
   <div class="box">
+    <div class="back-div">
       <back-title-bar :title="`返回`" />
+    </div>
     <div class="context clearfix">
       <h3 class="title">请选择需要评价{{nameBt}}的班级</h3>
       <ul class="maple-info">

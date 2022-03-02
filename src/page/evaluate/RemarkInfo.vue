@@ -1,7 +1,7 @@
 <template>
   <div class="box">
     <div class="back-div">
-      <p @click="goBack()" class="up-back">返回</p>
+       <back-title-bar :title="`返回`" />
     </div>
     <div class="context clearfix">
       <h3 class="title">{{className}}-{{nameBt}}</h3>
@@ -43,7 +43,7 @@
 
 <script>
   import { Toast,GroupTitle, Group, Cell, XInput, XNumber, XTextarea,XDialog, TransferDomDirective as TransferDom  } from 'vux'
-  import Back from "../../components/common/Back.vue"
+  import BackTitleBar from "../../components/common/BackTitleBar.vue";
   import apiRouter from "../../config/api.js"
 
   import {mapGetters,mapMutations} from 'vuex'
@@ -51,7 +51,7 @@
   export default {
     components: {
       Toast,
-      Back,
+      BackTitleBar,
       GroupTitle,
       Group,
       Cell,

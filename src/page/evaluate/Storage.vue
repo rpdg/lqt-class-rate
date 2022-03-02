@@ -1,6 +1,6 @@
 <template>
     <div class="box">
-      <Back></Back>
+      <back-title-bar :title="`返回`" />
       <div class="sorage-info clearfix">
         <div class="sorage-number bordr-bottom clearfix">
             <span class="sorage-left">学号姓名：</span>
@@ -76,7 +76,7 @@
 
 <script>
   import { GroupTitle, Group, Cell, XInput, XNumber, XTextarea,XDialog, TransferDomDirective as TransferDom  } from 'vux'
-  import Back from "../../components/common/Back.vue"
+  import BackTitleBar from "../../components/common/BackTitleBar.vue";
   import apiRouter from "../../config/api.js"
   import {mapGetters,mapMutations} from 'vuex'
   export default {
@@ -84,7 +84,7 @@
       TransferDom
     },
       components: {
-        Back,
+        BackTitleBar,
         GroupTitle,
         Group,
         Cell,
