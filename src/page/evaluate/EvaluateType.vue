@@ -1,11 +1,6 @@
 <template>
     <div class="box">
-<!--      <div class="back-div">-->
-<!--        <p @click="goBack()" class="up-back">返回</p>-->
-<!--      </div>-->
-        <x-header class="title-header" :left-options="{preventGoBack: true}"
-                  @on-click-back="goBack">评价
-        </x-header>
+        <back-title-bar :title="`评价`" :backUrl="`/`" />
       <div class="context clearfix">
         <h3 class="title">请选择评价类型与项目</h3>
             <div v-for="(items,index1) in getData" :key="index1">
@@ -28,12 +23,12 @@
 </template>
 
 <script>
-  import Back from "../../components/common/Back.vue"
+  import BackTitleBar from "../../components/common/BackTitleBar.vue"
   import {Cell, CellBox, CellFormPreview, Group, Badge,XHeader } from 'vux'
   import apiRouter from "../../config/api.js"
   export default {
       components: {
-        Back,
+        BackTitleBar,
         Group,
         Cell,
         CellFormPreview,

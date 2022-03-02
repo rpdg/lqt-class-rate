@@ -1,7 +1,7 @@
 <template>
   <div class="box">
     <div class="back-div">
-      <back-title-bar :title="`返回`" />
+      <back-title-bar :title="`返回`" :backUrl="`/evaluate`" />
     </div>
     <div class="context clearfix">
       <h3 class="title">请选择需要评价{{nameBt}}的班级</h3>
