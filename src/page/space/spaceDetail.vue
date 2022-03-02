@@ -1,8 +1,6 @@
 <template>
    <div class="box">
-    <div class="back-div" ref="heightBackPub">
-      <p @click="goBack()" class="up-back">取消发布</p>
-    </div>
+    <back-title-bar :title="`返回`" />
 
     <div class="spacedetail">
       <x-textarea
@@ -145,7 +143,7 @@
 
 <script>
   import {Confirm,XTextarea, Group, XSwitch, XButton,Toast,TransferDomDirective as TransferDom} from 'vux'
-  import Back from "../../components/common/Back.vue"
+  import BackTitleBar from "../../components/common/BackTitleBar.vue";
   //import Photo from "./photo.vue"
   import apiRouter from "../../config/api.js"
     import wx from "weixin-js-sdk";
@@ -157,7 +155,7 @@
       TransferDom
     },
     components: {
-      Back,
+      BackTitleBar,
       Confirm,
       Group,
       XSwitch,
