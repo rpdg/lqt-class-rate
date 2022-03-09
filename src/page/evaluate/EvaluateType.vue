@@ -2,7 +2,7 @@
     <div class="box">
         <back-title-bar :title="`评价`" :backUrl="`/`" />
       <div class="context clearfix">
-        <h3 class="title">请选择评价类型与项目</h3>
+        <h3 class="title">请选择评价类型与条目</h3>
             <div v-for="(items,index1) in getData" :key="index1">
                 <cell
                   :title="items.SCOPE_NAME"

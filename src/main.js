@@ -13,8 +13,8 @@ import vueEventCalendarWeek from './components/vue-event-calendar-week'
 
 
 //日历控件
-Vue.use(vueEventCalendar, {locale: 'zh',color:'#42BD41'}) //可以设置语言，支持中文和英文
-Vue.use(vueEventCalendarWeek, {locale: 'zh',color:'#42BD41'}) //可以设置语言，支持中文和英文
+Vue.use(vueEventCalendar, {locale: 'zh',color:'#48b319'}) //可以设置语言，支持中文和英文
+Vue.use(vueEventCalendarWeek, {locale: 'zh',color:'#48b319'}) //可以设置语言，支持中文和英文
 
 //import VueVideoPlayer from 'vue-video-player'
 //import 'video.js/dist/video-js.css'

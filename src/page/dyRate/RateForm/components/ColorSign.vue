@@ -25,8 +25,8 @@ export default {
 }
 
 .btnGreenBorder {
-  border-color: #54b331;
-  color: #54b331;
+  border-color: #48b319;
+  color: #48b319;
   padding: 0 1em;
 }
 
