@@ -103,6 +103,7 @@
 </template>
 <script>
   // Load Style Code
+  import axios from 'axios';
   import 'tui-image-editor/dist/tui-image-editor.css';
   import './imgEditor/css/service-mobile.css';
   import './imgEditor/css/tui-color-picker.css';
@@ -305,7 +306,7 @@
         //multiplier: 0.5,
         let dataURL = imageEditor.toDataURL({
           format:'jpeg',
-          quality: 0.5,
+          quality: 0.7,
         });
         console.log(dataURL);
         console.log(this.getImgByteSize(dataURL)/1024);
@@ -317,13 +318,20 @@
           text: '上传中...'
         });
 
-        this.$http.post(apiRouter.POST_HOMEWORK_FILE, data).then(response => {
+        let formData = new FormData()
+        formData.append('baseImg' , dataURL)
+        
+
+        // this.$http.post(apiRouter.POST_HOMEWORK_FILE, data)
+        
+        axios.post(apiRouter.POST_HOMEWORK_FILE, formData).then(response => {
+          debugger
           vm.$vux.loading.hide();
-          if (response.body.code == '200') {
+          if (response.data.code === 200) {
             vm.$vux.toast.text("图片上传成功!")
-            vm.$emit('finishEdit',response.body.data);
+            vm.$emit('finishEdit',response.data.data);
           } else {
-            vm.$vux.toast.text(response.body.message);
+            vm.$vux.toast.text(response.data.message);
             vm.$vux.loading.hide();
 
           }

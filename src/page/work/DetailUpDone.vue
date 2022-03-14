@@ -333,6 +333,8 @@
   import WorkComment from './WorkComment.vue';
   import ImgApp from "./ImgApp";
 
+  import testImg from '../../assets/addup.jpg'
+
   export default {
     directives: {
       TransferDom
@@ -631,6 +633,7 @@
           url = roterPath + '/' + e.ANSWER;
         }
         this.$refs.imgApp.initImg(url);
+        // this.$refs.imgApp.initImg(testImg);
       },
 
       finishEdit(e) {
