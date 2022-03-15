@@ -13,7 +13,8 @@
         <div style="font-size: 14px">
           <span v-if="!item.ID" style="color: #d9534f">未完成</span>
           <span v-else-if="item.CAN_CHANGE == 1" style="color: #ED9C28"> 待订正</span>
-          <span v-else-if="item.TYPE !=1" style="color: #666666">待批阅</span>
+          <span v-else-if="item.TYPE !=1 && item.DZ_FLAG == '0'" style="color: #666666">待批阅</span>
+          <span v-else-if="item.TYPE !=1 && item.DZ_FLAG == '1'" style="color: #666666">已订正</span>
           <span v-else style="color:#48B319">已批阅</span>
         </div>
       </cell>
