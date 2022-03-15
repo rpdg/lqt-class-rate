@@ -625,7 +625,7 @@
         this.currentType = type;
         this.currentVIndex = i;
         this.currentIndex = parentIndex;
-        debugger;
+        // debugger;
         if (type == '1') {
           url = roterPath + '/' + e.sUrl;
           //let url = e.sUrl;
@@ -633,7 +633,7 @@
           url = roterPath + '/' + e.ANSWER;
         }
         this.$refs.imgApp.initImg(url);
-        // this.$refs.imgApp.initImg(testImg);
+        // this.$refs.imgApp.initImg('https://picsum.photos/600/900?grayscale');
       },
 
       finishEdit(e) {
