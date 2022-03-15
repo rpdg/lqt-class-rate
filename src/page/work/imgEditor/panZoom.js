@@ -50,7 +50,7 @@ const $ = window.jQuery;
         
         scrollContainer = $('#tui-image-editor-container');
         editorContainer = $('.tui-image-editor-canvas-container')[0];
-        // $(editorContainer).css({maxHeight: 'unset' , maxWidth: 'unset'});
+        $(editorContainer).css({maxHeight: 'unset' , maxWidth: 'unset'});
         editorContainer.addEventListener('pointerdown', onPointerDown, false);
         editorContainer.addEventListener('touchmove', onTouchMove, false);
         editorContainer.addEventListener('touchend', onTouchEnd, false);
@@ -113,7 +113,7 @@ const $ = window.jQuery;
 
     function onTouchMove(event) {
         
-        console.log('onTouchMove');
+        // console.log('onTouchMove');
         
         // Pinch / Zoom
         if(event.targetTouches){
@@ -204,7 +204,6 @@ const $ = window.jQuery;
         var moveY =  touchStart.y - clientY;
 
         // console.log('pan..', moveX);
-        // debugger
         scrollContainer.scrollLeft(panInitial.left + moveX);
         scrollContainer.scrollTop(panInitial.top + moveY);
 
@@ -227,7 +226,7 @@ const $ = window.jQuery;
     
     /** zoom from pinch */
     function scaleCanvas(zoomIn, wDelta, e) {
-        console.log('scaleCanvas', wDelta);
+        // console.log('scaleCanvas', wDelta);
         // console.log("touch: ", e.touches[0].clientY);
         var imageOriginalSize = {
             width: imageEditor._graphics.canvasImage.width
@@ -235,7 +234,7 @@ const $ = window.jQuery;
         };
         //      var imageEditorWindow = e.currentTarget;
         var imageEditorWindow = $('.tui-image-editor-canvas-container')[0];
-        // $('.tui-image-editor-canvas-container, .lower-canvas , .upper-canvas').css({maxHeight: 'unset' , maxWidth: 'unset'});
+        $(imageEditorWindow).css({maxHeight: 'unset' , maxWidth: 'unset'});
         var initWidth = $(imageEditorWindow).width();
         var initHeight = $(imageEditorWindow).height();
         var scrollContainerInitial = {
