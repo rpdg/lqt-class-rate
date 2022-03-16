@@ -119,7 +119,8 @@
     },
     activated() {
       this.loadData();
-      this.navBarTitle = this.$route.query.title;
+      // this.navBarTitle = this.$route.query.title;
+      this.navBarTitle = window.localStorage.getItem('lqt-homework-title');
       this.oldPageTitle = document.title;
       document.title = '作业批改';
     },
@@ -169,7 +170,7 @@
         this.$router.push({path:'/work-list'})
       },
       goDetail(e){
-        this.$router.push({path:'/detail-up',query: {userId: e.USER_ID,workId:e.WORK_ID}})
+        this.$router.push({path:'/detail-up',query: {userId: e.USER_ID,workId:e.WORK_ID , stuName: e.NAME}})
       },
       switchTabItem(e){
         this.selectTab = e;

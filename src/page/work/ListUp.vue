@@ -81,7 +81,8 @@
     },
     methods: {
       goCheck(obj){
-        this.$router.push({path:'/check-work-list',query: {id: obj.ID , title:obj.TITLE}})
+        window.localStorage.setItem('lqt-homework-title' , obj.TITLE);
+        this.$router.push({path:'/check-work-list',query: {id: obj.ID }})
       },
 
       goBack(){

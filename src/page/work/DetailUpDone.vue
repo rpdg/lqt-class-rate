@@ -1,7 +1,7 @@
 <template>
   <div>
     <x-header class="title-header" :left-options="{preventGoBack: true}"
-              @on-click-back="goBack">作业详情
+              @on-click-back="goBack">{{userName}}的作业
     </x-header>
 
     <div class="lqt-container lqt-wrapper" style="top: 1em">
@@ -327,20 +327,22 @@
     XButton,
     XDialog
   } from 'vux';
+  import {
+  Dialog,
+} from "vant";
   import apiRouter from "../../config/api.js";
   import wx from "weixin-js-sdk";
   import FirstHeader from './FirstHeader.vue';
   import WorkComment from './WorkComment.vue';
   import ImgApp from "./ImgApp";
 
-import axios from 'axios';
-  import testImg from '../../assets/addup.jpg'
 
   export default {
     directives: {
       TransferDom
     },
     components: {
+      [Dialog.Component.name]: Dialog.Component,
       ImgApp,
       WorkComment,
       Popup,
@@ -379,12 +381,17 @@ import axios from 'axios';
         //   this.loadData();
         // }
 
+      },
+      upCheckMap(val){
+        debugger
+        this.handleModify(!!val.score || !!val.comment)
       }
     },
     activated() {
       this.currentWork = 0;
       this.workId = this.$route.query.workId;
       this.userId = this.$route.query.userId;
+      this.userName = this.$route.query.stuName;
       this.loadData();
 
       this.oldPageTitle = document.title;
@@ -393,6 +400,15 @@ import axios from 'axios';
     },
     deactivated(){
       document.title = this.oldPageTitle;
+    },
+    beforeRouteLeave(to, from, next) {
+      // if(this.upCheckMap.score  || this.upCheckMap.comment){
+      //   next(false);
+      // }
+      // else {
+        window.onbeforeunload = null;
+        next();
+      // }
     },
     beforeRouteUpdate(to, from, next) {
       this.loadData();
@@ -409,6 +425,7 @@ import axios from 'axios';
     },
     data() {
       return {
+        dataModified:false,
         oldPageTitle:'',
         upCheckMap: {
           score: 0,
@@ -451,6 +468,8 @@ import axios from 'axios';
         typeId: '',
         typeCode: '',
 
+        userName : '',
+        userId : 0,
 
         //
         workObj: {},
@@ -481,6 +500,18 @@ import axios from 'axios';
     },
 
     methods: {
+      handleModify(b) {
+        this.dataModified = b;
+
+        if (b) {
+          window.onbeforeunload = function(e) {
+            e.preventDefault();
+            e.returnValue = "已有录入数据，确定放弃数据并离开页面？";
+          };
+        } else {
+          window.onbeforeunload = null;
+        }
+      },
       saveUp(e) {
         let vm = this;
         let quesList = this.quesList;
@@ -533,6 +564,10 @@ import axios from 'axios';
         this.$http.post(apiRouter.POST_HOMEWORK_UP_SAVE, data).then(response => {
           //vm.$vux.loading.hide();
           if (response.body.code == '200') {
+            this.upCheckMap = {
+              score: 0,
+              comment: ''
+            };
             if (!response.body.data.studentMap) {
               vm.$vux.toast.text(response.body.message);
               setTimeout(function () {
@@ -614,8 +649,12 @@ import axios from 'axios';
         this.$http.post(apiRouter.POST_HOMEWORK_BACK, formData).then(response => {
           vm.$vux.loading.hide();
           if (response.body.code == '200') {
-            vm.$vux.toast.text("发回订正成功！")
+            vm.$vux.toast.text("发回订正成功！");
             setTimeout(function () {
+              this.upCheckMap = {
+                score: 0,
+                comment: ''
+              };
               vm.goBack();
             }, 500)
           } else {
@@ -704,8 +743,24 @@ import axios from 'axios';
         this.show8 = true;
       },
       //------------------------------------
-      goBack() {
-        this.$router.push({path: '/check-work-list?id=' + this.workId})
+      async goBack() {
+        debugger
+        if ((this.upCheckMap.score  || this.upCheckMap.comment)) {
+        let answer = await Dialog.confirm({
+          className: "dy-rate-dialog",
+          title: "关闭页面提醒",
+          message: "页面已录入部分数据，关闭页面后数据将被清空。",
+          confirmButtonText: "确定",
+          messageAlign: "left"
+        });
+        if (answer === "confirm") {
+          this.$router.push({path: '/check-work-list?id=' + this.workId});
+        }
+      } else {
+        this.$router.push({path: '/check-work-list?id=' + this.workId});
+      }
+
+        
       },
       preWork() {
         let currentWork = this.currentWork;
@@ -1717,3 +1772,42 @@ import axios from 'axios';
 
   }
 </style>
+
+<style lang="less">
+.dy-rate-tab {
+  .van-tab--active {
+    .van-tab__text {
+      font-size: 14px;
+      color: #48b319;
+    }
+  }
+
+  .van-tabs__line {
+    width: 50%;
+    background-color: #48b319;
+  }
+}
+
+.dy-rate-dialog {
+  border-radius: 6px;
+
+  .van-dialog__header {
+    font-weight: bold;
+  }
+  .van-dialog__message {
+    font-size: 16px;
+    font-weight: normal;
+    color: #333;
+  }
+
+  .van-button__text {
+    font-weight: bold;
+  }
+  .van-dialog__confirm {
+    // color: #ED561B;
+  }
+}
+.van-picker__confirm {
+  font-size: 16px;
+  color: #333;
+}
