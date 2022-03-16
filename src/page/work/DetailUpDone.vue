@@ -333,6 +333,7 @@
   import WorkComment from './WorkComment.vue';
   import ImgApp from "./ImgApp";
 
+import axios from 'axios';
   import testImg from '../../assets/addup.jpg'
 
   export default {
@@ -385,6 +386,13 @@
       this.workId = this.$route.query.workId;
       this.userId = this.$route.query.userId;
       this.loadData();
+
+      this.oldPageTitle = document.title;
+      document.title = '作业批改';
+
+    },
+    deactivated(){
+      document.title = this.oldPageTitle;
     },
     beforeRouteUpdate(to, from, next) {
       this.loadData();
@@ -401,6 +409,7 @@
     },
     data() {
       return {
+        oldPageTitle:'',
         upCheckMap: {
           score: 0,
           comment: ''
@@ -598,7 +607,11 @@
         };
         debugger;
 
-        this.$http.post(apiRouter.POST_HOMEWORK_BACK, data).then(response => {
+        let formData = new FormData();
+			formData.append('mainId', vm.checkMap.ID);
+			formData.append('details', JSON.stringify(details));
+
+        this.$http.post(apiRouter.POST_HOMEWORK_BACK, formData).then(response => {
           vm.$vux.loading.hide();
           if (response.body.code == '200') {
             vm.$vux.toast.text("发回订正成功！")

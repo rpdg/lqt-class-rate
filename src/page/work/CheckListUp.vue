@@ -1,32 +1,32 @@
 <template>
   <div class="box">
     <x-header class="title-header" :left-options="{preventGoBack: true}"
-              @on-click-back="goBack" >作业列表</x-header>
+              @on-click-back="goBack" >{{navBarTitle}}</x-header>
 
-    <tab class="tab-check" active-color="#FF5E5E" prevent-default >
-      <tab-item  selected @on-item-click="switchTabItem">已完成({{checkObj.finalcount}})</tab-item>
-      <tab-item @on-item-click="switchTabItem">未完成({{checkObj.noDoCount}})</tab-item>
+    <tab class="tab-check" active-color="#48b319" prevent-default >
+      <tab-item  selected @on-item-click="switchTabItem"><span style="color:#48b319;">已完成（{{checkObj.finalcount}}）</span></tab-item>
+      <tab-item @on-item-click="switchTabItem"><span style="color:#48b319;">未完成（{{checkObj.noDoCount}}）</span></tab-item>
     </tab>
 
     <group v-if="selectTab == '0'">
-      <cell @click.native="goDetail(item)"   style="font-size: 16px;padding: 15px 30px;" v-for="(item,index) in checkObj.finalList" :title="item.SHORT_NAME+'  '+item.NAME">
+      <cell @click.native="goDetail(item)"   style="font-size: 14px;padding: 15px 30px;" v-for="(item,index) in checkObj.finalList" :title="item.SHORT_NAME+'  '+item.NAME">
         <div style="font-size: 14px">
-          <span v-if="!item.ID" style="color: #d9534f">未完成</span>
-          <span v-else-if="item.CAN_CHANGE == 1" style="color: #ED9C28"> 待订正</span>
-          <span v-else-if="item.TYPE !=1 && item.DZ_FLAG == '0'" style="color: #666666">待批阅</span>
-          <span v-else-if="item.TYPE !=1 && item.DZ_FLAG == '1'" style="color: #666666">已订正</span>
-          <span v-else style="color:#48B319">已批阅</span>
+          <span v-if="!item.ID" style="color: #d9534f; font-size: 12px;">未完成</span>
+          <span v-else-if="item.CAN_CHANGE == 1" style="color: #ED9C28; font-size: 12px;"> 待订正</span>
+          <span v-else-if="item.TYPE !=1 && item.DZ_FLAG == '0'" style="color: #666666; font-size: 12px;">待批阅</span>
+          <span v-else-if="item.TYPE !=1 && item.DZ_FLAG == '1'" style="color: #666666; font-size: 12px;">已订正</span>
+          <span v-else style="color:#48B319; font-size: 12px;">已批阅</span>
         </div>
       </cell>
     </group>
 
-    <group v-else>
-      <cell  style="font-size: 16px;padding: 15px 30px;" v-for="(item,index) in checkObj.noDoList" :title="item.SHORT_NAME+'  '+item.NAME">
+    <group v-else style="padding-bottom: 80px;">
+      <cell @click.native="goDetail(item)"   style="font-size: 14px;padding: 15px 30px;" v-for="(item,index) in checkObj.noDoList" :title="item.SHORT_NAME+'  '+item.NAME">
         <div style="font-size: 14px">
           <span v-if="!item.ANID" style="color: #d9534f">未完成</span>
-          <span v-else-if="item.CAN_CHANGE == 1" style="color: #ED9C28"> 待订正</span>
-          <span v-else-if="item.TYPE !=1" style="color: #666666">待批阅</span>
-          <span v-else style="color:#48B319">已批阅</span>
+          <span v-else-if="item.CAN_CHANGE == 1" style="color: #ED9C28; font-size: 12px;"> 待订正</span>
+          <span v-else-if="item.TYPE !=1" style="color: #666666; font-size: 12px;">待批阅</span>
+          <span v-else style="color:#48B319; font-size: 12px;">已批阅</span>
         </div>
       </cell>
     </group>
@@ -60,6 +60,15 @@
       >
       </confirm>
     </div>
+    <div v-show="selectTab==1 && checkObj.noDoCount > 0" 
+    style="position:fixed; bottom:0; background:#fff;width: 100vw;
+    padding: 15px;">
+    <van-button block type="danger" 
+    @click="handleConfirm"
+     style="background-color: #ED9C28;border-color: #ED9C28">
+        未交作业提醒
+      </van-button>
+    </div>
   </div>
 </template>
 
@@ -68,11 +77,15 @@
   import Back from "../../components/common/Back.vue"
   import apiRouter from "../../config/api.js"
   import {mapMutations} from 'vuex'
+  
+  import 'vant/lib/index.css';
+  import { Button ,Dialog} from 'vant';
   export default {
     directives: {
       TransferDom
     },
     components: {
+      [Button.name]: Button,
       Back,
       Confirm,
       Group,
@@ -106,6 +119,17 @@
     },
     activated() {
       this.loadData();
+      this.navBarTitle = this.$route.query.title;
+      this.oldPageTitle = document.title;
+      document.title = '作业批改';
+    },
+    deactivated(){
+      document.title = this.oldPageTitle;
+      this.checkObj = {
+          finalList:[],
+          noDoList:[],
+        };
+      // this.selectTab = 0;
     },
     data(){
       return {
@@ -113,7 +137,8 @@
           finalList:[],
           noDoList:[],
         },
-
+        oldPageTitle: '',
+        navBarTitle: '',
         selectTab:0,
         id: '',
         page: 1,
@@ -129,6 +154,17 @@
       }
     },
     methods: {
+      handleConfirm(){
+        Dialog.confirm({
+                className: "dy-rate-dialog",
+                // title: "弃填",
+                message: "确认提醒未交作业学生？",
+                confirmButtonText: "提醒",
+                confirmButtonColor:'#ED9C28'
+        }).then(() => {
+          // this.doSubmit(1);
+        });
+      },
       goBack(){
         this.$router.push({path:'/work-list'})
       },

@@ -9,7 +9,7 @@
     <ul class="message"  ref="onScoll">
       <li class="clearfix" v-for="(news,index) in messageData" :key="index">
         <div class="message-icon"></div>
-        <a href="javascript:void(0);"  @click="goCheck(news.ID)" class="message-info">
+        <a href="javascript:void(0);"  @click="goCheck(news)" class="message-info">
         <h3>{{news.TITLE}}</h3>
           <p>发布对象：{{news.NAMES}}</p>
         </a>
@@ -80,8 +80,8 @@
       // }
     },
     methods: {
-      goCheck(e){
-        this.$router.push({path:'/check-work-list',query: {id: e}})
+      goCheck(obj){
+        this.$router.push({path:'/check-work-list',query: {id: obj.ID , title:obj.TITLE}})
       },
 
       goBack(){
