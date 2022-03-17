@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 返回组件 -->
-    <x-header class="title-header" :left-options="{preventGoBack: true}"  @on-click-back="goBack" >作业</x-header>
+    <x-header class="title-header" :left-options="{preventGoBack: true}"  @on-click-back="goBack" >作业列表</x-header>
 <!--    <van-nav-bar-->
 <!--      class="title-return-top"-->
 <!--      title="作业"-->
@@ -10,7 +10,7 @@
 <!--      left-arrow-->
 <!--      @click-left="$router.push({path:'/'})"-->
 <!--    />-->
-    <div class="lqt-wrapper" style="margin-top: 2rem">
+    <div class="lqt-wrapper">
       <ul class="lqt-list" id="homework" data-page="1" style="display: block;">
         <li v-for="item in dataList" :key="item.ID" @click="goDetail(item)" class="it clearfix it-m" style="display: list-item;">
           <div class="list-title"><a class="link" href="javascript:void(0)">
@@ -31,8 +31,11 @@
             <em v-else-if="item.CAN_CHANGE == 1" class="icon-next status-view" :style=" 'color:#ED9C28'">
               待订正
             </em>
-            <em v-else-if="item.TYPE !=1" class="icon-next status-view" :style=" 'color:#666666'">
+            <em v-else-if="item.TYPE !=1  && item.DZ_FLAG != '1'" class="icon-next status-view" :style=" 'color:#666666'">
               待批阅
+            </em>
+            <em v-else-if="item.TYPE !=1  && item.DZ_FLAG == '1'" class="icon-next status-view" :style=" 'color:#0093dd'">
+              已订正
             </em>
             <em v-else class="icon-next status-view" :style=" 'color:#48B319'">
               已批阅
@@ -96,7 +99,15 @@
         this.showData();
         document.documentElement.scrollTop = 0;
       }
+
+      this.oldPageTitle = document.title;
+      document.title = '作业批改';
+
     },
+    deactivated(){
+      document.title = this.oldPageTitle;
+    },
+
     methods: {
       goBack(){
         //debugger;
@@ -188,6 +199,7 @@
     },
     data() {
       return {
+        oldPageTitle:'',
         dataList: [],
         pageSize:10,
         pageNum: 10,
@@ -683,7 +695,7 @@
   .lqt-list .icon-next {
     color: #9B9B9B;
     position: absolute;
-    top: .3rem;
+    top: 1em;
     right: 0;
     bottom: auto;
     left: auto
@@ -1437,6 +1449,10 @@
 
   .title-header /deep/ .left-arrow:before{
     border-color: #38f !important;
+  }
+
+  .lqt-wrapper{
+    margin-top: 100/@baseSize  !important;
   }
 
   /*#vote_list .anonym:after {

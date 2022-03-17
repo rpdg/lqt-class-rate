@@ -636,34 +636,35 @@
           dataList: dataList
         };
 
-        let data = {
-          mainId: vm.checkMap.ID,
-          details: JSON.stringify(details)
-        };
-        debugger;
+        // let data = {
+        //   mainId: vm.checkMap.ID,
+        //   details: JSON.stringify(details)
+        // };
+        // debugger;
 
         let formData = new FormData();
-			formData.append('mainId', vm.checkMap.ID);
-			formData.append('details', JSON.stringify(details));
+        formData.append('mainId', vm.checkMap.ID);
+        formData.append('details', JSON.stringify(details));
 
-        this.$http.post(apiRouter.POST_HOMEWORK_BACK, formData).then(response => {
-          vm.$vux.loading.hide();
-          if (response.body.code == '200') {
-            vm.$vux.toast.text("发回订正成功！");
-            setTimeout(function () {
-              this.upCheckMap = {
-                score: 0,
-                comment: ''
-              };
-              vm.goBack();
-            }, 500)
-          } else {
-            vm.$vux.toast.text(response.body.message);
+          this.$http.post(apiRouter.POST_HOMEWORK_BACK, formData).then(response => {
             vm.$vux.loading.hide();
-          }
-        }, response => {
-          alert("请求失败了!!!!")
-        });
+            if (response.body.code == '200') {
+              vm.$vux.toast.text("发回订正成功！");
+             
+
+              setTimeout(function () {
+                // debugger
+                vm.upCheckMap.score = 0;
+                vm.upCheckMap.comment = ''; 
+                vm.goBack();
+              }, 500)
+            } else {
+              vm.$vux.toast.text(response.body.message);
+              vm.$vux.loading.hide();
+            }
+          }, response => {
+            alert("请求失败了!!!!")
+          });
       },
 
       goEdit(i, e, type, parentIndex) {

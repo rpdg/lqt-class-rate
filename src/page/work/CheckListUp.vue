@@ -13,7 +13,7 @@
         <div style="font-size: 12px">
           <span v-if="!item.ID" style="color: #d9534f; font-size: 12px;">未完成</span>
           <span v-else-if="item.CAN_CHANGE == 1" style="color: #ED9C28; font-size: 12px;"> 待订正</span>
-          <span v-else-if="item.TYPE !=1 && item.DZ_FLAG == '0'" style="color: #666666; font-size: 12px;">待批阅</span>
+          <span v-else-if="item.TYPE !=1 && item.DZ_FLAG != '1'" style="color: #666666; font-size: 12px;">待批阅</span>
           <span v-else-if="item.TYPE !=1 && item.DZ_FLAG == '1'" style="color: #666666; font-size: 12px;">已订正</span>
           <span v-else style="color:#48B319; font-size: 12px;">已批阅</span>
         </div>
@@ -174,7 +174,7 @@
           }).then(response => {
             if (response.body.code === 200) {
               } else {
-                alert("获取数据失败");
+                alert(response.body.message);
               }
             }, error => {
               debugger;
@@ -185,7 +185,9 @@
         this.$router.push({path:'/work-list'})
       },
       goDetail(e){
-        this.$router.push({path:'/detail-up',query: {userId: e.USER_ID,workId:e.WORK_ID , stuName: e.NAME}})
+        if(e.ANID) {
+          this.$router.push({path:'/detail-up',query: {userId: e.USER_ID,workId:e.WORK_ID , stuName: e.NAME}})
+        }
       },
       switchTabItem(e){
         this.selectTab = e;
