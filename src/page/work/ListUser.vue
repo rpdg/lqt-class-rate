@@ -101,7 +101,7 @@
       }
 
       this.oldPageTitle = document.title;
-      document.title = '作业批改';
+      document.title = '作业';
 
     },
     deactivated(){
