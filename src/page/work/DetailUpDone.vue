@@ -684,8 +684,8 @@
         } else {
           url = roterPath + '/' + e.ANSWER;
         }
-        // this.$refs.imgApp.initImg(url);
-        this.$refs.imgApp.initImg('https://picsum.photos/600/900?grayscale');
+        this.$refs.imgApp.initImg(url);
+        // this.$refs.imgApp.initImg('https://picsum.photos/600/900?grayscale');
       },
 
       finishEdit(e) {
@@ -1178,6 +1178,8 @@
     }
   }
 </script>
+
+
 
 <style lang="less" type="text/less" scoped>
   @import '../../style/minxin.less';
@@ -1774,40 +1776,41 @@
 </style>
 
 <style lang="less">
-.dy-rate-tab {
-  .van-tab--active {
-    .van-tab__text {
-      font-size: 14px;
-      color: #48b319;
+  .dy-rate-tab {
+    .van-tab--active {
+      .van-tab__text {
+        font-size: 14px;
+        color: #48b319;
+      }
+    }
+
+    .van-tabs__line {
+      width: 50%;
+      background-color: #48b319;
     }
   }
 
-  .van-tabs__line {
-    width: 50%;
-    background-color: #48b319;
-  }
-}
+  .dy-rate-dialog {
+    border-radius: 6px;
 
-.dy-rate-dialog {
-  border-radius: 6px;
+    .van-dialog__header {
+      font-weight: bold;
+    }
+    .van-dialog__message {
+      font-size: 16px;
+      font-weight: normal;
+      color: #333;
+    }
 
-  .van-dialog__header {
-    font-weight: bold;
+    .van-button__text {
+      font-weight: bold;
+    }
+    .van-dialog__confirm {
+      // color: #ED561B;
+    }
   }
-  .van-dialog__message {
+  .van-picker__confirm {
     font-size: 16px;
-    font-weight: normal;
     color: #333;
   }
-
-  .van-button__text {
-    font-weight: bold;
-  }
-  .van-dialog__confirm {
-    // color: #ED561B;
-  }
-}
-.van-picker__confirm {
-  font-size: 16px;
-  color: #333;
-}
+  </style>

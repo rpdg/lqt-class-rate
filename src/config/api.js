@@ -153,6 +153,7 @@ const apiRouter = {
   POST_HOMEWORK_BACK: apiPath + "/wechat/homeworkH5/backHomework",
 
   POST_HOMEWORK_FILE: apiPath + "/wechat/homeworkH5/getTempFile",
+  MENSIOPN_HOMEWORK: apiPath + "/wechat/homeworkH5/hurryHomework",
 
   /**
    * 班级综评

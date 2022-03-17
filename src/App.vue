@@ -31,4 +31,10 @@ export default {
 .vux-header .vux-header-back{
   font-size: 15px !important;
 }
+
+.vux-tab-ink-bar{
+    height: 5px !important;
+    border-radius: 2px !important;
+  }
+
 </style>

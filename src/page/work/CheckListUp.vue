@@ -4,13 +4,13 @@
               @on-click-back="goBack" >{{navBarTitle}}</x-header>
 
     <tab class="tab-check" active-color="#48b319" prevent-default >
-      <tab-item  selected @on-item-click="switchTabItem"><span style="color:#48b319;">已完成（{{checkObj.finalcount}}）</span></tab-item>
-      <tab-item @on-item-click="switchTabItem"><span style="color:#48b319;">未完成（{{checkObj.noDoCount}}）</span></tab-item>
+      <tab-item  selected @on-item-click="switchTabItem">已完成（{{checkObj.finalcount}}）</tab-item>
+      <tab-item @on-item-click="switchTabItem">未完成（{{checkObj.noDoCount}}）</tab-item>
     </tab>
 
     <group v-if="selectTab == '0'">
       <cell @click.native="goDetail(item)"   style="font-size: 14px;padding: 15px 30px;" v-for="(item,index) in checkObj.finalList" :title="item.SHORT_NAME+'  '+item.NAME">
-        <div style="font-size: 14px">
+        <div style="font-size: 12px">
           <span v-if="!item.ID" style="color: #d9534f; font-size: 12px;">未完成</span>
           <span v-else-if="item.CAN_CHANGE == 1" style="color: #ED9C28; font-size: 12px;"> 待订正</span>
           <span v-else-if="item.TYPE !=1 && item.DZ_FLAG == '0'" style="color: #666666; font-size: 12px;">待批阅</span>
@@ -21,9 +21,13 @@
     </group>
 
     <group v-else style="padding-bottom: 80px;">
-      <cell @click.native="goDetail(item)"   style="font-size: 14px;padding: 15px 30px;" v-for="(item,index) in checkObj.noDoList" :title="item.SHORT_NAME+'  '+item.NAME">
-        <div style="font-size: 14px">
-          <span v-if="!item.ANID" style="color: #d9534f">未完成</span>
+      <cell @click.native="goDetail(item)"  
+        style="font-size: 14px;padding: 15px 30px;" 
+        v-for="(item,index) in checkObj.noDoList" 
+        :title="item.SHORT_NAME+'  '+item.NAME"
+      >
+        <div style="font-size: 12px">
+          <span v-if="!item.ANID" style="color: #d9534f; font-size: 12px;">未完成</span>
           <span v-else-if="item.CAN_CHANGE == 1" style="color: #ED9C28; font-size: 12px;"> 待订正</span>
           <span v-else-if="item.TYPE !=1" style="color: #666666; font-size: 12px;">待批阅</span>
           <span v-else style="color:#48B319; font-size: 12px;">已批阅</span>
@@ -61,13 +65,13 @@
       </confirm>
     </div>
     <div v-show="selectTab==1 && checkObj.noDoCount > 0" 
-    style="position:fixed; bottom:0; background:#fff;width: 100vw;
-    padding: 15px;">
-    <van-button block type="danger" 
-    @click="handleConfirm"
-     style="background-color: #ED9C28;border-color: #ED9C28">
-        未交作业提醒
-      </van-button>
+      style="position:fixed; bottom:0; background:#fff;width: 100vw;
+      padding: 15px;">
+      <van-button block type="danger" 
+        @click="handleConfirm"
+        style="background-color: #ED9C28;border-color: #ED9C28">
+          未交作业提醒
+        </van-button>
     </div>
   </div>
 </template>
@@ -163,7 +167,18 @@
                 confirmButtonText: "提醒",
                 confirmButtonColor:'#ED9C28'
         }).then(() => {
-          // this.doSubmit(1);
+          let classId = this.checkObj.noDoList[0].CLASSID;
+          let homeworkId = this.$route.query.id;
+          this.$http.post(apiRouter.MENSIOPN_HOMEWORK , {
+            homeworkId , classId 
+          }).then(response => {
+            if (response.body.code === 200) {
+              } else {
+                alert("获取数据失败");
+              }
+            }, error => {
+              debugger;
+            });
         });
       },
       goBack(){
@@ -487,4 +502,8 @@
   .tab-check{
     margin-top: 100/@baseSize;
   }
+
+</style>
+<style>
+  
 </style>
