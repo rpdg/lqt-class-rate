@@ -9,22 +9,23 @@
     </tab>
 
     <group v-if="selectTab == '0'">
-      <cell @click.native="goDetail(item)"   style="font-size: 14px;padding: 15px 30px;" v-for="(item,index) in checkObj.finalList" :title="item.SHORT_NAME+'  '+item.NAME">
+      <cell @click.native="goDetail(item , true)"   style="font-size: 14px;padding: 15px 30px;" v-for="(item,index) in checkObj.finalList"
+       :title="item.SHORT_NAME + '  ' + item.CLASS_NO +'号  '+item.NAME">
         <div style="font-size: 12px">
           <span v-if="!item.ID" style="color: #d9534f; font-size: 12px;">未完成</span>
           <span v-else-if="item.CAN_CHANGE == 1" style="color: #ED9C28; font-size: 12px;"> 待订正</span>
           <span v-else-if="item.TYPE !=1 && item.DZ_FLAG != '1'" style="color: #666666; font-size: 12px;">待批阅</span>
-          <span v-else-if="item.TYPE !=1 && item.DZ_FLAG == '1'" style="color: #666666; font-size: 12px;">已订正</span>
+          <span v-else-if="item.TYPE !=1 && item.DZ_FLAG == '1'" style="color: #0093DD; font-size: 12px;">已订正</span>
           <span v-else style="color:#48B319; font-size: 12px;">已批阅</span>
         </div>
       </cell>
     </group>
 
     <group v-else style="padding-bottom: 80px;">
-      <cell @click.native="goDetail(item)"  
+      <cell @click.native="goDetail(item , false)"  
         style="font-size: 14px;padding: 15px 30px;" 
         v-for="(item,index) in checkObj.noDoList" 
-        :title="item.SHORT_NAME+'  '+item.NAME"
+        :title="item.SHORT_NAME + '  ' + item.CLASS_NO +'号  '+item.NAME"
       >
         <div style="font-size: 12px">
           <span v-if="!item.ANID" style="color: #d9534f; font-size: 12px;">未完成</span>
@@ -126,7 +127,7 @@
       // this.navBarTitle = this.$route.query.title;
       this.navBarTitle = window.localStorage.getItem('lqt-homework-title');
       this.oldPageTitle = document.title;
-      document.title = '作业批改';
+      document.title = '作业';
     },
     deactivated(){
       document.title = this.oldPageTitle;
@@ -184,8 +185,8 @@
       goBack(){
         this.$router.push({path:'/work-list'})
       },
-      goDetail(e){
-        if(e.ANID) {
+      goDetail(e , finished){
+        if(finished || e.ANID) { 
           this.$router.push({path:'/detail-up',query: {userId: e.USER_ID,workId:e.WORK_ID , stuName: e.NAME}})
         }
       },
