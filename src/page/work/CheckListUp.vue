@@ -102,6 +102,7 @@
       Cell
     },
     mounted(){
+      $('app').offset({top:50});
       // let self = this;
       // self.massageData();
       // let clientHeight = document.body.clientHeight - self.$refs['heightBackPub'].$el.clientHeight;
@@ -128,6 +129,8 @@
       this.navBarTitle = window.localStorage.getItem('lqt-homework-title');
       this.oldPageTitle = document.title;
       document.title = '作业';
+
+      $('app').offset({top:50});
     },
     deactivated(){
       document.title = this.oldPageTitle;
@@ -174,6 +177,7 @@
             homeworkId , classId 
           }).then(response => {
             if (response.body.code === 200) {
+                alert(response.body.message);
               } else {
                 alert(response.body.message);
               }

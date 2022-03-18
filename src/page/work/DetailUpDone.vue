@@ -1,7 +1,7 @@
 <template>
   <div>
     <x-header class="title-header" :left-options="{preventGoBack: true}"
-              @on-click-back="goBack">{{userName}}的作业
+              @on-click-back="goBack">{{userName}}
     </x-header>
 
     <div class="lqt-container lqt-wrapper" style="top: 1em">
@@ -391,7 +391,7 @@
       this.currentWork = 0;
       this.workId = this.$route.query.workId;
       this.userId = this.$route.query.userId;
-      this.userName = this.$route.query.stuName;
+      // this.userName = this.$route.query.stuName;
       this.loadData();
 
       this.oldPageTitle = document.title;
@@ -907,6 +907,7 @@
         this.$http.get(apiRouter.GET_HOMEWORK_UP_ANSWER + '?workId=' + _this.workId + '&userId=' + _this.userId).then(response => {
           if (response.status === 200) {
             //debugger;
+            _this.userName = response.body.data.STUDENT_SHOW_NAME + '的作业';
             _this.picRootPath = response.body.data.PIC_ROOTPATH;
             _this.workObj = response.body.data.hkMap;
             _this.checkMap = response.body.data.checkMap || {};

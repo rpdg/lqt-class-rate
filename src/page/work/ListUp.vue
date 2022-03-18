@@ -60,6 +60,7 @@
     mounted(){
       let self = this;
       self.massageData();
+      $('app').offset({top:50});
       //let clientHeight = document.body.clientHeight - self.$refs['heightBackPub'].$el.clientHeight;
 
       // window.onscroll = function (event) {
@@ -78,6 +79,9 @@
       //
       //   }
       // }
+    },activated() {
+      $('app').offset({top:50});
+
     },
     methods: {
       goCheck(obj){
