@@ -694,7 +694,7 @@
         // init editor
         // this.$refs.imgApp.initImg(url);
         this.showIframe = true;
-        this.showIframeSrc = '/static/img_editor_iframe/index.html?img='+url;
+        this.showIframeSrc = './static/img_editor_iframe/index.html?img='+url;
 
         // 
         // this.$refs.imgApp.initImg('https://picsum.photos/600/900?grayscale');
