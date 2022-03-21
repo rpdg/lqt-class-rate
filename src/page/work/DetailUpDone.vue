@@ -1,4 +1,5 @@
 <template>
+<div>
   <div>
     <x-header class="title-header" :left-options="{preventGoBack: true}"
               @on-click-back="goBack">{{userName}}
@@ -306,6 +307,8 @@
           </x-dialog>
         </div>
 
+  </div>
+<iframe v-show="showIframe" :src="showIframeSrc" style="position:fixed;z-index:10000;height: 100vh; width: 100vw;;" />
 
   </div>
 </template>
@@ -383,7 +386,7 @@
 
       },
       upCheckMap(val){
-        debugger
+        // debugger
         this.handleModify(!!val.score || !!val.comment)
       }
     },
@@ -425,6 +428,8 @@
     },
     data() {
       return {
+        showIframe:false,
+        showIframeSrc:false,
         dataModified:false,
         oldPageTitle:'',
         upCheckMap: {
@@ -669,7 +674,7 @@
 
       goEdit(i, e, type, parentIndex) {
         //debugger;
-        this.show8 = true;
+        // this.show8 = true;
         this.currentImg = e;
         let url = '';
 
@@ -685,8 +690,16 @@
         } else {
           url = roterPath + '/' + e.ANSWER;
         }
-        this.$refs.imgApp.initImg(url);
+
+        // init editor
+        // this.$refs.imgApp.initImg(url);
+        this.showIframe = true;
+        this.showIframeSrc = '/static/img_editor_iframe/index.html?img='+url;
+
+        // 
         // this.$refs.imgApp.initImg('https://picsum.photos/600/900?grayscale');
+
+
       },
 
       finishEdit(e) {
@@ -740,12 +753,12 @@
         this.show1 = false;
       },
       showImgNext() {
-        debugger;
+        // debugger;
         this.show8 = true;
       },
       //------------------------------------
       async goBack() {
-        debugger
+        // debugger
         if ((this.upCheckMap.score  || this.upCheckMap.comment)) {
         let answer = await Dialog.confirm({
           className: "dy-rate-dialog",
