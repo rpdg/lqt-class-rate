@@ -35,8 +35,9 @@
                 <!--图片编辑-->
                 <div v-if="detail.sWebImgList" class="answer-qs ans-web-img">
                   <div v-for="(vDetail,vIndex) in detail.sWebImgList">
+                    <!-- <img style="max-width: 100%" @click="goEdit(vIndex,vDetail,'1',index)" :src="picRootPath+(vDetail.sUrl).split(picRootPath)[1]"/> -->
                     <img v-if="!vDetail.isEdit" style="max-width: 100%" @click="goEdit(vIndex,vDetail,'1',index)" :src="picRootPath+vDetail.sUrl"/>
-                    <img v-else style="max-width: 100%" :src="vDetail.sUrl"/>
+                    <img v-else style="max-width: 100%" @click="goEdit(vIndex, vDetail, '1' ,index)" :src="vDetail.sUrl"/>
 
                   </div>
                 </div>
@@ -674,7 +675,6 @@
       },
 
       goEdit(i, e, type, parentIndex) {
-        debugger;
         // this.show8 = true;
         this.currentImg = e;
         let url = '';
@@ -686,7 +686,8 @@
         this.currentIndex = parentIndex;
         // debugger;
         if (type == '1') {
-          url = roterPath + '/' + e.sUrl;
+          debugger;
+          url = e.sUrl.includes(this.picRootPath)? roterPath + '/upload/' + e.sUrl.split(this.picRootPath)[1] : roterPath + '/' + e.sUrl
           //let url = e.sUrl;
         } else {
           url = roterPath + '/' + e.ANSWER;
@@ -708,6 +709,7 @@
             // vm.$emit('finishEdit', data);
             vm.$vux.loading.hide();
             vm.finishEdit(data);
+            vm.showIframe = false;
           }
           window.ifrCancel = function(data){
             vm.showIframe = false;

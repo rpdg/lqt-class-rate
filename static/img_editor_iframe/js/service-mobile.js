@@ -135,7 +135,7 @@ function getBrushSettings() {
 
 	return {
 		width: brushWidth,
-		color: hexToRGBa(brushColor, 0.5),
+		color: hexToRGBa(brushColor, 0.8),
 	};
 }
 
@@ -408,7 +408,7 @@ iconColorpicker.on('selectColor', function(event) {
 
 // Text menu action
 $btnAddText.on('click', function() {
-	var initText = 'DoubleClick';
+	var initText = '订正';
 
 	imageEditor.startDrawingMode('TEXT');
 	imageEditor.addText(initText, {
@@ -486,7 +486,7 @@ $inputBrushWidthRange.on('change', function() {
 
 brushColorpicker.on('selectColor', function(event) {
 	imageEditor.setBrush({
-		color: hexToRGBa(event.color, 0.5),
+		color: hexToRGBa(event.color, 0.8),
 	});
 });
 
@@ -607,9 +607,33 @@ shapeColorpicker.on('selectColor', function(event) {
 	}
 });
 
+// alert(window.location.search.split('?img=')[1]);
 let imgSrc = window.location.search.split('?img=')[1] ;
+
 // let imgSrc = 'https://picsum.photos/seed/picsum/900/1500?grayscale';
+
 // Load image
+// function getBase64Image (img) {
+// 	let canvas = document.createElement("canvas")
+// 	canvas.width = img.width
+// 	canvas.height = img.height
+// 	let ctx = canvas.getContext("2d")
+// 	ctx.drawImage(img, 0, 0, img.width, img.height)
+// 	let dataURL = canvas.toDataURL("image/png")
+// 	return dataURL
+//   }
+// function startDownload(imageURL) {
+// 	debugger;
+//  	var downloadedImg = new Image;
+// 	downloadedImg.crossOrigin = "*";
+// 	downloadedImg.onload =  function(){
+// 		let base64 = getBase64Image(downloadedImg);
+// 		alert(base64)
+// 	};
+// 	downloadedImg.src = imageURL+ '?v=' + Math.random();
+// }
+// startDownload(imgSrc);
+
 imageEditor.loadImageFromURL(imgSrc, 'SampleImage').then(function() {
 	imageEditor.clearUndoStack();
 });
@@ -643,7 +667,7 @@ $('#btnPostImage').click(function() {
 	//multiplier: 0.5,
 	let dataURL = imageEditor.toDataURL({
 		format: 'jpeg',
-		quality: 0.7,
+		quality: 0.8,
 	});
 
 	let formData = new FormData();
