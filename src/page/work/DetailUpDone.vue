@@ -719,7 +719,7 @@
             vm.$vux.loading.hide();
           }
           vm.showIframe = true;
-          vm.showIframeSrc = './static/img_editor_iframe/index.html?img='+url + '&s=' + Math.random;
+          vm.showIframeSrc = './static/img_editor_iframe/index.html?img='+url + '&s=' + Math.random();
         }
 
         // debugger
