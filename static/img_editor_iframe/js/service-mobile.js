@@ -23,7 +23,7 @@ function loadCfg() {
 			cfg = JSON.parse(_setStr);
 		} catch (e) {}
 	}
-	$('#input-brush-range').val(cfg.brush.size);
+	$('#input-brush-range').val(cfg.brush.size || 10);
 }
 loadCfg();
 
@@ -155,8 +155,6 @@ function base64ToBlob(data) {
 function getBrushSettings() {
 	var brushWidth = $inputBrushWidthRange.val();
 	var brushColor = brushColorpicker.getColor();
-
-	
 
 	return {
 		width: brushWidth,
@@ -438,7 +436,6 @@ iconColorpicker.on('selectColor', function(event) {
 $btnAddText.on('click', function() {
 	var initText = '';
 
-	
 	cfg.drawMode = 'TEXT';
 	saveCfg();
 
@@ -502,7 +499,6 @@ $btnFreeDrawing.on('click', function() {
 	imageEditor.stopDrawingMode();
 	imageEditor.startDrawingMode('FREE_DRAWING', settings);
 
-	
 	cfg.drawMode = 'FREE_DRAWING';
 	saveCfg();
 });
@@ -518,7 +514,6 @@ $btnLineDrawing.on('click', function() {
 });
 
 $inputBrushWidthRange.on('change', function() {
-
 	cfg.brush.size = $(this).val();
 	saveCfg();
 
@@ -528,7 +523,6 @@ $inputBrushWidthRange.on('change', function() {
 });
 
 brushColorpicker.on('selectColor', function(event) {
-	
 	cfg.brush.color = event.color;
 	saveCfg();
 
@@ -683,13 +677,13 @@ let imgSrc = window.location.search.split('?img=')[1].split('&s=')[0] + '?v=' + 
 imageEditor.loadImageFromURL(imgSrc, 'SampleImage').then(function() {
 	imageEditor.clearUndoStack();
 	// init start mode
-	startEditorUseCfgMode()
+	startEditorUseCfgMode();
 });
-function startEditorUseCfgMode(){
-	try{
-		debugger
-		if(cfg.drawMode){
-			switch(cfg.drawMode){
+function startEditorUseCfgMode() {
+	try {
+		debugger;
+		if (cfg.drawMode) {
+			switch (cfg.drawMode) {
 				case 'TEXT':
 					$btnAddText.click();
 					break;
@@ -708,10 +702,7 @@ function startEditorUseCfgMode(){
 					break;
 			}
 		}
-	}
-	catch(e){
-
-	}
+	} catch (e) {}
 }
 // startEditorUseCfgMode();
 
