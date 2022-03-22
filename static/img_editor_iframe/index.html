@@ -39,41 +39,41 @@
                     <button class="btn-prev">&lt;</button>
                     <ul class="scrollable">
                         <li class="menu-item">
-                            <button class="submenu-button" id="btn-change-size">Size</button>
+                            <button class="submenu-button" id="btn-change-size">大小</button>
                             <div class="hiddenmenu">
                                 <input id="input-text-size-range" type="range" min="10" max="240" value="120" />
                             </div>
                         </li>
                         <li class="menu-item">
-                            <button class="submenu-button" id="btn-change-style">Style</button>
+                            <button class="submenu-button" id="btn-change-style">样式</button>
                             <div class="hiddenmenu">
                                 <button class="hiddenmenu-button btn-change-text-style" data-style-type="bold">
-                                    <b>Bold</b>
+                                    <b>粗体</b>
                                 </button>
                                 <button class="hiddenmenu-button btn-change-text-style" data-style-type="italic">
-                                    <i>Italic</i>
+                                    <i>斜体</i>
                                 </button>
                                 <button class="hiddenmenu-button btn-change-text-style" data-style-type="underline">
-                                    <u>Underline</u>
+                                    <u>下划线</u>
                                 </button>
                             </div>
                         </li>
-                        <li class="menu-item">
-                            <button class="submenu-button" id="btn-change-align">Align</button>
+                        <!-- <li class="menu-item">
+                            <button class="submenu-button" id="btn-change-align">对齐</button>
                             <div class="hiddenmenu">
                                 <button class="hiddenmenu-button btn-change-text-style" data-style-type="left">
-                                    Left
+                                    靠左
                                 </button>
                                 <button class="hiddenmenu-button btn-change-text-style" data-style-type="center">
-                                    Center
+                                    居中
                                 </button>
                                 <button class="hiddenmenu-button btn-change-text-style" data-style-type="right">
-                                    Right
+                                    靠右
                                 </button>
                             </div>
-                        </li>
+                        </li> -->
                         <li class="menu-item">
-                            <button class="submenu-button" id="btn-change-text-color">Color</button>
+                            <button class="submenu-button" id="btn-change-text-color">颜色</button>
                             <div class="hiddenmenu">
                                 <div id="tui-text-color-picker"></div>
                             </div>
@@ -88,16 +88,16 @@
                     <button class="btn-prev">&lt;</button>
                     <ul class="scrollable">
                         <li class="menu-item">
-                            <button class="submenu-button" id="btn-rotate-clockwise">Rotate +90</button>
+                            <button class="submenu-button" id="btn-rotate-clockwise">旋转 +90</button>
                         </li>
                         <li class="menu-item">
-                            <button class="submenu-button" id="btn-rotate-counter-clockwise">Rotate -90</button>
+                            <button class="submenu-button" id="btn-rotate-counter-clockwise">旋转 -90</button>
                         </li>
                         <li class="menu-item">
-                            <button class="submenu-button" id="btn-flip-x">FilpX</button>
+                            <button class="submenu-button" id="btn-flip-x">左右镜像</button>
                         </li>
                         <li class="menu-item">
-                            <button class="submenu-button" id="btn-flip-y">FilpY</button>
+                            <button class="submenu-button" id="btn-flip-y">上下镜像</button>
                         </li>
                     </ul>
                 </div>
@@ -109,19 +109,19 @@
                     <button class="btn-prev">&lt;</button>
                     <ul class="scrollable">
                         <li class="menu-item">
-                            <button class="submenu-button" id="btn-free-drawing">Free<br />画笔</button>
+                            <button class="submenu-button" id="btn-free-drawing">画笔</button>
                         </li>
                         <li class="menu-item">
-                            <button class="submenu-button" id="btn-line-drawing">Line<br />线笔</button>
+                            <button class="submenu-button" id="btn-line-drawing">线笔</button>
                         </li>
                         <li class="menu-item">
-                            <button class="submenu-button" id="btn-change-size">Brush<br />粗细</button>
+                            <button class="submenu-button" id="btn-change-size">粗细</button>
                             <div class="hiddenmenu">
-                                <input id="input-brush-range" type="range" min="10" max="100" value="50" />
+                                <input id="input-brush-range" type="range" min="10" max="100" value="10" />
                             </div>
                         </li>
                         <li class="menu-item">
-                            <button class="submenu-button" id="btn-change-text-color">Brush<br />颜色</button>
+                            <button class="submenu-button" id="btn-change-text-color">颜色</button>
                             <div class="hiddenmenu">
                                 <div id="tui-brush-color-picker"></div>
                             </div>
@@ -132,6 +132,9 @@
 
             <li class="menu-item">
                 <button id="btnPostImage" class="menu-button">保存</button>
+            </li>
+            <li class="menu-item">
+                <button id="btnCancelEdit" class="menu-button">取消</button>
             </li>
 
             

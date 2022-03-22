@@ -301,14 +301,15 @@
 <!--    <div v-show="show8" style="height:100%;width: 100%">-->
 <!--      -->
 <!--    </div>-->
-        <div v-transfer-dom>
+        <!-- <div v-transfer-dom>
           <x-dialog :dialog-style="{width:'100%', height:'100%', maxWidth:'100%' }" v-model="show8">
             <ImgApp @finishEdit="finishEdit" @cancelEdit="cancelEdit" ref="imgApp"></ImgApp>
           </x-dialog>
-        </div>
+        </div> -->
 
   </div>
-<iframe v-show="showIframe" :src="showIframeSrc" style="position:fixed;z-index:10000;height: 100vh; width: 100vw;;" />
+
+<iframe ref="ifr" v-show="showIframe" :src="showIframeSrc" style="position:fixed;z-index:100;height: 100vh; width: 100vw;;" />
 
   </div>
 </template>
@@ -673,7 +674,7 @@
       },
 
       goEdit(i, e, type, parentIndex) {
-        //debugger;
+        debugger;
         // this.show8 = true;
         this.currentImg = e;
         let url = '';
@@ -693,8 +694,34 @@
 
         // init editor
         // this.$refs.imgApp.initImg(url);
-        this.showIframe = true;
-        this.showIframeSrc = './static/img_editor_iframe/index.html?img='+url;
+
+        let vm = this;
+        function openIframe(){
+          // window.ifrHandler = vm.$refs.ifr;
+          window.ifrLoading = function(){
+            vm.$vux.loading.show({
+              text: '上传中...'
+            });
+          }
+          window.ifrSuccess = function(data){
+            vm.$vux.toast.text("图片上传成功!");
+            // vm.$emit('finishEdit', data);
+            vm.$vux.loading.hide();
+            vm.finishEdit(data);
+          }
+          window.ifrCancel = function(data){
+            vm.showIframe = false;
+          }
+          window.ifrFail = function(msg){
+            vm.$vux.toast.text(msg);
+            vm.$vux.loading.hide();
+          }
+          vm.showIframe = true;
+          vm.showIframeSrc = './static/img_editor_iframe/index.html?img='+url;
+        }
+
+        debugger
+        openIframe();
 
         // 
         // this.$refs.imgApp.initImg('https://picsum.photos/600/900?grayscale');
@@ -703,7 +730,7 @@
       },
 
       finishEdit(e) {
-
+        debugger
         let detail = this.quesList[this.currentIndex];
         this.currentImg.sUrl = e.url;
         this.currentImg.isEdit = true;
@@ -713,7 +740,7 @@
           detail.sImgList[this.currentVIndex].URL = e.url;
 
         }
-        this.show8 = false;
+        // this.show8 = false;
       },
 
       cancelEdit() {

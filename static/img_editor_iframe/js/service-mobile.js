@@ -78,7 +78,7 @@ var textColorpicker = tui.colorPicker.create({
 
 var brushColorpicker = tui.colorPicker.create({
 	container: $('#tui-brush-color-picker')[0],
-	color: '#000000',
+	color: '#FF0000',
 });
 
 var shapeColorpicker = tui.colorPicker.create({
@@ -609,7 +609,7 @@ shapeColorpicker.on('selectColor', function(event) {
 
 let imgSrc = window.location.search.split('?img=')[1] ;
 // let imgSrc = 'https://picsum.photos/seed/picsum/900/1500?grayscale';
-// Load sample image
+// Load image
 imageEditor.loadImageFromURL(imgSrc, 'SampleImage').then(function() {
 	imageEditor.clearUndoStack();
 });
@@ -635,31 +635,31 @@ function getImgByteSize(graphicContents) {
 	return size;
 }
 //
+$('#btnCancelEdit').click(function(){
+	window.top.ifrCancel();
+})
+// 
 $('#btnPostImage').click(function() {
 	//multiplier: 0.5,
 	let dataURL = imageEditor.toDataURL({
 		format: 'jpeg',
 		quality: 0.7,
 	});
-	// console.log(dataURL);
-	// console.log(getImgByteSize(dataURL)/1024);
-	// debugger;
-	// let data = { baseImg:dataURL };
 
 	let formData = new FormData();
 	formData.append('baseImg', dataURL);
 
-	// this.$http.post(apiRouter.POST_HOMEWORK_FILE, data)
+	window.top.ifrLoading();
 
 	$.ajax({
         url: '/wechat/homeworkH5/getTempFile',
+        // url: '/api/wechat/homeworkH5/getTempFile',
         data: formData,
         processData: false,
 		contentType: false,
         type: 'POST',
-        success: function ( data ) {
-            alert('图片上传成功');
-			window.top.location.reload();
+        success: function ( resp ) {
+			window.top.ifrSuccess(resp.data);
         }
     });
 
