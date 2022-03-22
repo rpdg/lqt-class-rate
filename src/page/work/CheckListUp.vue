@@ -10,7 +10,7 @@
 
     <group v-if="selectTab == '0'">
       <cell @click.native="goDetail(item , true)"   style="font-size: 14px;padding: 15px 30px;" v-for="(item,index) in checkObj.finalList"
-       :title="item.SHORT_NAME + '  ' + item.CLASS_NO +'号  '+item.NAME">
+       :title="item.SHORT_NAME + '　' + item.CLASS_NO +'号　'+item.NAME">
         <div style="font-size: 12px">
           <span v-if="!item.ID" style="color: #d9534f; font-size: 12px;">未完成</span>
           <span v-else-if="item.CAN_CHANGE == 1" style="color: #ED9C28; font-size: 12px;"> 待订正</span>
@@ -25,7 +25,7 @@
       <cell @click.native="goDetail(item , false)"  
         style="font-size: 14px;padding: 15px 30px;" 
         v-for="(item,index) in checkObj.noDoList" 
-        :title="item.SHORT_NAME + '  ' + item.CLASS_NO +'号  '+item.NAME"
+        :title="item.SHORT_NAME + '　' + item.CLASS_NO +'号　'+item.NAME"
       >
         <div style="font-size: 12px">
           <span v-if="!item.ANID" style="color: #d9534f; font-size: 12px;">未完成</span>
@@ -130,7 +130,7 @@
       this.oldPageTitle = document.title;
       document.title = '作业';
 
-      $('app').offset({top:50});
+      $(document).scrollTop(0)
     },
     deactivated(){
       document.title = this.oldPageTitle;
@@ -176,12 +176,18 @@
           this.$http.post(apiRouter.MENSIOPN_HOMEWORK , {
             homeworkId , classId 
           }).then(response => {
-            if (response.body.code === 200) {
-                alert(response.body.message);
-              } else {
-                alert(response.body.message);
-              }
-            }, error => {
+              Dialog.alert({
+                message: response.body.message,
+                className: "dy-rate-dialog",
+                confirmButtonColor:'#ED9C28'
+              });
+              // if (response.body.code === 200) {
+              //   alert(response.body.message);
+              // } else {
+              //   alert(response.body.message);
+              // }
+            }, 
+            error => {
               debugger;
             });
         });
