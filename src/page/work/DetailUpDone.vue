@@ -686,7 +686,7 @@
         this.currentIndex = parentIndex;
         // debugger;
         if (type == '1') {
-          debugger;
+          // debugger;
           url = e.sUrl.includes(this.picRootPath)? roterPath + '/upload/' + e.sUrl.split(this.picRootPath)[1] : roterPath + '/' + e.sUrl
           //let url = e.sUrl;
         } else {
@@ -719,10 +719,10 @@
             vm.$vux.loading.hide();
           }
           vm.showIframe = true;
-          vm.showIframeSrc = './static/img_editor_iframe/index.html?img='+url;
+          vm.showIframeSrc = './static/img_editor_iframe/index.html?img='+url + '&s=' + Math.random;
         }
 
-        debugger
+        // debugger
         openIframe();
 
         // 

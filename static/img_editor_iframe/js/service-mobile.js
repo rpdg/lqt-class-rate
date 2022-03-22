@@ -8,6 +8,29 @@
 
 var MAX_RESOLUTION = 3264 * 2448; // 8MP (Mega Pixel)
 
+var cfg = {
+	drawMode: '',
+	brush: {
+		color: '',
+		size: '',
+	},
+};
+
+function loadCfg() {
+	let _setStr = window.localStorage.getItem('lqt-img-editor');
+	if (_setStr) {
+		try {
+			cfg = JSON.parse(_setStr);
+		} catch (e) {}
+	}
+	$('#input-brush-range').val(cfg.brush.size);
+}
+loadCfg();
+
+function saveCfg() {
+	window.localStorage.setItem('lqt-img-editor', JSON.stringify(cfg));
+}
+
 var supportingFileAPI = !!(window.File && window.FileList && window.FileReader);
 var rImageType = /data:(image\/.+);base64,/;
 var shapeOpt = {
@@ -78,7 +101,7 @@ var textColorpicker = tui.colorPicker.create({
 
 var brushColorpicker = tui.colorPicker.create({
 	container: $('#tui-brush-color-picker')[0],
-	color: '#FF0000',
+	color: cfg.brush.color || '#FF0000',
 });
 
 var shapeColorpicker = tui.colorPicker.create({
@@ -132,6 +155,8 @@ function base64ToBlob(data) {
 function getBrushSettings() {
 	var brushWidth = $inputBrushWidthRange.val();
 	var brushColor = brushColorpicker.getColor();
+
+	
 
 	return {
 		width: brushWidth,
@@ -362,6 +387,9 @@ $btnDownload.on('click', function() {
 // Crop menu action
 $btnCrop.on('click', function() {
 	imageEditor.startDrawingMode('CROPPER');
+
+	cfg.drawMode = 'CROPPER';
+	saveCfg();
 });
 
 $btnApplyCrop.on('click', function() {
@@ -408,7 +436,11 @@ iconColorpicker.on('selectColor', function(event) {
 
 // Text menu action
 $btnAddText.on('click', function() {
-	var initText = '订正';
+	var initText = '';
+
+	
+	cfg.drawMode = 'TEXT';
+	saveCfg();
 
 	imageEditor.startDrawingMode('TEXT');
 	imageEditor.addText(initText, {
@@ -469,6 +501,10 @@ $btnFreeDrawing.on('click', function() {
 
 	imageEditor.stopDrawingMode();
 	imageEditor.startDrawingMode('FREE_DRAWING', settings);
+
+	
+	cfg.drawMode = 'FREE_DRAWING';
+	saveCfg();
 });
 
 $btnLineDrawing.on('click', function() {
@@ -476,15 +512,26 @@ $btnLineDrawing.on('click', function() {
 
 	imageEditor.stopDrawingMode();
 	imageEditor.startDrawingMode('LINE_DRAWING', settings);
+
+	cfg.drawMode = 'LINE_DRAWING';
+	saveCfg();
 });
 
 $inputBrushWidthRange.on('change', function() {
+
+	cfg.brush.size = $(this).val();
+	saveCfg();
+
 	imageEditor.setBrush({
 		width: parseInt($(this).val(), 10),
 	});
 });
 
 brushColorpicker.on('selectColor', function(event) {
+	
+	cfg.brush.color = event.color;
+	saveCfg();
+
 	imageEditor.setBrush({
 		color: hexToRGBa(event.color, 0.8),
 	});
@@ -608,9 +655,8 @@ shapeColorpicker.on('selectColor', function(event) {
 });
 
 // alert(window.location.search.split('?img=')[1]);
-let imgSrc = window.location.search.split('?img=')[1] ;
-
-// let imgSrc = 'https://picsum.photos/seed/picsum/900/1500?grayscale';
+// let imgSrc = window.location.search.split('?img=')[1].split('&s=')[0] + '?v=' + Math.random();
+let imgSrc = 'https://picsum.photos/seed/picsum/900/1500?grayscale'+ '?v=' + Math.random();
 
 // Load image
 // function getBase64Image (img) {
@@ -636,7 +682,38 @@ let imgSrc = window.location.search.split('?img=')[1] ;
 
 imageEditor.loadImageFromURL(imgSrc, 'SampleImage').then(function() {
 	imageEditor.clearUndoStack();
+	// init start mode
+	startEditorUseCfgMode()
 });
+function startEditorUseCfgMode(){
+	try{
+		debugger
+		if(cfg.drawMode){
+			switch(cfg.drawMode){
+				case 'TEXT':
+					$btnAddText.click();
+					break;
+				case 'CROPPER':
+					$btnCrop.click();
+					break;
+				case 'FREE_DRAWING':
+					$('#btn-draw-line').click();
+					$btnFreeDrawing.click();
+					break;
+				case 'LINE_DRAWING':
+					$('#btn-draw-line').click();
+					$btnLineDrawing.click();
+					break;
+				default:
+					break;
+			}
+		}
+	}
+	catch(e){
+
+	}
+}
+// startEditorUseCfgMode();
 
 function getImgByteSize(graphicContents) {
 	let size = 0;
@@ -659,10 +736,10 @@ function getImgByteSize(graphicContents) {
 	return size;
 }
 //
-$('#btnCancelEdit').click(function(){
+$('#btnCancelEdit').click(function() {
 	window.top.ifrCancel();
-})
-// 
+});
+//
 $('#btnPostImage').click(function() {
 	//multiplier: 0.5,
 	let dataURL = imageEditor.toDataURL({
@@ -676,15 +753,14 @@ $('#btnPostImage').click(function() {
 	window.top.ifrLoading();
 
 	$.ajax({
-        url: '/wechat/homeworkH5/getTempFile',
-        // url: '/api/wechat/homeworkH5/getTempFile',
-        data: formData,
-        processData: false,
+		url: '/wechat/homeworkH5/getTempFile',
+		// url: '/api/wechat/homeworkH5/getTempFile',
+		data: formData,
+		processData: false,
 		contentType: false,
-        type: 'POST',
-        success: function ( resp ) {
+		type: 'POST',
+		success: function(resp) {
 			window.top.ifrSuccess(resp.data);
-        }
-    });
-
+		},
+	});
 });
