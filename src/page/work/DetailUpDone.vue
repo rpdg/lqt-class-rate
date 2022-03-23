@@ -339,7 +339,6 @@
   import wx from "weixin-js-sdk";
   import FirstHeader from './FirstHeader.vue';
   import WorkComment from './WorkComment.vue';
-  import ImgApp from "./ImgApp";
 
 
   export default {
@@ -348,7 +347,6 @@
     },
     components: {
       [Dialog.Component.name]: Dialog.Component,
-      ImgApp,
       WorkComment,
       Popup,
       XTextarea,
@@ -364,7 +362,6 @@
       XDialog,
       [FirstHeader.name]: FirstHeader,
       [WorkComment.name]: WorkComment,
-      [ImgApp.name]: ImgApp,
       //'tui-image-editor': ImageEditor
     },
     created() {

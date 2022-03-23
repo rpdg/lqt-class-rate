@@ -104,7 +104,6 @@ import EvalRank from '../page/evaluation/EvaRank.vue'
 
 
 /**/
-import ImgApp from "../page/work/ImgApp"
 
 import FiveOFourPage from "../page/error/504"
 import FiveOTowPage from "../page/error/502"
@@ -426,11 +425,7 @@ export default new Router({
       name: 'detailUpDone',
       component: DetailUpDone
     },
-    {
-      path: '/img-app',
-      name: 'imgApp',
-      component: ImgApp
-    },
+    
     {
       path: '/cur-enroll',
       name: 'curEnroll',
