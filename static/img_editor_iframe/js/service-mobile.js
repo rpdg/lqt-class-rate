@@ -9,10 +9,10 @@
 var MAX_RESOLUTION = 3264 * 2448; // 8MP (Mega Pixel)
 
 var cfg = {
-	drawMode: '',
+	drawMode: 'FREE_DRAWING',
 	brush: {
-		color: '',
-		size: '',
+		color: '#ff0000',
+		size: '10',
 	},
 };
 
