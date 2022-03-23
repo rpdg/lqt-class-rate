@@ -687,7 +687,7 @@
           url = e.sUrl.includes(this.picRootPath)? roterPath + '/upload/' + e.sUrl.split(this.picRootPath)[1] : roterPath + '/' + e.sUrl
           //let url = e.sUrl;
         } else {
-          url = roterPath + '/' + e.ANSWER;
+          url = e.URL.includes(this.picRootPath)? roterPath + '/upload/' + e.URL.split(this.picRootPath)[1] : roterPath + '/' + e.URL;
         }
 
         // init editor
