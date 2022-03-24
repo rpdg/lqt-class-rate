@@ -11,8 +11,8 @@ var MAX_RESOLUTION = 3264 * 2448; // 8MP (Mega Pixel)
 var cfg = {
 	drawMode: 'FREE_DRAWING',
 	brush: {
-		color: '#ff0000',
-		size: '10',
+		color: '#E00000',
+		size: '5',
 	},
 };
 
@@ -649,7 +649,7 @@ shapeColorpicker.on('selectColor', function(event) {
 });
 
 // alert(window.location.search.split('?img=')[1].split('&s=')[0]);
-let imgSrc = window.location.search.split('?img=')[1].split('&s=')[0] ; //+ '?v=' + Math.random();
+let imgSrc = window.location.search.split('?img=')[1].split('&s=')[0]; //+ '?v=' + Math.random();
 // let imgSrc = 'https://picsum.photos/seed/picsum/900/2500?grayscale'+ '?v=' + Math.random();
 
 // Load image
@@ -676,8 +676,26 @@ let imgSrc = window.location.search.split('?img=')[1].split('&s=')[0] ; //+ '?v=
 
 imageEditor.loadImageFromURL(imgSrc, 'SampleImage').then(function() {
 	imageEditor.clearUndoStack();
+
 	// init start mode
 	startEditorUseCfgMode();
+
+	// fix mobile ui
+	let maxHeight, maxWidth;
+	let { height, width } = imageEditor._graphics.canvasImage;
+	if (height > width) {
+		maxHeight = window.document.body.clientHeight - 50 - 80;
+		maxWidth = (maxHeight / height) * width;
+	} else {
+		maxWidth = window.document.body.clientWidth;
+		maxHeight = (maxWidth / width) * height;
+
+		if (maxHeight > window.document.body.clientHeight - 50 - 80) {
+			maxHeight = window.document.body.clientHeight - 50 - 80;
+			maxWidth = (maxHeight / height) * width;
+		}
+	}
+	$('.tui-image-editor-canvas-container').css({ maxWidth, maxHeight });
 });
 function startEditorUseCfgMode() {
 	try {
