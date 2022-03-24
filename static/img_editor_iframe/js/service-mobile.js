@@ -649,7 +649,7 @@ shapeColorpicker.on('selectColor', function(event) {
 });
 
 // alert(window.location.search.split('?img=')[1].split('&s=')[0]);
-let imgSrc = window.location.search.split('?img=')[1].split('&s=')[0]; //+ '?v=' + Math.random();
+let imgSrc = window.location.search.split('?img=')[1].split('&s=')[0] + '?v=' + Math.random();
 // let imgSrc = 'https://picsum.photos/seed/picsum/900/2500?grayscale'+ '?v=' + Math.random();
 
 // Load image

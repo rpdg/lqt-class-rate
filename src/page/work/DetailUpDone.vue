@@ -715,7 +715,7 @@ export default {
 					vm.$vux.toast.text(msg);
 					vm.$vux.loading.hide();
 				};
-				vm.showIframeSrc = './static/img_editor_iframe/index.html?img=' + url;
+				vm.showIframeSrc = './static/img_editor_iframe/index.html?img=' + url + '&s=' + Math.random();;
 				setTimeout(function() {
 					vm.showIframe = true;
 				}, 100);
