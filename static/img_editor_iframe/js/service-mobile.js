@@ -695,7 +695,7 @@ imageEditor.loadImageFromURL(imgSrc, 'SampleImage').then(function() {
 			maxWidth = (maxHeight / height) * width;
 		}
 	}
-	$('.tui-image-editor-canvas-container').css({ maxWidth, maxHeight });
+	$('.tui-image-editor-canvas-container , .tui-image-editor-canvas-container > canvas').css({ maxWidth, maxHeight });
 });
 function startEditorUseCfgMode() {
 	try {
