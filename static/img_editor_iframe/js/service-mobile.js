@@ -9,7 +9,6 @@ document.write(
 	'<iframe class="tui-image-editor" src="./editor.html' + window.location.search + '" border="0"></iframe>'
 );
 
-
 function init(editor) {
 	console.log(editor);
 
@@ -734,40 +733,66 @@ function init(editor) {
 	});
 
 	// alert(window.location.search.split('?img=')[1].split('&s=')[0]);
-	let imgSrc = window.location.search.split('?img=')[1].split('&s=')[0] + '?v=' + Math.random();
-	// let imgSrc = 'https://picsum.photos/seed/rrrrrrrr/800/1760';
+	// let imgSrc = window.location.search.split('?img=')[1].split('&s=')[0] ;
+	let imgSrc = 'https://picsum.photos/seed/rrrrrrrr/800/1760';
+	// imageEditor.loadImageFromURL(imgSrc, 'SampleImage').then(function() {
+	// 	imageEditor.clearUndoStack();
+
+	// 	// init start mode
+	// 	startEditorUseCfgMode();
+
+	// 	//
+	// 	let obj = calcScale();
+	// 	currentScale =
+	// 		obj.img.height > obj.img.width
+	// 			? obj.canvas.maxHeight / obj.img.height
+	// 			: obj.canvas.maxWidth / obj.img.width;
+
+	// 	// // fix mobile ui
+	// 	// fixMobileUI();
+
+	// 	// // zoom 中心是根据原图来的
+	// 	// imageEditor.zoom({x:400,y:880, zoomLevel:2});
+	// 	// setTimeout(()=>{
+	// 	// 	imageEditor.zoom({x:400,y:880, zoomLevel:2.5});
+	// 	// } ,3e3);
+	// });
 
 	// Load image
-	// function getBase64Image (img) {
-	// 	let canvas = document.createElement("canvas")
-	// 	canvas.width = img.width
-	// 	canvas.height = img.height
-	// 	let ctx = canvas.getContext("2d")
-	// 	ctx.drawImage(img, 0, 0, img.width, img.height)
-	// 	let dataURL = canvas.toDataURL("image/png")
-	// 	return dataURL
-	//   }
+	// function getBase64Image(img) {
+	// 	let canvas = document.createElement('canvas');
+	// 	canvas.width = img.width;
+	// 	canvas.height = img.height;
+	// 	let ctx = canvas.getContext('2d');
+	// 	ctx.drawImage(img, 0, 0, img.width, img.height);
+	// 	let dataURL = canvas.toDataURL('image/png');
+	// 	return dataURL;
+	// }
 	function startDownload(imageURL) {
 		// debugger;
-	 	var downloadedImg = new Image;
-		downloadedImg.crossOrigin = "*";
-		downloadedImg.onload =  function(){
-			imageEditor.loadImageFromURL(imgSrc, 'SampleImage').then(function() {
+		var downloadedImg = new Image();
+		downloadedImg.crossOrigin = '*';
+		downloadedImg.onload = function() {
+
+			// let b64 = getBase64Image(downloadedImg);
+			// debugger
+
+			imageEditor.loadImageFromURL(imageURL, 'SampleImage').then(function() {
 				imageEditor.clearUndoStack();
-		
+
 				// init start mode
 				startEditorUseCfgMode();
-		
+
 				//
 				let obj = calcScale();
 				currentScale =
 					obj.img.height > obj.img.width
 						? obj.canvas.maxHeight / obj.img.height
 						: obj.canvas.maxWidth / obj.img.width;
-		
+
 				// // fix mobile ui
 				// fixMobileUI();
-		
+
 				// // zoom 中心是根据原图来的
 				// imageEditor.zoom({x:400,y:880, zoomLevel:2});
 				// setTimeout(()=>{
@@ -779,7 +804,6 @@ function init(editor) {
 	}
 	startDownload(imgSrc);
 
-	
 	function calcScale() {
 		let maxHeight, maxWidth;
 		let { height, width } = imageEditor._graphics.canvasImage;
