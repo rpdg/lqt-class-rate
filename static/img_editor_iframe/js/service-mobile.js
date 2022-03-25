@@ -113,6 +113,7 @@ var shapeColorpicker = tui.colorPicker.create({
 var imageEditor = new tui.ImageEditor('.tui-image-editor', {
 	cssMaxWidth: document.documentElement.clientWidth,
 	cssMaxHeight: document.documentElement.clientHeight,
+	// cssMaxHeight: $('.tui-image-editor')[0].clientHeight,
 	selectionStyle: {
 		cornerSize: 50,
 		rotatingPointOffset: 100,
@@ -281,8 +282,21 @@ imageEditor.on({
 	},
 });
 
+function setMoveMode(b){
+	currentMoving = b;
+	imageEditor.changeSelectableAll(!currentMoving);
+	btnMove[currentMoving ? 'addClass' : 'removeClass']('disabledBtn');
+	btnMove.text(currentMoving ? '停止' : '移动');
+
+	if(b){
+		$btnShowMenu.click();
+	}
+}
 // Image editor controls action
 $menuButtons.on('click', function() {
+	setMoveMode(false);
+
+
 	$displayingSubMenu = $(this)
 		.parent()
 		.find(submenuClass)
@@ -329,6 +343,7 @@ $inputImage.on('change', function(event) {
 			if (resolution <= MAX_RESOLUTION) {
 				imageEditor.loadImageFromFile(file).then(function() {
 					imageEditor.clearUndoStack();
+					fixMobileUI();
 				});
 			} else {
 				alert("Loaded image's resolution is too large!\nRecommended resolution is 3264 * 2448!");
@@ -381,6 +396,69 @@ $btnDownload.on('click', function() {
 		w.document.body.innerHTML = '<img src=' + dataURL + '>';
 	}
 });
+
+/**
+ * Zoom
+ */
+let currentZoomLevel = 1;
+let currentScale = 1;
+let centerPoint = { x: 400, y: 880 };
+$('#btn-zoom-in').click(function() {
+	currentZoomLevel += 0.3;
+	if (currentZoomLevel > 5) {
+		currentZoomLevel = 5;
+	}
+	imageEditor.zoom({ ...centerPoint, zoomLevel: currentZoomLevel });
+});
+$('#btn-zoom-out').click(function() {
+	currentZoomLevel -= 0.3;
+	if (currentZoomLevel < 1) {
+		currentZoomLevel = 1;
+	}
+	imageEditor.zoom({ ...centerPoint, zoomLevel: currentZoomLevel });
+});
+let currentMoving = false;
+let moveTimer = 0;
+let moveStartPoint = null;
+let btnMove = $('#btn-move').click(function() {
+	setMoveMode(!currentMoving);
+});
+$('.tui-image-editor-canvas-container')[0].addEventListener(
+	'touchmove',
+	function(event) {
+		if (currentMoving) {
+			let clientX = event.clientX || event.targetTouches[0].clientX;
+			let clientY = event.clientY || event.targetTouches[0].clientY;
+
+			if (!moveStartPoint) {
+				moveStartPoint = { x: clientX, y: clientY };
+			}
+
+			// let moveX = centerPoint.x - clientX;
+			// let moveY = centerPoint.y - clientY;
+			if (moveTimer) {
+				clearTimeout(moveTimer);
+			}
+
+			moveTimer = setTimeout(() => {
+				let moveEndPoint = { x: clientX, y: clientY };
+				console.log('[centerPoint] ', centerPoint);
+				console.log('[touchmove] ', moveStartPoint, '->', moveEndPoint, currentZoomLevel, currentScale);
+				centerPoint.x -= ((moveEndPoint.x - moveStartPoint.x) * currentZoomLevel) / currentScale;
+				// if (centerPoint.x < 0) centerPoint.x = 0;
+				centerPoint.y -= ((moveEndPoint.y - moveStartPoint.y) * currentZoomLevel) / currentScale;
+				// if (centerPoint.y < 0) centerPoint.y = 0;
+				let { height, width } = imageEditor._graphics.canvasImage;
+				// if(centerPoint.x > width) centerPoint.x = width;
+				// if(centerPoint.y > height) centerPoint.y = height;
+				console.log('[centerPoint] ', centerPoint);
+				imageEditor.zoom({ ...centerPoint, zoomLevel: currentZoomLevel });
+				moveStartPoint = null;
+			}, 50);
+		}
+	},
+	false
+);
 
 // Crop menu action
 $btnCrop.on('click', function() {
@@ -650,7 +728,7 @@ shapeColorpicker.on('selectColor', function(event) {
 
 // alert(window.location.search.split('?img=')[1].split('&s=')[0]);
 let imgSrc = window.location.search.split('?img=')[1].split('&s=')[0] + '?v=' + Math.random();
-// let imgSrc = 'https://picsum.photos/seed/picsum/900/2500?grayscale'+ '?v=' + Math.random();
+// let imgSrc = 'https://picsum.photos/seed/rrrrrrrr/800/1760';
 
 // Load image
 // function getBase64Image (img) {
@@ -680,7 +758,21 @@ imageEditor.loadImageFromURL(imgSrc, 'SampleImage').then(function() {
 	// init start mode
 	startEditorUseCfgMode();
 
-	// fix mobile ui
+	//
+	let obj = calcScale();
+	currentScale =
+		obj.img.height > obj.img.width ? obj.canvas.maxHeight / obj.img.height : obj.canvas.maxWidth / obj.img.width;
+
+	// // fix mobile ui
+	// fixMobileUI();
+
+	// // zoom 中心是根据原图来的
+	// imageEditor.zoom({x:400,y:880, zoomLevel:2});
+	// setTimeout(()=>{
+	// 	imageEditor.zoom({x:400,y:880, zoomLevel:2.5});
+	// } ,3e3);
+});
+function calcScale() {
 	let maxHeight, maxWidth;
 	let { height, width } = imageEditor._graphics.canvasImage;
 	if (height > width) {
@@ -695,8 +787,16 @@ imageEditor.loadImageFromURL(imgSrc, 'SampleImage').then(function() {
 			maxWidth = (maxHeight / height) * width;
 		}
 	}
-	$('.tui-image-editor-canvas-container , .tui-image-editor-canvas-container > canvas').css({ maxWidth, maxHeight });
-});
+	return {
+		img: { height, width },
+		canvas: { maxHeight, maxWidth },
+	};
+}
+function fixMobileUI() {
+	let obj = calcScale();
+	imageEditor.resizeCanvasDimension({ width: obj.canvas.maxWidth, height: obj.canvas.maxHeight });
+	// $('.tui-image-editor-canvas-container , .tui-image-editor-canvas-container > canvas').css({ maxWidth, maxHeight });
+}
 function startEditorUseCfgMode() {
 	try {
 		debugger;
@@ -750,26 +850,28 @@ $('#btnCancelEdit').click(function() {
 });
 //
 $('#btnPostImage').click(function() {
+	imageEditor.resetZoom();
 	//multiplier: 0.5,
 	let dataURL = imageEditor.toDataURL({
 		format: 'jpeg',
-		quality: 0.8,
+		quality: 0.85,
 	});
 
 	let formData = new FormData();
 	formData.append('baseImg', dataURL);
 
 	window.top.ifrLoading();
+	window.top.ifrCommit(formData);
 
-	$.ajax({
-		url: '/wechat/homeworkH5/getTempFile',
-		// url: '/api/wechat/homeworkH5/getTempFile',
-		data: formData,
-		processData: false,
-		contentType: false,
-		type: 'POST',
-		success: function(resp) {
-			window.top.ifrSuccess(resp.data);
-		},
-	});
+	// $.ajax({
+	// 	url: '/wechat/homeworkH5/getTempFile',
+	// 	// url: '/api/wechat/homeworkH5/getTempFile',
+	// 	data: formData,
+	// 	processData: false,
+	// 	contentType: false,
+	// 	type: 'POST',
+	// 	success: function(resp) {
+	// 		window.top.ifrSuccess(resp.data);
+	// 	},
+	// });
 });

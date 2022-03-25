@@ -566,13 +566,18 @@
             success: function (res) {
               imgObj.serverId = res.serverId;
 
-
               let ele = document.getElementById("headerBox");
-              console.log(ele.clientHeight);
-              window.scrollTo(0,ele.clientHeight);
-
-
+              // console.log(ele.clientHeight);
+              if(ele){
+                window.scrollTo(0, ele.clientHeight);
+              }
               resolve("done!");
+              
+
+              // setTimeout(()=>{
+                   
+              // } , 1e3);
+              
             },
             fail: function (error) {
               alert("上传图片失败")

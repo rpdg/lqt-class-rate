@@ -699,6 +699,18 @@ export default {
 						text: '上传中...',
 					});
 				};
+				window.ifrCommit = function(formData){
+					$.ajax({
+						url: apiRouter.POST_HOMEWORK_FILE,
+						data: formData,
+						processData: false,
+						contentType: false,
+						type: 'POST',
+						success: function(resp) {
+							window.top.ifrSuccess(resp.data);
+						},
+					});
+				};
 				window.ifrSuccess = function(data) {
 					vm.$vux.toast.text('图片上传成功!');
 					// vm.$emit('finishEdit', data);

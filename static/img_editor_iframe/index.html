@@ -8,12 +8,28 @@
     <link type="text/css" href="css/tui-color-picker.css" rel="stylesheet" />
     <link type="text/css" href="css/service-mobile.css" rel="stylesheet" />
     <style>
+        /* body {
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .header{
+            position: unset;
+        }
+
         .tui-image-editor {
-            position: absolute;
-            top: 50px;
-            bottom: 80px;
             width: 100vw;
             height: unset;
+
+            flex: 1;
+            margin-bottom: 80px;
+        } */
+        .button{
+            font-size: 10px;
+        }
+        .disabledBtn{
+            color: #999;
+            opacity: 0.5;
         }
     </style>
     <script>var errorLogs = []; window.onerror = function (o, r, e, n) { errorLogs.push({ message: o, source: r, lineno: e, colno: n }); };</script>
@@ -22,14 +38,14 @@
 <body>
     <!-- Image editor controls - top area -->
     <div class="header">
-        <!-- <div>
-            <img class="logo" src="img/TOAST UI Component.png" /> <span class="name">Image Editor</span>
-        </div> -->
         <div class="menu">
             <!-- <span class="button">
                 <img src="img/openImage.png" style="margin-top: 5px" />
                 <input type="file" accept="image/*" id="input-image-file" />
             </span> -->
+            <!-- <button class="button" id="btn-zoom-in">+</button>
+            <button class="button" id="btn-zoom-out">-</button>
+            <button class="button" id="btn-move" class="disabledBtn">移动</button> -->
             <button class="button disabled" id="btn-undo"><img src="img/undo.png" /></button>
             <button class="button disabled" id="btn-redo"><img src="img/redo.png" /></button>
             <!-- <button class="button" id="btn-remove-active-object"><img src="img/remove.png" /></button> -->
@@ -128,7 +144,7 @@
                         <li class="menu-item">
                             <button class="submenu-button" id="btn-change-size">粗细</button>
                             <div class="hiddenmenu">
-                                <input id="input-brush-range" type="range" min="5" max="100" value="5" />
+                                <input id="input-brush-range" type="range" min="2" max="100" value="5" />
                             </div>
                         </li>
                         <li class="menu-item">
@@ -233,7 +249,7 @@
     <script crossOrigin src="js/tui-color-picker.min.js"></script>
     <script crossOrigin src="js/jquery.min.js"></script>
     <!-- <script crossOrigin  src="js/FileSaver.min.js"></script> -->
-    <script crossOrigin src="js/tui-image-editor.js"></script>
+    <script crossOrigin src="js/tui-image-editor.js?s=142348"></script>
     <script crossOrigin src="js/service-mobile.js"></script>
 </body>
 
