@@ -732,33 +732,33 @@ function init(editor) {
 		}
 	});
 
-	// // alert(window.location.search.split('?img=')[1].split('&s=')[0]);
-	// let imgSrc = window.location.search.split('?img=')[1].split('&s=')[0] ;
-	// // let imgSrc = 'https://picsum.photos/seed/rrrrrrrr/800/1760';
-	// imageEditor.loadImageFromURL(imgSrc, 'SampleImage').then(function() {
-	// 	imageEditor.clearUndoStack();
+	// alert(window.location.search.split('?img=')[1].split('&s=')[0]);
+	let imgSrc = window.location.search.split('?img=')[1].split('&s=')[0] ;
+	// let imgSrc = 'https://picsum.photos/seed/rrrrrrrr/800/1760';
+	imageEditor.loadImageFromURL(imgSrc, 'SampleImage').then(function() {
+		imageEditor.clearUndoStack();
 
-	// 	// 	// init start mode
+		// 	// init start mode
 		startEditorUseCfgMode();
 
-	// 	//
-	// 	let obj = calcScale();
-	// 	currentScale =
-	// 		obj.img.height > obj.img.width
-	// 			? obj.canvas.maxHeight / obj.img.height
-	// 			: obj.canvas.maxWidth / obj.img.width;
+		//
+		let obj = calcScale();
+		currentScale =
+			obj.img.height > obj.img.width
+				? obj.canvas.maxHeight / obj.img.height
+				: obj.canvas.maxWidth / obj.img.width;
 
-	// 	// // fix mobile ui
+		// // fix mobile ui
 
-	// 	debugger
-	// 	fixMobileUI();
-	// 	// // zoom 中心是根据原图来的
-	// 	imageEditor.zoom({ zoomLevel: 1, x: obj.img.width / 2, y: obj.img.height / 2 });
+		debugger
+		fixMobileUI();
+		// // zoom 中心是根据原图来的
+		imageEditor.zoom({ zoomLevel: 1, x: obj.img.width / 2, y: obj.img.height / 2 });
 
-	// 	// setTimeout(()=>{
-	// 	// 	imageEditor.zoom({x:400,y:880, zoomLevel:2.5});
-	// 	// } ,3e3);
-	// });
+		// setTimeout(()=>{
+		// 	imageEditor.zoom({x:400,y:880, zoomLevel:2.5});
+		// } ,3e3);
+	});
 
 	// Load image
 	// function getBase64Image(img) {
@@ -828,7 +828,7 @@ function init(editor) {
 	}
 	function fixMobileUI() {
 		let obj = calcScale();
-		imageEditor.resizeCanvasDimension({ width: obj.canvas.maxWidth , height: obj.canvas.maxHeight });
+		imageEditor.resizeCanvasDimension({ width: obj.canvas.maxWidth+1000, height: obj.canvas.maxHeight });
 		// $('.tui-image-editor-canvas-container , .tui-image-editor-canvas-container > canvas').css({ maxWidth, maxHeight });
 	}
 	function startEditorUseCfgMode() {
