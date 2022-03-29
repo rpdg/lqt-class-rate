@@ -733,7 +733,7 @@ function init(editor) {
 	});
 
 	// alert(window.location.search.split('?img=')[1].split('&s=')[0]);
-	let imgSrc = window.location.search.split('?img=')[1].split('&s=')[0] ;
+	let imgSrc = window.location.search.split('?img=')[1].split('&s=')[0];
 	// let imgSrc = 'https://picsum.photos/seed/rrrrrrrr/800/1760';
 	imageEditor.loadImageFromURL(imgSrc, 'SampleImage').then(function() {
 		imageEditor.clearUndoStack();
@@ -750,7 +750,7 @@ function init(editor) {
 
 		// // fix mobile ui
 
-		debugger
+		debugger;
 		fixMobileUI();
 		// // zoom 中心是根据原图来的
 		imageEditor.zoom({ zoomLevel: 1, x: obj.img.width / 2, y: obj.img.height / 2 });
@@ -828,7 +828,7 @@ function init(editor) {
 	}
 	function fixMobileUI() {
 		let obj = calcScale();
-		imageEditor.resizeCanvasDimension({ width: obj.canvas.maxWidth+1000, height: obj.canvas.maxHeight });
+		imageEditor.resizeCanvasDimension({ width: obj.canvas.maxWidth + 1000, height: obj.canvas.maxHeight });
 		// $('.tui-image-editor-canvas-container , .tui-image-editor-canvas-container > canvas').css({ maxWidth, maxHeight });
 	}
 	function startEditorUseCfgMode() {
@@ -857,6 +857,29 @@ function init(editor) {
 		} catch (e) {}
 	}
 	// startEditorUseCfgMode();
+
+	// FUNCTION TO CONVERT DATA-URL to BLOB
+	function dataURLtoBlob(dataurl) {
+		var arr = dataurl.split(','),
+			mime = arr[0].match(/:(.*?);/)[1],
+			bstr = atob(arr[1]),
+			n = bstr.length,
+			u8arr = new Uint8Array(n);
+		while (n--) {
+			u8arr[n] = bstr.charCodeAt(n);
+		}
+		return new Blob([u8arr], { type: mime });
+	}
+	/**
+	 * 
+ 		// GET TUI IMAGE AS A BLOB
+        var blob = dataURLtoBlob(imageEditor.toDataURL());
+
+        // PREPARE FORM DATA TO SEND VIA POST
+        var formData = new FormData();
+        formData.append('croppedImage', blob, 'sampleimage.png');
+
+	 */
 
 	function getImgByteSize(graphicContents) {
 		let size = 0;
