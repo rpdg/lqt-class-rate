@@ -27,8 +27,12 @@ export default {
 		this.detailCode = this.$route.query.detailCode;
 		this.nameBt = this.$route.query.nameBt;
 		this.getGradeWay();
+		this.oldPageTitle = document.title;
+		document.title = '学生综评';
 	},
-
+	deactivated() {
+		document.title = this.oldPageTitle;
+	},
 	methods: {
 		getGradeWay() {
 			console.log(apiRouter.GET_CLASSBYCODE + 'evalId=' + this.evalId + '&detailCode=' + this.detailCode);
