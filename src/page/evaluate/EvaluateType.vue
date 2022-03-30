@@ -1,6 +1,6 @@
 <template>
     <div class="box">
-        <x-header class="title-header" :title="`评价条目`" :backUrl="`/`">
+        <x-header class="title-header" :title="`评价条目`"  :left-options="{preventGoBack: true}" @on-click-back="goBack">
           <template  slot="right">
             <van-button plain type="info" size="mini" style="color:#1989fa;" @click="goNewDetail">记录查看</van-button>
           </template>
@@ -69,16 +69,17 @@ export default {
 				});
 		},
 
-    goNewDetail(){
-      window.location.href = '/weixin/wechat/v2/index.html#/evaluate/records' 
-    } ,
+		goNewDetail(){
+		window.location.href = '/weixin/wechat/v2/index.html#/evaluate/records' 
+		} ,
 
 		evluatObj(evalId, detailCode, nameBt) {
 			this.$router.push({ path: 'gradeList', query: { evalId: evalId, detailCode: detailCode, nameBt: nameBt } });
 		},
 
 		goBack() {
-			window.location.href = roterPath + '/weixin/wechat/dist/index.html#/';
+			this.$router.push('/');
+			// window.location.href = roterPath + '/weixin/wechat/dist/index.html#/';
 		},
 	},
 	data() {
