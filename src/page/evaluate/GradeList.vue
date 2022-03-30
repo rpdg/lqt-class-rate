@@ -4,7 +4,7 @@
       <back-title-bar :title="`返回`" :backUrl="`/evaluate`" />
     </div>
     <div class="context clearfix">
-      <h3 class="title">请选择需要评价{{nameBt}}的班级</h3>
+      <h3 class="title">评价条目：{{nameBt}}</h3>
       <ul class="maple-info">
         <li @click="remarkInfo(item.ID,item.NAME)" v-for="(item,index) in getGradeData" :key="index">
           <span>{{item.NAME}}</span>
