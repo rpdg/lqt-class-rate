@@ -679,13 +679,13 @@ export default {
 			if (type == '1') {
 				// debugger;
 				url = e.sUrl.includes(this.picRootPath)
-					? roterPath + '/upload/' + e.sUrl.split(this.picRootPath)[1]
-					: roterPath + '/' + e.sUrl;
+					? e.sUrl
+					: this.picRootPath + e.sUrl;
 				//let url = e.sUrl;
 			} else {
 				url = e.URL.includes(this.picRootPath)
-					? roterPath + '/upload/' + e.URL.split(this.picRootPath)[1]
-					: roterPath + '/' + e.URL;
+					? e.URL
+					: this.picRootPath + e.URL;
 			}
 
 			// init editor
