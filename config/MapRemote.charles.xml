@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<?charles serialisation-version='2.0' ?>
+<map>
+  <toolEnabled>true</toolEnabled>
+  <mappings>
+    <mapMapping>
+      <sourceLocation>
+        <protocol>https</protocol>
+        <host>gz.lqtedu.com</host>
+        <path>/weixin/wechat/dist/*</path>
+        <query>*</query>
+      </sourceLocation>
+      <destLocation>
+        <protocol>http</protocol>
+        <host>localhost</host>
+        <port>8803</port>
+        <path>/</path>
+      </destLocation>
+      <preserveHostHeader>true</preserveHostHeader>
+      <enabled>true</enabled>
+    </mapMapping>
+    <mapMapping>
+      <sourceLocation>
+        <protocol>https</protocol>
+        <host>gz.lqtedu.com</host>
+        <path>*.js</path>
+      </sourceLocation>
+      <destLocation>
+        <protocol>http</protocol>
+        <host>localhost</host>
+        <port>8803</port>
+      </destLocation>
+      <preserveHostHeader>true</preserveHostHeader>
+      <enabled>true</enabled>
+    </mapMapping>
+    <mapMapping>
+      <sourceLocation>
+        <protocol>https</protocol>
+        <host>gz.lqtedu.com</host>
+        <path>/api/*</path>
+      </sourceLocation>
+      <destLocation>
+        <protocol>https</protocol>
+        <host>gz.lqtedu.com</host>
+        <path>/</path>
+      </destLocation>
+      <preserveHostHeader>true</preserveHostHeader>
+      <enabled>true</enabled>
+    </mapMapping>
+  </mappings>
+</map>

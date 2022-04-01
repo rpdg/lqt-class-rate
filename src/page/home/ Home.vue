@@ -100,7 +100,7 @@
 
 <script>
 import apiRouter from '../../config/api.js';
-import { Icon } from 'vant';
+import { Dialog, Icon } from 'vant';
 import wx from "weixin-js-sdk";
 
 export default {
@@ -109,6 +109,7 @@ export default {
 	},
 	mounted() {
 		// this.showList();
+		this.urlPath = window.location.href.split("#")[0];
 		window.localStorage.removeItem('lqt_login_errorTimes');
     this.getUrlConfigTrue()
 	},
@@ -119,30 +120,60 @@ export default {
 	},
 	methods: {
     scanQR(){
+		let vm = this;
       wx.scanQRCode({
         needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
         scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
         success: function (res) {
+			console.log(res)
           var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
-          alert(result)
-        }
+        //   alert('[' + result + ']');
+
+		  Dialog.confirm({
+				className: "dy-rate-dialog",
+				title: "",
+				message: "奖章扫码登记成功",
+				confirmButtonColor:'#0093DD',
+				confirmButtonText: "继续扫码",
+				cancelButtonText: "完成",
+			}).then(() => {
+				vm.scanQR();
+			}).catch(()=>{
+				window.location.href = '/weixin/wechat/v2/index.html#/evaluate/stu';
+			});
+        },
+		fail: function(res){
+			console.log(res);
+			alert(JSON.stringify(res));
+		}
       });
     },
     getUrlConfigTrue() {
-      let wiexin = apiRouter.GET_CONFIG + encodeURIComponent(this.urlPath)
+
+      let wiexin = (apiRouter.GET_CONFIG) + encodeURIComponent(this.urlPath);
+
       this.$http.get(wiexin).then(response => {
         let data = response.body
         wx.config({
-          // debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+        //   debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
           appId: data.appId, // 必填，企业号的唯一标识，此处填写企业号corpid
           timestamp: data.timestamp, // 必填，生成签名的时间戳
           nonceStr: data.nonceStr, // 必填，生成签名的随机串
-          signature: data.signature,// 必填，签名，见附录1
+          signature: data.signature,// 必填，签名，见附录1         
           jsApiList: [
-            "scanQRCode","chooseImage", "uploadImage", "downloadImage", "getLocalImgData", "previewImage", "chooseWXPay",
-            'startRecord', 'stopRecord', 'onVoiceRecordEnd', 'uploadVoice','downloadVoice', 'playVoice', 'stopVoice', 'translateVoice',
+			  "scanQRCode"
           ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
         });
+
+		wx.checkJsApi({
+			jsApiList: ['chooseImage','scanQRCode'], // 需要检测的JS接口列表，所有JS接口列表见附录2,
+			success: function(res) {
+				console.log(res)
+			// 以键值对的形式返回，可用的api值true，不可用为false
+			// 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
+			}
+			});
+
         wx.error(function (res) {
           //   alert(res)
         });
@@ -221,6 +252,7 @@ export default {
 	},
 	data() {
 		return {
+      		urlPath: "",
 			isShow: false,
 			isActive: false,
 			myIcon: [],
