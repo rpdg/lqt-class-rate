@@ -31,7 +31,7 @@
           <!-- 学生端综评扫码 -->
           <div v-if="item.code === 'ZH_MEDAL'" class="link-class">
             <div
-                :style="{background:item.color, display:'block', borderRadius: '5px'}"
+                :style="{background:item.color, display:'block', borderRadius: '5px' , fontSize: '.80357143rem'}"
                 @click="scanQR"
               >
                 <van-icon class="icon" name="qr" />
@@ -123,28 +123,36 @@ export default {
 		let vm = this;
       wx.scanQRCode({
         needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
-        scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
+        scanType: ["qrCode"], // 可以指定扫二维码还是一维码，默认二者都有
         success: function (res) {
 			console.log(res);
           	var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
-        //   alert('[' + result + ']');
+          	// alert('[' + result + ']');
 
-			this.$http.get(result).then(response => {
-				Dialog.confirm({
-					className: "dy-rate-dialog",
-					title: "",
-					message: "奖章扫码登记成功",
-					confirmButtonColor:'#0093DD',
-					confirmButtonText: "继续扫码",
-					cancelButtonText: "完成",
-				}).then(() => {
-					vm.scanQR();
-				}).catch(()=>{
-					window.location.href = '/weixin/wechat/v2/index.html#/evaluate/stu';
+			try{
+				vm.$http.get(result).then(response => {
+					let result = response.body;
+					// alert(JSON.stringify(result));
+
+					Dialog.confirm({
+						className: "dy-rate-dialog",
+						title: "",
+						message: "奖章扫码登记成功",
+						confirmButtonColor:'#0093DD',
+						confirmButtonText: "继续扫码",
+						cancelButtonText: "完成",
+					}).then(() => {
+						vm.scanQR();
+					}).catch(()=>{
+						window.location.href = '/weixin/wechat/v2/index.html#/evaluate/stu';
+					});
+				}).catch((err)=>{
+					alert(JSON.stringify(err));
 				});
-			}).catch((err)=>{
-				alert(JSON.stringify(err));
-			});
+			}catch(e){
+				alert(JSON.stringify(e.message));
+			}
+			
 
 
 		  
