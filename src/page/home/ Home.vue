@@ -132,6 +132,9 @@ export default {
 			try{
 				vm.$http.get(result).then(response => {
 					let result = response.body;
+					if(result.code != 200){
+						return alert(result.message);
+					}
 					// alert(JSON.stringify(result));
 
 					Dialog.confirm({
