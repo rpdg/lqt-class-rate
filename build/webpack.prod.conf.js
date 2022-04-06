@@ -57,6 +57,7 @@ var webpackConfig = merge(baseWebpackConfig, {
         : config.build.index,
       template: 'index.html',
       inject: true,
+      routerPath: process.env.ROUTER_PATH,
       minify: {
         removeComments: true,
         collapseWhitespace: true,

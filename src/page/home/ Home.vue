@@ -38,7 +38,7 @@
             </div>
             <p class="name" style="font-size: 0.5rem">{{item.name}}</p>
           </div>
-          <a v-else class="link-class" :class="item.newFlag?'new':''" :href="(item.pageUrl.indexOf('/weixin/wechat/dist/index.html')===0  ? '#'+item.pageUrl.split('#')[1] : wwwUrl + item.pageUrl)">
+          <a v-else class="link-class" :class="item.newFlag?'new':''" :href="item.pageUrl">
             <div
               :style="{background:item.color,display:'block',borderRadius: '5px'}"
             >

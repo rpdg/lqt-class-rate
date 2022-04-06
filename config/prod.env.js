@@ -1,4 +1,5 @@
 module.exports = {
   NODE_ENV: '"production"',
-  API_BASE_URL: '"https://gz.lqtedu.com/"'
+  API_BASE_URL: '"https://gz.lqtedu.com/"',
+  ROUTER_PATH : '"/"',
 };
