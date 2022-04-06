@@ -1,0 +1,75 @@
+name: Serverless deploy
+on: # rebuild any PRs and main branch changes
+    push:
+        branches:
+            - master
+
+jobs:
+    devOps: # make sure build/ci work properly
+        name: devOps
+        runs-on: ubuntu-latest
+        steps:
+            - run: sudo timedatectl set-timezone "Asia/Shanghai"
+
+            - name: Get current date
+              id: date
+              run: echo "::set-output name=today::$(date +'%Y-%m-%dT%H:%M:%S')"
+
+            - name: Git checkout
+              uses: actions/checkout@v2
+              with:
+                  ref: master
+                  token: ${{ secrets.PAT }}
+                  path: 'vue2'
+
+            - name: Setup node
+              uses: actions/setup-node@v2
+              with:
+                  node-version: '16'
+
+            - run: git config --global user.name "Lyu Pengfei"
+            - run: git config --global user.email "lyu1975@gmail.com"
+
+            - name: Clone serverless repository
+              uses: actions/checkout@v2
+              with:
+                  repository: rpdg/lqt-wx-demo
+                  ref: master
+                  token: ${{ secrets.PAT }}
+                  path: 'devOpsDir'
+
+            - run: cd devOpsDir && git rm -r ./weixin/wechat/dist && rm -rf ./weixin/wechat/dist && git commit -m "Remove previouse dist directory" && cd ..
+            
+            - run: cd vue2 && npm install && npm run CI && cd ..
+
+            - name: Clone new project repository
+              uses: actions/checkout@v2
+              with:
+                  repository: rpdg/lqt-album
+                  ref: master
+                  token: ${{ secrets.PAT }}
+                  path: 'vue3'
+                  
+            - run: cd vue3 && npm install && npm run CI && cd ..
+
+            - run: cd devOpsDir && git add --all &&  git commit -m "nightly build (${{ steps.date.outputs.today }})"
+
+
+            - name: Push to serverless repository
+              uses: cpina/github-action-push-to-another-repository@main
+              env:
+                  API_TOKEN_GITHUB: ${{ secrets.PAT }}
+                  TAG_NAME: nightly-tag-${{ steps.date.outputs.today }}
+              with:
+                  source-directory: 'devOpsDir'
+                  destination-github-username: 'rpdg'
+                  destination-repository-name: 'lqt-wx-demo'
+                  user-email: lyu1975@gmail.com
+                  commit-message: Deploy ORIGIN_COMMIT
+                  target-branch: master
+
+            # - run: echo $PSWD
+            #   env:
+            #     PSWD: ${{ secrets.PSW }}
+
+            # - run: git push https://github.com/rpdg/vite-vercel-sample.git --all

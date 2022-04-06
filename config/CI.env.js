@@ -1,4 +1,4 @@
 module.exports = {
-  NODE_ENV: '"production"',
+  NODE_ENV: '"development"',
   API_BASE_URL: '"/api/"'
 };
