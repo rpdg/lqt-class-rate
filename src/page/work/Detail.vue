@@ -55,7 +55,7 @@
                 <div class="answer-qs other-ans-img">
                   <div v-for="(vDetail,vIndex) in detail.imgList">
                     <div style="position: relative"  v-if="vDetail.ANSWER">
-                      <img :src="vDetail.URL"/>
+                      <img :src="vDetail.URL || vDetail.localId "/>
                       <div @touchstart="gotouchstart('img',detail.imgList,vIndex)"
                         @touchmove="gotouchmove()"
                         @touchend="gotouchend('img',detail.imgList,vIndex)"
@@ -65,7 +65,7 @@
 
 
                     <div style="position: relative" v-else>
-                      <img :src="vDetail.localData"/>
+                      <img :src="vDetail.localData || vDetail.localId "/>
                       <div @touchstart="gotouchstart('img',detail.imgList,vIndex)"
                         @touchmove="gotouchmove()"
                         @touchend="gotouchend('img',detail.imgList,vIndex)"
@@ -505,29 +505,33 @@
         let _this = this;
         console.log(JSON.stringify(detail.imgList) );
         console.log("startImg");
+
         wx.chooseImage({
           count: 9, // 默认9
-          sizeType: ['original','compressed'], // 可以指定是原图还是压缩图，默认二者都有
+          sizeType: ['compressed'], // 可以指定是原图还是压缩图，默认二者都有
           sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
           success: function (res) {
-            let localIds = res.localIds;
-            console.info(">>>>>>>>>>选择完成-localIds.length:" + localIds.length)
-            //是否IOS
-            if (window.__wxjs_is_wkwebview) {
-              console.log(">>>>>>>>>>window.__wxjs_is_wkwebview!!!")
-              _this.wxGetLocalImgDataActivity(detail.imgList, localIds).then(result => {
+            setTimeout(function(){
+              let localIds = res.localIds;
+              console.info(">>>>>>>>>>选择完成-localIds.length:" + localIds.length)
+              //是否IOS
+              if (window.__wxjs_is_wkwebview) {
+                console.log(">>>>>>>>>>window.__wxjs_is_wkwebview!!!")
+                _this.wxGetLocalImgDataActivity(detail.imgList, localIds).then(result => {
+                  _this.wxUploadImageActivity(detail.imgList); //todo
+                })
+              } else {
+                console.log(">>>>>>>>>>not----window.__wxjs_is_wkwebview!!!")
+                for (let i = 0; i < localIds.length; i++) {
+                  let imgObj = {};
+                  imgObj.localId = localIds[i];
+                  imgObj.localData = localIds[i];
+                  detail.imgList.push(imgObj);
+                }
                 _this.wxUploadImageActivity(detail.imgList); //todo
-              })
-            } else {
-              console.log(">>>>>>>>>>not----window.__wxjs_is_wkwebview!!!")
-              for (let i = 0; i < localIds.length; i++) {
-                let imgObj = {};
-                imgObj.localId = localIds[i];
-                imgObj.localData = localIds[i];
-                detail.imgList.push(imgObj);
               }
-              _this.wxUploadImageActivity(detail.imgList); //todo
-            }
+            } , 5e2);
+            
 
           },
           fail: function (res) {
@@ -542,6 +546,7 @@
         console.info("upload-length:" + imgList.length);
         for (let i = 0; i < imgList.length; i++) {
           let localId = imgList[i].localId;
+
           //已经上传的不再上传
           if (imgList[i].serverId || imgList[i].URL) {
             continue;
@@ -553,6 +558,7 @@
               imgList[i].localId = localId;
             }
           }
+
           await _this.uploadImage(imgList[i]);
 
         }
@@ -564,19 +570,18 @@
             localId: imgObj.localId, // 需要上传的图片的本地ID，由chooseImage接口获得
             isShowProgressTips: 1, // 默认为1，显示进度提示
             success: function (res) {
-              imgObj.serverId = res.serverId;
+              setTimeout(()=>{
 
-              let ele = document.getElementById("headerBox");
-              // console.log(ele.clientHeight);
-              if(ele){
-                window.scrollTo(0, ele.clientHeight);
-              }
-              resolve("done!");
-              
+                imgObj.serverId = res.serverId;
 
-              // setTimeout(()=>{
+                let ele = document.getElementById("headerBox");
+                // console.log(ele.clientHeight);
+                if(ele){
+                  window.scrollTo(0, ele.clientHeight);
+                }
+                resolve("done!");
                    
-              // } , 1e3);
+              } , 1e3);
               
             },
             fail: function (error) {
