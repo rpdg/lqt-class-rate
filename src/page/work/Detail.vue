@@ -55,7 +55,7 @@
                 <div class="answer-qs other-ans-img">
                   <div v-for="(vDetail,vIndex) in detail.imgList">
                     <div style="position: relative"  v-if="vDetail.ANSWER">
-                      <img :src="vDetail.URL || vDetail.localId "/>
+                      <img :src="vDetail.localData || vDetail.URL"/>
                       <div @touchstart="gotouchstart('img',detail.imgList,vIndex)"
                         @touchmove="gotouchmove()"
                         @touchend="gotouchend('img',detail.imgList,vIndex)"
@@ -499,6 +499,8 @@
       //~~~~~~~~~~~~~~~~~~上传图片 start~~~~~~~~~~~~~~~~~~
       onClickUpActivity(detail) {
         console.log("onClickUpActivity");
+        debugger;
+
         if (!detail.imgList) {
           detail.imgList = [];
         }
@@ -572,6 +574,8 @@
             success: function (res) {
               setTimeout(()=>{
 
+                alert(JSON.stringify(res));
+
                 imgObj.serverId = res.serverId;
 
                 let ele = document.getElementById("headerBox");
@@ -605,9 +609,20 @@
             success: function (res) {
               let localData = res.localData; // localData是图片的base64数据，可以用img标签显示
               localData = localData.replace('jgp', 'jpeg');
+
+              let imageBase64 = '';
+              if (localData.indexOf('data:image') == 0) {
+                //苹果的直接赋值，默认生成'data:image/jpeg;base64,'的头部拼接
+                imageBase64 = localData;
+              } else {
+                //此处是安卓中的唯一得坑！在拼接前需要对localData进行换行符的全局替换
+                //此时一个正常的base64图片路径就完美生成赋值到img的src中了
+                imageBase64 = 'data:image/jpeg;base64,' + localData.replace(/\n/g, '');
+              }
+
               let imgObj = {};
               imgObj.localId = localId;
-              imgObj.localData = localData;
+              imgObj.localData = imageBase64;
               imgList.push(imgObj);
               resolve("done!");
             },

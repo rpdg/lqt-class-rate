@@ -3,7 +3,11 @@
 <!--    <div class="back-div" ref="heightBackPub">-->
 <!--      <p @click="goBack()" class="up-back">返回</p>-->
 <!--    </div>-->
-    <x-header class="title-header" :left-options="{preventGoBack: true}"  @on-click-back="goBack" >作业</x-header>
+    <x-header class="title-header" :left-options="{preventGoBack: true}"  @on-click-back="goBack" :title="`作业列表`">
+        <template  slot="right">
+            <van-icon name="setting-o" color="#FF8F03" size="14" />
+          </template>
+    </x-header>
 
     <!--<back ref="heightBackPub" style="display: none"></back>-->
     <ul class="message"  ref="onScoll">
@@ -42,7 +46,9 @@
   import {Confirm, Group, XSwitch, XButton, TransferDomDirective as TransferDom, XHeader} from 'vux'
   import Back from "../../components/common/Back.vue"
   import apiRouter from "../../config/api.js"
-  import {mapMutations} from 'vuex'
+  import {mapMutations} from 'vuex';
+  import { Icon } from 'vant';
+
   export default {
     directives: {
       TransferDom
@@ -54,7 +60,8 @@
       Group,
       XSwitch,
       XButton,
-      XHeader
+      XHeader,
+      [Icon.name]:Icon,
     },
 
     mounted(){
@@ -83,6 +90,11 @@
     activated() {
       $(document).scrollTop(0)
 
+      this.oldPageTitle = document.title;
+      document.title = '作业批改';
+    },
+    deactivated() {
+      document.title = this.oldPageTitle;
     },
     methods: {
       goCheck(obj){
