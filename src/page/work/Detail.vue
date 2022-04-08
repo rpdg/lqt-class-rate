@@ -65,7 +65,7 @@
 
 
                     <div style="position: relative" v-else>
-                      <img :src="vDetail.localData || vDetail.localId "/>
+                      <img :src=" vDetail.SHOW_URL "/>
                       <div @touchstart="gotouchstart('img',detail.imgList,vIndex)"
                         @touchmove="gotouchmove()"
                         @touchend="gotouchend('img',detail.imgList,vIndex)"
@@ -135,8 +135,9 @@
                   </li>
                 </ul>
               </div>
+              <!-- 传图，录音，两个按钮 -->
               <div class="qs-bar clearfix">
-                <p><span class="bar-btn btn-img" v-on:click="onClickUpActivity(detail)"></span></p>
+                <p><span class="bar-btn btn-img" v-on:click="handleChooseImage(detail)"></span></p>
                 <p><span class="bar-btn btn-voice" @touchstart.prevent="startVoice(detail)" @touchend.prevent="endVoice(detail)"></span></p>
               </div>
             </div>
@@ -301,7 +302,15 @@
 
   import wx from "weixin-js-sdk";
   import FirstHeader from './FirstHeader.vue';
+  import axios from 'axios';
+
   import {formatDate} from "../../utils/TimeUtils";
+
+async function dataUrlToFile(dataUrl, fileName) {
+  const res = await fetch(dataUrl);
+  const blob = await res.blob();
+  return new File([blob], fileName, { type: "image/jpeg" });
+}
 
   export default {
     directives: {
@@ -407,6 +416,7 @@
         descLine: '',
         wwwUrl: roterPath,
         picRootPath:'',
+        roterOssPath: window.roterOssPath,
         rootDomain: window.location.protocol + "//" + window.location.host,
         id: '',
         typeId: '',
@@ -496,7 +506,107 @@
         };
         window.history.pushState(state, "title", "#");
       },
-      //~~~~~~~~~~~~~~~~~~上传图片 start~~~~~~~~~~~~~~~~~~
+      // 上传图片 - New
+      handleChooseImage(detail){
+        if (!detail.imgList) {
+          detail.imgList = [];
+        }
+        let _this = this;
+        console.log(detail.imgList) ;
+
+        wx.chooseImage({
+          count: 9, // 默认9
+          sizeType: ['compressed'], // 可以指定是原图还是压缩图，默认二者都有
+          sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+          success : async (res)=> {
+              // 
+              try {
+                  _this.$vux.loading.show({ text: '上传中...' });
+
+                  // 返回选定照片的本地ID列表
+                  let files = await _this.readWxImages(res.localIds);
+                  // console.log(files);
+                  let bodyFormData = new FormData();
+                  files.forEach((file) => {
+                    bodyFormData.append('files', file);
+                  });
+
+                  const service = axios.create({
+                    headers : {
+                      'Content-Type': 'multipart/form-data',
+                    },
+                    timeout: 0, // `0` (no timeout)
+                  });
+
+                  let resp = await service.post('/wechat/homeworkH5/upload_pic' , bodyFormData);
+                  console.log(resp);
+                  if(resp.data.status === 200) {
+                    let imgResults = resp.data.data.image_list;
+                    console.log('detail', detail , 'imgResults', imgResults);
+                    detail.imgList.push( ...imgResults.map(val => { return {localId: val.DB_PATH , SHOW_URL: val.SHOW_URL}}));
+                  }
+              } catch(err){
+                throw err;
+              } finally{
+                _this.$vux.loading.hide();
+              }
+              
+              // .then(response => {
+              //     _this.$vux.loading.hide(); 
+              //     if (response.status == '200') {
+              //         if (response.body.code == '-1') {
+              //             _this.$vux.toast.text(response.body.message);
+              //         } else {
+              //             // _this.$vux.toast.text("作业提交成功！")
+              //         }
+              //     } else{
+              //          _this.$vux.toast.text(response.body.message);
+              //     }
+              // } , err_response => {
+              //   alert("请求失败了!!!!")
+              // });
+          },
+          fail(){
+            console.log("图片选择失败！")
+          }
+        });
+      },
+      async readWxImages(localIds) {
+        let files = [];
+
+        for (let i = 0; i < localIds.length; i++) {
+          let base64 = await this.transWxImage2Uri(localIds[i]);
+          let file = await dataUrlToFile(base64 , (Date.now() + (Math.random().toString()).split('.')[1]||'')+ '.jpg');
+          files.push(file);
+        }
+        // console.log(files);
+        return files ;
+      },
+      transWxImage2Uri(item) {
+        return new Promise(resolve => {
+          wx.getLocalImgData({
+            localId: item,
+            success: function(res) {
+              let { localData } = res;
+
+              if (localData.indexOf("data:image") != 0) {
+                //判断是否有这样的头部
+                localData = "data:image/jpeg;base64," + localData;
+              }
+
+              localData = localData
+                .replace(/\r|\n/g, "")
+                .replace("data:image/jgp", "data:image/jpeg");
+
+              resolve(localData);
+            },
+            fail: function(err) {
+              console.error(err);
+            }
+          });
+        });
+      },
+      //~~~~~~~~~~~~~~~~~~上传图片 - Old start~~~~~~~~~~~~~~~~~~
       onClickUpActivity(detail) {
         console.log("onClickUpActivity");
         debugger;
@@ -834,6 +944,7 @@
               }
             }
             //图片
+            debugger;
             if (detail.imgList && detail.imgList.length > 0) {
               for (let j = 0; j < detail.imgList.length; j++) {
                 //let itemI = {id: detail.ID, type: '1', value: detail.imgList[j].serverId}
@@ -842,7 +953,7 @@
                   id: detail.ID,
                   type: '1',
                   firstUpload:detail.imgList[j].serverId ? 1 : 0,
-                  value: detail.imgList[j].serverId ? detail.imgList[j].serverId : detail.imgList[j].ANSWER,
+                  value: detail.imgList[j].SHOW_URL ? detail.imgList[j].localId : detail.imgList[j].ANSWER,
                 }
 
 

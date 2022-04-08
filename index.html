@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
-
+<!-- <%= process.env.BUILD_TIME %> -->
 <head>
-  <meta charset="utf-8"> 
+  <meta charset="utf-8">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
@@ -14,7 +14,6 @@
   <meta content="telephone=no" name="format-detection">
   <meta name="keywords" content="">
   <meta name="description" content="">
-
   <title>个人中心</title>
   <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
   <style lang="">
@@ -24,6 +23,7 @@
       width: 100%;
       background: #FFFFFF !important;
     }
+
     .payroll-title .weui-cell {
       padding: 0;
     }
@@ -68,33 +68,37 @@
 
     /*}*/
 
-    #pay-list .vux-picker .vux-flexbox .vux-flexbox-item:first-child{
+    #pay-list .vux-picker .vux-flexbox .vux-flexbox-item:first-child {
       width: 25%;
-      flex:initial;
+      flex: initial;
       float: left;
     }
-    #pay-list .vux-picker .vux-flexbox .vux-flexbox-item:last-child{
-     width: 75%;
-     flex:initial;
-     float: left;
-   }
-   #pay-list .vux-picker .vux-flexbox .vux-flexbox-item:last-child .scroller-item{
-     text-align: left
-   }
 
-   #pay-list .vux-popup-picker-header,#pay-list .vux-popup-dialog{
-     background: #FFFFFF;
-   }
-   #pay-list .vux-popup-picker-header{
-     color: #424242;
-   }
+    #pay-list .vux-picker .vux-flexbox .vux-flexbox-item:last-child {
+      width: 75%;
+      flex: initial;
+      float: left;
+    }
+
+    #pay-list .vux-picker .vux-flexbox .vux-flexbox-item:last-child .scroller-item {
+      text-align: left
+    }
+
+    #pay-list .vux-popup-picker-header,
+    #pay-list .vux-popup-dialog {
+      background: #FFFFFF;
+    }
+
+    #pay-list .vux-popup-picker-header {
+      color: #424242;
+    }
 
     #vjs_video_3 {
       width: 352px !important;
       height: 264px !important;
     }
 
-    .vux-cell-box:before{
+    .vux-cell-box:before {
       left: 0 !important;
     }
 
@@ -103,17 +107,16 @@
     }
   </style>
   <script>
-    /** build: <%= process.env.BUILD_TIME %> */
 
-     //const roterPath = "https://192.168.1.24:8080/lqtedu"
-     //const roterPath = "/api";//"https://gz.lqtedu.com/api/"
+    //const roterPath = "https://192.168.1.24:8080/lqtedu"
+    //const roterPath = "/api";//"https://gz.lqtedu.com/api/"
     //  const roterPath = "//gz.lqtedu.com"
 
-     const roterPath = "<%= process.env.ROUTER_PATH %>" ;
-     const roterImgPath = roterPath+'/weixin/wechat/dist'
-     const roterOssPath = location.host.indexOf('gz.lqtedu.com') === 0 ? "//pub3.lqtedu.com" : "//pub.lqtedu.com"
+    const roterPath = "<%= process.env.ROUTER_PATH %>";
+    const roterImgPath = roterPath + '/weixin/wechat/dist';
+    const roterOssPath = location.host.indexOf('gz.lqtedu.com') === 0 ? "//pub3.lqtedu.com" : "//pub.lqtedu.com";
 
-     const middlePath = "<%= process.env.MIDDLE_PATH %>" ;
+    const middlePath = "<%= process.env.MIDDLE_PATH %>";
 
 
   </script>
@@ -132,7 +135,7 @@
         fixRem: function () {
           var windowWidth = document.documentElement.clientWidth || window.innerWidth || document.body.clientWidth;
           var rootSize = 28 * (windowWidth / 375);
-          var htmlNode = document.getElementsByTagName("html")[0];
+          var htmlNode = document.getElementsByTagName("html")[ 0 ];
           htmlNode.style.fontSize = rootSize + 'px';
         }
       };
@@ -141,7 +144,7 @@
       function fixRem() {
         var windowWidth = document.documentElement.clientWidth || window.innerWidth || document.body.clientWidth;
         var rootSize = 28 * (windowWidth / 375);
-        var htmlNode = document.getElementsByTagName("html")[0];
+        var htmlNode = document.getElementsByTagName("html")[ 0 ];
         htmlNode.style.fontSize = rootSize + 'px';
       }
       // fixRem();
@@ -162,9 +165,9 @@
   var path = reg.test(window.location.href);
   if (path) {
     $(function () {
-      $(".v-transfer-dom").attr("id","pay-list");
+      $(".v-transfer-dom").attr("id", "pay-list");
       $(".vux-popup-picker-header-menu-right").html("确定");
-    })
+    });
   }
 
 </script>

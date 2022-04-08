@@ -47,5 +47,20 @@
       <preserveHostHeader>true</preserveHostHeader>
       <enabled>true</enabled>
     </mapMapping>
+    <mapMapping>
+      <sourceLocation>
+        <protocol>https</protocol>
+        <host>gz.lqtedu.com</host>
+        <path>/__webpack_hmr</path>
+      </sourceLocation>
+      <destLocation>
+        <protocol>http</protocol>
+        <host>localhost</host>
+        <port>8803</port>
+        <path>/__webpack_hmr</path>
+      </destLocation>
+      <preserveHostHeader>false</preserveHostHeader>
+      <enabled>true</enabled>
+    </mapMapping>
   </mappings>
 </map>
