@@ -977,14 +977,16 @@ async function dataUrlToFile(dataUrl, fileName) {
           } else if (detail.QUESTYPE == '6') {
             for(let j = 0 ;j<detail.sAnswerList.length;j++ ){
               debugger;
-              if(!this.checkAngle(detail.sAnswerList[i])){
-                vm.$vux.toast.show({
-                  text: '不能输入英文符号',
-                  type: 'warn',
-                  width: '9em'
-                })
-                return;
-              }
+              // if(!this.checkAngle(detail.sAnswerList[i])){
+              //   vm.$vux.toast.show({
+              //     text: '不能输入英文符号',
+              //     type: 'warn',
+              //     width: '9em'
+              //   })
+              //   return;
+              // }
+
+              detail.sAnswerList[i] = detail.sAnswerList[i].replace(/('|‘)/g, '’');
 
               if(!detail.sAnswerList[j]  || detail.sAnswerList[j] == ""){
                 vm.$vux.toast.show({
