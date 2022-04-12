@@ -977,6 +977,17 @@ async function dataUrlToFile(dataUrl, fileName) {
           } else if (detail.QUESTYPE == '6') {
             for(let j = 0 ;j<detail.sAnswerList.length;j++ ){
               debugger;
+
+              
+              if(!detail.sAnswerList[j]  || detail.sAnswerList[j] == ""){
+                vm.$vux.toast.show({
+                  text: '请先完成填空题',
+                  type: 'warn',
+                  width: '9em'
+                })
+                return;
+              }
+              
               // if(!this.checkAngle(detail.sAnswerList[i])){
               //   vm.$vux.toast.show({
               //     text: '不能输入英文符号',
@@ -986,17 +997,10 @@ async function dataUrlToFile(dataUrl, fileName) {
               //   return;
               // }
 
-              detail.sAnswerList[i] = detail.sAnswerList[i].replace(/('|‘)/g, '’');
+              detail.sAnswerList[j] = detail.sAnswerList[j].replace(/('|‘)/g, '’').replace(/,/g, '，').trim();
 
-              if(!detail.sAnswerList[j]  || detail.sAnswerList[j] == ""){
-                vm.$vux.toast.show({
-                  text: '请先完成填空题',
-                  type: 'warn',
-                  width: '9em'
-                })
-                return;
-              }
             }
+
             let answer = detail.sAnswerList.join(",")
             item = {id: detail.ID, type: '', value: answer}
             dataList.push(item)

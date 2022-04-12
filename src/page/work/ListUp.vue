@@ -5,8 +5,8 @@
 <!--    </div>-->
     <x-header class="title-header" :left-options="{preventGoBack: true}"  @on-click-back="goBack" :title="`作业列表`">
         <template  slot="right">
-            <van-icon name="setting-o" color="#FF8F03" size="14" />
-          </template>
+            <!-- <van-icon name="setting-o" color="#FF8F03" size="14" @click="showConfigure" /> -->
+        </template>
     </x-header>
 
     <!--<back ref="heightBackPub" style="display: none"></back>-->
@@ -39,6 +39,20 @@
       >
       </confirm>
     </div>
+
+    <van-popup position='bottom' style="height: 50vh;" v-model="isShowConfigure" class="evaPicker">
+      <div class="evaPickerToolbar">批改设置</div> 
+      <div class="evaRecord">
+        <div class="evaRecordRow">
+          <span>批改后跳转到下一个学生</span>
+          <van-switch v-model="checked1"  active-color="#48b319" size="22px" />
+        </div>
+        <div class="evaRecordRow">
+          <span>批改通过后提醒学生</span>
+          <van-switch v-model="checked2"  active-color="#48b319" size="22px" />
+        </div>
+      </div>
+    </van-popup>
   </div>
 </template>
 
@@ -47,7 +61,7 @@
   import Back from "../../components/common/Back.vue"
   import apiRouter from "../../config/api.js"
   import {mapMutations} from 'vuex';
-  import { Icon } from 'vant';
+  import { Icon , Popup , Switch  } from 'vant';
 
   export default {
     directives: {
@@ -61,7 +75,30 @@
       XSwitch,
       XButton,
       XHeader,
-      [Icon.name]:Icon,
+      [Icon.name]: Icon,
+      [Popup.name]: Popup,
+      [Switch.name]: Switch ,
+    },
+
+    data(){
+      return {
+        id: '',
+        page: 1,
+        popup: false,
+        isShow: false,
+        isShowConfigure: false,
+
+        checked1: true,
+        checked2: true,
+        
+        showItemNumber: -1,
+        messageData: [],
+        isEndReached: false,
+        totalPage: 1,
+        needShow: false,
+        lastShow:false,
+        wwwUrl:roterPath + '/weixin/wechat/views/homework/homework-view.jsp?homeworkId='
+      }
     },
 
     mounted(){
@@ -97,6 +134,9 @@
       document.title = this.oldPageTitle;
     },
     methods: {
+      showConfigure(){
+        this.isShowConfigure = true;
+      },
       goCheck(obj){
         window.localStorage.setItem('lqt-homework-title' , obj.TITLE);
         this.$router.push({path:'/check-work-list',query: {id: obj.ID }})
@@ -194,26 +234,65 @@
       })
 
     },
-    data(){
-      return {
-        id: '',
-        page: 1,
-        popup: false,
-        isShow: false,
-        showItemNumber: -1,
-        messageData: [],
-        isEndReached: false,
-        totalPage: 1,
-        needShow: false,
-        lastShow:false,
-        wwwUrl:roterPath + '/weixin/wechat/views/homework/homework-view.jsp?homeworkId='
-      }
-    }
   }
 </script>
 
 <style lang="less" scoped>
   @import '../../style/minxin.less';
+
+
+
+  .evaPicker {
+    padding: 0 15px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    > .evaPickerToolbar {
+      height: 44px;
+      line-height: 44px;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    > .evaPickerRow {
+      height: 40px;
+      line-height: 40px;
+      font-size: 14px;
+      text-align: left;
+      border-bottom: 1px dashed #c7c7c7;
+    }
+
+    > .evaRecord {
+      margin: 0;
+      flex: 1;
+    }
+  }
+
+.evaRecord {
+	margin: 15px 0;
+
+	> .evaRecordRow {
+		font-size: 14px;
+		line-height: 24px;
+		// padding: 15px 0;
+		// border-bottom: 1px dashed #c7c7c7;
+    display: flex;
+    align-items: center;
+
+		> span {
+			display: block;
+			margin: 0.5em 0;
+      flex: 1;
+		}
+
+		> .evaRecordRemark {
+			font-size: 12px;
+			color: #666;
+		}
+
+	}
+}
 
   .message {
     width: 100%;
