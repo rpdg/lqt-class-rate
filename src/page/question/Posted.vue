@@ -729,13 +729,13 @@ export default {
     },
     backHome() {
       //  this.$router.replace("/")
-      window.location.replace(roterPath + "/weixin/wechat/dist/index.html");
+      window.location.replace(roterPath + "/weixin/wechat/dist/index.jsp");
       //  this.deleteLocalStorage()
     },
     cancel() {
       //  this.$router.push({path: "/"})
       this.$router.go(-1);
-      //window.location.href = roterPath + "/weixin/wechat/dist/index.html#/"
+      //window.location.href = roterPath + "/weixin/wechat/dist/index.jsp#/"
     },
     /* deleteLocalStorage(){
          localStorage.removeItem('type');

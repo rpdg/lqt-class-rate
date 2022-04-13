@@ -13,11 +13,12 @@
               data-type="checkbox">
             <!--<first-header v-show="currentWork == 0" :headData="workObj"></first-header>-->
 
-            <!-- 问答题 或 其他作业 -->
+            <!-- 问答题 或 自定义 -->
             <div v-if="detail.QUESTYPE == '3' || detail.QUESTYPE == '4'">
               <div class="homework-content">
-                <p class="homework-title">{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】</p>
-                <div class="sub-content" v-html="detail.CONTENT"></div>
+				<p v-if=" detail.QUESTYPE != '4' " class="homework-title">{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】</p>
+                <p v-if="quesList.length>1 && detail.QUESTYPE == '4'">{{detail.QUESNO}}.</p>
+				<div class="sub-content" v-html="detail.CONTENT"></div>
                 <!--老师的图片-->
                 <div class="teacher-img-list">
                   <p v-for="(tDetail,tIndex) in detail.IMGLIST"
@@ -474,12 +475,12 @@ export default {
 				serverid: [],
 				imgs: [],
 			},
-			//1.单选 2.多选 3.问答 4.其他作业 5.判断 6.填空
+			//1.单选 2.多选 3.问答 4.自定义 5.判断 6.填空
 			quesTypeView: {
 				1: '单选',
 				2: '多选',
 				3: '问答',
-				4: '其他作业',
+				4: '自定义',
 				5: '判断题',
 				6: '填空',
 			},
@@ -988,7 +989,7 @@ export default {
 										item.sAnswerList = sAnswerList;
 										item.tAnswer = tAnswer;
 										break;
-									// //问答 //其他作业  ("3" || "4"):
+									// //问答 //自定义  ("3" || "4"):
 									default:
 										item.sImgList = [];
 										item.sVoiceList = [];
@@ -1063,7 +1064,7 @@ export default {
 			//       item.sAnswerList = sAnswerList;
 			//       item.tAnswer = tAnswer;
 			//       break;
-			//     // //问答 //其他作业  ("3" || "4"):
+			//     // //问答 //自定义  ("3" || "4"):
 			//     default:
 			//       item.sImgList = [];
 			//       item.sVoiceList = [];

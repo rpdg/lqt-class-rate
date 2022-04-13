@@ -69,7 +69,7 @@ export default {
 		},
 
 		goBack() {
-			window.location.href = roterPath + '/weixin/wechat/dist/index.html#/evaluate';
+			window.location.href = roterPath + '/weixin/wechat/dist/index.jsp#/evaluate';
 		},
 	},
 	data() {

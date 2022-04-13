@@ -26,7 +26,7 @@ module.exports = {
 		env: require('./CI.env'),
 		cssSourceMap: true,
 		productionSourceMap: true,
-		index: path.resolve(__dirname, '../../devOpsDir/weixin/wechat/dist/index.html'),
+		index: path.resolve(__dirname, '../../devOpsDir/weixin/wechat/dist/index.jsp'),
 		assetsRoot: path.resolve(__dirname, '../../devOpsDir/weixin/wechat/dist'),
 		assetsSubDirectory: 'static',
 		assetsPublicPath: './',

@@ -155,7 +155,7 @@
       },
 
       goBack(){
-        window.location.replace(roterPath + "/weixin/wechat/dist/index.html")
+        window.location.replace(roterPath + "/weixin/wechat/dist/index.jsp")
       },
 
       revampBtn(id){

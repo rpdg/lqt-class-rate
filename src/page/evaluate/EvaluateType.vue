@@ -79,7 +79,7 @@ export default {
 
 		goBack() {
 			this.$router.push('/');
-			// window.location.href = roterPath + '/weixin/wechat/dist/index.html#/';
+			// window.location.href = roterPath + '/weixin/wechat/dist/index.jsp#/';
 		},
 	},
 	data() {

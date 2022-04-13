@@ -443,11 +443,11 @@ export default {
       }
     },
     backHome() {
-      window.location.replace(roterPath + "/weixin/wechat/dist/index.html");
+      window.location.replace(roterPath + "/weixin/wechat/dist/index.jsp");
     },
     cancel() {
       this.$router.go(-1);
-      //window.location.href = roterPath + "/weixin/wechat/dist/index.html#/"
+      //window.location.href = roterPath + "/weixin/wechat/dist/index.jsp#/"
     },
 
     onEvent(event) {},
