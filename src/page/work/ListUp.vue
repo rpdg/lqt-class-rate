@@ -5,7 +5,7 @@
 <!--    </div>-->
     <x-header class="title-header" :left-options="{preventGoBack: true}"  @on-click-back="goBack" :title="`作业列表`">
         <template  slot="right">
-            <van-icon name="setting-o" color="#FF8F03" size="14" @click="showConfigure" />
+            <!-- <van-icon name="setting-o" color="#FF8F03" size="14" @click="showConfigure" /> -->
         </template>
     </x-header>
 
