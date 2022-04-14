@@ -57,9 +57,9 @@ Vue.http.interceptors.push((request, next) => {
 
       // }
       case 504:
-        window.location.replace(roterPath + "/weixin/wechat/dist/index.html#504")
+        window.location.replace(roterPath + "/weixin/wechat/dist/index.jsp#504")
       case 502:
-        window.location.replace(roterPath + "/weixin/wechat/dist/index.html#502")
+        window.location.replace(roterPath + "/weixin/wechat/dist/index.jsp#502")
       case 500:
         return error.response;
     }

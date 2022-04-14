@@ -153,7 +153,7 @@
 
       cancel() {
         this.$router.go(-1)
-        //window.location.href = roterPath + "/weixin/wechat/dist/index.html#/"
+        //window.location.href = roterPath + "/weixin/wechat/dist/index.jsp#/"
       },
 
       typeLink(path, item) {

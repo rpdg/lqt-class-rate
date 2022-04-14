@@ -159,12 +159,12 @@
 
       },
       backHome(){
-        console.log(roterPath + "/weixin/wechat/dist/index.html#/gradeList?evalId=" + this.evalId + "&detailCode=" + this.detailCode + "&nameBt=" + this.nameBt)
-        window.location.href = roterPath + "/weixin/wechat/dist/index.html#/gradeList?evalId=" + this.evalId + "&detailCode=" + this.detailCode + "&nameBt=" + this.nameBt
+        console.log(roterPath + "/weixin/wechat/dist/index.jsp#/gradeList?evalId=" + this.evalId + "&detailCode=" + this.detailCode + "&nameBt=" + this.nameBt)
+        window.location.href = roterPath + "/weixin/wechat/dist/index.jsp#/gradeList?evalId=" + this.evalId + "&detailCode=" + this.detailCode + "&nameBt=" + this.nameBt
         //  this.deleteLocalStorage()
       },
       goBack(){
-        window.location.href = roterPath + "/weixin/wechat/dist/index.html#/gradeList?evalId=" + this.evalId + "&detailCode=" + this.detailCode + "&nameBt=" + this.nameBt
+        window.location.href = roterPath + "/weixin/wechat/dist/index.jsp#/gradeList?evalId=" + this.evalId + "&detailCode=" + this.detailCode + "&nameBt=" + this.nameBt
       },
 
       ...mapMutations({
