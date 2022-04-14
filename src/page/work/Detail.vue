@@ -1119,23 +1119,31 @@ async function dataUrlToFile(dataUrl, fileName) {
                 switch (item.QUESTYPE) {
                   //单选
                   case "1":
-                    item.answer = item.STUANSWER[0].ANSWER;
+                    if(item.STUANSWER[0]){
+                      item.answer = item.STUANSWER[0].ANSWER;
+                    }
                     break;
                   //多选
                   case "2":
-                    item.answer = item.STUANSWER[0].ANSWER.split(",");
+                    if(item.STUANSWER[0]){
+                      item.answer = item.STUANSWER[0].ANSWER.split(",");
+                    }
                     break;
                   //判断题
                   case "5":
-                    item.answer = item.STUANSWER[0].ANSWER;
+                    if(item.STUANSWER[0]){
+                      item.answer = item.STUANSWER[0].ANSWER;
+                    }
                     break;
                   //填空 todo
                   case "6":
-                    let tAnswer = item.ANS_CONTENT.split(",");
-                    let sAnswerList = item.STUANSWER[0].ANSWER.split(",");
-                    //let sAnswerList = new Array(tAnswer.length);
-                    item.sAnswerList = sAnswerList;
-                    item.answer = [];
+                    if(item.STUANSWER[0]){
+                      // let tAnswer = item.ANS_CONTENT.split(",");
+                      let sAnswerList = item.STUANSWER[0].ANSWER.split(",");
+                      //let sAnswerList = new Array(tAnswer.length);
+                      item.sAnswerList = sAnswerList;
+                      item.answer = [];
+                    }
                     break;
                   // 问答 其他作业  ("3" || "4"):
                   default:
