@@ -792,8 +792,12 @@ function init(editor, editorWrapper , panzoom) {
 	});
 
 	// alert(window.location.search.split('?img=')[1].split('&s=')[0]);
-	// let imgSrc = window.location.search.split('?img=')[1].split('&s=')[0];
-	let imgSrc = 'https://picsum.photos/seed/rrrrrrrr/800/1760';
+	let imgSrc ;
+	if(location.hostname.endsWith('.lqtedu.com')){
+		imgSrc = window.location.search.split('?img=')[1].split('&s=')[0];
+	} else{
+		imgSrc = 'https://picsum.photos/seed/rrrrrrrr/800/1760';
+	}
 	imageEditor.loadImageFromURL(imgSrc, 'SampleImage').then(function() {
 		imageEditor.clearUndoStack();
 
