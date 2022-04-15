@@ -1,8 +1,6 @@
 <template>
   <div class="box">
-    <div class="back-div">
-      <back-title-bar :title="`返回`" :backUrl="`/evaluate`" />
-    </div>
+     <x-header class="title-header" :title="`选择班级`"  :left-options="{preventGoBack: true}" @on-click-back="goBack" />
     <div class="context clearfix">
       <h3 class="title">评价条目：{{nameBt}}</h3>
       <ul class="maple-info">
@@ -17,9 +15,11 @@
 <script>
 import BackTitleBar from '../../components/common/BackTitleBar.vue';
 import apiRouter from '../../config/api.js';
+import {  XHeader } from 'vux';
 export default {
 	components: {
 		BackTitleBar,
+		XHeader,
 	},
 	mounted() {},
 	activated() {
@@ -69,7 +69,8 @@ export default {
 		},
 
 		goBack() {
-			window.location.href = roterPath + '/weixin/wechat/dist/index.jsp#/evaluate';
+			this.$router.push('/evaluate');
+			// window.location.href = roterPath + '/weixin/wechat/dist/index.jsp#/';
 		},
 	},
 	data() {
@@ -161,5 +162,108 @@ export default {
 	left: 0;
 	background: rgba(0, 0, 0, 0.6);
 	z-index: 999;
+}
+
+
+.box {
+	height: 100%;
+}
+.amenene {
+	width: 10px;
+}
+.box .maple-nav .maple-info {
+	padding: 0;
+}
+.box .maple-nav .weui-cells {
+	margin-top: 0px;
+}
+.box .maple-nav .vux-no-group-title {
+	margin-top: 0px;
+}
+
+.box .maple-nav .weui-cells {
+	font-size: @fontSize30;
+	color: @color42;
+	margin-top: 0px;
+}
+
+.box .maple-nav .weui-cell:before {
+	padding-top: 0;
+}
+
+.context {
+	margin-top: 100 / @baseSize;
+}
+
+.context .weui-cell {
+	width: 100%;
+	height: 100 / @baseSize;
+	border-bottom: 0;
+	background: #f9f9f9;
+	padding-top: 0;
+	padding-bottom: 0;
+	padding-right: 55 / @baseSize;
+	padding-left: 55 / @baseSize;
+	font-size: @fontSize30;
+	color: @color42;
+}
+.context .weui-cell:before {
+	left: 0;
+}
+.context .vux-no-group-title {
+	padding: 0;
+}
+
+.maple-info li:last-child {
+	border-bottom: 0;
+}
+
+.weui-cells {
+	margin-top: 0px;
+}
+.vux-no-group-title {
+	margin-top: 0;
+}
+
+.back-div {
+	padding-bottom: 100 / @baseSize;
+}
+.up-back {
+	width: 100%;
+	height: 100 / @baseSize;
+	font-size: @fontSize36;
+	line-height: 100 / @baseSize;
+	color: @white;
+	text-align: center;
+	position: fixed;
+	top: 0;
+	left: 0;
+	background: rgba(0, 0, 0, 0.6);
+	z-index: 999;
+}
+
+.title-header {
+	background-color: #fff;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100 / @baseSize;
+	line-height: 100 / @baseSize;
+	z-index: 2;
+	border-bottom: solid 1px #dedede;
+}
+
+.title-header /deep/ .vux-header-title {
+	color: #333;
+	line-height: 46px;
+}
+
+.title-header /deep/ .vux-header-back {
+	color: #38f;
+}
+
+.title-header /deep/ .left-arrow:before {
+	border-color: #38f !important;
 }
 </style>
