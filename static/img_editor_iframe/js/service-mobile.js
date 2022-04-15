@@ -522,7 +522,7 @@ function init(editor , startPanZoom , stopPanZoom) {
 
 	// Text menu action
 	$btnAddText.on('click', function() {
-		var initText = '';
+		var initText = '批注：';
 
 		cfg.drawMode = 'TEXT';
 		saveCfg();
@@ -737,8 +737,8 @@ function init(editor , startPanZoom , stopPanZoom) {
 	});
 
 	// alert(window.location.search.split('?img=')[1].split('&s=')[0]);
-	// let imgSrc = window.location.search.split('?img=')[1].split('&s=')[0];
-	let imgSrc = 'https://picsum.photos/seed/rrrrrrrr/800/1760';
+	let imgSrc = window.location.search.split('?img=')[1].split('&s=')[0];
+	// let imgSrc = 'https://picsum.photos/seed/rrrrrrrr/800/1760';
 	imageEditor.loadImageFromURL(imgSrc, 'SampleImage').then(function() {
 		imageEditor.clearUndoStack();
 
