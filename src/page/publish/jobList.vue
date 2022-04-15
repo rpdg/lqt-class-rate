@@ -168,7 +168,7 @@ export default {
     },
 
     goBack() {
-      window.location.replace(roterPath + "/weixin/wechat/dist/index.jsp");
+      this.$router.push('/');
     },
 
     revampBtn(id) {

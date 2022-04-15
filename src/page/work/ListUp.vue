@@ -12,7 +12,8 @@
     <!--<back ref="heightBackPub" style="display: none"></back>-->
     <ul class="message"  ref="onScoll">
       <li class="clearfix" v-for="(news,index) in messageData" :key="index">
-        <div class="message-icon"></div>
+        <!-- <div class="message-icon"></div> -->
+        <div class="message-icon-2" :style="'background-color:' + news.COLOR">{{news.COURSE_NAME}}</div>
         <a href="javascript:void(0);"  @click="goCheck(news)" class="message-info">
           <h3>{{news.TITLE}}</h3>
           <p>发布对象：{{news.NAMES}}</p>
@@ -340,6 +341,20 @@
     top: 30/@baseSize;
     left: 30/@baseSize;
     border-radius: 3px;
+  }
+  .message-icon-2 {
+    width: 100/@baseSize;
+    height: 100/@baseSize;
+    background-size: 100% 100%;
+    position: absolute;
+    top: 30/@baseSize;
+    left: 30/@baseSize;
+    border-radius: 3px;
+    font-size: 15px;
+    color: #fff;
+    font-weight: 400;
+    text-align: center;
+	  line-height: 1.78571429rem;
   }
 
   .message-info {
