@@ -9,7 +9,7 @@ document.write(
 	'<iframe class="tui-image-editor" src="./editor.html' + window.location.search + '" border="0"></iframe>'
 );
 
-function init(editor) {
+function init(editor , startPanZoom , stopPanZoom) {
 	console.log(editor);
 
 	var MAX_RESOLUTION = 3264 * 2448; // 8MP (Mega Pixel)
@@ -310,6 +310,8 @@ function init(editor) {
 		$displayingHiddenMenu = $(this)
 			.parent()
 			.find(hiddenmenuClass);
+
+		stopPanZoom();
 	});
 
 	$submenuButtons.on('click', function() {
@@ -326,6 +328,8 @@ function init(editor) {
 		$msg.show();
 
 		imageEditor.stopDrawingMode();
+
+		startPanZoom();
 	});
 
 	// Image load action
@@ -733,8 +737,8 @@ function init(editor) {
 	});
 
 	// alert(window.location.search.split('?img=')[1].split('&s=')[0]);
-	let imgSrc = window.location.search.split('?img=')[1].split('&s=')[0];
-	// let imgSrc = 'https://picsum.photos/seed/rrrrrrrr/800/1760';
+	// let imgSrc = window.location.search.split('?img=')[1].split('&s=')[0];
+	let imgSrc = 'https://picsum.photos/seed/rrrrrrrr/800/1760';
 	imageEditor.loadImageFromURL(imgSrc, 'SampleImage').then(function() {
 		imageEditor.clearUndoStack();
 
