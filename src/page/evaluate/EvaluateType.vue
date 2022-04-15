@@ -41,7 +41,7 @@ export default {
 		CellBox,
 		Badge,
 		XHeader,
-    [Button.name]: Button,
+    	[Button.name]: Button,
 	},
 	mounted() {
 		//  this.getObjData();

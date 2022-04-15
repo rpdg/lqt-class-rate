@@ -14,7 +14,7 @@
       <li class="clearfix" v-for="(news,index) in messageData" :key="index">
         <div class="message-icon"></div>
         <a href="javascript:void(0);"  @click="goCheck(news)" class="message-info">
-        <h3>{{news.TITLE}}</h3>
+          <h3>{{news.TITLE}}</h3>
           <p>发布对象：{{news.NAMES}}</p>
         </a>
         <div class="message-handle">
@@ -45,11 +45,11 @@
       <div class="evaRecord">
         <div class="evaRecordRow">
           <span>批改后跳转到下一个学生</span>
-          <van-switch v-model="checked1"  active-color="#48b319" size="22px" />
+          <van-switch v-model="checkedJump"  active-color="#48b319" size="22px" />
         </div>
         <div class="evaRecordRow">
           <span>批改通过后提醒学生</span>
-          <van-switch v-model="checked2"  active-color="#48b319" size="22px" />
+          <van-switch v-model="checkedWarn"  active-color="#48b319" size="22px" />
         </div>
       </div>
     </van-popup>
@@ -88,8 +88,8 @@
         isShow: false,
         isShowConfigure: false,
 
-        checked1: true,
-        checked2: true,
+        checkedJump: true,
+        checkedWarn: true,
         
         showItemNumber: -1,
         messageData: [],
@@ -100,7 +100,18 @@
         wwwUrl:roterPath + '/weixin/wechat/views/homework/homework-view.jsp?homeworkId='
       }
     },
-
+    computed:{
+      jumpConfig(){
+        const {checkedJump , checkedWarn} = this;
+        return {checkedJump , checkedWarn};
+      }
+    },
+    watch:{
+      jumpConfig(val){
+        console.log(val);
+        localStorage.setItem('lqt-homework-teacherCfg' , JSON.stringify(val));
+      }
+    },
     mounted(){
       let self = this;
       self.massageData();
@@ -125,6 +136,7 @@
       // }
     },
     activated() {
+      this.loadConfig();
       $(document).scrollTop(0)
 
       this.oldPageTitle = document.title;
@@ -134,6 +146,19 @@
       document.title = this.oldPageTitle;
     },
     methods: {
+      loadConfig(){
+        let cfgStr = localStorage.getItem('lqt-homework-teacherCfg');
+        if(cfgStr){
+          try{
+            let cfg = JSON.parse(cfgStr);
+            this.checkedJump = cfg.checkedJump;
+            this.checkedWarn = cfg.checkedWarn;
+          }
+          catch(e){
+
+          }
+        }
+      },
       showConfigure(){
         this.isShowConfigure = true;
       },
