@@ -30,20 +30,12 @@ var imageEditor = new tui.ImageEditor('.tui-image-editor', {
 	usageStatistics: false,
 });
 
-
 var editorWrapper = document.getElementsByClassName('tui-image-editor')[0];
-var panzoom;
-function startPan(){
-   panzoom = Panzoom(editorWrapper, {
-        maxScale: 3,
-		minScale: 0.5
-    }); 
-}
-function stopPan(){
-    if(panzoom && panzoom.destroy){
-        panzoom.destroy();
-    }
-}
+var panzoom = Panzoom(editorWrapper, {
+	maxScale: 3,
+	minScale: 0.5,
+});
 
 
-parent.init(imageEditor , startPan , stopPan);
+
+parent.init(imageEditor, editorWrapper, panzoom);
