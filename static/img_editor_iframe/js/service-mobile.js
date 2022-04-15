@@ -522,7 +522,7 @@ function init(editor , startPanZoom , stopPanZoom) {
 
 	// Text menu action
 	$btnAddText.on('click', function() {
-		var initText = '';
+		var initText = '批注：';
 
 		cfg.drawMode = 'TEXT';
 		saveCfg();

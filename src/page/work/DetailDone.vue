@@ -493,17 +493,21 @@ var mp3;
                   break;
                 //多选
                 case "2":
-                  item.answer = item.STUANSWER[0].ANSWER.split(',');
+                  if(item.STUANSWER[0]){
+                    item.answer = item.STUANSWER[0].ANSWER.split(',');
+                  }
                   break;
                 //判断题
                 case "5":
                   break;
                 //填空 todo
                 case "6":
-                  let tAnswer = item.ANS_CONTENT.split(",");
-                  let sAnswerList = item.STUANSWER[0].ANSWER.split(",");
-                  item.sAnswerList = sAnswerList;
-                  item.tAnswer = tAnswer;
+                  if(item.STUANSWER[0]){
+                    let tAnswer = item.ANS_CONTENT.split(",");
+                    let sAnswerList = item.STUANSWER[0].ANSWER.split(",");
+                    item.sAnswerList = sAnswerList;
+                    item.tAnswer = tAnswer;
+                  }
                   break;
                 // //问答 //自定义  ("3" || "4"):
                 default:
