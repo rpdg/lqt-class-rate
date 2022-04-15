@@ -35,7 +35,8 @@ var editorWrapper = document.getElementsByClassName('tui-image-editor')[0];
 var panzoom;
 function startPan(){
    panzoom = Panzoom(editorWrapper, {
-        maxScale: 2,
+        maxScale: 3,
+		minScale: 0.5
     }); 
 }
 function stopPan(){
