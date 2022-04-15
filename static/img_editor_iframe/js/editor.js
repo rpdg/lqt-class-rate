@@ -1,4 +1,3 @@
-
 var MAX_RESOLUTION = 3264 * 2448; // 8MP (Mega Pixel)
 
 // var cfg = {
@@ -20,17 +19,30 @@ var MAX_RESOLUTION = 3264 * 2448; // 8MP (Mega Pixel)
 // }
 // loadCfg();
 
-
-
 var imageEditor = new tui.ImageEditor('.tui-image-editor', {
-    cssMaxWidth: document.documentElement.clientWidth,
-    cssMaxHeight: document.documentElement.clientHeight,
-    // cssMaxHeight: $('.tui-image-editor')[0].clientHeight,
-    selectionStyle: {
-        cornerSize: 50,
-        rotatingPointOffset: 100,
-    },
-    usageStatistics: false,
+	cssMaxWidth: document.documentElement.clientWidth,
+	cssMaxHeight: document.documentElement.clientHeight,
+	// cssMaxHeight: $('.tui-image-editor')[0].clientHeight,
+	selectionStyle: {
+		cornerSize: 50,
+		rotatingPointOffset: 100,
+	},
+	usageStatistics: false,
 });
 
-parent.init(imageEditor);
+
+var editorWrapper = document.getElementsByClassName('tui-image-editor')[0];
+var panzoom;
+function startPan(){
+   panzoom = Panzoom(editorWrapper, {
+        maxScale: 2,
+    }); 
+}
+function stopPan(){
+    if(panzoom && panzoom.destroy){
+        panzoom.destroy();
+    }
+}
+
+
+parent.init(imageEditor , startPan , stopPan);
