@@ -33,7 +33,7 @@ var imageEditor = new tui.ImageEditor('.tui-image-editor', {
 var editorWrapper = document.getElementsByClassName('tui-image-editor')[0];
 var panzoom = Panzoom(editorWrapper, {
 	maxScale: 3,
-	minScale: 0.5,
+	minScale: 1,
 });
 
 
