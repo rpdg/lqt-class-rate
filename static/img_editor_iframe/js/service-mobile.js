@@ -15,31 +15,29 @@ function init(editor, editorWrapper , panzoom) {
 	var $panzoomElem = $(editorWrapper);
 
 	function startPan() {
-		panzoom.setOptions({ disablePan: false });
+		panzoom.setOptions({ disablePan: false  , disableZoom: false});
 		lastAtcivedBtn =  null;
-		$panzoomElem.off('panzoomzoom');
-		$panzoomElem.off('panzoomend');
+		// $panzoomElem.off('panzoomzoom');
+		// $panzoomElem.off('panzoomend');
 	}
 
 	function stopPan() {
-		panzoom.setOptions({ disablePan: true });
+		panzoom.setOptions({ disablePan: true , disableZoom: true});
 
-		$panzoomElem.on('panzoomzoom' , function(){
-			console.log('panzoomzoom');
-			imageEditor.stopDrawingMode();
-		});
+		// $panzoomElem.on('panzoomzoom' , function(){
+		// 	console.log('panzoomzoom');
+		// 	imageEditor.stopDrawingMode();
+		// });
 
-		$panzoomElem.on('panzoomend' , function(){
-			console.log('panzoomend' , lastAtcivedBtn.selector);
-			// startEditorUseCfgMode();
-			// imageEditor.startDrawingMode();
-			setTimeout(function(){
-				if(lastAtcivedBtn){
-					lastAtcivedBtn.click();
-				}
-			}, 300);
+		// $panzoomElem.on('panzoomend' , function(){
+		// 	console.log('panzoomend' , lastAtcivedBtn.selector);
+		// 	setTimeout(function(){
+		// 		if(lastAtcivedBtn){
+		// 			lastAtcivedBtn.click();
+		// 		}
+		// 	}, 200);
 			
-		});
+		// });
 	}
 
 	var lastAtcivedBtn =  null;
