@@ -4,11 +4,14 @@
               @on-click-back="goBack" >{{navBarTitle}}</x-header>
 
     <tab class="tab-check" active-color="#48b319" prevent-default >
-      <tab-item  selected @on-item-click="switchTabItem">已完成（{{checkObj.finalcount}}）</tab-item>
-      <tab-item @on-item-click="switchTabItem">未完成（{{checkObj.noDoCount}}）</tab-item>
+      <!-- <tab-item @on-item-click="switchTabItem">已完成（{{checkObj.finalcount}}）</tab-item> -->
+      <tab-item  selected @on-item-click="switchTabItem">未完成（{{checkObj.noDoCount}}）</tab-item>
+      <tab-item @on-item-click="switchTabItem">待批阅（{{checkObj.noPYCount}}）</tab-item>
+      <tab-item @on-item-click="switchTabItem">已订正（{{checkObj.dzCount}}）</tab-item>
+      <tab-item @on-item-click="switchTabItem">已批阅（{{checkObj.pyCount}}）</tab-item>
     </tab>
 
-    <group v-if="selectTab == '0'">
+    <!-- <group v-if="selectTab == '0'">
       <cell @click.native="goDetail(item , true)"   style="font-size: 14px;padding: 15px 30px;" v-for="(item,index) in checkObj.finalList"
        :title="item.SHORT_NAME + '　' + item.CLASS_NO +'号　'+item.NAME">
         <div style="font-size: 12px">
@@ -19,9 +22,9 @@
           <span v-else style="color:#48B319; font-size: 12px;">已批阅</span>
         </div>
       </cell>
-    </group>
+    </group> -->
 
-    <group v-else style="padding-bottom: 80px;">
+    <group v-if="selectTab == '0'" style="padding-bottom: 80px;">
       <cell @click.native="goDetail(item , false)"  
         style="font-size: 14px;padding: 15px 30px;" 
         v-for="(item,index) in checkObj.noDoList" 
@@ -35,6 +38,35 @@
         </div>
       </cell>
     </group>
+
+    <group v-else-if="selectTab == '1'">
+      <cell @click.native="goDetail(item , true)"   style="font-size: 14px;padding: 15px 30px;" v-for="(item,index) in checkObj.noPYList"
+       :title="item.SHORT_NAME + '　' + item.CLASS_NO +'号　'+item.NAME">
+        <div style="font-size: 12px">
+          <span style="color: #666666; font-size: 12px;">待批阅</span>
+        </div>
+      </cell>
+    </group>
+
+    <group v-else-if="selectTab == '2'">
+      <cell @click.native="goDetail(item , true)"   style="font-size: 14px;padding: 15px 30px;" v-for="(item,index) in checkObj.dzList"
+       :title="item.SHORT_NAME + '　' + item.CLASS_NO +'号　'+item.NAME">
+        <div style="font-size: 12px">
+          <span style="color: #0093DD; font-size: 12px;">已订正</span>
+        </div>
+      </cell>
+    </group>
+
+    
+    <group v-else-if="selectTab == '3'">
+      <cell @click.native="goDetail(item , true)"   style="font-size: 14px;padding: 15px 30px;" v-for="(item,index) in checkObj.pyList"
+       :title="item.SHORT_NAME + '　' + item.CLASS_NO +'号　'+item.NAME">
+        <div style="font-size: 12px">
+          <span style="color:#48B319; font-size: 12px;">已批阅</span>
+        </div>
+      </cell>
+    </group>
+
 
 <!--    <ul v-else  class="message"  ref="onScoll">-->
 <!--      <li class="clearfix" v-for="(news,index) in checkObj.noDoCount" :key="index">-->
@@ -65,7 +97,7 @@
       >
       </confirm>
     </div>
-    <div v-show="selectTab==1 && checkObj.noDoCount > 0" 
+    <div v-show="selectTab==0 && checkObj.noDoCount > 0" 
       style="position:fixed; bottom:0; background:#fff;width: 100vw;
       padding: 15px;">
       <van-button block type="danger" 
@@ -135,16 +167,20 @@
     deactivated(){
       document.title = this.oldPageTitle;
       this.checkObj = {
-          finalList:[],
           noDoList:[],
+          noPYList:[],
+          dzList:[],
+          pyList:[],
         };
       // this.selectTab = 0;
     },
     data(){
       return {
         checkObj:{
-          finalList:[],
           noDoList:[],
+          noPYList:[],
+          dzList:[],
+          pyList:[],
         },
         oldPageTitle: '',
         navBarTitle: '',
