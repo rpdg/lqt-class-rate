@@ -820,8 +820,8 @@ function init(editor, editorWrapper , panzoom) {
 	} else{
 		imgSrc = 'https://picsum.photos/seed/rrrrrrrr/800/1760';
 	}
+
 	imageEditor.loadImageFromURL(imgSrc, 'SampleImage').then(function() {
-		imageEditor.clearUndoStack();
 
 		// 	// init start mode
 		startEditorUseCfgMode();
@@ -835,7 +835,7 @@ function init(editor, editorWrapper , panzoom) {
 
 		// // fix mobile ui
 
-		debugger;
+		// debugger;
 		fixMobileUI();
 		// // zoom 中心是根据原图来的
 		imageEditor.zoom({ zoomLevel: 1, x: obj.img.width / 2, y: obj.img.height / 2 });
@@ -843,6 +843,11 @@ function init(editor, editorWrapper , panzoom) {
 		// setTimeout(()=>{
 		// 	imageEditor.zoom({x:400,y:880, zoomLevel:2.5});
 		// } ,3e3);
+
+		setTimeout(()=>{
+			imageEditor.clearRedoStack(); 
+			imageEditor.clearUndoStack();
+		} ,10);
 	});
 
 	// Load image
@@ -918,7 +923,7 @@ function init(editor, editorWrapper , panzoom) {
 	}
 	function startEditorUseCfgMode() {
 		try {
-			debugger;
+			// debugger;
 			if (cfg.drawMode) {
 				switch (cfg.drawMode) {
 					case 'TEXT':
