@@ -14,6 +14,10 @@ function init(editor, editorWrapper , panzoom) {
 
 	var $panzoomElem = $(editorWrapper);
 
+	const deSelectHandler = function(props) {
+		editor.discardSelection();
+	}
+
 	function startPan() {
 		panzoom.setOptions({ disablePan: false  , disableZoom: false});
 		lastAtcivedBtn =  null;
@@ -21,9 +25,8 @@ function init(editor, editorWrapper , panzoom) {
 		// $panzoomElem.off('panzoomend');
 
 		editor.deactivateAll();
-		editor.on('objectActivated.pan', function(props) {
-			editor.discardSelection();
-		});
+		
+		editor.on('objectActivated', deSelectHandler);
 	}
 
 	function stopPan() {
@@ -44,7 +47,7 @@ function init(editor, editorWrapper , panzoom) {
 			
 		// });
 
-		editor.off('objectActivated.pan');
+		editor.off('objectActivated' , deSelectHandler);
 	}
 
 	var lastAtcivedBtn =  null;
