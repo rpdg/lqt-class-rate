@@ -9,8 +9,63 @@ document.write(
 	'<iframe class="tui-image-editor" src="./editor.html' + window.location.search + '" border="0"></iframe>'
 );
 
-function init(editor , startPanZoom , stopPanZoom) {
+function init(editor, editorWrapper , panzoom) {
 	console.log(editor);
+
+	var $panzoomElem = $(editorWrapper);
+
+	function startPan() {
+		panzoom.setOptions({ disablePan: false  , disableZoom: false});
+		lastAtcivedBtn =  null;
+		// $panzoomElem.off('panzoomzoom');
+		// $panzoomElem.off('panzoomend');
+
+		editor.deactivateAll();
+		activeObjectId = null;
+		editor.on('objectActivated', function(props) {
+			editor.discardSelection();
+		});
+	}
+
+	function stopPan() {
+		panzoom.setOptions({ disablePan: true , disableZoom: true});
+
+		// $panzoomElem.on('panzoomzoom' , function(){
+		// 	console.log('panzoomzoom');
+		// 	imageEditor.stopDrawingMode();
+		// });
+
+		// $panzoomElem.on('panzoomend' , function(){
+		// 	console.log('panzoomend' , lastAtcivedBtn.selector);
+		// 	setTimeout(function(){
+		// 		if(lastAtcivedBtn){
+		// 			lastAtcivedBtn.click();
+		// 		}
+		// 	}, 200);
+			
+		// });
+
+		editor.off('objectActivated');
+		editor.on('objectActivated' , function(obj) {
+			activeObjectId = obj.id;
+			if (obj.type === 'rect' || obj.type === 'circle' || obj.type === 'triangle') {
+				showSubMenu('shape');
+				setShapeToolbar(obj);
+				activateShapeMode();
+			} else if (obj.type === 'icon') {
+				showSubMenu('icon');
+				setIconToolbar(obj);
+				activateIconMode();
+			} else if (obj.type === 'text') {
+				showSubMenu('text');
+				setTextToolbar(obj);
+				activateTextMode();
+			}
+		});
+	}
+
+	var lastAtcivedBtn =  null;
+
 
 	var MAX_RESOLUTION = 3264 * 2448; // 8MP (Mega Pixel)
 
@@ -297,6 +352,8 @@ function init(editor , startPanZoom , stopPanZoom) {
 
 		if (b) {
 			$btnShowMenu.click();
+		} else {
+			stopPan();
 		}
 	}
 	// Image editor controls action
@@ -310,8 +367,7 @@ function init(editor , startPanZoom , stopPanZoom) {
 		$displayingHiddenMenu = $(this)
 			.parent()
 			.find(hiddenmenuClass);
-
-		stopPanZoom();
+		
 	});
 
 	$submenuButtons.on('click', function() {
@@ -329,7 +385,7 @@ function init(editor , startPanZoom , stopPanZoom) {
 
 		imageEditor.stopDrawingMode();
 
-		startPanZoom();
+		startPan();
 	});
 
 	// Image load action
@@ -472,6 +528,9 @@ function init(editor , startPanZoom , stopPanZoom) {
 
 	// Crop menu action
 	$btnCrop.on('click', function() {
+		
+		// lastAtcivedBtn = $btnCrop;
+
 		imageEditor.startDrawingMode('CROPPER');
 
 		cfg.drawMode = 'CROPPER';
@@ -522,6 +581,9 @@ function init(editor , startPanZoom , stopPanZoom) {
 
 	// Text menu action
 	$btnAddText.on('click', function() {
+
+		// lastAtcivedBtn = $btnAddText;
+
 		var initText = '批注：';
 
 		cfg.drawMode = 'TEXT';
@@ -580,8 +642,20 @@ function init(editor , startPanZoom , stopPanZoom) {
 		});
 	});
 
+	$('#btn-draw-line').click(function(){
+		// debugger;
+		if(cfg.drawMode === 'FREE_DRAWING'){
+			$btnFreeDrawing.click();
+		} else if(cfg.drawMode === 'LINE_DRAWING'){
+			$btnLineDrawing.click();
+		}
+	})
+
 	// Draw line menu action
 	$btnFreeDrawing.on('click', function() {
+		
+		lastAtcivedBtn = $btnFreeDrawing;
+
 		var settings = getBrushSettings();
 
 		imageEditor.stopDrawingMode();
@@ -592,6 +666,9 @@ function init(editor , startPanZoom , stopPanZoom) {
 	});
 
 	$btnLineDrawing.on('click', function() {
+		
+		lastAtcivedBtn = $btnLineDrawing;
+
 		var settings = getBrushSettings();
 
 		imageEditor.stopDrawingMode();
@@ -737,8 +814,12 @@ function init(editor , startPanZoom , stopPanZoom) {
 	});
 
 	// alert(window.location.search.split('?img=')[1].split('&s=')[0]);
-	// let imgSrc = window.location.search.split('?img=')[1].split('&s=')[0];
-	let imgSrc = 'https://picsum.photos/seed/rrrrrrrr/800/1760';
+	let imgSrc ;
+	if(location.hostname.endsWith('.lqtedu.com')){
+		imgSrc = window.location.search.split('?img=')[1].split('&s=')[0];
+	} else{
+		imgSrc = 'https://picsum.photos/seed/rrrrrrrr/800/1760';
+	}
 	imageEditor.loadImageFromURL(imgSrc, 'SampleImage').then(function() {
 		imageEditor.clearUndoStack();
 
