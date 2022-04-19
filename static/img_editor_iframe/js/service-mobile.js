@@ -20,9 +20,9 @@ function init(editor, editorWrapper , panzoom) {
 		// $panzoomElem.off('panzoomzoom');
 		// $panzoomElem.off('panzoomend');
 
+		editor.deactivateAll();
 		editor.on('objectActivated', function(props) {
 			editor.discardSelection();
-			editor.deactivateAll();
 		});
 	}
 
