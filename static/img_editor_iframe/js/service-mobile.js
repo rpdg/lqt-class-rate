@@ -21,6 +21,7 @@ function init(editor, editorWrapper , panzoom) {
 		// $panzoomElem.off('panzoomend');
 
 		editor.deactivateAll();
+		activeObjectId = null;
 		editor.on('objectActivated', function(props) {
 			editor.discardSelection();
 		});
