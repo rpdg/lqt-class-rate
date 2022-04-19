@@ -19,6 +19,11 @@ function init(editor, editorWrapper , panzoom) {
 		lastAtcivedBtn =  null;
 		// $panzoomElem.off('panzoomzoom');
 		// $panzoomElem.off('panzoomend');
+
+		editor.on('objectActivated', function(props) {
+			editor.discardSelection();
+			editor.deactivateAll();
+		});
 	}
 
 	function stopPan() {
@@ -38,6 +43,8 @@ function init(editor, editorWrapper , panzoom) {
 		// 	}, 200);
 			
 		// });
+
+		editor.off('objectActivated');
 	}
 
 	var lastAtcivedBtn =  null;

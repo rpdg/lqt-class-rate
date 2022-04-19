@@ -29,9 +29,9 @@ var imageEditor = new tui.ImageEditor('.tui-image-editor', {
 	},
 	usageStatistics: false,
 });
-imageEditor.changeSelectableAll(false);
-imageEditor.deactivateAll();
-imageEditor.discardSelection();
+// imageEditor.changeSelectableAll(false);
+// imageEditor.deactivateAll();
+// imageEditor.discardSelection();
 
 var editorWrapper = document.getElementsByClassName('tui-image-editor')[0];
 var panzoom = Panzoom(editorWrapper, {
