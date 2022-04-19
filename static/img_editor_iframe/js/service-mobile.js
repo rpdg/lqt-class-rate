@@ -21,7 +21,7 @@ function init(editor, editorWrapper , panzoom) {
 		// $panzoomElem.off('panzoomend');
 
 		editor.deactivateAll();
-		editor.on('objectActivated', function(props) {
+		editor.on('objectActivated.pan', function(props) {
 			editor.discardSelection();
 		});
 	}
@@ -44,7 +44,7 @@ function init(editor, editorWrapper , panzoom) {
 			
 		// });
 
-		editor.off('objectActivated');
+		editor.off('objectActivated.pan');
 	}
 
 	var lastAtcivedBtn =  null;
