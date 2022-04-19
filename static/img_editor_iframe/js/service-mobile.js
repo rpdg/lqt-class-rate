@@ -14,10 +14,6 @@ function init(editor, editorWrapper , panzoom) {
 
 	var $panzoomElem = $(editorWrapper);
 
-	const deSelectHandler = function(props) {
-		editor.discardSelection();
-	}
-
 	function startPan() {
 		panzoom.setOptions({ disablePan: false  , disableZoom: false});
 		lastAtcivedBtn =  null;
@@ -25,8 +21,9 @@ function init(editor, editorWrapper , panzoom) {
 		// $panzoomElem.off('panzoomend');
 
 		editor.deactivateAll();
-		
-		editor.on('objectActivated', deSelectHandler);
+		editor.on('objectActivated', function(props) {
+			editor.discardSelection();
+		});
 	}
 
 	function stopPan() {
@@ -47,7 +44,23 @@ function init(editor, editorWrapper , panzoom) {
 			
 		// });
 
-		editor.off('objectActivated' , deSelectHandler);
+		editor.off('objectActivated');
+		editor.on('objectActivated' , function(obj) {
+			activeObjectId = obj.id;
+			if (obj.type === 'rect' || obj.type === 'circle' || obj.type === 'triangle') {
+				showSubMenu('shape');
+				setShapeToolbar(obj);
+				activateShapeMode();
+			} else if (obj.type === 'icon') {
+				showSubMenu('icon');
+				setIconToolbar(obj);
+				activateIconMode();
+			} else if (obj.type === 'text') {
+				showSubMenu('text');
+				setTextToolbar(obj);
+				activateTextMode();
+			}
+		});
 	}
 
 	var lastAtcivedBtn =  null;
