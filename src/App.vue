@@ -16,9 +16,43 @@ export default {
 <style lang="less">
 @import "style/common.less";
 @import "~vux/src/styles/reset.less";
+
+
 #app {
   height: 100%;
 }
+
+hr {
+	height: 0;
+	border: none;
+	border-bottom: 1px solid #dedede;
+	margin: 0;
+
+	&.gap {
+		border-bottom: 15px solid #ededed;
+	}
+}
+
+.mg-y-15 {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.mg-y-20 {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.text-12{
+  font-size: 12px;
+}
+.text-14{
+  font-size: 14px;
+}
+.text-16{
+  font-size: 16px;
+}
+
 .vux-cell-box:before {
   border-top: none;
 }

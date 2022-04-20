@@ -211,17 +211,17 @@
           </li>
 
           <!-- 评论   -->
-          <li v-show="currentWork == quesList.length && (checkMap.SCORE || checkMap.COMMENT)" class="it banner-sheet"
+          <!-- <li v-show="currentWork == quesList.length && (checkMap.SCORE || checkMap.COMMENT)" class="it banner-sheet"
               data-type="checkbox">
             <work-comment ref="wkment"></work-comment>
-          </li>
+          </li> -->
 
           <li v-show="(currentWork == quesList.length && quesList.length != 0) && checkMap.TYPE !=1"
               class="it banner-sheet"
               data-type="checkbox">
-            <div class="up-comment" style="margin-bottom: 1rem">
+            <!-- <div class="up-comment" style="margin-bottom: 1rem">
               <div style="font-size: 1.2em;margin-top: 10px">请对本次作业进行评分：</div>
-              <!--star="✩"-->
+
               <rater style="margin-top: 0.9em;" v-model="upCheckMap.score" :max="5" active-color="#04BE02"></rater>
 
               <div style="font-size: 1.2em;margin-top: 1.1em">请对本次作业进行评分留言：</div>
@@ -232,19 +232,17 @@
 
               <div style="font-size: 1.2em;margin-top: 15px;margin-bottom: 10px;">作业操作：</div>
 
-              <x-button @click.native="saveUp('0')" plain type="primary" class="rev-btn" style=" margin-top: 1rem;">
-                保存并返回列表
-              </x-button>
 
-              <x-button @click.native="saveUp('1')" plain type="primary" class="rev-btn" style=" margin-top: 1rem;">
-                保存，批改下一份作业
+              <x-button @click.native="saveUp" plain type="primary" class="rev-btn" style=" margin-top: 1rem;">
+                批改通过
               </x-button>
 
               <x-button @click.native="rejectUp()" plain type="primary" class="rev-btn"
                         style="color: red;margin-top: 1rem;">发回订正
               </x-button>
 
-            </div>
+            </div> -->
+			<grade-assignments ref="grament" :saveFunc="saveUp" />
           </li>
           <!-- 评论end -->
         </ul>
@@ -272,6 +270,7 @@
           <span class="icon-work-next" style="width: 1.1em;height: 1em;display: block;margin-top: 6px;"></span>
         </em>
       </a>
+
       <a id="comment" @click="nextComment"
          v-else-if="(checkMap.SCORE || checkMap.COMMENT) && currentWork+1 == quesList.length"
          class="homework-btn homework-next clearfix" href="javascript:void(0)" style="opacity: 1; z-index: 5;">
@@ -336,6 +335,8 @@ import apiRouter from '../../config/api.js';
 import wx from 'weixin-js-sdk';
 import FirstHeader from './FirstHeader.vue';
 import WorkComment from './WorkComment.vue';
+import GradeAssignments from './components/GradeAssignments.vue'
+
 
 export default {
 	directives: {
@@ -358,6 +359,8 @@ export default {
 		XDialog,
 		[FirstHeader.name]: FirstHeader,
 		[WorkComment.name]: WorkComment,
+		GradeAssignments: GradeAssignments,
+
 		//'tui-image-editor': ImageEditor
 	},
 	created() {
@@ -420,6 +423,10 @@ export default {
 	},
 	data() {
 		return {
+			
+			checkedJump: true,
+			checkedWarn: true,
+        
 			showIframe: false,
 			showIframeSrc: false,
 			dataModified: false,
@@ -496,6 +503,20 @@ export default {
 	},
 
 	methods: {
+		loadConfig(){
+			let cfgStr = localStorage.getItem('lqt-homework-teacherCfg');
+			if(cfgStr){
+				try{
+					let cfg = JSON.parse(cfgStr);
+					this.checkedJump = cfg.checkedJump;
+					this.checkedWarn = cfg.checkedWarn;
+				}
+				catch(e){
+
+				}
+			}
+		},
+
 		handleModify(b) {
 			this.dataModified = b;
 
@@ -508,8 +529,12 @@ export default {
 				window.onbeforeunload = null;
 			}
 		},
-		saveUp(e) {
+		saveUp(objData) {
+			// alert(JSON.stringify(objData));
+			this.upCheckMap.score = objData.score;
+
 			let vm = this;
+			// let e = vm.checkedJump ? 1: 0 ;
 			let quesList = this.quesList;
 			let dataList = [];
 			for (let i = 0; i < quesList.length; i++) {
@@ -552,10 +577,13 @@ export default {
 
 			let data = {
 				mainId: vm.checkMap.ID,
-				imgType: e,
 				details: JSON.stringify(details),
+				imgType: vm.checkedJump ? 1: 0,
+				isCheckAuto: vm.checkedWarn ? 1 : 0,
 			};
 
+			console.log(data);
+			return;
 			this.$http.post(apiRouter.POST_HOMEWORK_UP_SAVE, data).then(
 				(response) => {
 					//vm.$vux.loading.hide();
@@ -831,7 +859,7 @@ export default {
 			if (currentWork < this.quesList.length) {
 				this.currentWork = currentWork + 1;
 				let _this = this;
-				this.$refs.wkment.loadData({
+				this.$refs.grament.loadData({
 					WORKID: _this.checkMap.WORK_ID,
 					ANID: _this.checkMap.ID,
 				});
