@@ -31,8 +31,8 @@
 </template>
 
 <script>
-import apiRouter from '../../../config/api'
-import { Rate, Button , Icon} from 'vant'
+import apiRouter from '../../../config/api';
+import { Rate, Button, Icon } from 'vant';
 
 export default {
 	components: {
@@ -57,30 +57,25 @@ export default {
 				2: '发回订正',
 			},
 			score: 0,
+            comment: '',
 			commentList: [],
-		}
+		};
 	},
 	methods: {
 		savePass() {
-			console.log(this.score)
-			this.saveFunc({ score: this.score })
+			console.log(this.score);
+			this.saveFunc({ score: this.score });
 		},
 		loadData(param) {
-			this.commentList = []
-			this.score = 0
-			let vm = this
+			this.commentList = [];
+			this.score = 0;
+			let vm = this;
 			this.$http
-				.get(
-					apiRouter.GET_HOMEWORK_COMMENT_LIST +
-						'?workId=' +
-						param.WORKID +
-						'&mainId=' +
-						param.ANID
-				)
+				.get(apiRouter.GET_HOMEWORK_COMMENT_LIST + '?workId=' + param.WORKID + '&mainId=' + param.ANID)
 				.then(
 					(response) => {
 						if (response.status === 200) {
-							let data = response.data.data
+							let data = response.data.data;
 							data.commentList[0] = {
 								ADDUSER_ID: '24434',
 								ADD_TIME: '2022-04-20 16:14:46',
@@ -91,7 +86,7 @@ export default {
 								COMMENT:
 									'<p>要努力</p><p>加把劲</p><p><img src="http://img.baidu.com/hi/jx2/j_0028.gif?v=1.1"/></p>',
 								ADDUSER_NAME: '赵大龙老师',
-							}
+							};
 							data.commentList[1] = {
 								ADDUSER_ID: '24434',
 								ADD_TIME: '2022-04-20 16:14:46',
@@ -99,22 +94,21 @@ export default {
 								ID: '1195044',
 								WORK_ID: '20297314',
 								TYPE: '2',
-								COMMENT:
-									'<p>要努力</p>',
+								COMMENT: '<p>要努力</p>',
 								ADDUSER_NAME: '赵大龙老师',
-							}
+							};
 
-							vm.commentList = data.commentList
-							vm.score = Number(data.score)
+							vm.commentList = data.commentList;
+							vm.score = Number(data.score);
 						}
 					},
 					(response) => {
-						alert('请求失败了!!!!')
+						alert('请求失败了!!!!');
 					}
-				)
+				);
 		},
 	},
-}
+};
 </script>
 
 <style lang="less" scoped>
@@ -130,7 +124,7 @@ export default {
 		color: #999;
 		line-height: 2.5em;
 		border-bottom: 1px dashed #dedede;
-        margin: 15px 0;
+		margin: 15px 0;
 
 		&:nth-last-of-type(1) {
 			border-bottom: none;
@@ -139,12 +133,12 @@ export default {
 }
 
 .richTextWrap {
-		font-size: 14px;
-		color: #666;
+	font-size: 14px;
+	color: #666;
 }
 
-.inputerWrap{
-    display: flex;
+.inputerWrap {
+	display: flex;
 }
 .actionBar {
 	display: flex;

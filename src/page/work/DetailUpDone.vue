@@ -216,9 +216,7 @@
             <work-comment ref="wkment"></work-comment>
           </li> -->
 
-          <li v-show="(currentWork == quesList.length && quesList.length != 0) && checkMap.TYPE !=1"
-              class="it banner-sheet"
-              data-type="checkbox">
+          <li v-show="currentWork === quesList.length" class="it banner-sheet" data-type="checkbox">
             <!-- <div class="up-comment" style="margin-bottom: 1rem">
               <div style="font-size: 1.2em;margin-top: 10px">请对本次作业进行评分：</div>
 
@@ -242,7 +240,7 @@
               </x-button>
 
             </div> -->
-			<grade-assignments ref="grament" :saveFunc="saveUp" />
+			<grade-assignments ref="grament" :saveFunc="saveUp" :checkType="checkMap.TYPE" />
           </li>
           <!-- 评论end -->
         </ul>
@@ -532,6 +530,7 @@ export default {
 		saveUp(objData) {
 			// alert(JSON.stringify(objData));
 			this.upCheckMap.score = objData.score;
+			this.upCheckMap.comment = objData.comment;
 
 			let vm = this;
 			// let e = vm.checkedJump ? 1: 0 ;
