@@ -9,26 +9,60 @@ document.write(
 	'<iframe class="tui-image-editor" src="./editor.html' + window.location.search + '" border="0"></iframe>'
 );
 
-function init(editor, editorWrapper , panzoom) {
+function init(editor, editorWrapper , Panzoom) {
 	console.log(editor);
 
-	var $panzoomElem = $(editorWrapper);
+	let currentScale = 1;
+	let currentPan = {x:0 , y:0};
+
+	var panzoom = Panzoom(editorWrapper, {
+		maxScale: 3,
+		minScale: 0.7,
+		startScale: currentScale,
+		startX: currentPan.x,
+		startY: currentPan.y,
+	});
+
+	editorWrapper.parentElement.addEventListener('wheel', panzoom?.zoomWithWheel);
+
 
 	function startPan() {
-		panzoom.setOptions({ disablePan: false  , disableZoom: false});
+		// panzoom.setOptions({ disablePan: false  , disableZoom: false , silent: false});
+		panzoom = Panzoom(editorWrapper, {
+			maxScale: 3,
+			minScale: 0.7,
+			startScale: currentScale,
+			startX: currentPan.x,
+			startY: currentPan.y,
+		});
+		editorWrapper.parentElement.addEventListener('wheel', panzoom?.zoomWithWheel);
+		
+
 		lastAtcivedBtn =  null;
 		// $panzoomElem.off('panzoomzoom');
 		// $panzoomElem.off('panzoomend');
 
-		editor.deactivateAll();
 		activeObjectId = null;
+		editor.deactivateAll();
 		editor.on('objectActivated', function(props) {
 			editor.discardSelection();
 		});
 	}
 
 	function stopPan() {
-		panzoom.setOptions({ disablePan: true , disableZoom: true});
+		// debugger;
+		currentScale = panzoom.getScale();
+		currentPan = panzoom.getPan();
+
+		panzoom.destroy();
+		editorWrapper.parentElement.removeEventListener('wheel', panzoom?.zoomWithWheel);
+
+		console.log(panzoom);
+
+		// setTimeout(()=>{
+		// } , 100);
+		
+		// panzoom.setOptions({ disablePan: true , disableZoom: true , silent: true});
 
 		// $panzoomElem.on('panzoomzoom' , function(){
 		// 	console.log('panzoomzoom');
@@ -345,11 +379,11 @@ function init(editor, editorWrapper , panzoom) {
 	});
 
 	function setMoveMode(b) {
-		currentMoving = b;
-		imageEditor.changeSelectableAll(!currentMoving);
-		btnMove[currentMoving ? 'addClass' : 'removeClass']('disabledBtn');
-		btnMove.text(currentMoving ? '停止' : '移动');
+		// currentMoving = b;
+		// btnMove[currentMoving ? 'addClass' : 'removeClass']('disabledBtn');
+		// btnMove.text(currentMoving ? '停止' : '移动');
 
+		imageEditor.changeSelectableAll(!b);
 		if (b) {
 			$btnShowMenu.click();
 		} else {
@@ -466,29 +500,29 @@ function init(editor, editorWrapper , panzoom) {
 	/**
 	 * Zoom
 	 */
-	let currentZoomLevel = 1;
-	let currentScale = 1;
-	let centerPoint = { x: 400, y: 880 };
-	$('#btn-zoom-in').click(function() {
-		currentZoomLevel += 0.3;
-		if (currentZoomLevel > 5) {
-			currentZoomLevel = 5;
-		}
-		imageEditor.zoom({ ...centerPoint, zoomLevel: currentZoomLevel });
-	});
-	$('#btn-zoom-out').click(function() {
-		currentZoomLevel -= 0.3;
-		if (currentZoomLevel < 1) {
-			currentZoomLevel = 1;
-		}
-		imageEditor.zoom({ ...centerPoint, zoomLevel: currentZoomLevel });
-	});
-	let currentMoving = false;
-	let moveTimer = 0;
-	let moveStartPoint = null;
-	let btnMove = $('#btn-move').click(function() {
-		setMoveMode(!currentMoving);
-	});
+	// let currentZoomLevel = 1;
+
+	// let centerPoint = { x: 400, y: 880 };
+	// $('#btn-zoom-in').click(function() {
+	// 	currentZoomLevel += 0.3;
+	// 	if (currentZoomLevel > 5) {
+	// 		currentZoomLevel = 5;
+	// 	}
+	// 	imageEditor.zoom({ ...centerPoint, zoomLevel: currentZoomLevel });
+	// });
+	// $('#btn-zoom-out').click(function() {
+	// 	currentZoomLevel -= 0.3;
+	// 	if (currentZoomLevel < 1) {
+	// 		currentZoomLevel = 1;
+	// 	}
+	// 	imageEditor.zoom({ ...centerPoint, zoomLevel: currentZoomLevel });
+	// });
+	// let currentMoving = false;
+	// let moveTimer = 0;
+	// let moveStartPoint = null;
+	// let btnMove = $('#btn-move').click(function() {
+	// 	setMoveMode(!currentMoving);
+	// });
 	// $('.tui-image-editor-canvas-container')[0].addEventListener(
 	// 	'touchmove',
 	// 	function(event) {
@@ -587,7 +621,7 @@ function init(editor, editorWrapper , panzoom) {
 		var initText = '批注：';
 
 		cfg.drawMode = 'TEXT';
-		saveCfg();
+		// saveCfg();
 
 		imageEditor.startDrawingMode('TEXT');
 		imageEditor.addText(initText, {
@@ -828,10 +862,10 @@ function init(editor, editorWrapper , panzoom) {
 
 		//
 		let obj = calcScale();
-		currentScale =
-			obj.img.height > obj.img.width
-				? obj.canvas.maxHeight / obj.img.height
-				: obj.canvas.maxWidth / obj.img.width;
+		// currentScale =
+		// 	obj.img.height > obj.img.width
+		// 		? obj.canvas.maxHeight / obj.img.height
+		// 		: obj.canvas.maxWidth / obj.img.width;
 
 		// // fix mobile ui
 
@@ -918,9 +952,10 @@ function init(editor, editorWrapper , panzoom) {
 	}
 	function fixMobileUI() {
 		let obj = calcScale();
-		imageEditor.resizeCanvasDimension({ width: obj.canvas.maxWidth + 1000, height: obj.canvas.maxHeight });
+		imageEditor.resizeCanvasDimension({ width: obj.canvas.maxWidth , height: obj.canvas.maxHeight });
 		// $('.tui-image-editor-canvas-container , .tui-image-editor-canvas-container > canvas').css({ maxWidth, maxHeight });
 	}
+
 	function startEditorUseCfgMode() {
 		try {
 			// debugger;

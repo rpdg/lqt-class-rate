@@ -33,12 +33,12 @@ var imageEditor = new tui.ImageEditor('.tui-image-editor', {
 // imageEditor.deactivateAll();
 // imageEditor.discardSelection();
 
-var editorWrapper = document.getElementsByClassName('tui-image-editor')[0];
-var panzoom = Panzoom(editorWrapper, {
-	maxScale: 3,
-	minScale: 0.7,
-});
+var editorWrapper = document.getElementById('editor') ;
+// var panzoom = Panzoom(editorWrapper, {
+// 	maxScale: 3,
+// 	minScale: 0.7,
+// });
 
 
 
-parent.init(imageEditor, editorWrapper, panzoom);
+parent.init(imageEditor, editorWrapper, Panzoom);
