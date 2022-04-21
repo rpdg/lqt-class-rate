@@ -9,32 +9,55 @@ document.write(
 	'<iframe class="tui-image-editor" src="./editor.html' + window.location.search + '" border="0"></iframe>'
 );
 
-function init(editor, editorWrapper , panzoom) {
+function init(editor, editorWrapper , Panzoom) {
 	console.log(editor);
 
-	// var $panzoomElem = $(editorWrapper);
+	let currentScale = 1;
+	let currentPan = {x:0 , y:0};
+
+	var panzoom = Panzoom(editorWrapper, {
+		maxScale: 3,
+		minScale: 0.7,
+		startScale: currentScale,
+		startX: currentPan.x,
+		startY: currentPan.y,
+	});
+
+	editorWrapper.parentElement.addEventListener('wheel', panzoom.zoomWithWheel);
+
 
 	function startPan() {
-		// panzoom.setOptions({ disablePan: false  , disableZoom: false});
+		// panzoom.setOptions({ disablePan: false  , disableZoom: false , silent: false});
 		panzoom = Panzoom(editorWrapper, {
 			maxScale: 3,
 			minScale: 0.7,
+			startScale: currentScale,
+			startX: currentPan.x,
+			startY: currentPan.y,
 		});
 		
+
 		lastAtcivedBtn =  null;
 		// $panzoomElem.off('panzoomzoom');
 		// $panzoomElem.off('panzoomend');
 
-		editor.deactivateAll();
 		activeObjectId = null;
+		editor.deactivateAll();
 		editor.on('objectActivated', function(props) {
 			editor.discardSelection();
 		});
 	}
 
 	function stopPan() {
+		// debugger;
+		currentScale = panzoom.getScale();
+		currentPan = panzoom.getPan();
+
 		panzoom.destroy();
-		// panzoom.setOptions({ disablePan: true , disableZoom: true});
+		// setTimeout(()=>{
+		// } , 100);
+		
+		// panzoom.setOptions({ disablePan: true , disableZoom: true , silent: true});
 
 		// $panzoomElem.on('panzoomzoom' , function(){
 		// 	console.log('panzoomzoom');
@@ -351,11 +374,11 @@ function init(editor, editorWrapper , panzoom) {
 	});
 
 	function setMoveMode(b) {
-		currentMoving = b;
-		imageEditor.changeSelectableAll(!currentMoving);
-		btnMove[currentMoving ? 'addClass' : 'removeClass']('disabledBtn');
-		btnMove.text(currentMoving ? '停止' : '移动');
+		// currentMoving = b;
+		// btnMove[currentMoving ? 'addClass' : 'removeClass']('disabledBtn');
+		// btnMove.text(currentMoving ? '停止' : '移动');
 
+		imageEditor.changeSelectableAll(!b);
 		if (b) {
 			$btnShowMenu.click();
 		} else {
@@ -473,7 +496,7 @@ function init(editor, editorWrapper , panzoom) {
 	 * Zoom
 	 */
 	// let currentZoomLevel = 1;
-	// let currentScale = 1;
+
 	// let centerPoint = { x: 400, y: 880 };
 	// $('#btn-zoom-in').click(function() {
 	// 	currentZoomLevel += 0.3;
@@ -834,10 +857,10 @@ function init(editor, editorWrapper , panzoom) {
 
 		//
 		let obj = calcScale();
-		currentScale =
-			obj.img.height > obj.img.width
-				? obj.canvas.maxHeight / obj.img.height
-				: obj.canvas.maxWidth / obj.img.width;
+		// currentScale =
+		// 	obj.img.height > obj.img.width
+		// 		? obj.canvas.maxHeight / obj.img.height
+		// 		: obj.canvas.maxWidth / obj.img.width;
 
 		// // fix mobile ui
 
