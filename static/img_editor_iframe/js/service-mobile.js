@@ -16,8 +16,8 @@ function init(editor, editorWrapper , Panzoom) {
 	let currentPan = {x:0 , y:0};
 
 	var panzoom = Panzoom(editorWrapper, {
-		maxScale: 3,
-		minScale: 0.7,
+		maxScale: 5,
+		minScale: 1,
 		startScale: currentScale,
 		startX: currentPan.x,
 		startY: currentPan.y,
@@ -29,8 +29,8 @@ function init(editor, editorWrapper , Panzoom) {
 	function startPan() {
 		// panzoom.setOptions({ disablePan: false  , disableZoom: false , silent: false});
 		panzoom = Panzoom(editorWrapper, {
-			maxScale: 3,
-			minScale: 0.7,
+			maxScale: 5,
+			minScale: 1,
 			startScale: currentScale,
 			startX: currentPan.x,
 			startY: currentPan.y,
