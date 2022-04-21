@@ -620,7 +620,7 @@ function init(editor, editorWrapper , Panzoom) {
 
 		var initText = '批注：';
 
-		cfg.drawMode = 'TEXT';
+		// cfg.drawMode = 'TEXT';
 		// saveCfg();
 
 		imageEditor.startDrawingMode('TEXT');
