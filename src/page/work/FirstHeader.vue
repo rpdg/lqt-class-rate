@@ -1,6 +1,6 @@
 <template>
   <div class="homework-tips clearfix">
-    <div class="tips-content" style="text-indent: 0;padding-left: 4px;">
+    <div class="tips-content" style="text-indent: 0;">
       <p >【{{headData.NAME}} {{headData.TYPENAME}}】</p>
       <p style="margin-left: 8px;">{{headData.ADDDATE.substr(5,5).replace(/-/g,'/')}} {{timeCode}} {{headData.TITLE}} </p>
     </div>
