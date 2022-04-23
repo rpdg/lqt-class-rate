@@ -21,9 +21,11 @@
 
                 <!--老师的图片-->
                 <div class="teacher-img-list">
-                  <p v-for="(tDetail,tIndex) in detail.IMGLIST"
+                  <thumbs-grid v-if="detail.IMGLIST && detail.IMGLIST.length" :imgList="detail.IMGLIST" :picBase="picRootPath" :viewFunc="previewImage" />
+
+                  <!-- <p v-for="(tDetail,tIndex) in detail.IMGLIST"
                      @click="previewImage(tDetail.URL,detail.IMGLIST)"
-                     :style='{ backgroundImage:"url(" + picRootPath+tDetail.URL + ")" , backgroundSize:"cover"}'></p>
+                     :style='{ backgroundImage:"url(" + picRootPath+tDetail.URL + ")" , backgroundSize:"cover"}'></p> -->
 
                 </div>
 

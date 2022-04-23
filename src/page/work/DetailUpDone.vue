@@ -23,9 +23,10 @@
                 
 				<!--老师的图片-->
                 <div class="teacher-img-list">
-                  <p v-for="(tDetail,tIndex) in detail.IMGLIST"
+                  <thumbs-grid v-if="detail.IMGLIST && detail.IMGLIST.length" :imgList="detail.IMGLIST" :picBase="picRootPath" :viewFunc="previewImage" />
+                  <!-- <p v-for="(tDetail,tIndex) in detail.IMGLIST"
                      @click="previewImage(picRootPath+tDetail.URL,detail.IMGLIST)"
-                     :style='{ backgroundImage:"url(" + picRootPath+tDetail.URL + ")" , backgroundSize:"cover"}'></p>
+                     :style='{ backgroundImage:"url(" + picRootPath+tDetail.URL + ")" , backgroundSize:"cover"}'></p> -->
                 </div>
                 <divider><x-icon type="ios-arrow-down" size="30"></x-icon></divider>
                 <ul class="homework-answer">
