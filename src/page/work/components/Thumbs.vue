@@ -38,23 +38,25 @@ export default {
 
 	div {
 		// aspect-ratio: 16 / 9;
+		// margin-top: 10px;
 		background-position: center center;
 		background-repeat: no-repeat;
 		background-size: cover;
-		// margin-top: 10px;
-	}
-	div:after {
-		display: block;
-		width: 100%;
-		padding-top: 56.25%;
-		content: '';
-	}
-	> .thumb1 {
-		flex: 1;
-	}
-	> .thumb2 {
-		// flex: 48%;
-		width: 48%;
+
+		&:after {
+			display: block;
+			width: 100%;
+			padding-top: 56.25%;
+			content: '';
+		}
+
+		&.thumb1 {
+			flex: 1;
+		}
+		
+		&.thumb2 {
+			width: 48%;
+		}
 	}
 }
 </style>
