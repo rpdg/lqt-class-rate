@@ -19,11 +19,14 @@
 				<p v-if=" detail.QUESTYPE != '4' " class="homework-title">{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】</p>
                 <p v-if="quesList.length>1 && detail.QUESTYPE == '4'">{{detail.QUESNO}}.</p>
 				<div class="sub-content" v-html="detail.CONTENT"></div>
-                <!--老师的图片-->
+                <thumbs-grid v-if="detail.PICLIST && detail.PICLIST.length" :imgList="detail.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
+                
+				<!--老师的图片-->
                 <div class="teacher-img-list">
-                  <p v-for="(tDetail,tIndex) in detail.IMGLIST"
+                  <thumbs-grid v-if="detail.IMGLIST && detail.IMGLIST.length" :imgList="detail.IMGLIST" :picBase="picRootPath" :viewFunc="previewImage" />
+                  <!-- <p v-for="(tDetail,tIndex) in detail.IMGLIST"
                      @click="previewImage(picRootPath+tDetail.URL,detail.IMGLIST)"
-                     :style='{ backgroundImage:"url(" + picRootPath+tDetail.URL + ")" , backgroundSize:"cover"}'></p>
+                     :style='{ backgroundImage:"url(" + picRootPath+tDetail.URL + ")" , backgroundSize:"cover"}'></p> -->
                 </div>
                 <divider><x-icon type="ios-arrow-down" size="30"></x-icon></divider>
                 <ul class="homework-answer">
@@ -88,9 +91,10 @@
             <div v-if="detail.QUESTYPE == '1' ">
               <div class="homework-content">
                 <p class="homework-title">{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】{{detail.CONTENT}}</p>
-                <div>
+                <thumbs-grid v-if="detail.PICLIST && detail.PICLIST.length" :imgList="detail.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
+                <!-- <div>
                   <img @click="previewImage(picRootPath+dItem.URL,detail.PICLIST)" v-for="dItem in detail.PICLIST" width="49%" :src="picRootPath+dItem.URL">
-                </div>
+                </div> -->
                 <checker style="margin-top: 10px;margin-left: -5px;" v-model="detail.STUANSWER[0].ANSWER"
                          default-item-class="demo3-item" selected-item-class="demo3-item-selected">
 <!--                  <checker-item :disabled="true" v-for="item in detail.OPTIONLIST" :key="item.ID" :value="item.ORDERNO">-->
@@ -102,9 +106,10 @@
                       <span class="demo3-item-default"></span>
                       <span style="font-size: 16px;margin-left: 10px;word-break: break-word">{{item.ORDERNO}}.{{item.CONTENT}}</span><br>
                     </checker-item>
-                    <div>
+                    <thumbs-grid v-if="item.PICLIST && item.PICLIST.length" :imgList="item.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
+                    <!-- <div>
                       <img @click="previewImage(picRootPath+subDItem.URL,item.PICLIST)" v-for="subDItem in item.PICLIST" style="max-height: 200px" :src="picRootPath+subDItem.URL">
-                    </div>
+                    </div> -->
                   </div>
                 </checker>
               </div>
@@ -123,9 +128,10 @@
               <!-- id：题目id -->
               <div class="homework-content">
                 <p class="homework-title">{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】{{detail.CONTENT}}</p>
-                <div>
+                <thumbs-grid v-if="detail.PICLIST && detail.PICLIST.length" :imgList="detail.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
+                <!-- <div>
                   <img @click="previewImage(picRootPath+dItem.URL,detail.PICLIST)" v-for="dItem in detail.PICLIST" width="49%" :src="picRootPath+dItem.URL">
-                </div>
+                </div> -->
                 <checker style="margin-top: 10px;margin-left: -5px;" v-model="detail.answer" :min="2" type="checkbox"
                          default-item-class="demo3-item" selected-item-class="checkbox-item-selected">
 <!--                  <checker-item :disabled="true" v-for="item in detail.OPTIONLIST" :key="item.ID" :value="item.ORDERNO">-->
@@ -137,9 +143,10 @@
                       <span class="checkbox-item-default"></span>
                       <span style="font-size: 16px;margin-left: 10px;word-break: break-word">{{item.ORDERNO}}.{{item.CONTENT}}</span><br>
                     </checker-item>
-                    <div>
+                    <thumbs-grid v-if="item.PICLIST && item.PICLIST.length" :imgList="item.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
+                    <!-- <div>
                       <img @click="previewImage(picRootPath+subDItem.URL,item.PICLIST)" v-for="subDItem in item.PICLIST" style="max-height: 200px" :src="picRootPath+subDItem.URL">
-                    </div>
+                    </div> -->
                   </div>
                 </checker>
               </div>
@@ -157,7 +164,9 @@
             <div v-if="detail.QUESTYPE == '5'">
               <div class="homework-content">
                 <p class="homework-title">{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】{{detail.CONTENT}}</p>
-                <checker style="margin-top: 16px;margin-left: -5px;" v-model="detail.STUANSWER[0].ANSWER"
+                <thumbs-grid v-if="detail.PICLIST && detail.PICLIST.length" :imgList="detail.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
+                
+				<checker style="margin-top: 16px;margin-left: -5px;" v-model="detail.STUANSWER[0].ANSWER"
                          default-item-class="demo3-item" selected-item-class="demo3-item-selected">
                   <checker-item :disabled="true" key="1" value="true">
                     <span class="demo3-item-default"></span>
@@ -183,6 +192,7 @@
             <div v-if="detail.QUESTYPE == '6'">
               <div class="homework-content">
                 <p class="homework-title">{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】{{detail.CONTENT}}</p>
+                <thumbs-grid v-if="detail.PICLIST && detail.PICLIST.length" :imgList="detail.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
                 <div style="margin-bottom: 12px" v-for="(sItem,sIndex) in detail.sAnswerList">
                   <input readonly="readonly" class="qa-input" v-model="detail.sAnswerList[sIndex]"
                          :placeholder="     '('+(sIndex+1)+')'"><br>
@@ -333,7 +343,9 @@ import apiRouter from '../../config/api.js';
 import wx from 'weixin-js-sdk';
 import FirstHeader from './FirstHeader.vue';
 import WorkComment from './WorkComment.vue';
+
 import GradeAssignments from './components/GradeAssignments.vue'
+import Thumbs from './components/Thumbs.vue';
 
 
 export default {
@@ -357,7 +369,8 @@ export default {
 		XDialog,
 		[FirstHeader.name]: FirstHeader,
 		[WorkComment.name]: WorkComment,
-		GradeAssignments: GradeAssignments,
+
+		[Thumbs.name]: Thumbs,		GradeAssignments: GradeAssignments,
 
 		//'tui-image-editor': ImageEditor
 	},

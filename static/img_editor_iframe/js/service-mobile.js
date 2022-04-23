@@ -10,32 +10,32 @@ document.write(
 );
 
 function init(editor, editorWrapper , Panzoom) {
-	console.log(editor);
+	// console.log(editor);
 
 	let currentScale = 1;
 	let currentPan = {x:0 , y:0};
 
 	var panzoom = Panzoom(editorWrapper, {
-		maxScale: 3,
-		minScale: 0.7,
+		maxScale: 5,
+		minScale: 1,
 		startScale: currentScale,
 		startX: currentPan.x,
 		startY: currentPan.y,
 	});
 
-	editorWrapper.parentElement.addEventListener('wheel', panzoom?.zoomWithWheel);
+	editorWrapper.parentElement.addEventListener('wheel', panzoom?.zoomWithWheel , {passive:false});
 
 
 	function startPan() {
 		// panzoom.setOptions({ disablePan: false  , disableZoom: false , silent: false});
 		panzoom = Panzoom(editorWrapper, {
-			maxScale: 3,
-			minScale: 0.7,
+			maxScale: 5,
+			minScale: 1,
 			startScale: currentScale,
 			startX: currentPan.x,
 			startY: currentPan.y,
 		});
-		editorWrapper.parentElement.addEventListener('wheel', panzoom?.zoomWithWheel);
+		editorWrapper.parentElement.addEventListener('wheel', panzoom?.zoomWithWheel , {passive:false});
 		
 
 		lastAtcivedBtn =  null;
@@ -57,7 +57,7 @@ function init(editor, editorWrapper , Panzoom) {
 		panzoom.destroy();
 		editorWrapper.parentElement.removeEventListener('wheel', panzoom?.zoomWithWheel);
 
-		console.log(panzoom);
+		// console.log(panzoom);
 
 		// setTimeout(()=>{
 		// } , 100);

@@ -75,7 +75,7 @@ import WorkUserRevised from "../page/work/Revised.vue"
 
 import WorkListUp from "../page/work/ListUp.vue"
 import CheckListUp from "../page/work/CheckListUp.vue"
-import DetailUpDone from "../page/work/DetailUpDone"
+import DetailUpDone from "../page/work/DetailUpDone.vue"
 
 import CurEnroll from "../page/curriculum/Enroll.vue"
 import CurEnrollList from "../page/curriculum/list.vue"
