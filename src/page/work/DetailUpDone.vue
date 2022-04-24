@@ -347,7 +347,6 @@ import WorkComment from './WorkComment.vue';
 import GradeAssignments from './components/GradeAssignments.vue'
 import Thumbs from './components/Thumbs.vue';
 
-
 export default {
 	directives: {
 		TransferDom,
@@ -370,7 +369,8 @@ export default {
 		[FirstHeader.name]: FirstHeader,
 		[WorkComment.name]: WorkComment,
 
-		[Thumbs.name]: Thumbs,		GradeAssignments: GradeAssignments,
+		[Thumbs.name]: Thumbs,		
+		GradeAssignments: GradeAssignments,
 
 		//'tui-image-editor': ImageEditor
 	},
