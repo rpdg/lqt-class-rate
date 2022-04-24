@@ -861,6 +861,13 @@ async function dataUrlToFile(dataUrl, fileName) {
               'startRecord', 'stopRecord', 'onVoiceRecordEnd', 'uploadVoice', 'downloadVoice', 'playVoice', 'stopVoice', 'translateVoice',
             ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
           });
+          wx.ready(() => {
+            wx.onVoicePlayEnd({
+                success: function (res) {
+                    // stopWave();
+                }
+            });
+          });
           wx.error(function (res) {
             //   alert(res)
           });

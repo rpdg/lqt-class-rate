@@ -250,7 +250,7 @@
               </x-button>
 
             </div> -->
-			<grade-assignments ref="grament" :saveFunc="saveUp" :checkType="checkMap.TYPE" />
+			<grade-assignments ref="grament" :saveFunc="saveUp" :saveCommentOnly="saveCommentOnly" :checkType="checkMap.TYPE" :wx="wx" />
           </li>
           <!-- 评论end -->
         </ul>
@@ -434,7 +434,7 @@ export default {
 	},
 	data() {
 		return {
-			
+			wx,
 			checkedJump: true,
 			checkedWarn: true,
         
@@ -539,6 +539,9 @@ export default {
 			} else {
 				window.onbeforeunload = null;
 			}
+		},
+		saveCommentOnly(param){
+			console.log(param);
 		},
 		saveUp(objData) {
 			// alert(JSON.stringify(objData));
