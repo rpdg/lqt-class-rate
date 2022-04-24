@@ -3,10 +3,12 @@
 		<div
 			v-for="(imgItem) in imgList"
 			:class="imgList.length===1 ? 'thumb1': 'thumb2'"
-			:style="'background-image:url('+ picBase + imgItem.URL +')'"
+			:style="'background-image:url('+ picBase + imgItem.CUT_URL +')'"
 			:key="imgItem.ID"
 			@click="viewFunc(imgItem.URL , imgList)"
-		/>
+		>
+			<img v-if="imgList.length===1" :src="picBase + imgItem.URL" />
+		</div>
 	</div>
 </template>
 <script>
@@ -41,21 +43,25 @@ export default {
 		// margin-top: 10px;
 		background-position: center center;
 		background-repeat: no-repeat;
-		background-size: cover;
-
-		&:after {
-			display: block;
-			width: 100%;
-			padding-top: 56.25%;
-			content: '';
-		}
 
 		&.thumb1 {
 			flex: 1;
+			background-image: none !important;
+
+			> img {
+				width: 100%;
+			}
 		}
-		
+
 		&.thumb2 {
 			width: 48%;
+			background-size: cover;
+			&:after {
+				display: block;
+				width: 100%;
+				padding-top: 100%;
+				content: '';
+			}
 		}
 	}
 }
