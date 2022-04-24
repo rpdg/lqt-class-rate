@@ -31,11 +31,14 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+.homework-content > .thumbList {
+	margin-left: 0px !important;
+}
 .thumbList {
 	gap: 10px;
 	display: flex;
 	flex-wrap: wrap;
-	margin-top: 10px;
+	margin-left: 5px;
 	margin-bottom: 10px;
 
 	div {

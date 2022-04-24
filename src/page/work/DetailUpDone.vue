@@ -932,14 +932,14 @@ export default {
 		},
 
 		previewImage(url, imgList) {
-			//console.info(url);
 			let urls = [];
 			for (let i = 0; i < imgList.length; i++) {
 				urls.push(this.picRootPath + imgList[i].URL);
 			}
+			// console.info(this.picRootPath + url , urls);
 
 			wx.previewImage({
-				current: url, // 当前显示图片的http链接
+				current: this.picRootPath + url, // 当前显示图片的http链接
 				urls: urls, // 需要预览的图片http链接列表
 			});
 		},
