@@ -88,7 +88,7 @@
 <!--                    <span style="font-size: 16px;margin-left: 10px;word-break: break-word">{{item.ORDERNO}}.{{item.CONTENT}}</span><br>-->
 <!--                  </checker-item>-->
                   <div v-for="item in detail.OPTIONLIST" :key="item.ID" >
-                    <checker-item :key="item.ID" :value="item.ORDERNO">
+                    <checker-item :key="item.ID" :value="item.ORDERNO" disabled>
                       <span class="demo3-item-default"></span>
                       <span style="font-size: 16px;margin-left: 10px;word-break: break-word">{{item.ORDERNO}}.{{item.CONTENT}}</span><br>
                     </checker-item>
@@ -124,7 +124,7 @@
 <!--                    <span style="font-size: 16px;margin-left: 10px;word-break: break-word">{{item.ORDERNO}}.{{item.CONTENT}}</span><br>-->
 <!--                  </checker-item>-->
                   <div v-for="item in detail.OPTIONLIST" :key="item.ID" >
-                    <checker-item :key="item.ID" :value="item.ORDERNO">
+                    <checker-item :key="item.ID" :value="item.ORDERNO" disabled>
                       <span class="checkbox-item-default"></span>
                       <span style="font-size: 16px;margin-left: 10px;word-break: break-word">{{item.ORDERNO}}.{{item.CONTENT}}</span><br>
                     </checker-item>
@@ -463,7 +463,7 @@ var mp3;
         }
 
         wx.previewImage({
-          current: url , // 当前显示图片的http链接
+          current: this.picRootPath + url , // 当前显示图片的http链接
           urls: urls // 需要预览的图片http链接列表
         });
       },
