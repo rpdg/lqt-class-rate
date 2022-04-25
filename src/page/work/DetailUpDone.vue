@@ -101,8 +101,8 @@
 <!--                    <span class="demo3-item-default"></span>-->
 <!--                    <span style="font-size: 16px;margin-left: 10px;word-break: break-word">{{item.ORDERNO}}.{{item.CONTENT}}</span><br>-->
 <!--                  </checker-item>-->
-                  <div v-for="item in detail.OPTIONLIST" >
-                    <checker-item :key="item.ID" :value="item.ORDERNO">
+                  <div v-for="item in detail.OPTIONLIST" :key="item.ID">
+                    <checker-item :key="item.ID" :value="item.ORDERNO" disabled>
                       <span class="demo3-item-default"></span>
                       <span style="font-size: 16px;margin-left: 10px;word-break: break-word">{{item.ORDERNO}}.{{item.CONTENT}}</span><br>
                     </checker-item>
@@ -139,7 +139,7 @@
 <!--                    <span style="font-size: 16px;margin-left: 10px;word-break: break-word">{{item.ORDERNO}}.{{item.CONTENT}}</span><br>-->
 <!--                  </checker-item>-->
                   <div v-for="item in detail.OPTIONLIST" >
-                    <checker-item :key="item.ID" :value="item.ORDERNO">
+                    <checker-item :key="item.ID" :value="item.ORDERNO" disabled>
                       <span class="checkbox-item-default"></span>
                       <span style="font-size: 16px;margin-left: 10px;word-break: break-word">{{item.ORDERNO}}.{{item.CONTENT}}</span><br>
                     </checker-item>
