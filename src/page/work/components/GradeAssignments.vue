@@ -41,7 +41,7 @@
 		<div class="mg-y-20 voiceWrap" v-if="voiceRecord">
 			<div
 				@click="playTempVoice"
-				:class="'voice-box' + (isPlaying? ' active':'')"
+				:class="'voice-box' + (isPlaying? ' activeWave':'')"
 				:style="'width: '+ voiceBarWidth +'em;' "
 			>
 				<div class="wifi-symbol">
@@ -203,7 +203,7 @@ export default {
 				// 	},
 				// })
 
-				debugger
+				// debugger
 				this.playVoice(this.voiceRecord)
 
 				setTimeout(function () {
@@ -311,11 +311,19 @@ export default {
 				return
 			}
 
-			await this.postCommentFunc(this.makeParam())
+			let param = this.makeParam()
+			if (param.comment_type === 2) {
+				param.comment = JSON.stringify(param.comment)
+			}
 
-			Toast('操作成功')
-			this.comment = ''
-			this.voiceRecord = null
+			try {
+				await this.postCommentFunc(param)
+				Toast('操作成功')
+				this.comment = ''
+				this.voiceRecord = null
+			} catch (err) {
+				Toast(err.message)
+			}
 		},
 		savePass() {
 			this.passFunc(this.makeParam())
@@ -516,7 +524,7 @@ export default {
 		}
 	}
 
-	&.active {
+	&.activeWave {
 		.second {
 			animation: wifiAni 1s infinite 0.2s;
 		}

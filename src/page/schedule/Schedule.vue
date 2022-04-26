@@ -135,7 +135,7 @@
 			<!-- <h1 :class="isActive?'typeBtn typeBtn-click':'typeBtn' " @click="typeBtn()" style="font-size: 1.2rem">+</h1>-->
 			<span
 				class="send send-notice"
-				:class="{ active: isActive }"
+				:class="{ activeSchedule: isActive }"
 				@click="sendNotice('T_USER')"
 				:style="{display:isActive?'block':'none'}"
 			>个人日程</span>
@@ -1375,7 +1375,7 @@ figure {
 }
 
 //执行动画
-.active {
+.activeSchedule {
   animation: mymove 0.8s ease 1 alternate 0.2s forwards;
   -moz-animation: mymove 0.8s ease 1 alternate 0.2s forwards;
   -webkit-animation: mymove 0.8s ease 1 alternate 0.2s forwards;

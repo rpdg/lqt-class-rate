@@ -324,6 +324,8 @@
 </template>
 
 <script type="es6">
+import axios from 'axios';
+
 import {
 	TransferDom,
 	Popup,
@@ -547,12 +549,27 @@ export default {
 			param.homeworkId = this.workId;
 			console.log(param);
 
-			await this.$http.post(apiPath + '/wechat/homeworkH5/addCommentHis', param);
+			// const service = axios.create({
+            //         headers : {
+            //           'Content-Type': 'multipart/form-data',
+            //         },
+            //         timeout: 0, // `0` (no timeout)
+            //       });
 
-			this.$refs.grament.loadComments({
-				WORKID: this.checkMap.WORK_ID,
-				ANID: this.checkMap.ID,
+			const self = this;
+
+			await this.$http.post(apiPath + '/wechat/homeworkH5/addCommentHis', param).then(response =>{
+				if (response.body.code == '200') {
+						self.$refs.grament.loadComments({
+							WORKID: self.checkMap.WORK_ID,
+							ANID: self.checkMap.ID,
+						});
+				} else{
+					throw new Error(response.body.message)
+				}
 			});
+
+			
 		},
 		saveWorkPass(param) {
 			// alert(JSON.stringify(param));
