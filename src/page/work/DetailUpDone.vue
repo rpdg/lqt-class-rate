@@ -1251,8 +1251,16 @@ export default {
 							'downloadVoice',
 							'playVoice',
 							'stopVoice',
+							'onVoicePlayEnd',
 							'translateVoice',
 						], // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+					});
+					wx.ready(() => {
+						wx.onVoicePlayEnd({
+							success: function (res) {
+								alert('stop voice')
+							}
+						});
 					});
 					wx.error(function(res) {
 						//   alert(res)

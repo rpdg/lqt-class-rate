@@ -5,10 +5,10 @@
 			<van-rate style="width: 120px;" color="#04BE02" v-model="score" :readonly="!fromTeacher" />
 		</div>
 
-		<hr class="mg-y-15" />
+		<hr class="mg-y-20" />
 
-		<div class="mg-y-15 text-16">留言板</div>
-		<div class="mg-y-15 text-12 commentWrap">
+		<div class="mg-y-20 text-16">留言板</div>
+		<div class="mg-y-20 text-12 commentWrap">
 			<div :key="comment.ID" v-for="(comment) in commentList">
 				{{comment.ADDUSER_NAME}} {{comment.ADD_TIME}}
 				<span
@@ -18,9 +18,9 @@
 			</div>
 		</div>
 
-		<hr class="mg-y-15" />
-
-		<div class="inputerWrap">
+		<hr class="mg-y-20" />
+		<!-- 留言输入 -->
+		<div class="inputerWrap" v-if="!voiceRecord">
 			<van-icon
 				name="orders-o"
 				color="#48b319"
@@ -37,36 +37,47 @@
 				@touchend.prevent="endRecord"
 			/>
 		</div>
-
+		<!-- 录音记录条 -->
+		<div class="mg-y-20 voiceWrap" v-if="voiceRecord">
+			<div
+				@click="playTempVoice"
+				:class="'voice-box' + (isPlaying? ' active':'')"
+				:style="'width: '+ voiceBarWidth +'em;' "
+			>
+				<div class="wifi-symbol">
+					<div class="wifi-circle first"></div>
+					<div class="wifi-circle second"></div>
+					<div class="wifi-circle third"></div>
+				</div>
+			</div>
+			<div class="voiceSeconds">{{60 - recordSecondsLeft}}''</div>
+			<div class="removeVoice">
+				<van-icon name="revoke" size="26" color="#999" @click="removeVoiceRecord" />
+			</div>
+		</div>
+		<!-- 三个操作按钮 : 教师端 -->
 		<div class="actionBar" v-if="fromTeacher">
 			<van-button plain color="#54B331" @click="savePass">批改通过</van-button>
 			<van-button plain color="#EE0A24" @click="savePass">发回订正</van-button>
 			<van-button plain color="#0093DD" @click="saveComment">仅留言</van-button>
 		</div>
+		<!-- 操作按钮 ： 学生端 -->
 		<div class="actionBar" v-else>
 			<van-button plain color="#0093DD" @click="saveComment">留言</van-button>
 		</div>
-
+		<!-- 快捷评语 -->
 		<van-popup v-model="showPicker" :style="{ height: '80vh' }" position="bottom">
 			<div class="evaPicker">
 				<div class="evaPickerToolbar">快捷评语</div>
 				<div class="evaPickerRow" v-for="(str,i) in evaRowText" :key="i" @click="putIn(str)">{{str}}</div>
 			</div>
 		</van-popup>
-
-		<div class="voice-box" :style="'width: '+ voiceBarWidth +'em;' ">
-			<div class="wifi-symbol">
-				<div class="wifi-circle first"></div>
-				<div class="wifi-circle second"></div>
-				<div class="wifi-circle third"></div>
-			</div>
-		</div>
 	</div>
 </template>
 
 <script>
 import apiRouter from '../../../config/api'
-import { Rate, Button, Icon, Toast, Popup } from 'vant'
+import { Dialog, Rate, Button, Icon, Toast, Popup } from 'vant'
 import ICON_RECORDING from '../../../assets/work/icon_record.png'
 
 export default {
@@ -120,25 +131,34 @@ export default {
 			comment: '',
 			commentList: [],
 			recordingTimer: 0,
-			maxSeconds: 60,
+			recordSecondsLeft: 60,
 			voiceBarWidth: 15,
 			voiceRecord: null,
+			isPlaying: false,
 		}
 	},
+	// activated() {
+	// 	alert('s')
+	// 	const vm = this
+	// 	this.wx.onVoicePlayEnd({
+	// 		success: function (res) {
+	// 			vm.isPlaying = false
+	// 		},
+	// 	})
+	// },
 	methods: {
 		showRecordingToast() {
-			this.maxSeconds = 60
 			const toast = Toast.loading({
 				className: 'recordToast',
 				duration: 0, // 持续展示 toast
 				forbidClick: true,
-				message: `还可录: ${this.maxSeconds} ''`,
+				message: `还可录: ${this.recordSecondsLeft} ''`,
 				icon: ICON_RECORDING,
 			})
 			this.recordingTimer = setInterval(() => {
-				this.maxSeconds--
-				if (this.maxSeconds) {
-					toast.message = `还可录: ${this.maxSeconds} ''`
+				this.recordSecondsLeft--
+				if (this.recordSecondsLeft) {
+					toast.message = `还可录: ${this.recordSecondsLeft} ''`
 				} else {
 					this.hideRecordingToast()
 				}
@@ -148,29 +168,98 @@ export default {
 			clearInterval(this.recordingTimer)
 			Toast.clear()
 		},
+		playVoice(recordItem) {
+			const vm = this
+			if (recordItem.localId) {
+				vm.wx.playVoice({
+					localId: recordItem.localId,
+				})
+				vm.isPlaying = true
+			} else if (recordItem.value) {
+				this.wx.downloadVoice({
+					serverId: recordItem.value, // 需要下载的音频的服务器端ID
+					isShowProgressTips: 1, // 默认为1，显示进度提示
+					success: function (res) {
+						let localId = res.localId // 返回音频的本地ID
+						vm.wx.playVoice({
+							localId: localId, // 需要播放的音频的本地ID，由stopRecord接口获得
+						})
+						vm.isPlaying = true
+					},
+				})
+			}
+		},
+		playTempVoice() {
+			if (this.voiceRecord) {
+				const vm = this
+
+				// this.wx.onVoicePlayEnd({
+				// 	success: function (res) {
+				// 		vm.isPlaying = false
+				// 	},
+				// })
+
+				debugger
+				this.playVoice(this.voiceRecord)
+
+				setTimeout(function () {
+					vm.stopVoice(vm.voiceRecord.localId)
+				}, (60 - vm.recordSecondsLeft) * 1e3)
+			}
+		},
+		stopVoice(localId) {
+			this.wx.stopVoice({
+				localId: localId, // 需要停止的音频的本地ID，由stopRecord接口获得
+			})
+			this.isPlaying = false
+		},
+		uploadVoice(localId) {
+			const vm = this
+			this.wx.uploadVoice({
+				localId: localId,
+				isShowProgressTips: 1, // 默认为1，显示进度提示
+				success: function (resp) {
+					vm.voiceRecord = {
+						localId: localId,
+						value: resp.serverId,
+						audio_time: 60 - vm.recordSecondsLeft,
+					}
+					vm.voiceBarWidth = (vm.voiceRecord.audio_time / 60) * 10 + 5
+					console.log(vm.voiceRecord)
+				},
+			})
+		},
 		startRecord() {
+			const vm = this
+			this.wx.stopRecord()
+
+			this.recordSecondsLeft = 60
 			this.showRecordingToast()
 			this.wx.startRecord()
+			this.wx.onVoiceRecordEnd({
+				// 录音时间超过一分钟没有停止的时候会执行 complete 回调
+				complete: function (res) {
+					vm.hideRecordingToast()
+					vm.uploadVoice(res.localId)
+				},
+			})
 		},
 		endRecord() {
 			this.hideRecordingToast()
+			if (this.recordSecondsLeft > 59) {
+				this.wx.stopRecord({
+					success: function (res) {
+						console.log(res)
+					},
+				})
+				Toast('说话时间太短')
+				return
+			}
 			const vm = this
 			this.wx.stopRecord({
 				success: function (res) {
 					if (res.localId) {
-						// self.uploadVoice(res.localId, voiceList);
-						vm.wx.uploadVoice({
-							localId: res.localId,
-							isShowProgressTips: 1, // 默认为1，显示进度提示
-							success: function (resp) {
-								vm.voiceRecord = {
-									value: resp.serverId,
-									audio_time: 60 - vm.maxSeconds,
-								}
-								vm.voiceBarWidth = (vm.voiceRecord.audio_time / 60) * 10 + 5
-								console.log(vm.voiceRecord)
-							},
-						})
+						vm.uploadVoice(res.localId)
 					}
 				},
 				fail: function (res) {
@@ -178,6 +267,19 @@ export default {
 					Toast('说话时间太短')
 				},
 			})
+		},
+		async removeVoiceRecord() {
+			const vm = this
+			let answer = await Dialog.confirm({
+				className: 'dy-rate-dialog',
+				title: '',
+				message: '确定要撤回录音吗？',
+				confirmButtonText: '确定',
+				messageAlign: 'left',
+			})
+			if (answer === 'confirm') {
+				vm.voiceRecord = null
+			}
 		},
 		saveComment() {
 			this.saveCommentOnly({ score: this.score, comment: this.comment })
@@ -223,6 +325,23 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.voiceWrap {
+	display: flex;
+
+	> .voiceSeconds {
+		flex: 1;
+		height: 30px;
+		line-height: 30px;
+		padding-left: 5px;
+	}
+
+	> .removeVoice {
+		width: 30px;
+		height: 30px;
+		text-align: center;
+	}
+}
+
 .rateBar {
 	display: flex;
 	align-items: center;
