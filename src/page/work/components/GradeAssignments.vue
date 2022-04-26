@@ -58,7 +58,7 @@
 		<!-- 三个操作按钮 : 教师端 -->
 		<div class="actionBar" v-if="fromTeacher">
 			<van-button plain color="#54B331" @click="savePass">批改通过</van-button>
-			<van-button plain color="#EE0A24" @click="savePass">发回订正</van-button>
+			<van-button plain color="#EE0A24" @click="saveReject">发回订正</van-button>
 			<van-button plain color="#0093DD" @click="saveComment">仅留言</van-button>
 		</div>
 		<!-- 操作按钮 ： 学生端 -->
@@ -76,7 +76,7 @@
 </template>
 
 <script>
-import apiRouter from '../../../config/api'
+import apiRouter, { apiPath } from '../../../config/api'
 import { Dialog, Rate, Button, Icon, Toast, Popup } from 'vant'
 import ICON_RECORDING from '../../../assets/work/icon_record.png'
 
@@ -97,11 +97,15 @@ export default {
 			type: Object,
 			required: true,
 		},
-		saveFunc: {
+		passFunc: {
 			type: Function,
 			required: true,
 		},
-		saveCommentOnly: {
+		rejectFunc: {
+			type: Function,
+			required: true,
+		},
+		postCommentFunc: {
 			type: Function,
 			required: true,
 		},
@@ -127,7 +131,7 @@ export default {
 				'请耐心订正',
 			],
 			showPicker: false,
-			score: 0,
+			score: 4,
 			comment: '',
 			commentList: [],
 			recordingTimer: 0,
@@ -281,21 +285,52 @@ export default {
 				vm.voiceRecord = null
 			}
 		},
-		saveComment() {
-			this.saveCommentOnly({ score: this.score, comment: this.comment })
+		makeParam() {
+			// default use text comment
+			let param = {
+				score: this.score,
+				comment_type: 1,
+				comment: this.comment,
+			}
+
+			if (this.voiceRecord) {
+				param.comment_type = 2
+				param.comment = [
+					{
+						value: this.voiceRecord.value,
+						audio_time: this.voiceRecord.audio_time,
+					},
+				]
+			}
+
+			return param
+		},
+		async saveComment() {
+			if (!this.comment && !this.voiceRecord) {
+				Toast('请先输入文字或录音')
+				return
+			}
+
+			await this.postCommentFunc(this.makeParam())
+
+			Toast('操作成功')
+			this.comment = ''
+			this.voiceRecord = null
 		},
 		savePass() {
-			console.log({ score: this.score, comment: this.comment })
-			this.saveFunc({ score: this.score, comment: this.comment })
+			this.passFunc(this.makeParam())
+		},
+		saveReject() {
+			this.rejectFunc(this.makeParam())
 		},
 		popupPicker() {
 			this.showPicker = true
 		},
 		putIn(str) {
-			this.comment = str
+			this.comment = (this.comment ? this.comment + ' ' : '') + str
 			this.showPicker = false
 		},
-		loadData(param) {
+		loadComments(param) {
 			this.commentList = []
 			this.score = 0
 			let vm = this

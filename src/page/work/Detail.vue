@@ -876,27 +876,6 @@ async function dataUrlToFile(dataUrl, fileName) {
           // console.log("请求失败了!!!!")
         });
       },
-      getUrlConfig() {
-        let wiexin = apiRouter.GET_CONFIG + encodeURIComponent(this.urlPath)
-        this.$http.get('/ua-service/wx/token?url=' + "http://web.pxy.com/#/work-detail")
-          .then(response => {
-            let info = response.body.data;
-            wx.config({
-              //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-              appId: info.appId, // 必填，公众号的唯一标识
-              timestamp: info.timestamp, // 必填，生成签名的时间戳
-              nonceStr: info.nonceStr,
-              signature: info.signature,// 必填，签名
-              jsApiList: [
-                "chooseImage", "uploadImage", "downloadImage", "getLocalImgData", "previewImage", "chooseWXPay",
-                'startRecord', 'stopRecord', 'onVoiceRecordEnd', 'uploadVoice', 'downloadVoice', 'playVoice', 'stopVoice', 'translateVoice',
-              ] // 必填，需要使用的JS接口列表
-            });
-
-          }, response => {
-            alert("请求失败了!!!!")
-          });
-      },
       submitWork() {
         this.showSubmit = true;
       },

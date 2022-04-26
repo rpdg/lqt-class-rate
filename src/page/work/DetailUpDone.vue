@@ -241,16 +241,16 @@
               <div style="font-size: 1.2em;margin-top: 15px;margin-bottom: 10px;">作业操作：</div>
 
 
-              <x-button @click.native="saveUp" plain type="primary" class="rev-btn" style=" margin-top: 1rem;">
+              <x-button @click.native="saveWorkPass" plain type="primary" class="rev-btn" style=" margin-top: 1rem;">
                 批改通过
               </x-button>
 
-              <x-button @click.native="rejectUp()" plain type="primary" class="rev-btn"
+              <x-button @click.native="saveWorkRejected()" plain type="primary" class="rev-btn"
                         style="color: red;margin-top: 1rem;">发回订正
               </x-button>
 
             </div> -->
-			<grade-assignments ref="grament" :saveFunc="saveUp" :saveCommentOnly="saveCommentOnly" :checkType="checkMap.TYPE" :wx="wx" />
+			<grade-assignments ref="grament" :passFunc="saveWorkPass" :rejectFunc="saveWorkRejected" :postCommentFunc="saveCommentOnly" :checkType="checkMap.TYPE" :wx="wx" />
           </li>
           <!-- 评论end -->
         </ul>
@@ -339,7 +339,7 @@ import {
 	XButton,
 	XDialog } from 'vux';
 import { Dialog } from 'vant';
-import apiRouter from '../../config/api.js';
+import apiRouter, {apiPath} from '../../config/api.js';
 import wx from 'weixin-js-sdk';
 import FirstHeader from './FirstHeader.vue';
 import WorkComment from './WorkComment.vue';
@@ -379,6 +379,7 @@ export default {
 	},
 	mounted() {
 		//this.loadData();
+		this.urlPath = window.location.href.split("#")[0];
 		this.getUrlConfigTrue();
 		//this.getUrlConfig();
 	},
@@ -434,6 +435,7 @@ export default {
 	},
 	data() {
 		return {
+			urlPath: window.location.href.split("#")[0],
 			wx,
 			checkedJump: true,
 			checkedWarn: true,
@@ -540,13 +542,22 @@ export default {
 				window.onbeforeunload = null;
 			}
 		},
-		saveCommentOnly(param){
+		async saveCommentOnly(param){
+			param.mainId = this.checkMap.ID;
+			param.homeworkId = this.workId;
 			console.log(param);
+
+			await this.$http.post(apiPath + '/wechat/homeworkH5/addCommentHis', param);
+
+			this.$refs.grament.loadComments({
+				WORKID: this.checkMap.WORK_ID,
+				ANID: this.checkMap.ID,
+			});
 		},
-		saveUp(objData) {
-			// alert(JSON.stringify(objData));
-			this.upCheckMap.score = objData.score;
-			this.upCheckMap.comment = objData.comment;
+		saveWorkPass(param) {
+			// alert(JSON.stringify(param));
+			this.upCheckMap.score = param.score;
+			this.upCheckMap.comment = param.comment;
 
 			let vm = this;
 			// let e = vm.checkedJump ? 1: 0 ;
@@ -588,6 +599,7 @@ export default {
 				score: vm.upCheckMap.score,
 				comment: vm.upCheckMap.comment,
 				dataList: dataList,
+				comment_type: param.comment_type
 			};
 
 			let data = {
@@ -598,7 +610,7 @@ export default {
 			};
 
 			console.log(data);
-			return;
+			// return;
 			this.$http.post(apiRouter.POST_HOMEWORK_UP_SAVE, data).then(
 				(response) => {
 					//vm.$vux.loading.hide();
@@ -633,7 +645,7 @@ export default {
 				}
 			);
 		},
-		rejectUp() {
+		saveWorkRejected(param) {
 			let vm = this;
 			//dataList:[],
 			let quesList = this.quesList;
@@ -671,8 +683,9 @@ export default {
 			}
 
 			let details = {
-				score: vm.upCheckMap.score,
-				comment: vm.upCheckMap.comment,
+				score: param.score,
+				comment: param.comment,
+				comment_type: param.comment_type,
 				dataList: dataList,
 			};
 
@@ -682,11 +695,21 @@ export default {
 			// };
 			// debugger;
 
-			let formData = new FormData();
-			formData.append('mainId', vm.checkMap.ID);
-			formData.append('details', JSON.stringify(details));
+			// let formData = new FormData();
+			// formData.append('mainId', vm.checkMap.ID);
+			// formData.append('imgType', vm.checkedJump ? 1: 0);
+			// formData.append('details', JSON.stringify(details));
 
-			this.$http.post(apiRouter.POST_HOMEWORK_BACK, formData).then(
+			let data = {
+				mainId: vm.checkMap.ID,
+				details: JSON.stringify(details),
+				imgType: vm.checkedJump ? 1: 0,
+				isCheckAuto: vm.checkedWarn ? 1 : 0,
+			};
+			console.log(data)
+			// return
+
+			this.$http.post(apiRouter.POST_HOMEWORK_BACK, data).then(
 				(response) => {
 					vm.$vux.loading.hide();
 					if (response.body.code == '200') {
@@ -874,7 +897,7 @@ export default {
 			if (currentWork < this.quesList.length) {
 				this.currentWork = currentWork + 1;
 				let _this = this;
-				this.$refs.grament.loadData({
+				this.$refs.grament.loadComments({
 					WORKID: _this.checkMap.WORK_ID,
 					ANID: _this.checkMap.ID,
 				});
@@ -1239,20 +1262,20 @@ export default {
 						signature: data.signature, // 必填，签名，见附录1
 						jsApiList: [
 							'chooseImage',
-							'uploadImage',
-							'downloadImage',
-							'getLocalImgData',
-							'previewImage',
 							'chooseWXPay',
+							'downloadImage',
+							'downloadVoice',
+							'getLocalImgData',
+							'onVoicePlayEnd',
+							'onVoiceRecordEnd',
+							'playVoice',
+							'previewImage',
 							'startRecord',
 							'stopRecord',
-							'onVoiceRecordEnd',
-							'uploadVoice',
-							'downloadVoice',
-							'playVoice',
 							'stopVoice',
-							'onVoicePlayEnd',
 							'translateVoice',
+							'uploadImage',
+							'uploadVoice',
 						], // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
 					});
 					wx.ready(() => {
@@ -1268,40 +1291,6 @@ export default {
 				},
 				(response) => {
 					// console.log("请求失败了!!!!")
-				}
-			);
-		},
-		getUrlConfig() {
-			let wiexin = apiRouter.GET_CONFIG + encodeURIComponent(this.urlPath);
-			this.$http.get('/ua-service/wx/token?url=' + 'http://web.pxy.com/#/work-detail').then(
-				(response) => {
-					let info = response.body.data;
-					wx.config({
-						debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-						appId: info.appId, // 必填，公众号的唯一标识
-						timestamp: info.timestamp, // 必填，生成签名的时间戳
-						nonceStr: info.nonceStr,
-						signature: info.signature, // 必填，签名
-						jsApiList: [
-							'chooseImage',
-							'uploadImage',
-							'downloadImage',
-							'getLocalImgData',
-							'previewImage',
-							'chooseWXPay',
-							'startRecord',
-							'stopRecord',
-							'onVoiceRecordEnd',
-							'uploadVoice',
-							'downloadVoice',
-							'playVoice',
-							'stopVoice',
-							'translateVoice',
-						], // 必填，需要使用的JS接口列表
-					});
-				},
-				(response) => {
-					alert('请求失败了!!!!');
 				}
 			);
 		},
