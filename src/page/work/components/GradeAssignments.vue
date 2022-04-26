@@ -92,6 +92,7 @@ import { Dialog, Rate, Button, Icon, Toast, Popup } from 'vant'
 import ICON_RECORDING from '../../../assets/work/icon_record.png'
 import VoiceItem from './VoiceItem.vue'
 export default {
+	name:'GradeAssignments',
 	components: {
 		[Button.name]: Button,
 		[Rate.name]: Rate,

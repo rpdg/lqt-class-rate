@@ -204,7 +204,8 @@
           <!-- 评论   -->
           <li v-show="currentWork == quesList.length && (checkMap.SCORE || checkMap.COMMENT)" class="it banner-sheet"
               data-type="checkbox">
-            <work-comment ref="wkment" :headData="workObj"></work-comment>
+            <!-- <work-comment ref="wkment" :headData="workObj"></work-comment> -->
+            <grade-assignments ref="grament" :fromTeacher="false" :postCommentFunc="saveCommentOnly" :checkType="checkMap.TYPE" :wx="wx" />
           </li>
           <!-- 评论end -->
         </ul>
@@ -248,10 +249,12 @@
 <script type="es6">
 
   import {XTextarea, Toast, Checker, CheckerItem, Group, XInput,Divider, XHeader} from 'vux';
-  import apiRouter from "../../config/api.js";
+  import apiRouter, {apiPath} from "../../config/api.js";
   import wx from "weixin-js-sdk";
   import FirstHeader from './FirstHeader.vue';
   import WorkComment from './WorkComment.vue';
+
+  import GradeAssignments from './components/GradeAssignments.vue'
   import Thumbs from './components/Thumbs.vue';
 
   import {formatDate} from "../../utils/TimeUtils";
@@ -272,6 +275,7 @@ var mp3;
       [FirstHeader.name]: FirstHeader,
       [WorkComment.name]: WorkComment,
       [Thumbs.name]: Thumbs,
+      GradeAssignments: GradeAssignments,
     },
     created() {
       //debugger;
@@ -280,6 +284,7 @@ var mp3;
       //this.loadData();
       this.getUrlConfigTrue()
       //this.getUrlConfig();
+      this.urlPath = window.location.href.split("#")[0];
     },
     computed: {},
     watch: {
@@ -296,6 +301,7 @@ var mp3;
     activated() {
       this.currentWork = 0;
       this.loadData();
+      this.urlPath = window.location.href.split("#")[0];
     },
     updated() {
       if (this.$refs.location && this.$refs.location.offsetHeight) {
@@ -308,6 +314,7 @@ var mp3;
     },
     data() {
       return {
+        urlPath: window.location.href.split("#")[0],
         locationLine: '',
         descLine: '',
         wwwUrl: roterPath,
@@ -348,6 +355,26 @@ var mp3;
     },
 
     methods: {
+      async saveCommentOnly(param){
+        param.mainId = this.workObj.ANID;
+        param.homeworkId = this.workObj.WORKID;
+        console.log(param);
+
+        const self = this;
+
+        await this.$http.post(apiPath + '/wechat/homeworkH5/addCommentHis', param).then(response =>{
+          if (response.body.code == '200') {
+              self.$refs.grament.loadComments({
+                WORKID: self.workObj.WORKID,
+                ANID: self.workObj.ANID,
+              });
+          } else{
+            throw new Error(response.body.message)
+          }
+        });
+
+        
+      },
 
       preWork() {
         let currentWork = this.currentWork;
@@ -370,7 +397,12 @@ var mp3;
         if (currentWork < this.quesList.length) {
           this.currentWork = currentWork + 1;
           let _this = this;
-          this.$refs.wkment.loadData(_this.workObj);
+          // this.workObj
+          // debugger;
+          this.$refs.grament.loadComments( {
+            WORKID: _this.workObj.WORKID,
+            ANID: _this.workObj.ANID,
+          });
         }
       },
 
