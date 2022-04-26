@@ -9,12 +9,23 @@
 
 		<div class="mg-y-20 text-16">留言板</div>
 		<div class="mg-y-20 text-12 commentWrap">
-			<div :key="comment.ID" v-for="(comment) in commentList">
+			<div
+				:key="comment.ID"
+				v-for="(comment , index) in commentList"
+				v-long-press="500"
+				@long-press-start="removeItem(comment)"
+			>
 				{{comment.ADDUSER_NAME}} {{comment.ADD_TIME}}
 				<span
 					:style=" 'margin-left:1em; color:'+ typeColor[comment.TYPE]"
 				>{{typeWord[comment.TYPE]}}</span>
-				<div class="richTextWrap" v-html="comment.COMMENT" />
+				<div v-if="comment.COMMENT_TYPE==='1'" class="richTextWrap" v-html="comment.COMMENT" />
+				<voice-item
+					v-else-if="comment.COMMENT_TYPE==='2'"
+					:item="comment.COMMENT[0]"
+					:playing="index===currentMp3Index"
+					@click="playMP3(comment.COMMENT[0] , index)"
+				/>
 			</div>
 		</div>
 
@@ -57,13 +68,13 @@
 		</div>
 		<!-- 三个操作按钮 : 教师端 -->
 		<div class="actionBar" v-if="fromTeacher">
-			<van-button plain color="#54B331" @click="savePass">批改通过</van-button>
-			<van-button plain color="#EE0A24" @click="saveReject">发回订正</van-button>
-			<van-button plain color="#0093DD" @click="saveComment">仅留言</van-button>
+			<van-button plain color="#54B331" @click="savePass" :disabled="posting">批改通过</van-button>
+			<van-button plain color="#EE0A24" @click="saveReject" :disabled="posting">发回订正</van-button>
+			<van-button plain color="#0093DD" @click="saveComment" :disabled="posting">仅留言</van-button>
 		</div>
 		<!-- 操作按钮 ： 学生端 -->
 		<div class="actionBar" v-else>
-			<van-button plain color="#0093DD" @click="saveComment">留言</van-button>
+			<van-button plain color="#0093DD" @click="saveComment" :disabled="posting">留言</van-button>
 		</div>
 		<!-- 快捷评语 -->
 		<van-popup v-model="showPicker" :style="{ height: '80vh' }" position="bottom">
@@ -76,16 +87,17 @@
 </template>
 
 <script>
-import apiRouter, { apiPath } from '../../../config/api'
+import apiRouter from '../../../config/api'
 import { Dialog, Rate, Button, Icon, Toast, Popup } from 'vant'
 import ICON_RECORDING from '../../../assets/work/icon_record.png'
-
+import VoiceItem from './VoiceItem.vue'
 export default {
 	components: {
 		[Button.name]: Button,
 		[Rate.name]: Rate,
 		[Icon.name]: Icon,
 		[Popup.name]: Popup,
+		[VoiceItem.name]: VoiceItem,
 	},
 	props: {
 		fromTeacher: {
@@ -112,6 +124,7 @@ export default {
 	},
 	data() {
 		return {
+			ossPath: roterOssPath,
 			typeColor: {
 				1: '#48b319',
 				2: '#ee0a24',
@@ -131,7 +144,7 @@ export default {
 				'请耐心订正',
 			],
 			showPicker: false,
-			score: 4,
+			score: 3,
 			comment: '',
 			commentList: [],
 			recordingTimer: 0,
@@ -139,18 +152,60 @@ export default {
 			voiceBarWidth: 15,
 			voiceRecord: null,
 			isPlaying: false,
+			posting: false,
+			currentMp3Index: -1,
+			audio: null,
+			myUserId: -1,
 		}
 	},
-	// activated() {
-	// 	alert('s')
-	// 	const vm = this
-	// 	this.wx.onVoicePlayEnd({
-	// 		success: function (res) {
-	// 			vm.isPlaying = false
-	// 		},
-	// 	})
-	// },
+	activated() {
+		this.isPlaying = false
+		this.posting = false
+		this.showPicker = false
+		this.comment = ''
+		this.commentList = []
+		this.score = 3
+		this.voiceRecord = null
+		this.recordSecondsLeft = 60
+		// alert('s')
+		// const vm = this
+		// this.wx.onVoicePlayEnd({
+		// 	success: function (res) {
+		// 		vm.isPlaying = false
+		// 	},
+		// })
+		let userStr = window.localStorage.getItem('USER')
+		let user = JSON.parse(userStr)
+		this.myUserId = user.userId
+	},
 	methods: {
+		removeItem(item) {
+			if (item.ADDUSER_ID === this.myUserId) {
+				alert('remove:' + item.ID)
+			}
+		},
+		async playMP3(item, trackIndex) {
+			if (this.audio) {
+				this.audio.pause()
+				this.audio = null
+			}
+
+			this.currentMp3Index = trackIndex
+
+			try {
+				const self = this
+				const mp3Url = this.ossPath + '/' + decodeURIComponent(item.url)
+				this.audio = new Audio(mp3Url)
+				this.audio.play()
+				console.log('Playing audio')
+				setTimeout(function () {
+					self.currentMp3Index = -1
+				}, item.audio_time * 1e3 + 5e2)
+			} catch (err) {
+				console.log('Failed to play, error: ' + err)
+				this.currentMp3Index = -1
+			}
+		},
 		showRecordingToast() {
 			const toast = Toast.loading({
 				className: 'recordToast',
@@ -208,7 +263,7 @@ export default {
 
 				setTimeout(function () {
 					vm.stopVoice(vm.voiceRecord.localId)
-				}, (60 - vm.recordSecondsLeft) * 1e3)
+				}, (60 - vm.recordSecondsLeft) * 1e3 + 5e2)
 			}
 		},
 		stopVoice(localId) {
@@ -228,7 +283,7 @@ export default {
 						value: resp.serverId,
 						audio_time: 60 - vm.recordSecondsLeft,
 					}
-					vm.voiceBarWidth = (vm.voiceRecord.audio_time / 60) * 10 + 5
+					vm.voiceBarWidth = vm.makeBarWidth(vm.voiceRecord.audio_time)
 					console.log(vm.voiceRecord)
 				},
 			})
@@ -285,6 +340,9 @@ export default {
 				vm.voiceRecord = null
 			}
 		},
+		makeBarWidth(timeLength) {
+			return (timeLength / 60) * 10 + 5
+		},
 		makeParam() {
 			// default use text comment
 			let param = {
@@ -316,6 +374,8 @@ export default {
 				param.comment = JSON.stringify(param.comment)
 			}
 
+			this.posting = true
+
 			try {
 				await this.postCommentFunc(param)
 				Toast('操作成功')
@@ -323,13 +383,25 @@ export default {
 				this.voiceRecord = null
 			} catch (err) {
 				Toast(err.message)
+			} finally {
+				this.posting = false
 			}
 		},
 		savePass() {
-			this.passFunc(this.makeParam())
+			this.posting = true
+			try {
+				this.passFunc(this.makeParam())
+			} finally {
+				this.posting = false
+			}
 		},
 		saveReject() {
-			this.rejectFunc(this.makeParam())
+			this.posting = true
+			try {
+				this.rejectFunc(this.makeParam())
+			} finally {
+				this.posting = false
+			}
 		},
 		popupPicker() {
 			this.showPicker = true

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <!-- <%= process.env.BUILD_TIME %> -->
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
@@ -17,10 +18,7 @@
   <meta name="version" data="<%= process.env.BUILD_TIME %>">
   <title>个人中心</title>
   <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
-  <script src="https://cdn.bootcss.com/vConsole/3.2.0/vconsole.min.js"></script>
-  <script>
-    var vConsole = new VConsole();
-  </script>
+
   <style lang="">
     html,
     body {
@@ -119,7 +117,9 @@
 
     const roterPath = "<%= process.env.ROUTER_PATH %>";
     const roterImgPath = roterPath + '/weixin/wechat/dist';
-    const roterOssPath = location.host.indexOf('gz.lqtedu.com') === 0 ? "//pub3.lqtedu.com" : "//pub.lqtedu.com";
+
+
+    const roterOssPath = (location.host.indexOf('gz.lqtedu.com') === 0) || ('development' === "<%= process.env.NODE_ENV %>") ? "//pub3.lqtedu.com" : "//pub.lqtedu.com";
 
     const middlePath = "<%= process.env.MIDDLE_PATH %>";
 
@@ -176,5 +176,11 @@
   }
 
 </script>
+
+
+<!-- <script src="https://cdn.bootcss.com/vConsole/3.2.0/vconsole.min.js"></script>
+  <script>
+    var vConsole = new VConsole();
+  </script> -->
 
 </html>

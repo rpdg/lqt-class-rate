@@ -5,13 +5,10 @@
  *
  */
 
-let apiPath = roterPath || "/";
-let env = process.env.NODE_ENV;
-let baseUrl = process.env.API_BASE_URL;
-if (env === "development") {
-  apiPath = baseUrl;
-}
-// const apiPath = process.env.API_BASE_URL;
+// let env = process.env.NODE_ENV;
+// let apiPath = process.env.API_BASE_URL;
+
+const apiPath = process.env.API_BASE_URL;
 
 export { apiPath };
 
