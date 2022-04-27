@@ -59,9 +59,11 @@ var webpackConfig = merge(baseWebpackConfig, {
       inject: true,
       routerPath: process.env.ROUTER_PATH,
       minify: {
+        minifyJS: true,//压缩页面JS
+        minifyCSS: true,//压缩页面CSS
         removeComments: true,
         collapseWhitespace: true,
-        removeAttributeQuotes: true
+        removeAttributeQuotes: false
         // more options:
         // https://github.com/kangax/html-minifier#options-quick-reference
       },

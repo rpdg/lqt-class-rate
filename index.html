@@ -110,20 +110,10 @@
     }
   </style>
   <script>
-
-    //const roterPath = "https://192.168.1.24:8080/lqtedu"
-    //const roterPath = "/api";//"https://gz.lqtedu.com/api/"
-    //  const roterPath = "//gz.lqtedu.com"
-
     const roterPath = "<%= process.env.ROUTER_PATH %>";
     const roterImgPath = roterPath + '/weixin/wechat/dist';
-
-
     const roterOssPath = (location.host.indexOf('gz.lqtedu.com') === 0) || ('development' === "<%= process.env.NODE_ENV %>") ? "//pub3.lqtedu.com" : "//pub.lqtedu.com";
-
     const middlePath = "<%= process.env.MIDDLE_PATH %>";
-
-
   </script>
   <script>
     ;
