@@ -1,5 +1,5 @@
 <template>
-  <div class="box">
+  <div class="box noMarginGroup">
     <x-header class="title-header" :left-options="{preventGoBack: true}"
               @on-click-back="goBack" >{{navBarTitle}}</x-header>
 
@@ -24,7 +24,7 @@
       </cell>
     </group> -->
 
-    <group v-if="selectTab == '0'" style="padding-bottom: 80px;" class="noMarginGroup">
+    <group v-if="selectTab == '0'" style="padding-bottom: 80px;" class="">
       <cell @click.native="goDetail(item , false)"  
         style="font-size: 14px;padding: 15px 30px;" 
         v-for="(item,index) in checkObj.noDoList" 
@@ -539,7 +539,7 @@
 
   .title-header /deep/ .vux-header-title{
     color: #333;
-    line-height: 46px;
+    // line-height: 46px;
 
   }
 

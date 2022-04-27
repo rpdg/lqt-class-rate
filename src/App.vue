@@ -112,7 +112,7 @@ hr {
 }
 
 .noMarginGroup {
-  > div {
+  div.weui-cells.vux-no-group-title {
     margin-top: 0;
   }
 }

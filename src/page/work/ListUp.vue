@@ -5,7 +5,7 @@
 <!--    </div>-->
     <x-header class="title-header" :left-options="{preventGoBack: true}"  @on-click-back="goBack" :title="`作业列表`">
         <template  slot="right">
-            <van-icon name="setting-o" color="#FF8F03" size="16" @click="showConfigure" style="margin-right: 10px;" />
+            <van-icon name="setting-o" color="#FF8F03" size="16" @click="showConfigure" style="margin-right: 8px;" />
         </template>
     </x-header>
 
@@ -440,7 +440,7 @@
     background-size: 100% 100%;
     display: inline-block;
     float: left;
-    margin-top: -3/@baseSize;
+    margin-top: -2/@baseSize;
     margin-left: 30/@baseSize;
     margin-right: 5/@baseSize;
     -webkit-box-sizing: border-box;
@@ -525,7 +525,7 @@
 
   .title-header /deep/ .vux-header-title{
     color: #333;
-    line-height: 46px;
+    // line-height: 46px;
 
   }
 
