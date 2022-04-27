@@ -535,9 +535,9 @@ export default {
 	> div {
 		user-select: none;
 		color: #999;
-		line-height: 2.5em;
+		line-height: 2.2em;
 		border-bottom: 1px dashed #dedede;
-		margin: 15px 0;
+		margin: 20px 0;
 
 		&:nth-last-of-type(1) {
 			border-bottom: none;
@@ -548,7 +548,7 @@ export default {
 .richTextWrap {
 	font-size: 14px;
 	color: #666;
-	margin-bottom: 15px;
+	margin-bottom: 20px;
 }
 
 .inputerWrap {
