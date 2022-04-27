@@ -202,12 +202,12 @@
           </li>
 
           <!-- 评论   -->
-          <li v-show="currentWork == quesList.length && (checkMap.SCORE || checkMap.COMMENT)" class="it banner-sheet"
+          <li v-show="currentWork === quesList.length " class="it banner-sheet"
               data-type="checkbox">
             <!-- <work-comment ref="wkment" :headData="workObj"></work-comment> -->
-            <grade-assignments ref="grament" :fromTeacher="false" :postCommentFunc="saveCommentOnly" :checkType="checkMap.TYPE" :wx="wx" />
+            <grade-assignments ref="grament" :fromTeacher="false" :postCommentFunc="saveCommentOnly" :checkType="checkMap.TYPE" :wx="wx" :passFunc="()=>{}" :rejectFunc="()=>{}" />
           </li>
-          <!-- 评论end -->
+          <!-- 评论 end -->
         </ul>
 
       </div>
@@ -229,7 +229,9 @@
           <span class="icon-work-next" style="width: 1.1em;height: 1em;display: block;margin-top: 6px;"></span>
         </em>
       </a>
-      <a id="comment" @click="nextComment" v-else-if="(checkMap.SCORE || checkMap.COMMENT) && currentWork+1 == quesList.length"
+      <!-- 留言板 -->
+      <a id="comment" @click="nextComment" 
+          v-else-if="currentWork+1 === quesList.length"
          class="homework-btn homework-next clearfix" href="javascript:void(0)" style="opacity: 1; z-index: 5;">
         <span class="txt-change">老师评语</span>
 
@@ -314,6 +316,7 @@ var mp3;
     },
     data() {
       return {
+        wx,
         urlPath: window.location.href.split("#")[0],
         locationLine: '',
         descLine: '',
