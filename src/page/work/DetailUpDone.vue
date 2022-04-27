@@ -250,7 +250,7 @@
               </x-button>
 
             </div> -->
-			<grade-assignments ref="grament" :passFunc="saveWorkPass" :rejectFunc="saveWorkRejected" :postCommentFunc="saveCommentOnly" :checkType="checkMap.TYPE" :wx="wx" />
+			<grade-assignments ref="grament" :workId="checkMap.WORK_ID" :mainId="checkMap.ID" :passFunc="saveWorkPass" :rejectFunc="saveWorkRejected" :postCommentFunc="saveCommentOnly" :checkType="checkMap.TYPE" :wx="wx" />
           </li>
           <!-- 评论end -->
         </ul>
@@ -344,7 +344,6 @@ import { Dialog } from 'vant';
 import apiRouter, {apiPath} from '../../config/api.js';
 import wx from 'weixin-js-sdk';
 import FirstHeader from './FirstHeader.vue';
-import WorkComment from './WorkComment.vue';
 
 import GradeAssignments from './components/GradeAssignments.vue'
 import Thumbs from './components/Thumbs.vue';
@@ -355,7 +354,6 @@ export default {
 	},
 	components: {
 		[Dialog.Component.name]: Dialog.Component,
-		WorkComment,
 		Popup,
 		XTextarea,
 		Toast,
@@ -369,7 +367,6 @@ export default {
 		XButton,
 		XDialog,
 		[FirstHeader.name]: FirstHeader,
-		[WorkComment.name]: WorkComment,
 
 		[Thumbs.name]: Thumbs,		
 		GradeAssignments: GradeAssignments,
@@ -722,7 +719,7 @@ export default {
 				mainId: vm.checkMap.ID,
 				details: JSON.stringify(details),
 				imgType: vm.checkedJump ? 1: 0,
-				isCheckAuto: vm.checkedWarn ? 1 : 0,
+				isCheckAuto: 1,
 			};
 			console.log(data)
 			// return

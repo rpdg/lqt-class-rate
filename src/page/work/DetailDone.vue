@@ -205,7 +205,7 @@
           <li v-show="currentWork === quesList.length " class="it banner-sheet"
               data-type="checkbox">
             <!-- <work-comment ref="wkment" :headData="workObj"></work-comment> -->
-            <grade-assignments ref="grament" :fromTeacher="false" :postCommentFunc="saveCommentOnly" :checkType="checkMap.TYPE" :wx="wx" :passFunc="()=>{}" :rejectFunc="()=>{}" />
+            <grade-assignments ref="grament" :workId="workObj.WORKID" :mainId="workObj.ANID" :fromTeacher="false" :postCommentFunc="saveCommentOnly" :checkType="checkMap.TYPE" :wx="wx" :passFunc="()=>{}" :rejectFunc="()=>{}" />
           </li>
           <!-- 评论 end -->
         </ul>
@@ -254,7 +254,6 @@
   import apiRouter, {apiPath} from "../../config/api.js";
   import wx from "weixin-js-sdk";
   import FirstHeader from './FirstHeader.vue';
-  import WorkComment from './WorkComment.vue';
 
   import GradeAssignments from './components/GradeAssignments.vue'
   import Thumbs from './components/Thumbs.vue';
@@ -265,7 +264,6 @@ var mp3;
 
   export default {
     components: {
-      WorkComment,
       XTextarea,
       Toast,
       Checker,
@@ -275,7 +273,6 @@ var mp3;
       XHeader,
       Divider,
       [FirstHeader.name]: FirstHeader,
-      [WorkComment.name]: WorkComment,
       [Thumbs.name]: Thumbs,
       GradeAssignments: GradeAssignments,
     },

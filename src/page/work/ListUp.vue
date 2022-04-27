@@ -156,7 +156,7 @@
             this.checkedWarn = cfg.checkedWarn;
           }
           catch(e){
-
+            
           }
         }
       },
@@ -442,7 +442,7 @@
     float: left;
     margin-top: 5/@baseSize;
     margin-left: 30/@baseSize;
-    margin-right: 10/@baseSize;
+    margin-right: 5/@baseSize;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -451,6 +451,8 @@
 
   a.delete {
     color: #FF5E5E;
+    display: flex;
+    align-items: center;
   }
 
   .publis {

@@ -2,7 +2,13 @@
 	<div class="up-comment" style="margin-bottom: 1rem">
 		<div class="rateBar">
 			<span class="text-14" style="flex: 1;">作业评价</span>
-			<van-rate style="width: 120px;" color="#04BE02" v-model="score" :readonly="!fromTeacher" />
+			<van-rate
+				style="width: 120px;"
+				color="#04BE02"
+				v-model="score"
+				:readonly="!fromTeacher"
+				@change="updateRate"
+			/>
 		</div>
 
 		<hr class="mg-y-20" />
@@ -13,8 +19,8 @@
 				:key="comment.ID"
 				v-for="(comment , index) in commentList"
 				v-long-press="800"
-				@touchstart.prevent="startWillRemove"
-				@touchmove.prevent="cancelWillRemove"
+				@touchstart="startWillRemove"
+				@touchmove="cancelWillRemove"
 				@long-press-start="removeItem(comment)"
 			>
 				{{comment.ADDUSER_NAME}} {{comment.ADD_TIME.substr(0,16)}}
@@ -103,6 +109,14 @@ export default {
 		[VoiceItem.name]: VoiceItem,
 	},
 	props: {
+		workId: {
+			type: Number,
+			required: true,
+		},
+		mainId: {
+			type: Number,
+			required: true,
+		},
 		fromTeacher: {
 			type: Boolean,
 			required: false,
@@ -183,6 +197,23 @@ export default {
 		this.myUserId = user.userId
 	},
 	methods: {
+		updateRate(newScore) {
+			// alert(newScore);
+			this.$http
+				.post(apiRouter.PUT_HOMEWORK_RATE, {
+					mainId: this.mainId,
+					score: newScore,
+				})
+				.then(
+					(response) => {
+						if (response.status === 200) {
+						}
+					},
+					(response) => {
+						alert('请求失败了!!!!')
+					}
+				)
+		},
 		startWillRemove() {
 			this.willRemove = true
 		},
@@ -199,7 +230,24 @@ export default {
 					messageAlign: 'center',
 				})
 				if (answer === 'confirm') {
-					alert('remove:' + item.ID)
+					const self = this
+					let param = {
+						commentId: item.ID,
+						type: item.TYPE,
+						comment_type: item.COMMENT_TYPE,
+						value:
+							item.COMMENT_TYPE === '2' ? item.COMMENT[0].value : item.COMMENT,
+					}
+					this.$http.post(apiRouter.DEL_HOMEWORK_COMMENT, param).then(
+						(response) => {
+							if (response.status === 200) {
+								self.loadComments({ WORKID: self.workId, ANID: self.mainId })
+							}
+						},
+						(response) => {
+							alert('请求失败了!!!!')
+						}
+					)
 				}
 			}
 		},
@@ -500,6 +548,7 @@ export default {
 .richTextWrap {
 	font-size: 14px;
 	color: #666;
+	margin-bottom: 15px;
 }
 
 .inputerWrap {

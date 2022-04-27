@@ -394,11 +394,15 @@ async function dataUrlToFile(dataUrl, fileName) {
       },
       quesList: {
         handler(newVal,val) {
-          let flag = Object.keys(val).length == 0
+          let flag ;
+          let s1 = JSON.stringify(newVal);
+          let s2 = JSON.stringify(val);
+          flag = s1===s2;
+          // debugger
           if(flag){
-            this.editFlag = false;
-          }else{
             this.editFlag = true;
+          }else{
+            this.editFlag = false;
           }
         },
         deep: true

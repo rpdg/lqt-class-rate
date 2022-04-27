@@ -110,4 +110,10 @@ hr {
   font-size: 16px;
   color: #333;
 }
+
+.noMarginGroup {
+  > div {
+    margin-top: 0;
+  }
+}
 </style>

@@ -101,6 +101,8 @@ const apiRouter = {
   GET_HOMEWORK_BACK_COMMENT:
     apiPath + "/wechat/homeworkH5/getHomeWorkBackComment", //提交作业
   GET_HOMEWORK_COMMENT_LIST: apiPath + "/wechat/homeworkH5/getCommentList", //返回评语
+  PUT_HOMEWORK_RATE: apiPath + "/wechat/homeworkH5/updateHomeworkScore", //更新打分
+  DEL_HOMEWORK_COMMENT: apiPath + "/wechat/homeworkH5/delCommentHis", //删除留言
 
   GET_DEL_HOMEWORK: apiPath + "/wechat/homeworkH5/delCheckHomework",
   GET_CHECK_HOMEWORK_UP:

@@ -24,7 +24,7 @@
       </cell>
     </group> -->
 
-    <group v-if="selectTab == '0'" style="padding-bottom: 80px;">
+    <group v-if="selectTab == '0'" style="padding-bottom: 80px;" class="noMarginGroup">
       <cell @click.native="goDetail(item , false)"  
         style="font-size: 14px;padding: 15px 30px;" 
         v-for="(item,index) in checkObj.noDoList" 
@@ -446,6 +446,7 @@
     box-sizing: border-box;
   }
 
+ 
   a.delete em {
     width: 18/@baseSize;
     height: 22/@baseSize;
@@ -464,6 +465,8 @@
 
   a.delete {
     color: #FF5E5E;
+    display: flex;
+    align-items: center;
   }
 
   .publis {
