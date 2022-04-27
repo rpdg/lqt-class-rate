@@ -282,7 +282,7 @@
       <a id="comment" @click="nextComment"
          v-else-if="(checkMap.SCORE || checkMap.COMMENT) && currentWork+1 == quesList.length"
          class="homework-btn homework-next clearfix" href="javascript:void(0)" style="opacity: 1; z-index: 5;">
-        <span class="txt-change">老师评语</span>
+        <span class="txt-change">留言板</span>
 
         <em class="icon-change icon-next" style="height: 28px;">
           <span class="icon-work-next" style="width: 1.1em;height: 1em;display: block;margin-top: 6px;"></span>

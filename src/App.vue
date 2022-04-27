@@ -96,6 +96,7 @@ hr {
     font-size: 16px;
     font-weight: normal;
     color: #333;
+    user-select: none;
   }
 
   .van-button__text {

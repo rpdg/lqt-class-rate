@@ -12,10 +12,12 @@
 			<div
 				:key="comment.ID"
 				v-for="(comment , index) in commentList"
-				v-long-press="500"
+				v-long-press="800"
+				@touchstart.prevent="startWillRemove"
+				@touchmove.prevent="cancelWillRemove"
 				@long-press-start="removeItem(comment)"
 			>
-				{{comment.ADDUSER_NAME}} {{comment.ADD_TIME}}
+				{{comment.ADDUSER_NAME}} {{comment.ADD_TIME.substr(0,16)}}
 				<span
 					:style=" 'margin-left:1em; color:'+ typeColor[comment.TYPE]"
 				>{{typeWord[comment.TYPE]}}</span>
@@ -92,7 +94,7 @@ import { Dialog, Rate, Button, Icon, Toast, Popup } from 'vant'
 import ICON_RECORDING from '../../../assets/work/icon_record.png'
 import VoiceItem from './VoiceItem.vue'
 export default {
-	name:'GradeAssignments',
+	name: 'GradeAssignments',
 	components: {
 		[Button.name]: Button,
 		[Rate.name]: Rate,
@@ -157,6 +159,7 @@ export default {
 			currentMp3Index: -1,
 			audio: null,
 			myUserId: -1,
+			willRemove: false,
 		}
 	},
 	activated() {
@@ -180,9 +183,24 @@ export default {
 		this.myUserId = user.userId
 	},
 	methods: {
-		removeItem(item) {
-			if (item.ADDUSER_ID === this.myUserId) {
-				alert('remove:' + item.ID)
+		startWillRemove() {
+			this.willRemove = true
+		},
+		cancelWillRemove() {
+			this.willRemove = false
+		},
+		async removeItem(item) {
+			if (this.willRemove && item.ADDUSER_ID === this.myUserId) {
+				let answer = await Dialog.confirm({
+					className: 'dy-rate-dialog',
+					title: '',
+					message: '确认撤销',
+					confirmButtonText: '撤销',
+					messageAlign: 'center',
+				})
+				if (answer === 'confirm') {
+					alert('remove:' + item.ID)
+				}
 			}
 		},
 		async playMP3(item, trackIndex) {
@@ -335,7 +353,7 @@ export default {
 				title: '',
 				message: '确定要撤回录音吗？',
 				confirmButtonText: '确定',
-				messageAlign: 'left',
+				messageAlign: 'center',
 			})
 			if (answer === 'confirm') {
 				vm.voiceRecord = null
@@ -467,6 +485,7 @@ export default {
 
 .commentWrap {
 	> div {
+		user-select: none;
 		color: #999;
 		line-height: 2.5em;
 		border-bottom: 1px dashed #dedede;
@@ -489,7 +508,7 @@ export default {
 }
 .iptText {
 	flex: 1;
-	border: 1px solid #dedede;
+	border: 1px solid #c7c7c7;
 	border-radius: 2px;
 	padding: 0 0.5em;
 }
