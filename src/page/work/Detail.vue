@@ -1,7 +1,7 @@
 <template>
   <div>
     <x-header class="title-header" :left-options="{preventGoBack: true}"
-              @on-click-back="goBack()">作业详情
+              @on-click-back="goBack()">我的作业
     </x-header>
 
     <div id="homework-container"  class="lqt-container lqt-wrapper" style="top: 1em">
@@ -417,6 +417,12 @@ async function dataUrlToFile(dataUrl, fileName) {
       this.currentWork = 0;
       this.quesList = {};
       this.loadData();
+
+      this.oldPageTitle = document.title;
+      document.title = '作业';
+    },
+    deactivated() {
+      document.title = this.oldPageTitle;
     },
     updated() {
       if (this.$refs.location && this.$refs.location.offsetHeight) {
@@ -429,6 +435,7 @@ async function dataUrlToFile(dataUrl, fileName) {
     },
     data() {
       return {
+			  oldPageTitle: '',
         locationLine: '',
         descLine: '',
         wwwUrl: roterPath,

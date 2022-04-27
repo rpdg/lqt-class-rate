@@ -113,7 +113,7 @@ hr {
 
 .noMarginGroup {
   div.weui-cells.vux-no-group-title {
-    margin-top: 0;
+    margin-top: -1px;
   }
 }
 </style>

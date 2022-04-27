@@ -160,7 +160,7 @@
       // this.navBarTitle = this.$route.query.title;
       this.navBarTitle = window.localStorage.getItem('lqt-homework-title');
       this.oldPageTitle = document.title;
-      document.title = '作业';
+      document.title = '作业批改';
 
       $(document).scrollTop(0)
     },
