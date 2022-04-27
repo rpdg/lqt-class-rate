@@ -407,6 +407,7 @@ export default {
 		this.userId = this.$route.query.userId;
 		// this.userName = this.$route.query.stuName;
 		this.loadData();
+		this.loadConfig();
 
 		this.oldPageTitle = document.title;
 		document.title = '作业批改';
@@ -632,7 +633,7 @@ export default {
 				(response) => {
 					//vm.$vux.loading.hide();
 					if (response.body.code == '200') {
-						this.upCheckMap = {
+						vm.upCheckMap = {
 							score: 0,
 							comment: '',
 						};
@@ -730,14 +731,24 @@ export default {
 				(response) => {
 					vm.$vux.loading.hide();
 					if (response.body.code == '200') {
-						vm.$vux.toast.text('发回订正成功！');
-
-						setTimeout(function() {
-							// debugger
-							vm.upCheckMap.score = 0;
-							vm.upCheckMap.comment = '';
-							vm.goBack();
-						}, 500);
+						if (!response.body.data.studentMap) {
+							vm.$vux.toast.text('发回订正成功！');
+							setTimeout(function() {
+								// debugger
+								vm.upCheckMap.score = 0;
+								vm.upCheckMap.comment = '';
+								vm.goBack();
+							}, 500);
+						} else {
+							let studentMap = response.body.data.studentMap;
+							let workId = vm.$route.query.workId;
+							vm.currentWork = 0;
+							vm.userId = studentMap.STUDENT_ID;
+							vm.$router.push({
+								path: '/detail-up',
+								query: { userId: studentMap.STUDENT_ID, workId: workId },
+							});
+						}
 					} else {
 						vm.$vux.toast.text(response.body.message);
 						vm.$vux.loading.hide();
