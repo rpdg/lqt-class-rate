@@ -13,8 +13,8 @@
 
 		<hr class="mg-y-20" />
 
-		<div class="text-16">留言板</div>
-		<div class="text-12 commentWrap">
+		<div class="mg-y-20 text-16">留言板</div>
+		<div class="mg-y-20 text-12 commentWrap">
 			<div
 				:key="comment.ID"
 				v-for="(comment , index) in commentList"
@@ -37,7 +37,7 @@
 			</div>
 		</div>
 
-		<!-- <hr class="mg-y-20" /> -->
+		<hr class="mg-y-20" style="	margin-top: -10px; " />
 		<!-- 留言输入 -->
 		<div class="inputerWrap" v-if="!voiceRecord">
 			<van-icon
@@ -537,8 +537,7 @@ export default {
 		color: #999;
 		line-height: 2.2em;
 		border-bottom: 1px dashed #dedede;
-		// margin: 20px 0;
-		padding: 20px 0;
+		margin: 20px 0;
 
 		&:nth-last-of-type(1) {
 			border-bottom: none;
@@ -549,14 +548,12 @@ export default {
 .richTextWrap {
 	font-size: 14px;
 	color: #666;
-	line-height: 1.5em;
-	// margin-bottom: 20px;
+	margin-bottom: 20px;
 }
 
 .inputerWrap {
 	display: flex;
-	padding: 20px 0;
-	border-top: 1px solid #dedede;
+	margin: 20px 0;
 }
 .iptText {
 	flex: 1;
