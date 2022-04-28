@@ -454,18 +454,22 @@ export default {
 				this.posting = false
 			}
 		},
-		savePass() {
+		async savePass() {
 			this.posting = true
 			try {
-				this.passFunc(this.makeParam())
+				await this.passFunc(this.makeParam())
+			} catch (err) {
+				Toast(err.message)
 			} finally {
 				this.posting = false
 			}
 		},
-		saveReject() {
+		async saveReject() {
 			this.posting = true
 			try {
-				this.rejectFunc(this.makeParam())
+				await this.rejectFunc(this.makeParam())
+			} catch (err) {
+				Toast(err.message)
 			} finally {
 				this.posting = false
 			}
