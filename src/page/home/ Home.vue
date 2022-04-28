@@ -114,6 +114,7 @@ export default {
     this.getUrlConfigTrue()
 	},
 	activated() {
+		document.title = "个人中心";
 		this.key += 1;
 		this.showList();
 		// $(".vux-x-dialog").hide();
