@@ -434,13 +434,11 @@ export default {
 				return
 			}
 
+			this.posting = true
 			let param = this.makeParam()
 			if (param.comment_type === 2) {
 				param.comment = JSON.stringify(param.comment)
 			}
-
-			this.posting = true
-
 			try {
 				await this.postCommentFunc(param)
 				Toast('操作成功')
@@ -456,20 +454,24 @@ export default {
 			this.posting = true
 			try {
 				await this.passFunc(this.makeParam())
+				this.comment = ''
+				this.voiceRecord = null
 			} catch (err) {
 				Toast(err.message)
-			} finally {
 				this.posting = false
+			} finally {
 			}
 		},
 		async saveReject() {
 			this.posting = true
 			try {
 				await this.rejectFunc(this.makeParam())
+				this.comment = ''
+				this.voiceRecord = null
 			} catch (err) {
 				Toast(err.message)
-			} finally {
 				this.posting = false
+			} finally {
 			}
 		},
 		popupPicker() {
