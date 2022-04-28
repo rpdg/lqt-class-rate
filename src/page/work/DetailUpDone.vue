@@ -569,7 +569,7 @@ export default {
 
 			
 		},
-		saveWorkPass(param) {
+		async saveWorkPass(param) {
 			// alert(JSON.stringify(param));
 			this.upCheckMap.score = param.score;
 			this.upCheckMap.comment = param.comment;
@@ -626,7 +626,7 @@ export default {
 
 			console.log(data);
 			// return;
-			this.$http.post(apiRouter.POST_HOMEWORK_UP_SAVE, data).then(
+			await this.$http.post(apiRouter.POST_HOMEWORK_UP_SAVE, data).then(
 				(response) => {
 					//vm.$vux.loading.hide();
 					if (response.body.code == '200') {
@@ -660,7 +660,7 @@ export default {
 				}
 			);
 		},
-		saveWorkRejected(param) {
+		async saveWorkRejected(param) {
 			let vm = this;
 			//dataList:[],
 			let quesList = this.quesList;
@@ -724,7 +724,7 @@ export default {
 			console.log(data)
 			// return
 
-			this.$http.post(apiRouter.POST_HOMEWORK_BACK, data).then(
+			await this.$http.post(apiRouter.POST_HOMEWORK_BACK, data).then(
 				(response) => {
 					vm.$vux.loading.hide();
 					if (response.body.code == '200') {
