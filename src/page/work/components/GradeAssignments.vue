@@ -37,7 +37,7 @@
 			</div>
 		</div>
 
-		<hr class="mg-y-20" style="	margin-top: -10px; " />
+		<hr class="mg-y-20" style="	margin-top: -5px; " />
 		<!-- 留言输入 -->
 		<div class="inputerWrap" v-if="!voiceRecord">
 			<van-icon
@@ -509,6 +509,7 @@ export default {
 <style lang="less" scoped>
 .voiceWrap {
 	display: flex;
+	margin-top: 25px;
 
 	> .voiceSeconds {
 		flex: 1;
@@ -553,7 +554,7 @@ export default {
 
 .inputerWrap {
 	display: flex;
-	margin: 20px 0;
+	margin: 25px 0;
 }
 .iptText {
 	flex: 1;

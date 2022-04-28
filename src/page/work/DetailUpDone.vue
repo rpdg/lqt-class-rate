@@ -1306,7 +1306,7 @@ export default {
 					wx.ready(() => {
 						wx.onVoicePlayEnd({
 							success: function (res) {
-								alert('stop voice')
+								// alert('stop voice')
 							}
 						});
 					});
