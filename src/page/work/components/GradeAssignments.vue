@@ -27,7 +27,7 @@
 				<span
 					:style=" 'margin-left:1em; color:'+ typeColor[comment.TYPE]"
 				>{{typeWord[comment.TYPE]}}</span>
-				<div v-if="comment.COMMENT_TYPE==='1'" class="richTextWrap" v-html="comment.COMMENT" />
+				<div v-if="comment.COMMENT_TYPE==='1'" class="nomoreWidth richTextWrap" v-html="comment.COMMENT" />
 				<voice-item
 					v-else-if="comment.COMMENT_TYPE==='2'"
 					:item="comment.COMMENT[0]"
@@ -550,6 +550,10 @@ export default {
 	font-size: 14px;
 	color: #666;
 	margin-bottom: 20px;
+
+	* {
+		max-width: 100%;
+	}
 }
 
 .inputerWrap {
@@ -686,6 +690,14 @@ export default {
 }
 </style>
 <style lang="less">
+
+.nomoreWidth {
+	max-width: 100%;
+	* {
+		max-width: 100%;
+	}
+}
+
 .recordToast {
 	> .van-toast__icon {
 		margin-top: 8px !important;
