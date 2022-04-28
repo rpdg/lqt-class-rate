@@ -22,6 +22,10 @@ export default {
   height: 100%;
 }
 
+.weui-cell:before{
+  border-top: 1px dashed #d9d9d9 !important;
+}
+
 hr {
 	height: 0;
 	border: none;
