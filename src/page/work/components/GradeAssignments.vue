@@ -75,13 +75,13 @@
 			</div>
 		</div>
 		<!-- 三个操作按钮 : 教师端 -->
-		<div class="actionBar" v-if="fromTeacher">
+		<div class="actionBar" ref="bar1" v-if="fromTeacher">
 			<van-button plain color="#54B331" @click="savePass" :disabled="posting">批改通过</van-button>
 			<van-button plain color="#EE0A24" @click="saveReject" :disabled="posting">发回订正</van-button>
 			<van-button plain color="#0093DD" @click="saveComment" :disabled="posting">仅留言</van-button>
 		</div>
 		<!-- 操作按钮 ： 学生端 -->
-		<div class="actionBar" v-else>
+		<div class="actionBar" ref="bar2" v-else>
 			<van-button plain color="#0093DD" @click="saveComment" :disabled="posting">留言</van-button>
 		</div>
 		<!-- 快捷评语 -->
@@ -110,12 +110,12 @@ export default {
 	},
 	props: {
 		workId: {
-			type: Number,
-			required: true,
+			type: String,
+			required: false,
 		},
 		mainId: {
-			type: Number,
-			required: true,
+			type: String,
+			required: false,
 		},
 		fromTeacher: {
 			type: Boolean,
@@ -499,6 +499,17 @@ export default {
 							let data = response.data.data
 							vm.commentList = data.commentList
 							vm.score = Number(data.score)
+
+							// console.log(vm.$refs.bar1 , vm.$refs.bar2);
+
+							vm.$nextTick(function(){
+								if(vm.fromTeacher){
+									vm.$refs.bar1.scrollIntoView()
+								} else {
+									vm.$refs.bar2.scrollIntoView()
+								}
+							})
+							
 						}
 					},
 					(response) => {
