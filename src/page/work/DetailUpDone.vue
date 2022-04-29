@@ -583,6 +583,7 @@ export default {
 
 				let sImgList = quesList[i].sImgList || [];
 
+// debugger;
 				for (let j = 0; j < sWebImgList.length; j++) {
 					if (sWebImgList[j].isEdit) {
 						let item = sWebImgList[j];
@@ -592,6 +593,7 @@ export default {
 							id: item.ID,
 							type: item.TYPE,
 							value: submitUrl,
+							old_path : item.old_path
 						});
 					}
 				}
@@ -605,6 +607,7 @@ export default {
 							id: item.ID,
 							type: item.TYPE,
 							value: submitUrl,
+							old_path : item.old_path
 						});
 					}
 				}
@@ -624,7 +627,7 @@ export default {
 				isCheckAuto: vm.checkedWarn ? 1 : 0,
 			};
 
-			console.log(data);
+			console.log('passed:', data);
 			// return;
 			await this.$http.post(apiRouter.POST_HOMEWORK_UP_SAVE, data).then(
 				(response) => {
@@ -679,6 +682,7 @@ export default {
 							id: item.ID,
 							type: item.TYPE,
 							value: submitUrl,
+							old_path : item.old_path
 						});
 					}
 				}
@@ -692,6 +696,7 @@ export default {
 							id: item.ID,
 							type: item.TYPE,
 							value: submitUrl,
+							old_path : item.old_path
 						});
 					}
 				}
@@ -721,7 +726,7 @@ export default {
 				imgType: vm.checkedJump ? 1: 0,
 				isCheckAuto: 1,
 			};
-			console.log(data)
+			console.log('reject:' , data)
 			// return
 
 			await this.$http.post(apiRouter.POST_HOMEWORK_BACK, data).then(
@@ -778,6 +783,11 @@ export default {
 				url = e.URL.includes(this.picRootPath)
 					? e.URL
 					: this.picRootPath + e.URL;
+			}
+			debugger;
+
+			if(!e.old_path) {
+				e.old_path = url;
 			}
 
 			// init editor

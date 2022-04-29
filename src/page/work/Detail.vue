@@ -810,6 +810,12 @@ async function dataUrlToFile(dataUrl, fileName) {
         that.timeOutEvent = setTimeout(function () {
           //执行长按要执行的内容，
           if (type == 'img') {
+            let ans = list[index];
+            let srcUrl = decodeURIComponent(ans.URL.substr(ans.URL.lastIndexOf('/') + 1));
+            if(srcUrl.startsWith('%tea%')){
+              return;
+            }
+            console.log(ans.URL ,  srcUrl);
             that.showDelImg = true;
           } else {
             that.showDelVoice = true;
@@ -1184,6 +1190,10 @@ async function dataUrlToFile(dataUrl, fileName) {
                 }
               }
               _this.quesList = quesList;
+              setTimeout(function(){
+                _this.editFlag = false;
+              }, 1e2)
+              
             }else{
               alert(response.data.message);
             }
