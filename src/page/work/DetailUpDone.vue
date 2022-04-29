@@ -636,9 +636,9 @@ export default {
 						};
 						if (!response.body.data.studentMap) {
 							vm.$vux.toast.text(response.body.message);
-							setTimeout(function() {
+							// setTimeout(function() {
 								vm.goBack();
-							}, 500);
+							// }, 500);
 						} else {
 							let studentMap = response.body.data.studentMap;
 							let workId = vm.$route.query.workId;
@@ -730,12 +730,12 @@ export default {
 					if (response.body.code == '200') {
 						if (!response.body.data.studentMap) {
 							vm.$vux.toast.text('发回订正成功！');
-							setTimeout(function() {
+							// setTimeout(function() {
 								// debugger
 								vm.upCheckMap.score = 0;
 								vm.upCheckMap.comment = '';
 								vm.goBack();
-							}, 500);
+							// }, 500);
 						} else {
 							let studentMap = response.body.data.studentMap;
 							let workId = vm.$route.query.workId;

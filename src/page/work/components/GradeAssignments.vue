@@ -174,18 +174,18 @@ export default {
 			willRemove: false,
 		}
 	},
-	mounted() {
-		console.log('mounted')
-		this.init()
-	},
-	activated() {
-		console.log('activated')
-		this.init()
-	},
-	deactivated() {
-		console.log('deactivated')
-		this.init()
-	},
+	// mounted() {
+	// 	console.log('mounted')
+	// 	this.init()
+	// },
+	// activated() {
+	// 	console.log('activated')
+	// 	this.init()
+	// },
+	// beforeUpdate() {
+	// 	console.log('beforeUpdate')
+	// 	this.init()
+	// },
 	methods: {
 		init() {
 			this.isPlaying = false
@@ -470,8 +470,8 @@ export default {
 				this.voiceRecord = null
 			} catch (err) {
 				Toast(err.message)
-				this.posting = false
 			} finally {
+				this.posting = false
 			}
 		},
 		async saveReject() {
@@ -482,8 +482,8 @@ export default {
 				this.voiceRecord = null
 			} catch (err) {
 				Toast(err.message)
-				this.posting = false
 			} finally {
+				this.posting = false
 			}
 		},
 		popupPicker() {
@@ -494,8 +494,7 @@ export default {
 			this.showPicker = false
 		},
 		loadComments(param) {
-			this.commentList = []
-			this.score = 0
+			this.init()
 			let vm = this
 			this.$http
 				.get(
