@@ -3,11 +3,6 @@
 		<div style="margin-top: 1em">
 			<divider style="color: #1aad19">订正要求</divider>
 		</div>
-		<!--      <img class="teacher-img" src="@/assets/work/zero-emission.png">-->
-		<!--      <div style="width:60%;margin-top: 1rem;color: #414141;display: inline-block;font-size: 1.4em">-->
-		<!--        你的作业有一点小问题，-->
-		<!--        需要认真订正哟！-->
-		<!--      </div>-->
 		<div class="comment-back" style>
 			<span v-if="hkMap.COMMENT_TYPE=='1'" v-html="hkMap.BACK_COMMENT"></span>
 			<voice-item
@@ -36,21 +31,10 @@ export default {
 		Divider,
 		[VoiceItem.name]: VoiceItem,
 	},
-	created() {},
-	mounted() {},
-	computed: {},
-	watch: {
-		$route: function (e) {
-			// if (e.path == '/schedule-detail') {
-			//   this.loadData();
-			// }
-		},
-	},
 	activated() {
 		this.currentWork = 0
 		this.loadData()
 	},
-	updated() {},
 	data() {
 		return {
 			ossPath: roterOssPath,
@@ -115,80 +99,6 @@ export default {
 				this.voicePlaying = false
 			}
 		},
-		getUrlConfigTrue() {
-			let wiexin = apiRouter.GET_CONFIG + encodeURIComponent(this.urlPath)
-			this.$http.get(wiexin).then(
-				(response) => {
-					let data = response.body
-					wx.config({
-						// debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-						appId: data.appId, // 必填，企业号的唯一标识，此处填写企业号corpid
-						timestamp: data.timestamp, // 必填，生成签名的时间戳
-						nonceStr: data.nonceStr, // 必填，生成签名的随机串
-						signature: data.signature, // 必填，签名，见附录1
-						jsApiList: [
-							'chooseImage',
-							'uploadImage',
-							'downloadImage',
-							'getLocalImgData',
-							'previewImage',
-							'chooseWXPay',
-							'startRecord',
-							'stopRecord',
-							'onVoiceRecordEnd',
-							'uploadVoice',
-							'downloadVoice',
-							'playVoice',
-							'stopVoice',
-							'translateVoice',
-						], // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-					})
-					wx.error(function (res) {
-						//   alert(res)
-					})
-				},
-				(response) => {
-					// console.log("请求失败了!!!!")
-				}
-			)
-		},
-		getUrlConfig() {
-			let wiexin = apiRouter.GET_CONFIG + encodeURIComponent(this.urlPath)
-			this.$http
-				.get('/ua-service/wx/token?url=' + 'http://web.pxy.com/#/work-detail')
-				.then(
-					(response) => {
-						let info = response.body.data
-						wx.config({
-							debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-							appId: info.appId, // 必填，公众号的唯一标识
-							timestamp: info.timestamp, // 必填，生成签名的时间戳
-							nonceStr: info.nonceStr,
-							signature: info.signature, // 必填，签名
-							jsApiList: [
-								'chooseImage',
-								'uploadImage',
-								'downloadImage',
-								'getLocalImgData',
-								'previewImage',
-								'chooseWXPay',
-								'startRecord',
-								'stopRecord',
-								'onVoiceRecordEnd',
-								'uploadVoice',
-								'downloadVoice',
-								'playVoice',
-								'stopVoice',
-								'translateVoice',
-							], // 必填，需要使用的JS接口列表
-						})
-					},
-					(response) => {
-						alert('请求失败了!!!!')
-					}
-				)
-		},
-
 		loadData() {
 			let workId = this.$route.query.workId
 			let anId = this.$route.query.anId
