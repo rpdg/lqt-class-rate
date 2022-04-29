@@ -591,6 +591,7 @@ export default {
 	border: 1px solid #c7c7c7;
 	border-radius: 2px;
 	padding: 0 0.5em;
+	height: 30px;
 }
 
 .bar-btn {
