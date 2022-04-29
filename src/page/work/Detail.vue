@@ -810,9 +810,10 @@ async function dataUrlToFile(dataUrl, fileName) {
         that.timeOutEvent = setTimeout(function () {
           //执行长按要执行的内容，
           if (type == 'img') {
+            console.log("长按删除!")
             let ans = list[index];
             let srcUrl = decodeURIComponent(ans.URL.substr(ans.URL.lastIndexOf('/') + 1));
-            if(srcUrl.startsWith('%tea%')){
+            if(srcUrl.startsWith('_tea_')){
               return;
             }
             console.log(ans.URL ,  srcUrl);
@@ -820,7 +821,6 @@ async function dataUrlToFile(dataUrl, fileName) {
           } else {
             that.showDelVoice = true;
           }
-          console.log("长按删除!")
         }, 600);//这里设置定时
       },
       //手释放，如果在500毫秒内就释放，则取消长按事件，此时可以执行onclick应该执行的事件
