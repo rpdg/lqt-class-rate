@@ -66,7 +66,7 @@
 				@click="playTempVoice"
 				:class="'voice' + (isPlaying? ' playing':'')"
 				:style="'width: '+ voiceBarWidth +'em;' "
-			 />
+			/>
 			<div class="voiceSeconds">{{60 - recordSecondsLeft}}''</div>
 			<div class="removeVoice">
 				<van-icon name="revoke" size="26" color="#999" @click="removeVoiceRecord" />
@@ -174,27 +174,39 @@ export default {
 			willRemove: false,
 		}
 	},
+	mounted() {
+		console.log('mounted')
+		this.init()
+	},
 	activated() {
-		this.isPlaying = false
-		this.posting = false
-		this.showPicker = false
-		this.comment = ''
-		this.commentList = []
-		this.score = 3
-		this.voiceRecord = null
-		this.recordSecondsLeft = 60
-		// alert('s')
-		// const vm = this
-		// this.wx.onVoicePlayEnd({
-		// 	success: function (res) {
-		// 		vm.isPlaying = false
-		// 	},
-		// })
-		let userStr = window.localStorage.getItem('USER')
-		let user = JSON.parse(userStr)
-		this.myUserId = user.userId
+		console.log('activated')
+		this.init()
+	},
+	deactivated() {
+		console.log('deactivated')
+		this.init()
 	},
 	methods: {
+		init() {
+			this.isPlaying = false
+			this.posting = false
+			this.showPicker = false
+			this.comment = ''
+			this.commentList = []
+			this.score = 3
+			this.voiceRecord = null
+			this.recordSecondsLeft = 60
+			// alert('s')
+			// const vm = this
+			// this.wx.onVoicePlayEnd({
+			// 	success: function (res) {
+			// 		vm.isPlaying = false
+			// 	},
+			// })
+			let userStr = window.localStorage.getItem('USER')
+			let user = JSON.parse(userStr)
+			this.myUserId = user.userId
+		},
 		updateRate(newScore) {
 			// alert(newScore);
 			this.$http
