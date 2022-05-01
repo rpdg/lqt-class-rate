@@ -18,7 +18,7 @@
 			<div
 				:key="comment.ID"
 				v-for="(comment , index) in commentList"
-				v-long-press="800"
+				v-long-press="600"
 				@touchstart="startWillRemove"
 				@touchmove="cancelWillRemove"
 				@long-press-start="removeItem(comment)"
@@ -225,13 +225,22 @@ export default {
 				)
 		},
 		startWillRemove() {
+			document.body.onselectstart = function () {
+				return false
+			}
 			this.willRemove = true
 		},
 		cancelWillRemove() {
+			document.body.onselectstart = null
 			this.willRemove = false
 		},
 		async removeItem(item) {
-			if (this.willRemove && item.ADDUSER_ID === this.myUserId) {
+			// debugger
+			if (
+				this.willRemove &&
+				item.ADDUSER_ID === this.myUserId &&
+				item.COMMENT
+			) {
 				let answer = await Dialog.confirm({
 					className: 'dy-rate-dialog',
 					title: '',

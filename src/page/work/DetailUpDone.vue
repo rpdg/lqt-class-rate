@@ -476,7 +476,7 @@ export default {
 
 			locationLine: '',
 			descLine: '',
-			wwwUrl: roterPath,
+			ossPath: roterOssPath,
 			wwwImgUrl: roterImgPath,
 			picRootPath: '',
 			rootDomain: window.location.protocol + '//' + window.location.host,
@@ -784,10 +784,13 @@ export default {
 					? e.URL
 					: this.picRootPath + e.URL;
 			}
-			debugger;
+			// debugger;
 
 			if(!e.old_path) {
-				e.old_path = url;
+				e.old_path = url.split(this.ossPath)[1];
+				if(e.old_path.startsWith('/')){
+					e.old_path = e.old_path.substr(1);
+				}
 			}
 
 			// init editor
