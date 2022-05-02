@@ -228,10 +228,12 @@ export default {
 			document.body.onselectstart = function () {
 				return false
 			}
+			document.getElementById('app').classList.add('unselectable');
 			this.willRemove = true
 		},
 		cancelWillRemove() {
 			document.body.onselectstart = null
+			document.getElementById('app').classList.remove('unselectable');
 			this.willRemove = false
 		},
 		async removeItem(item) {
