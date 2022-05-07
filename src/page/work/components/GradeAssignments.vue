@@ -93,6 +93,8 @@
 </template>
 
 <script>
+// @ts-nocheck
+
 import apiRouter from '../../../config/api'
 import { Dialog, Rate, Button, Icon, Toast, Popup } from 'vant'
 import ICON_RECORDING from '../../../assets/work/icon_record.png'
