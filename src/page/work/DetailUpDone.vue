@@ -399,7 +399,8 @@ export default {
 		},
 	},
 	activated() {
-		this.currentWork = 0;
+		console.log('activated');
+		this.currentWork = -1;
 		this.workId = this.$route.query.workId;
 		this.userId = this.$route.query.userId;
 		// this.userName = this.$route.query.stuName;
@@ -410,6 +411,8 @@ export default {
 		document.title = '作业批改';
 	},
 	deactivated() {
+		console.log('deactivated');
+		this.reset();
 		document.title = this.oldPageTitle;
 	},
 	beforeRouteLeave(to, from, next) {
@@ -435,6 +438,7 @@ export default {
 	},
 	data() {
 		return {
+			oldPageTitle: '',
 			urlPath: window.location.href.split("#")[0],
 			wx,
 			checkedJump: true,
@@ -442,20 +446,20 @@ export default {
         
 			showIframe: false,
 			showIframeSrc: false,
+
 			dataModified: false,
-			oldPageTitle: '',
 			upCheckMap: {
 				score: 0,
 				comment: '',
 			},
-			useDefaultUI: true,
-			options: {
-				/*  cssMaxWidth: document.documentElement.clientWidth,
-            cssMaxHeight: document.documentElement.clientHeight,
-            selectionStyle: {
-              cornerSize: 50,
-              rotatingPointOffset: 100
-            }*/
+			// useDefaultUI: true,
+			/*  options: {
+				cssMaxWidth: document.documentElement.clientWidth,
+				cssMaxHeight: document.documentElement.clientHeight,
+				selectionStyle: {
+					cornerSize: 50,
+					rotatingPointOffset: 100
+				},
 				includeUI: {
 					loadImage: {
 						path: 'https://nhn.github.io/tui.image-editor/latest/examples/img/sampleImage2.png',
@@ -464,7 +468,7 @@ export default {
 				},
 				cssMaxWidth: 700,
 				cssMaxHeight: 500,
-			},
+			},*/
 
 			currentImg: {},
 			currentIndex: 0,
@@ -516,6 +520,36 @@ export default {
 	},
 
 	methods: {
+		reset(){
+			this.dataModified = false;
+			this.upCheckMap.score = 0;
+			this.upCheckMap.comment = '';
+
+			this.currentImg= {};
+			this.currentIndex= 0;
+			this.currentVIndex= 0;
+			this.currentType= '';
+			this.show8= false;
+			this.show1= false;
+			this.dataUrl= '';
+
+			this.workObj= {};
+			this.detail= {};
+			this.imgObj= {
+				content: '',
+				serverid: [],
+				imgs: [],
+			};
+			
+			this.trueList= [];
+			this.currentWork= -1;
+			this.workId= '';
+			this.checkMap= {};
+			this.quesList= [];
+			this.checkList= [];
+			this.showRecording= false;
+			this.progress= 20;
+		},
 		loadConfig(){
 			let cfgStr = localStorage.getItem('lqt-homework-teacherCfg');
 			if(cfgStr){
@@ -583,7 +617,7 @@ export default {
 
 				let sImgList = quesList[i].sImgList || [];
 
-// debugger;
+				// debugger;
 				for (let j = 0; j < sWebImgList.length; j++) {
 					if (sWebImgList[j].isEdit) {
 						let item = sWebImgList[j];
@@ -1060,6 +1094,7 @@ export default {
 					(response) => {
 						if (response.status === 200) {
 							//debugger;
+							_this.currentWork = 0 ;
 							_this.userName = response.body.data.STUDENT_SHOW_NAME + '的作业';
 							_this.picRootPath = response.body.data.PIC_ROOTPATH;
 							_this.workObj = response.body.data.hkMap;

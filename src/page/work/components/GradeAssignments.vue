@@ -159,7 +159,7 @@ export default {
 				'请耐心订正',
 			],
 			showPicker: false,
-			score: 3,
+			score: 0,
 			comment: '',
 			commentList: [],
 			recordingTimer: 0,
@@ -193,7 +193,7 @@ export default {
 			this.showPicker = false
 			this.comment = ''
 			this.commentList = []
-			this.score = 3
+			this.score = 0
 			this.voiceRecord = null
 			this.recordSecondsLeft = 60
 			// alert('s')
@@ -228,12 +228,12 @@ export default {
 			document.body.onselectstart = function () {
 				return false
 			}
-			document.getElementById('app').classList.add('unselectable');
+			document.getElementById('app').classList.add('unselectable')
 			this.willRemove = true
 		},
 		cancelWillRemove() {
 			document.body.onselectstart = null
-			document.getElementById('app').classList.remove('unselectable');
+			document.getElementById('app').classList.remove('unselectable')
 			this.willRemove = false
 		},
 		async removeItem(item) {
@@ -262,7 +262,10 @@ export default {
 					this.$http.post(apiRouter.DEL_HOMEWORK_COMMENT, param).then(
 						(response) => {
 							if (response.status === 200) {
-								self.loadComments({ WORKID: self.workId, ANID: self.mainId })
+								self.loadComments(
+									{ WORKID: self.workId, ANID: self.mainId },
+									false
+								)
 							}
 						},
 						(response) => {
@@ -504,8 +507,11 @@ export default {
 			this.comment = (this.comment ? this.comment + ' ' : '') + str
 			this.showPicker = false
 		},
-		loadComments(param) {
-			this.init()
+		loadComments(param, reset = true) {
+			if (reset) {
+				this.init()
+			}
+			//
 			let vm = this
 			this.$http
 				.get(
@@ -523,14 +529,15 @@ export default {
 							vm.score = Number(data.score)
 
 							// console.log(vm.$refs.bar1 , vm.$refs.bar2);
-
-							vm.$nextTick(function () {
-								if (vm.fromTeacher) {
-									vm.$refs.bar1.scrollIntoView()
-								} else {
-									vm.$refs.bar2.scrollIntoView()
-								}
-							})
+							if (reset) {
+								vm.$nextTick(function () {
+									if (vm.fromTeacher) {
+										vm.$refs.bar1.scrollIntoView()
+									} else {
+										vm.$refs.bar2.scrollIntoView()
+									}
+								})
+							}
 						}
 					},
 					(response) => {
