@@ -412,10 +412,11 @@ export default {
 	},
 	deactivated() {
 		console.log('deactivated');
-		this.reset();
+		// this.reset();
 		document.title = this.oldPageTitle;
 	},
 	beforeRouteLeave(to, from, next) {
+		// console.log('beforeRouteLeave');
 		// if(this.upCheckMap.score  || this.upCheckMap.comment){
 		//   next(false);
 		// }
@@ -425,10 +426,12 @@ export default {
 		// }
 	},
 	beforeRouteUpdate(to, from, next) {
+		console.log('beforeRouteUpdate');
 		this.loadData();
 		next();
 	},
 	updated() {
+		console.log('updated');
 		if (this.$refs.location && this.$refs.location.offsetHeight) {
 			this.locationLine = this.$refs.location.offsetHeight > 20 ? '-webkit-box' : '';
 		}
@@ -521,6 +524,7 @@ export default {
 
 	methods: {
 		reset(){
+
 			this.dataModified = false;
 			this.upCheckMap.score = 0;
 			this.upCheckMap.comment = '';
@@ -542,13 +546,13 @@ export default {
 			};
 			
 			this.trueList= [];
-			this.currentWork= -1;
-			this.workId= '';
+			
 			this.checkMap= {};
 			this.quesList= [];
 			this.checkList= [];
 			this.showRecording= false;
 			this.progress= 20;
+
 		},
 		loadConfig(){
 			let cfgStr = localStorage.getItem('lqt-homework-teacherCfg');
@@ -677,6 +681,7 @@ export default {
 								vm.goBack();
 							// }, 500);
 						} else if (vm.checkedJump && response.body.data.studentMap) {
+							vm.reset();
 							let studentMap = response.body.data.studentMap;
 							let workId = vm.$route.query.workId;
 							vm.currentWork = 0;
@@ -780,6 +785,7 @@ export default {
 							let workId = vm.$route.query.workId;
 							vm.currentWork = 0;
 							vm.userId = studentMap.STUDENT_ID;
+							vm.reset();
 							vm.$router.push({
 								path: '/detail-up',
 								query: { userId: studentMap.STUDENT_ID, workId: workId },
@@ -866,7 +872,7 @@ export default {
 					vm.$vux.toast.text(msg);
 					vm.$vux.loading.hide();
 				};
-				vm.showIframeSrc = './static/img_editor_iframe/index.html?img=' + url + '&s=' + Math.random() + '&n=' + vm.$route.query.stuName;
+				vm.showIframeSrc = './static/img_editor_iframe/index.html?img=' + url + '&s=' + Math.random() + '&n=' + vm.userName.split('的作业')[0];
 				setTimeout(function() {
 					vm.showIframe = true;
 				}, 100);
@@ -1086,6 +1092,10 @@ export default {
 				score: 0,
 				comment: '',
 			};
+			// this.currentWork = -1;
+			// this.workId = this.$route.query.workId;
+			// this.userId = this.$route.query.userId;
+			// alert(this.$route.query.userId)
 
 			let _this = this;
 			this.$http
