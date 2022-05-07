@@ -310,7 +310,7 @@
     Icon,
     TransferDomDirective as TransferDom
   } from 'vux';
-  import apiRouter from "../../config/api.js";
+  import apiRouter , {apiPath} from "../../config/api.js";
 
   import wx from "weixin-js-sdk";
   import FirstHeader from './FirstHeader.vue';
@@ -562,7 +562,7 @@ async function dataUrlToFile(dataUrl, fileName) {
                     timeout: 0, // `0` (no timeout)
                   });
 
-                  let resp = await service.post('/wechat/homeworkH5/upload_pic' , bodyFormData);
+                  let resp = await service.post(apiPath + '/wechat/homeworkH5/upload_pic' , bodyFormData);
                   console.log(resp);
                   if(resp.data.status === 200) {
                     let imgResults = resp.data.data.image_list;
@@ -808,15 +808,18 @@ async function dataUrlToFile(dataUrl, fileName) {
         clearTimeout(that.timeOutEvent);//清除定时器
         that.timeOutEvent = 0;
         that.timeOutEvent = setTimeout(function () {
+          // debugger;
           //执行长按要执行的内容，
           if (type == 'img') {
             console.log("长按删除!")
             let ans = list[index];
-            let srcUrl = decodeURIComponent(ans.URL.substr(ans.URL.lastIndexOf('/') + 1));
-            if(srcUrl.startsWith('_tea_')){
-              return;
+            if(ans.URL) {
+              let srcUrl = decodeURIComponent(ans.URL.substr(ans.URL.lastIndexOf('/') + 1));
+              console.log(ans.URL ,  srcUrl);
+              if(srcUrl.startsWith('_tea_')){
+                return;
+              }
             }
-            console.log(ans.URL ,  srcUrl);
             that.showDelImg = true;
           } else {
             that.showDelVoice = true;

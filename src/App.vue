@@ -21,9 +21,10 @@ export default {
 	height: 100%;
 }
 
-#app.unselectable {
+#app.unselectable * {
 	-webkit-tap-highlight-color: transparent;
 	-webkit-touch-callout: none;
+	-webkit-user-select:none;
 	user-select: none;
 }
 
