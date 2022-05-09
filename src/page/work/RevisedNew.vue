@@ -23,7 +23,7 @@
 			</div>
 		</div>
 		<div style="padding: 15px 0;">
-			<van-button type="info" block @click.native="goDetail">立马去订正</van-button>
+			<van-button type="info" style="font-size:16px;" block @click.native="goDetail">立马去订正</van-button>
 		</div>
 	</div>
 </template>

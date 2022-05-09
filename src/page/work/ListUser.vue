@@ -37,6 +37,7 @@
             <em v-else-if="item.TYPE !=1  && item.DZ_FLAG == '1'" class="icon-next status-view" :style=" 'color:#0093dd'">
               已订正
             </em>
+            <!-- type = 1 && dz_flag = 0 -->
             <em v-else class="icon-next status-view" :style=" 'color:#48B319'">
               已批阅
             </em>
