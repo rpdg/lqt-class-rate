@@ -47,7 +47,12 @@ hr {
 	margin-top: 15px;
 	margin-bottom: 15px;
 }
-
+.mg-t-20{
+	margin-top: 20px;
+}
+.mg-b-20{
+	margin-bottom: 20px;
+}
 .mg-y-20 {
 	margin-top: 20px;
 	margin-bottom: 20px;

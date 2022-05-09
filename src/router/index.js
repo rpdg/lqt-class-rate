@@ -71,7 +71,7 @@ import ListUser from "../page/question/ListUser.vue"
 import WorkListUser from "../page/work/ListUser.vue"
 import WorkDetail from "../page/work/Detail.vue"
 import WorkDetailDone from "../page/work/DetailDone.vue"
-import WorkUserRevised from "../page/work/Revised.vue"
+import WorkUserRevised from "../page/work/RevisedNew.vue"
 
 import WorkListUp from "../page/work/ListUp.vue"
 import CheckListUp from "../page/work/CheckListUp.vue"

@@ -23,10 +23,6 @@
                 <div class="teacher-img-list">
                   <thumbs-grid v-if="detail.IMGLIST && detail.IMGLIST.length" :imgList="detail.IMGLIST" :picBase="picRootPath" :viewFunc="previewImage" />
 
-                  <!-- <p v-for="(tDetail,tIndex) in detail.IMGLIST"
-                     @click="previewImage(tDetail.URL,detail.IMGLIST)"
-                     :style='{ backgroundImage:"url(" + picRootPath+tDetail.URL + ")" , backgroundSize:"cover"}'></p> -->
-
                 </div>
 
                 <divider><x-icon type="ios-arrow-down" size="30"></x-icon></divider>
@@ -39,21 +35,12 @@
                   </div>
                 </div>
 
-
-<!--                <div class="answer-qs other-ans-img">-->
-<!--                  <div >-->
-<!--                    <a style="text-decoration: underline;color: yellowgreen;" :href="picRootPath+'/weixin/wechat/fileview/go_page.jsp?filePath='">测试文件111.txt</a>-->
-<!--                    <span style="color: red;font-size: 14px">&nbsp;&nbsp;<icon style="color: red" type="clear"></icon></span>-->
-<!--                  </div>-->
-<!--                </div>-->
-
                 <div v-if="detail.sWebFileList" class="answer-qs other-ans-img">
                   <div v-for="(vDetail,vIndex) in detail.sWebFileList">
                     <a v-if="vDetail.sUrl.indexOf('.pdf') > 0" style="text-decoration: underline;color: yellowgreen;" :href="'/common/fileview/go_page.jsp?filePath='+vDetail.sUrl">{{vDetail.sName}}</a>
                     <a v-else-if="vDetail.sUrl.indexOf('.doc') > 0 || vDetail.sUrl.indexOf('.xls') > 0 || vDetail.sUrl.indexOf('.ppt') > 0" style="text-decoration: underline;color: yellowgreen;" :href="'https://view.officeapps.live.com/op/view.aspx?src='+picRootPath+vDetail.sUrl">{{vDetail.sName}}</a>
                     <a v-else style="text-decoration: underline;color: yellowgreen;" :href="picRootPath+vDetail.sUrl">{{vDetail.sName}}</a>
 
-                    <!--<a style="text-decoration: underline;color: yellowgreen;" :href="picRootPath+'/weixin/wechat/fileview/go_page.jsp?filePath='+vDetail.sUrl+'&fileName='+vDetail.sName">{{vDetail.sName}}</a>-->
                   </div>
                 </div>
 
@@ -77,14 +64,6 @@
                         style="background-color: red;position: absolute;
                       top: 0;width: 100%;height: 100%;opacity: 0;"></div>
                     </div>
-
-
-<!--                    <p v-else class="img-local" :style='{backgroundImage:"url("+vDetail.localData+")"}'-->
-<!--                       @touchstart="gotouchstart('img',detail.imgList,vIndex)"-->
-<!--                       @touchmove="gotouchmove()"-->
-<!--                       @touchend="gotouchend('img',detail.imgList,vIndex)" ></p>-->
-
-                    <!--<img v-else />-->
                   </div>
                 </div>
 
@@ -100,16 +79,8 @@
                         <span class="voice-ready"></span>
                       </p>
                       <span style="line-height: 2em;vertical-align: top;">{{vDetail.AUDIO_TIME}}''</span>
-
-<!--                      <img-->
-<!--                           @touchstart="gotouchstart('voice1',detail.voiceList,vIndex)" @touchmove="gotouchmove()"-->
-<!--                           @touchend="gotouchend('voice1',detail.voiceList,vIndex)"-->
-<!--                           :style="'height: 2em;border-radius: 5px;width: '+ (Number(vDetail.AUDIO_TIME)/20 <1 ?1:Number(vDetail.AUDIO_TIME)/20) *5 +'em;' "-->
-<!--                           src="@/assets/work/rectangle.png"/>-->
-<!--                      <img style="height: 1em;line-height: 2em;left: 6px;position: absolute;top: 0.5em;"-->
-<!--                           src="@/assets/work/airplay.png"/><span-->
-<!--                      style="vertical-align: top; line-height: 2em;">{{vDetail.AUDIO_TIME}}''</span>-->
                     </div>
+
                     <div v-else>
                         <p class="voice-play"
                            @touchstart="gotouchstart('voice',detail.voiceList,vIndex)"
@@ -120,22 +91,12 @@
                           <span class="voice-ready"></span>
                         </p>
                         <span>{{vDetail.second}}''</span>
-<!--                      <img @touchstart="gotouchstart('voice',detail.voiceList,vIndex)" @touchmove="gotouchmove()"-->
-<!--                           @touchend="gotouchend('voice',detail.voiceList,vIndex)"-->
-<!--                           :style="'height: 2em;border-radius: 5px;width: '+ (Number(vDetail.second)/20 <1 ?1:Number(vDetail.second)/20) *5 +'em;' "-->
-<!--                           src="@/assets/work/rectangle.png"/>-->
-<!--                      <img style="height: 1em;line-height: 2em;left: 6px;position: absolute;top: 0.5em;"-->
-<!--                           src="@/assets/work/airplay.png"/><span-->
-<!--                      style="vertical-align: top; line-height: 2em;">{{vDetail.second}}''</span>-->
                     </div>
                   </div>
-                  <!--<div class="qs-content" contenteditable="true"></div>-->
                 </div>
 
                 <ul class="homework-answer">
                   <li class="answer-qs qs-txt" style="padding: 0;">
-                    <!--                        <textarea class="qs-data" rows="6" cols="20" name="content"></textarea>-->
-                    <!--                        class="x-textarea"-->
                     <x-textarea class="answer-textarea" @on-blur="textareaFocusout()"  :max="200" placeholder="" :rows="3" v-model="detail.answer"></x-textarea>
                   </li>
                 </ul>
@@ -153,9 +114,6 @@
               <div class="homework-content">
                 <p class="homework-title">{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】{{detail.CONTENT}}</p>
                 <thumbs-grid v-if="detail.PICLIST && detail.PICLIST.length" :imgList="detail.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
-                <!-- <div>
-                  <img @click="previewImage(dItem.URL,detail.PICLIST)" v-for="dItem in detail.PICLIST" width="49%" :src="picRootPath+dItem.URL" :key="dItem.ID">
-                </div> -->
 
                 <checker style="margin-top: 10px;margin-left: -5px;" radio-required v-model="detail.answer"
                          default-item-class="demo3-item" selected-item-class="demo3-item-selected">
@@ -165,9 +123,6 @@
                       <span style="font-size: 16px;margin-left: 10px;word-break: break-word">{{item.ORDERNO}}.{{item.CONTENT}}</span><br>
                     </checker-item>
                     <thumbs-grid v-if="item.PICLIST && item.PICLIST.length" :imgList="item.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
-                    <!-- <div>
-                      <img @click="previewImage(subDItem.URL, item.PICLIST)" v-for="subDItem in item.PICLIST" style="max-height: 200px" :src="picRootPath+subDItem.URL" :key="subDItem.ID">
-                    </div> -->
                   </div>
 
                 </checker>
@@ -182,9 +137,6 @@
               <div class="homework-content">
                 <p class="homework-title">{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】{{detail.CONTENT}}</p>
                 <thumbs-grid v-if="detail.PICLIST && detail.PICLIST.length" :imgList="detail.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
-                <!-- <div>
-                  <img @click="previewImage(dItem.URL,detail.PICLIST)" v-for="dItem in detail.PICLIST" width="49%" :src="picRootPath+dItem.URL">
-                </div> -->
                 <checker style="margin-top: 10px;margin-left: -5px;" v-model="detail.answer" type="checkbox"
                          default-item-class="demo3-item" selected-item-class="checkbox-item-selected">
                   <div v-for="item in detail.OPTIONLIST" :key="item.ID">
@@ -193,13 +145,7 @@
                       <span style="font-size: 16px;margin-left: 10px;word-break: break-word">{{item.ORDERNO}}.{{item.CONTENT}}</span><br>
                     </checker-item>
                     <thumbs-grid v-if="item.PICLIST && item.PICLIST.length" :imgList="item.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
-                    <!-- <div>
-                      <img @click="previewImage(subDItem.URL,item.PICLIST)" v-for="subDItem in item.PICLIST" style="max-height: 200px" :src="picRootPath+subDItem.URL">
-                    </div> -->
                   </div>
-
-
-
                 </checker>
               </div>
               <input class="answer-data" type="hidden" value="">
