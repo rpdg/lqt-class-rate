@@ -563,18 +563,24 @@ var mp3;
                     let ansObj = item.STUANSWER[i];
                     if(ansObj.TYPE == ""){
                       item.answer = ansObj.ANSWER;
-                    }else if(ansObj.TYPE == "1"){
+                    } else if(ansObj.TYPE == "1"){
                       item.sImgList.push(ansObj)
-                    }else if (ansObj.TYPE == "2"){
+                    } else if (ansObj.TYPE == "2"){
                       item.sVoiceList.push(ansObj)
-                    }else if (ansObj.TYPE == "3"){
+                    } else if (ansObj.TYPE == "3"){
                       let urlList = ansObj.ANSWER.split(";");
                       ansObj.sName = urlList[0];
+                      if(urlList[1].indexOf('upload')===0){
+                        urlList[1] = urlList[1].substr(6)
+                      }
                       ansObj.sUrl = urlList[1];
                       item.sWebImgList.push(ansObj)
-                    }else if (ansObj.TYPE == "4"){
+                    } else if (ansObj.TYPE == "4"){
                       let urlList = ansObj.ANSWER.split(";");
                       ansObj.sName = urlList[0];
+                      if(urlList[1].indexOf('upload')===0){
+                        urlList[1] = urlList[1].substr(6)
+                      }
                       ansObj.sUrl = urlList[1];
                       item.sWebFileList.push(ansObj)
                     }

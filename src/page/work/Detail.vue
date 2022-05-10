@@ -1190,11 +1190,17 @@ async function dataUrlToFile(dataUrl, fileName) {
                       } else if (ansObj.TYPE == "3"){
                         let urlList = ansObj.ANSWER.split(";");
                         ansObj.sName = urlList[0];
+                        if(urlList[1].indexOf('upload')===0){
+                          urlList[1] = urlList[1].substr(6)
+                        }
                         ansObj.sUrl = urlList[1];
                         item.sWebImgList.push(ansObj)
                       }else if (ansObj.TYPE == "4"){
                         let urlList = ansObj.ANSWER.split(";");
                         ansObj.sName = urlList[0];
+                        if(urlList[1].indexOf('upload')===0){
+                          urlList[1] = urlList[1].substr(6)
+                        }
                         ansObj.sUrl = urlList[1];
                         item.sWebFileList.push(ansObj)
                       }
