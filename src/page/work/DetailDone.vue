@@ -10,6 +10,10 @@
               data-type="checkbox">
             <first-header v-show="currentWork == 0" :headData="workObj"></first-header>
 
+            <div v-if="!(checkMap && checkMap.GREATLIST)" style="color:#48b319;	padding: 10px; border-bottom: solid 1px #dedede;">
+              老师推荐了优秀作业：尹威聪、张小凡、李大嘴、刘明，点人名查看。
+            </div>
+
             <!-- 问答题 或 自定义 -->
             <div v-if="detail.QUESTYPE == '3' || detail.QUESTYPE == '4'">
               <div class="homework-content">
@@ -205,7 +209,7 @@
           <li v-show="currentWork === quesList.length " class="it banner-sheet"
               data-type="checkbox">
             <!-- <work-comment ref="wkment" :headData="workObj"></work-comment> -->
-            <grade-assignments ref="grament" :workId="workObj.WORKID" :mainId="workObj.ANID" :fromTeacher="false" :postCommentFunc="saveCommentOnly" :checkType="checkMap.TYPE" :wx="wx" :passFunc="()=>{}" :rejectFunc="()=>{}" />
+            <grade-assignments ref="grament" :workId="workObj.WORKID" :mainId="workObj.ANID" :isGreat="isGreat" :fromTeacher="false" :postCommentFunc="saveCommentOnly" :checkType="checkMap.TYPE" :wx="wx" :passFunc="()=>{}" :rejectFunc="()=>{}" />
           </li>
           <!-- 评论 end -->
         </ul>
@@ -347,6 +351,7 @@ var mp3;
         currentWork: 0,
         workId: '',
         checkMap:{},
+        isGreat: false,
         quesList: [],
         checkList: [],
         showRecording: false,
@@ -439,6 +444,7 @@ var mp3;
             _this.picRootPath = response.body.data.PIC_ROOTPATH;
             _this.workObj = response.body.data.hkMap;
             _this.checkMap = response.body.data.checkMap || {};
+						_this.isGreat = _this.checkMap.IS_GREAT == '1';
             let quesList = response.body.data.quesList;
             if(quesList.length == 1){
               _this.progress = 100;
