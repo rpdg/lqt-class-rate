@@ -847,12 +847,6 @@ function init(editor, editorWrapper , Panzoom) {
 		}
 	});
 
-	let stuName = decodeURIComponent(window.location.search.split('&n=')[1]);
-	if(stuName){
-		$('#stuName').text(stuName.substr(0,4))
-	}
-	
-
 	// alert(window.location.search.split('?img=')[1].split('&s=')[0]);
 	let imgSrc ;
 	if(location.hostname.endsWith('.lqtedu.com')){
