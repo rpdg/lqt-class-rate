@@ -1,19 +1,19 @@
-/**
- * service-mobile.js
- * @author NHN. FE Development Team <dl_javascript@nhn.com>
- * @fileoverview
- */
 /* eslint-disable vars-on-top,no-var,strict,prefer-template,prefer-arrow-callback,prefer-destructuring,object-shorthand,require-jsdoc,complexity */
 'use strict';
+
+let stuName = decodeURIComponent(window.location.search?.split('&n=')[1]?.split('&')[0] || '');
+if (stuName) {
+	$('#stuName').text(stuName.substr(0, 4));
+}
 document.write(
 	'<iframe class="tui-image-editor" src="./editor.html' + window.location.search + '" border="0"></iframe>'
 );
 
-function init(editor, editorWrapper , Panzoom) {
+function init(editor, editorWrapper, Panzoom) {
 	// console.log(editor);
 
 	let currentScale = 1;
-	let currentPan = {x:0 , y:0};
+	let currentPan = { x: 0, y: 0 };
 
 	var panzoom = Panzoom(editorWrapper, {
 		maxScale: 5,
@@ -23,8 +23,7 @@ function init(editor, editorWrapper , Panzoom) {
 		startY: currentPan.y,
 	});
 
-	editorWrapper.parentElement.addEventListener('wheel', panzoom?.zoomWithWheel , {passive:false});
-
+	editorWrapper.parentElement.addEventListener('wheel', panzoom?.zoomWithWheel, { passive: false });
 
 	function startPan() {
 		// panzoom.setOptions({ disablePan: false  , disableZoom: false , silent: false});
@@ -35,10 +34,9 @@ function init(editor, editorWrapper , Panzoom) {
 			startX: currentPan.x,
 			startY: currentPan.y,
 		});
-		editorWrapper.parentElement.addEventListener('wheel', panzoom?.zoomWithWheel , {passive:false});
-		
+		editorWrapper.parentElement.addEventListener('wheel', panzoom?.zoomWithWheel, { passive: false });
 
-		lastAtcivedBtn =  null;
+		lastAtcivedBtn = null;
 		// $panzoomElem.off('panzoomzoom');
 		// $panzoomElem.off('panzoomend');
 
@@ -61,7 +59,7 @@ function init(editor, editorWrapper , Panzoom) {
 
 		// setTimeout(()=>{
 		// } , 100);
-		
+
 		// panzoom.setOptions({ disablePan: true , disableZoom: true , silent: true});
 
 		// $panzoomElem.on('panzoomzoom' , function(){
@@ -76,11 +74,11 @@ function init(editor, editorWrapper , Panzoom) {
 		// 			lastAtcivedBtn.click();
 		// 		}
 		// 	}, 200);
-			
+
 		// });
 
 		editor.off('objectActivated');
-		editor.on('objectActivated' , function(obj) {
+		editor.on('objectActivated', function(obj) {
 			activeObjectId = obj.id;
 			if (obj.type === 'rect' || obj.type === 'circle' || obj.type === 'triangle') {
 				showSubMenu('shape');
@@ -98,8 +96,7 @@ function init(editor, editorWrapper , Panzoom) {
 		});
 	}
 
-	var lastAtcivedBtn =  null;
-
+	var lastAtcivedBtn = null;
 
 	var MAX_RESOLUTION = 3264 * 2448; // 8MP (Mega Pixel)
 
@@ -401,7 +398,6 @@ function init(editor, editorWrapper , Panzoom) {
 		$displayingHiddenMenu = $(this)
 			.parent()
 			.find(hiddenmenuClass);
-		
 	});
 
 	$submenuButtons.on('click', function() {
@@ -562,7 +558,6 @@ function init(editor, editorWrapper , Panzoom) {
 
 	// Crop menu action
 	$btnCrop.on('click', function() {
-		
 		// lastAtcivedBtn = $btnCrop;
 
 		imageEditor.startDrawingMode('CROPPER');
@@ -615,7 +610,6 @@ function init(editor, editorWrapper , Panzoom) {
 
 	// Text menu action
 	$btnAddText.on('click', function() {
-
 		// lastAtcivedBtn = $btnAddText;
 
 		var initText = '批注：';
@@ -676,18 +670,17 @@ function init(editor, editorWrapper , Panzoom) {
 		});
 	});
 
-	$('#btn-draw-line').click(function(){
+	$('#btn-draw-line').click(function() {
 		// debugger;
-		if(cfg.drawMode === 'FREE_DRAWING'){
+		if (cfg.drawMode === 'FREE_DRAWING') {
 			$btnFreeDrawing.click();
-		} else if(cfg.drawMode === 'LINE_DRAWING'){
+		} else if (cfg.drawMode === 'LINE_DRAWING') {
 			$btnLineDrawing.click();
 		}
-	})
+	});
 
 	// Draw line menu action
 	$btnFreeDrawing.on('click', function() {
-		
 		lastAtcivedBtn = $btnFreeDrawing;
 
 		var settings = getBrushSettings();
@@ -700,7 +693,6 @@ function init(editor, editorWrapper , Panzoom) {
 	});
 
 	$btnLineDrawing.on('click', function() {
-		
 		lastAtcivedBtn = $btnLineDrawing;
 
 		var settings = getBrushSettings();
@@ -847,22 +839,15 @@ function init(editor, editorWrapper , Panzoom) {
 		}
 	});
 
-	let stuName = decodeURIComponent(window.location.search.split('&n=')[1]);
-	if(stuName){
-		$('#stuName').text(stuName.substr(0,4))
-	}
-	
-
 	// alert(window.location.search.split('?img=')[1].split('&s=')[0]);
-	let imgSrc ;
-	if(location.hostname.endsWith('.lqtedu.com')){
+	let imgSrc;
+	if (location.hostname.endsWith('.lqtedu.com')) {
 		imgSrc = window.location.search.split('?img=')[1].split('&s=')[0];
-	} else{
+	} else {
 		imgSrc = 'https://picsum.photos/seed/rrrrrrrr/800/1760';
 	}
 
 	imageEditor.loadImageFromURL(imgSrc, 'SampleImage').then(function() {
-
 		// 	// init start mode
 		startEditorUseCfgMode();
 
@@ -884,10 +869,10 @@ function init(editor, editorWrapper , Panzoom) {
 		// 	imageEditor.zoom({x:400,y:880, zoomLevel:2.5});
 		// } ,3e3);
 
-		setTimeout(()=>{
-			imageEditor.clearRedoStack(); 
+		setTimeout(() => {
+			imageEditor.clearRedoStack();
 			imageEditor.clearUndoStack();
-		} ,10);
+		}, 10);
 	});
 
 	// Load image
@@ -958,7 +943,7 @@ function init(editor, editorWrapper , Panzoom) {
 	}
 	function fixMobileUI() {
 		let obj = calcScale();
-		imageEditor.resizeCanvasDimension({ width: obj.canvas.maxWidth , height: obj.canvas.maxHeight });
+		imageEditor.resizeCanvasDimension({ width: obj.canvas.maxWidth, height: obj.canvas.maxHeight });
 		// $('.tui-image-editor-canvas-container , .tui-image-editor-canvas-container > canvas').css({ maxWidth, maxHeight });
 	}
 

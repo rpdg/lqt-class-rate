@@ -612,6 +612,11 @@ async function dataUrlToFile(dataUrl, fileName) {
 
       //js
       gotouchstart(type, list, index) {
+        document.body.onselectstart = function () {
+          return false
+        }
+        document.getElementById('app').classList.add('unselectable')
+
         let that = this;
         that.delList = list;
         that.delIndex = index;
@@ -639,6 +644,8 @@ async function dataUrlToFile(dataUrl, fileName) {
       },
       //手释放，如果在500毫秒内就释放，则取消长按事件，此时可以执行onclick应该执行的事件
       gotouchend(type, list, index) {
+        document.body.onselectstart = null
+			  document.getElementById('app').classList.remove('unselectable')
         let that = this;
         clearTimeout(that.timeOutEvent);
         if (that.timeOutEvent != 0) {
@@ -655,6 +662,8 @@ async function dataUrlToFile(dataUrl, fileName) {
       },
       //如果手指有移动，则取消所有事件，此时说明用户只是要移动而不是长按
       gotouchmove() {
+        document.body.onselectstart = null
+			  document.getElementById('app').classList.remove('unselectable')
         let that = this;
         clearTimeout(that.timeOutEvent);//清除定时器
         that.timeOutEvent = 0;
@@ -992,11 +1001,17 @@ async function dataUrlToFile(dataUrl, fileName) {
                       } else if (ansObj.TYPE == "3"){
                         let urlList = ansObj.ANSWER.split(";");
                         ansObj.sName = urlList[0];
+                        if(urlList[1].indexOf('upload')===0){
+                          urlList[1] = urlList[1].substr(6)
+                        }
                         ansObj.sUrl = urlList[1];
                         item.sWebImgList.push(ansObj)
                       }else if (ansObj.TYPE == "4"){
                         let urlList = ansObj.ANSWER.split(";");
                         ansObj.sName = urlList[0];
+                        if(urlList[1].indexOf('upload')===0){
+                          urlList[1] = urlList[1].substr(6)
+                        }
                         ansObj.sUrl = urlList[1];
                         item.sWebFileList.push(ansObj)
                       }
