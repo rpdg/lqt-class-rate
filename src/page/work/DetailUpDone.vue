@@ -250,7 +250,7 @@
               </x-button>
 
             </div> -->
-			<grade-assignments ref="grament" :workId="checkMap.WORK_ID" :mainId="checkMap.ID" :passFunc="saveWorkPass" :rejectFunc="saveWorkRejected" :postCommentFunc="saveCommentOnly" :checkType="checkMap.TYPE" :wx="wx" />
+			<grade-assignments ref="grament" :workId="checkMap.WORK_ID" :mainId="checkMap.ID" :isGreat="isGreat" :passFunc="saveWorkPass" :rejectFunc="saveWorkRejected" :postCommentFunc="saveCommentOnly" :checkType="checkMap.TYPE" :wx="wx" />
           </li>
           <!-- 评论end -->
         </ul>
@@ -519,6 +519,7 @@ export default {
 			checkList: [],
 			showRecording: false,
 			progress: 20,
+			isGreat: false,
 		};
 	},
 
@@ -599,7 +600,7 @@ export default {
 						self.$refs.grament.loadComments({
 							WORKID: self.checkMap.WORK_ID,
 							ANID: self.checkMap.ID,
-						});
+						}, false);
 				} else{
 					throw new Error(response.body.message)
 				}
@@ -982,87 +983,6 @@ export default {
 			}
 		},
 
-		//上传图片
-		onClickUpActivity() {
-			console.log('onClickUpActivity');
-			let _this = this;
-			wx.chooseImage({
-				count: 1, // 默认9
-				sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-				sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-				success: function(res) {
-					let localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-					if (window.__wxjs_is_wkwebview) {
-						console.log('>>>>>>>>>>window.__wxjs_is_wkwebview!!!');
-						_this.wxGetLocalImgDataActivity(localIds); //todo
-					} else {
-						console.log('>>>>>>>>>>not----window.__wxjs_is_wkwebview!!!');
-						localIds.forEach((item, index) => {
-							_this.actLocalIdImgs.push(item);
-							if (_this.actLocalIdImgs.length >= _this.actImgaesMaxLenght) {
-								_this.actImgLenght = false;
-							}
-						});
-					}
-					_this.wxUploadImageActivity(localIds); //todo
-				},
-				fail: function(res) {
-					console.log('活动上传失败');
-				},
-			});
-		},
-		//
-		wxUploadImageActivity(localIds) {
-			let _this = this;
-			let i = 0;
-			let length = localIds.length;
-			let upload = function() {
-				let loacId = localIds[i];
-				if (window.__wxjs_is_wkwebview) {
-					if (loacId.indexOf('wxlocalresource') != -1) {
-						loacId = loacId.replace('wxlocalresource', 'wxLocalResource');
-					}
-				}
-				wx.uploadImage({
-					localId: loacId, // 需要上传的图片的本地ID，由chooseImage接口获得
-					isShowProgressTips: 1, // 默认为1，显示进度提示
-					success: function(res) {
-						let serverId = {
-							id: '',
-							serverid: res.serverId,
-						};
-						_this.actServerId.push(serverId);
-						i++;
-					},
-					fail: function(error) {
-						alert('上传活动图片失败');
-					},
-				});
-			};
-			upload();
-		},
-		//
-		wxGetLocalImgDataActivity(localIds) {
-			let _this = this;
-			let i = 0;
-			let length = localIds.length;
-			let upload = function() {
-				wx.getLocalImgData({
-					localId: localIds[i], // 图片的localID
-					success: function(res) {
-						let localData = res.localData; // localData是图片的base64数据，可以用img标签显示
-						localData = localData.replace('jgp', 'jpeg');
-						_this.actLocalIdImgs.push(localData);
-						if (_this.actLocalIdImgs.length >= _this.actImgaesMaxLenght) {
-							_this.actImgLenght = false;
-						}
-						i++;
-					},
-				});
-			};
-			upload();
-		},
-
 		previewImage(url, imgList) {
 			let urls = [];
 			for (let i = 0; i < imgList.length; i++) {
@@ -1076,14 +996,6 @@ export default {
 			});
 		},
 
-		clodesdActivity(index) {
-			let _this = this;
-			_this.removeByValue(_this.actLocalIdImgs, index);
-			_this.removeByValue(_this.actServerId, index);
-			if (_this.actLocalIdImgs.length < _this.actImgaesMaxLenght) {
-				_this.actImgLenght = true;
-			}
-		},
 		onClickLeft() {
 			this.$router.go(-1);
 		},
@@ -1109,6 +1021,7 @@ export default {
 							_this.picRootPath = response.body.data.PIC_ROOTPATH;
 							_this.workObj = response.body.data.hkMap;
 							_this.checkMap = response.body.data.checkMap || {};
+							_this.isGreat = _this.checkMap.IS_GREAT == '1';
 							let quesList = response.body.data.quesList;
 							if (quesList.length == 1) {
 								_this.progress = 100;

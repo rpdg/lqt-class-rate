@@ -1,94 +1,106 @@
 <template>
-	<div class="up-comment" style="margin-bottom: 1rem">
-		<div class="rateBar">
-			<span class="text-14" style="flex: 1;">作业评价</span>
-			<van-rate
-				style="width: 120px;"
-				color="#04BE02"
-				v-model="score"
-				:readonly="!fromTeacher"
-				@change="updateRate"
-			/>
-		</div>
+	<div>
+		<center v-if="loading" style="margin-top:1em;">
+			<van-loading size="24px">加载中...</van-loading>
+		</center>
+		<div v-else class="up-comment" style="margin-bottom: 1rem">
+			<div class="rateBar">
+				<span class="text-14" style="flex: 1;">作业评价</span>
+				<van-rate
+					style="width: 120px;"
+					color="#04BE02"
+					v-model="score"
+					:readonly="!fromTeacher"
+					@change="updateRate"
+				/>
+			</div>
+			<div v-if="fromTeacher" class="text-12 divShareGoodwork">
+				<span style="flex: 1;">推优分享给已批阅同学</span>
+				<van-switch v-model="isShared" @change="setHomeworkShared" active-color="#48b319" size="22px" />
+			</div>
+			<div v-else class="text-12" style="color:#48b319;">
+				已被老师推优，分享给其他同学
+			</div>
 
-		<hr class="mg-y-20" />
+			<hr class="mg-y-20" />
 
-		<div class="mg-y-20 text-16">留言板</div>
-		<div class="mg-y-20 text-12 commentWrap">
-			<div
-				:key="comment.ID"
-				v-for="(comment , index) in commentList"
-				v-long-press="600"
-				@touchstart="startWillRemove"
-				@touchmove="cancelWillRemove"
-				@long-press-start="removeItem(comment)"
-			>
-				{{comment.ADDUSER_NAME}} {{comment.ADD_TIME.substr(0,16)}}
-				<span
-					:style=" 'margin-left:1em; color:'+ typeColor[comment.TYPE]"
-				>{{typeWord[comment.TYPE]}}</span>
+			<div class="mg-y-20 text-16">留言板</div>
+			<div class="mg-y-20 text-12 commentWrap">
 				<div
-					v-if="comment.COMMENT_TYPE==='1'"
-					class="nomoreWidth richTextWrap"
-					v-html="comment.COMMENT"
-				/>
-				<voice-item
-					v-else-if="comment.COMMENT_TYPE==='2'"
-					:item="comment.COMMENT[0]"
-					:playing="index===currentMp3Index"
-					@click="playMP3(comment.COMMENT[0] , index)"
-				/>
+					:key="comment.ID"
+					v-for="(comment , index) in commentList"
+					v-long-press="600"
+					@touchstart="startWillRemove"
+					@touchmove="cancelWillRemove"
+					@long-press-start="removeItem(comment)"
+				>
+					{{comment.ADDUSER_NAME}} {{comment.ADD_TIME.substr(0,16)}}
+					<span
+						:style=" 'margin-left:1em; color:'+ typeColor[comment.TYPE]"
+					>{{typeWord[comment.TYPE]}}</span>
+					<div
+						v-if="comment.COMMENT_TYPE==='1'"
+						class="nomoreWidth richTextWrap"
+						v-html="comment.COMMENT"
+					/>
+					<voice-item
+						v-else-if="comment.COMMENT_TYPE==='2'"
+						:item="comment.COMMENT[0]"
+						:playing="index===currentMp3Index"
+						@click="playMP3(comment.COMMENT[0] , index)"
+					/>
+				</div>
 			</div>
-		</div>
 
-		<hr class="mg-y-20" style="	margin-top: -5px; " />
-		<!-- 留言输入 -->
-		<div class="inputerWrap" v-if="!voiceRecord">
-			<van-icon
-				name="orders-o"
-				color="#48b319"
-				size="30"
-				style="	margin-left: -4px;"
-				@click="popupPicker"
-				v-if="fromTeacher"
-			/>
-			<input class="iptText" type="text" maxlength="100" v-model="comment" />
-			<span
-				class="bar-btn btn-voice"
-				v-show="comment.length===0"
-				@touchstart.prevent="startRecord"
-				@touchend.prevent="endRecord"
-			/>
-		</div>
-		<!-- 录音记录条 -->
-		<div class="mg-y-20 voiceWrap" v-if="voiceRecord">
-			<div
-				@click="playTempVoice"
-				:class="'voice' + (isPlaying? ' playing':'')"
-				:style="'width: '+ voiceBarWidth +'em;' "
-			/>
-			<div class="voiceSeconds">{{60 - recordSecondsLeft}}''</div>
-			<div class="removeVoice">
-				<van-icon name="revoke" size="26" color="#999" @click="removeVoiceRecord" />
+			<hr class="mg-y-20" style="	margin-top: -5px; " />
+			<!-- 留言输入 -->
+			<div class="inputerWrap" v-if="!voiceRecord">
+				<van-icon
+					name="orders-o"
+					color="#48b319"
+					size="30"
+					style="	margin-left: -4px;"
+					@click="popupPicker"
+					v-if="fromTeacher"
+				/>
+				<input class="iptText" type="text" maxlength="100" v-model="comment" />
+				<span
+					class="bar-btn btn-voice"
+					v-show="comment.length===0"
+					@touchstart.prevent="startRecord"
+					@touchend.prevent="endRecord"
+				/>
 			</div>
-		</div>
-		<!-- 三个操作按钮 : 教师端 -->
-		<div class="actionBar" ref="bar1" v-if="fromTeacher">
-			<van-button plain color="#54B331" @click="savePass" :disabled="posting">批改通过</van-button>
-			<van-button plain color="#EE0A24" @click="saveReject" :disabled="posting">发回订正</van-button>
-			<van-button plain color="#0093DD" @click="saveComment" :disabled="posting">仅留言</van-button>
-		</div>
-		<!-- 操作按钮 ： 学生端 -->
-		<div class="actionBar" ref="bar2" v-else>
-			<van-button plain color="#0093DD" @click="saveComment" :disabled="posting">留言</van-button>
-		</div>
-		<!-- 快捷评语 -->
-		<van-popup v-model="showPicker" :style="{ height: '80vh' }" position="bottom">
-			<div class="evaPicker">
-				<div class="evaPickerToolbar">快捷评语</div>
-				<div class="evaPickerRow" v-for="(str,i) in evaRowText" :key="i" @click="putIn(str)">{{str}}</div>
+			<!-- 录音记录条 -->
+			<div class="mg-y-20 voiceWrap" v-if="voiceRecord">
+				<div
+					@click="playTempVoice"
+					:class="'voice' + (isPlaying? ' playing':'')"
+					:style="'width: '+ voiceBarWidth +'em;' "
+				/>
+				<div class="voiceSeconds">{{60 - recordSecondsLeft}}''</div>
+				<div class="removeVoice">
+					<van-icon name="revoke" size="26" color="#999" @click="removeVoiceRecord" />
+				</div>
 			</div>
-		</van-popup>
+			<!-- 三个操作按钮 : 教师端 -->
+			<div class="actionBar" ref="bar1" v-if="fromTeacher">
+				<van-button plain color="#54B331" @click="savePass" :disabled="posting">批改通过</van-button>
+				<van-button plain color="#EE0A24" @click="saveReject" :disabled="posting">发回订正</van-button>
+				<van-button plain color="#0093DD" @click="saveComment" :disabled="posting">仅留言</van-button>
+			</div>
+			<!-- 操作按钮 ： 学生端 -->
+			<div class="actionBar" ref="bar2" v-else>
+				<van-button plain color="#0093DD" @click="saveComment" :disabled="posting">留言</van-button>
+			</div>
+			<!-- 快捷评语 -->
+			<van-popup v-model="showPicker" :style="{ height: '80vh' }" position="bottom">
+				<div class="evaPicker">
+					<div class="evaPickerToolbar">快捷评语</div>
+					<div class="evaPickerRow" v-for="(str,i) in evaRowText" :key="i" @click="putIn(str)">{{str}}</div>
+				</div>
+			</van-popup>
+		</div>
 	</div>
 </template>
 
@@ -96,7 +108,7 @@
 // @ts-nocheck
 
 import apiRouter from '../../../config/api'
-import { Dialog, Rate, Button, Icon, Toast, Popup } from 'vant'
+import { Dialog, Rate, Button, Icon, Toast, Popup, Loading, Switch } from 'vant'
 import ICON_RECORDING from '../../../assets/work/icon_record.png'
 import VoiceItem from './VoiceItem.vue'
 export default {
@@ -105,7 +117,9 @@ export default {
 		[Button.name]: Button,
 		[Rate.name]: Rate,
 		[Icon.name]: Icon,
+		[Loading.name]: Loading,
 		[Popup.name]: Popup,
+		[Switch.name]: Switch,
 		[VoiceItem.name]: VoiceItem,
 	},
 	props: {
@@ -121,6 +135,10 @@ export default {
 			type: Boolean,
 			required: false,
 			default: true,
+		},
+		isGreat: {
+			type: Boolean,
+			required: true,
 		},
 		wx: {
 			type: Object,
@@ -170,10 +188,12 @@ export default {
 			voiceRecord: null,
 			isPlaying: false,
 			posting: false,
+			loading: true,
 			currentMp3Index: -1,
 			audio: null,
 			myUserId: -1,
 			willRemove: false,
+			isShared: false,
 		}
 	},
 	// mounted() {
@@ -191,7 +211,9 @@ export default {
 	methods: {
 		init() {
 			this.isPlaying = false
+			this.loading = true
 			this.posting = false
+			this.isShared = this.isGreat
 			this.showPicker = false
 			this.comment = ''
 			this.commentList = []
@@ -208,6 +230,23 @@ export default {
 			let userStr = window.localStorage.getItem('USER')
 			let user = JSON.parse(userStr)
 			this.myUserId = user.userId
+		},
+		setHomeworkShared() {
+			// console.log(this.isShared);
+			this.$http
+				.post(apiRouter.SET_HOMEWORK_SHARE, {
+					mainId: this.mainId,
+					isOpen: this.isShared ? 1 : 0,
+				})
+				.then(
+					(response) => {
+						if (response.status === 200) {
+						}
+					},
+					(response) => {
+						alert('请求失败了!!!!')
+					}
+				)
 		},
 		updateRate(newScore) {
 			// alert(newScore);
@@ -510,10 +549,11 @@ export default {
 			this.showPicker = false
 		},
 		loadComments(param, reset = true) {
+			// debugger;
 			if (reset) {
 				this.init()
 			}
-			//
+
 			let vm = this
 			this.$http
 				.get(
@@ -525,6 +565,7 @@ export default {
 				)
 				.then(
 					(response) => {
+						this.loading = false
 						if (response.status === 200) {
 							let data = response.data.data
 							vm.commentList = data.commentList
@@ -543,6 +584,7 @@ export default {
 						}
 					},
 					(response) => {
+						this.loading = false
 						alert('请求失败了!!!!')
 					}
 				)
@@ -575,6 +617,10 @@ export default {
 	align-items: center;
 	margin: 15px 0;
 	font-size: 1.2em;
+}
+.divShareGoodwork {
+	display: flex;
+	align-items: center;
 }
 
 .commentWrap {
