@@ -2,7 +2,7 @@
   <div>
     <x-header class="title-header" :left-options="{preventGoBack: true}"
       @on-click-back="
-         $router.push({path:checkMap.USER_ID===myInfo.userId? '/work-list-user?fresh=1':'/work-detail-done?workId='+workId})
+         $router.push({path:checkMap.USER_ID===myInfo.userId ? '/work-list-user?fresh=1':'/work-detail-done?workId='+workId})
       " 
       >{{(myInfo && checkMap.USER_ID===myInfo.userId)?'我':checkMap.USERNAME}}的作业</x-header>
 
@@ -218,7 +218,7 @@
           <li v-show="currentWork === quesList.length " class="it banner-sheet"
               data-type="checkbox">
             <!-- <work-comment ref="wkment" :headData="workObj"></work-comment> -->
-            <grade-assignments ref="grament" :workId="workObj.WORKID" :mainId="workObj.ANID" :isGreat="isGreat" :fromTeacher="false" :postCommentFunc="saveCommentOnly" :checkType="checkMap.TYPE" :wx="wx" :passFunc="()=>{}" :rejectFunc="()=>{}" />
+            <grade-assignments ref="grament" :workId="workObj.WORKID" :mainId="workObj.ANID" :isGreat="isGreat" :fromTeacher="false" :isBrowseOnly="checkMap.USER_ID!==myInfo.userId" :postCommentFunc="saveCommentOnly" :checkType="checkMap.TYPE" :wx="wx" :passFunc="()=>{}" :rejectFunc="()=>{}" />
           </li>
           <!-- 评论 end -->
         </ul>

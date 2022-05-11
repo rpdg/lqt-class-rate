@@ -54,7 +54,7 @@
 
 			<hr class="mg-y-20" style="	margin-top: -5px; " />
 			<!-- 留言输入 -->
-			<div class="inputerWrap" v-if="!voiceRecord">
+			<div class="inputerWrap" v-if="!voiceRecord && !isBrowseOnly">
 				<van-icon
 					name="orders-o"
 					color="#48b319"
@@ -90,7 +90,7 @@
 				<van-button plain color="#0093DD" @click="saveComment" :disabled="posting">仅留言</van-button>
 			</div>
 			<!-- 操作按钮 ： 学生端 -->
-			<div class="actionBar" ref="bar2" v-else>
+			<div class="actionBar" ref="bar2" v-else-if="!isBrowseOnly">
 				<van-button plain color="#0093DD" @click="saveComment" :disabled="posting">留言</van-button>
 			</div>
 			<!-- 快捷评语 -->
@@ -135,6 +135,11 @@ export default {
 			type: Boolean,
 			required: false,
 			default: true,
+		},
+		isBrowseOnly: {
+			type: Boolean,
+			required: false,
+			default: false,
 		},
 		isGreat: {
 			type: Boolean,
