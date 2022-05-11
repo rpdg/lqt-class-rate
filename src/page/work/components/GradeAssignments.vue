@@ -18,7 +18,7 @@
 				<span style="flex: 1;">推优分享给已批阅同学</span>
 				<van-switch v-model="isShared" @change="setHomeworkShared" active-color="#48b319" size="22px" />
 			</div>
-			<div v-else class="text-12" style="color:#48b319;">
+			<div v-else-if="isGreat" class="text-12" style="color:#48b319;">
 				已被老师推优，分享给其他同学
 			</div>
 
@@ -143,7 +143,8 @@ export default {
 		},
 		isGreat: {
 			type: Boolean,
-			required: true,
+			required: false,
+			default: false,
 		},
 		wx: {
 			type: Object,
@@ -218,7 +219,7 @@ export default {
 			this.isPlaying = false
 			this.loading = true
 			this.posting = false
-			this.isShared = this.isGreat
+			this.isShared = !!this.isGreat
 			this.showPicker = false
 			this.comment = ''
 			this.commentList = []
