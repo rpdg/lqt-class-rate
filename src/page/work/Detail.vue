@@ -1,19 +1,19 @@
 <template>
-  <div>
+  <div class="wrapContainer">
     <x-header class="title-header" :left-options="{preventGoBack: true}"
               @on-click-back="goBack()">我的作业
     </x-header>
 
-    <div id="homework-container"  class="lqt-container lqt-wrapper" style="top: 1em">
-      <div class="homework-container" id="headerBox">
-        <ul class="homework-list clearfix header-banner" id="bannerBox" style="padding: 1em">
+    <div id="homework-container"  class="lqt-container lqt-wrapper" style="flex: 1; 	overflow: hidden;">
+      <div class="homework-container" id="headerBox" style="height: 100%;">
+        <ul class="homework-list clearfix header-banner" id="bannerBox" style="padding: 6px 1em">
           <li v-for="(detail,index) in quesList" :key="detail.ID" v-show="currentWork == index" class="it banner-sheet"
-              data-type="checkbox">
+              data-type="checkbox" style="display: flex; flex-direction: column;">
             <first-header v-show="currentWork == 0" :headData="workObj"></first-header>
 
             <!-- 问答题 或 自定义 -->
-            <div v-if="detail.QUESTYPE == '3' || detail.QUESTYPE == '4'">
-              <div class="homework-content">
+            <div v-if="detail.QUESTYPE == '3' || detail.QUESTYPE == '4'" style="flex: 1; display: flex; flex-direction: column; overflow: scroll;">
+              <div class="homework-content" style="flex: 1; overflow: scroll;">
                 <p v-if=" detail.QUESTYPE != '4' " class="homework-title">{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】</p>
                 <p v-if="quesList.length>1 && detail.QUESTYPE == '4'">{{detail.QUESNO}}.</p>
                 <div class="sub-content" v-html="detail.CONTENT"></div>
@@ -244,6 +244,8 @@
         </ul>
       </div>
 
+    </div>
+
       <div class="homework-bar clearfix" id="bar">
         <a id="pre" @click="preWork" class="homework-btn homework-pre clearfix" href="javascript:void(0)"
            style="opacity: 1; z-index: 5;">
@@ -265,8 +267,6 @@
         </span>
         <span class="pre-loc" :style=" 'height: 100%;width:' + progress +'%'"></span>
       </div>
-    </div>
-
     <div v-show="showRecording" id="recording">
       <!--      <span></span>-->
       <div style="color: white">还可录:{{voiceSecond}}''</div>
@@ -2040,4 +2040,22 @@ async function dataUrlToFile(dataUrl, fileName) {
   .img-local{
     max-width:100%
   }
+</style>
+<style lang="less" type="text/less" scoped>
+.wrapContainer{
+  height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+.title-header,.lqt-container{
+  padding-top:0;
+  position: unset !important;
+}
+.homework-bar,.qs-bar{
+  position: unset !important;
+} 
+
+.homework-bar .pre-loc{
+  position: relative;
+}
 </style>
