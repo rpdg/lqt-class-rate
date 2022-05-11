@@ -1,7 +1,10 @@
 <template>
   <div>
     <x-header class="title-header" :left-options="{preventGoBack: true}"
-              @on-click-back="$router.push({path:'/work-list-user?fresh=1'})" >作业详情</x-header>
+      @on-click-back="
+         $router.push({path:checkMap.USER_ID===myInfo.userId? '/work-list-user?fresh=1':'/work-detail-done?workId='+workId})
+      " 
+      >{{(myInfo && checkMap.USER_ID===myInfo.userId)?'我':checkMap.USERNAME}}的作业</x-header>
 
     <div class="lqt-container lqt-wrapper" style="top: 1em">
       <div class="homework-container" id="headerBox">
@@ -10,8 +13,14 @@
               data-type="checkbox">
             <first-header v-show="currentWork == 0" :headData="workObj"></first-header>
 
-            <div v-if="!(checkMap && checkMap.GREATLIST)" style="color:#48b319;	padding: 10px; border-bottom: solid 1px #dedede;">
-              老师推荐了优秀作业：尹威聪、张小凡、李大嘴、刘明，点人名查看。
+            <div v-if="(checkMap.TYPE=='1' && checkMap.GREATLIST && checkMap.GREATLIST.length) && (checkMap.USER_ID===myInfo.userId)" style="color:#48b319;	padding: 10px; border-bottom: solid 1px #dedede;">
+              老师推荐了优秀作业：
+              <span v-for="(wp , index) in checkMap.GREATLIST"
+               :key="wp.USER_ID"><u :style="'text-decoration: ' + (wp.USER_ID === myInfo.userId? '':'underline')" 
+                  @click="goBrowseOthers(wp.USER_ID)"
+                >{{wp.NAME}}</u>{{index+1 < checkMap.GREATLIST.length? '、':'，'}}
+              </span>
+              点人名查看。
             </div>
 
             <!-- 问答题 或 自定义 -->
@@ -263,6 +272,7 @@
   import Thumbs from './components/Thumbs.vue';
 
   import {formatDate} from "../../utils/TimeUtils";
+  import authonStore from "../../utils/AuthonStore";
 
 var mp3;
 
@@ -301,7 +311,8 @@ var mp3;
 
       }
     },
-    activated() {
+    async activated() {
+      this.myInfo = await authonStore.getUserInfo();
       this.currentWork = 0;
       this.loadData();
       this.urlPath = window.location.href.split("#")[0];
@@ -317,6 +328,7 @@ var mp3;
     },
     data() {
       return {
+        myInfo: null,
         wx,
         urlPath: window.location.href.split("#")[0],
         locationLine: '',
@@ -360,6 +372,11 @@ var mp3;
     },
 
     methods: {
+      goBrowseOthers(targetUserId){
+        if(targetUserId !== this.myInfo.userId){
+          this.$router.push(`/work-detail-done?browse=1&workId=${this.workId}&termId=${this.workObj.TERM_ID}&schoolId=${this.workObj.SCHOOL_ID}&userId=${targetUserId}`)
+        }
+      },
       async saveCommentOnly(param){
         param.mainId = this.workObj.ANID;
         param.homeworkId = this.workObj.WORKID;
@@ -439,7 +456,9 @@ var mp3;
       loadData() {
         this.workId = this.$route.query.workId;
         let _this = this;
-        this.$http.get(apiRouter.GET_HOMEWORK_STU_ANSWER + '?workId=' + _this.workId).then(response => {
+        let invokeApi = (this.$route.query.browse=='1') ? apiRouter.GET_OTHER_STUDENTS_GOODWORK: apiRouter.GET_HOMEWORK_STU_ANSWER;
+        this.$http.get(`${invokeApi}?workId=${this.workId}&termId=${this.$route.query.termId}&schoolId=${this.$route.query.schoolId}&userId=${this.$route.query.userId}`)
+        .then(response => {
           if (response.status === 200) {
             _this.picRootPath = response.body.data.PIC_ROOTPATH;
             _this.workObj = response.body.data.hkMap;

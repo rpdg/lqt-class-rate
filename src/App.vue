@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
 		<keep-alive>
-			<router-view></router-view>
+			<router-view :key="$route.fullPath"></router-view>
 		</keep-alive>
 	</div>
 </template>
@@ -16,7 +16,9 @@ export default {
 <style lang="less">
 @import 'style/common.less';
 @import '~vux/src/styles/reset.less';
-
+u{
+	text-decoration: underline ;
+}
 #app {
 	height: 100%;
 }

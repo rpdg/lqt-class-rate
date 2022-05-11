@@ -97,6 +97,7 @@ const apiRouter = {
 
   GET_HOMEWORK_STU_VIEW: apiPath + "/wechat/homeworkH5/homeworkStuView", //查询答题题目（做作业）
   GET_HOMEWORK_STU_ANSWER: apiPath + "/wechat/homeworkH5/homeworkStuAnswer", //会返回题目和答案的(看答案)
+  GET_OTHER_STUDENTS_GOODWORK: apiPath + "/wechat/homeworkH5/getGreatHomework" , // 查询优秀答题（作业）
   GET_HOMEWORK_SAVE_ANSWER: apiPath + "/wechat/homeworkH5/saveAnswer", //提交作业
   GET_HOMEWORK_BACK_COMMENT:
     apiPath + "/wechat/homeworkH5/getHomeWorkBackComment", //提交作业
