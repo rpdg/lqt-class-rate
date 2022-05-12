@@ -44,7 +44,7 @@ export default {
 		return {
 			oldPageTitle: '',
 			// @ts-ignore
-			ossPath: window.roterOssPath,
+			ossPath: roterOssPath,
 			typeColor: {
 				1: '#48b319',
 				2: '#ee0a24',
@@ -84,6 +84,7 @@ export default {
 
 			try {
 				const self = this
+				// debugger
 				const mp3Url = this.ossPath + '/' + decodeURIComponent(item.url)
 				this.audio = new Audio(mp3Url)
 				this.audio.play()
@@ -106,16 +107,10 @@ export default {
 		},
 		loadComments() {
 			let workId = this.$route.query.workId
-			let mainId = this.$route.query.anId
+			// let mainId = this.$route.query.anId
 			let vm = this
 			this.$http
-				.get(
-					apiRouter.GET_HOMEWORK_COMMENT_LIST +
-						'?workId=' +
-						workId +
-						'&mainId=' +
-						mainId
-				)
+				.get(apiRouter.GET_HOMEWORK_BACK_COMMENT + '?workId=' + workId)
 				.then(
 					(response) => {
 						if (response.status === 200) {
