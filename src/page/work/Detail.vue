@@ -95,16 +95,16 @@
                   </div>
                 </div>
 
-                <ul class="homework-answer">
+                <ul class="homework-answer" ref="answerArea">
                   <li class="answer-qs qs-txt" style="padding: 0;">
-                    <x-textarea class="answer-textarea" @on-blur="textareaFocusout()"  :max="200" placeholder="" :rows="3" v-model="detail.answer"></x-textarea>
+                    <x-textarea class="answer-textarea" @blur="textareaFocusout()"  :max="200" placeholder="" :rows="3" v-model="detail.answer"></x-textarea>
                   </li>
                 </ul>
               </div>
               <!-- 传图，录音，两个按钮 -->
               <div class="qs-bar clearfix">
-                <p><span class="bar-btn btn-img" v-on:click="handleChooseImage(detail)"></span></p>
-                <p><span class="bar-btn btn-voice" @touchstart.prevent="startVoice(detail)" @touchend.prevent="endVoice(detail)"></span></p>
+                <p><span class="bar-btn btn-img" @click="handleChooseImage(detail)"></span></p>
+                <p><span class="bar-btn btn-voice" @touchstart="startVoice(detail)" @touchend.prevent="endVoice(detail)"></span></p>
               </div>
             </div>
             <!-- 问答题end -->
@@ -439,7 +439,7 @@ async function dataUrlToFile(dataUrl, fileName) {
 
     methods: {
       textareaFocusout(e){
-        document.body.scrollIntoView(false)
+        document.body.scrollIntoView(false);
       },
       goBack(){
         if(this.editFlag){
@@ -484,62 +484,69 @@ async function dataUrlToFile(dataUrl, fileName) {
         let _this = this;
         console.log(detail.imgList) ;
 
-        wx.chooseImage({
-          count: 9, // 默认9
-          sizeType: ['compressed'], // 可以指定是原图还是压缩图，默认二者都有
-          sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-          success : async (res)=> {
-              // 
-              try {
-                  _this.$vux.loading.show({ text: '上传中...' });
+        setTimeout(function(){
+            wx.chooseImage({
+              count: 9, // 默认9
+              sizeType: ['compressed'], // 可以指定是原图还是压缩图，默认二者都有
+              sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+              success : async (res)=> {
+                  // 
+                  try {
+                      _this.$vux.loading.show({ text: '上传中...' });
 
-                  // 返回选定照片的本地ID列表
-                  let files = await _this.readWxImages(res.localIds);
-                  // console.log(files);
-                  let bodyFormData = new FormData();
-                  files.forEach((file) => {
-                    bodyFormData.append('files', file);
-                  });
+                      // 返回选定照片的本地ID列表
+                      let files = await _this.readWxImages(res.localIds);
+                      // console.log(files);
+                      let bodyFormData = new FormData();
+                      files.forEach((file) => {
+                        bodyFormData.append('files', file);
+                      });
 
-                  const service = axios.create({
-                    headers : {
-                      'Content-Type': 'multipart/form-data',
-                    },
-                    timeout: 0, // `0` (no timeout)
-                  });
+                      const service = axios.create({
+                        headers : {
+                          'Content-Type': 'multipart/form-data',
+                        },
+                        timeout: 0, // `0` (no timeout)
+                      });
 
-                  let resp = await service.post(apiPath + '/wechat/homeworkH5/upload_pic' , bodyFormData);
-                  console.log(resp);
-                  if(resp.data.status === 200) {
-                    let imgResults = resp.data.data.image_list;
-                    console.log('detail', detail , 'imgResults', imgResults);
-                    detail.imgList.push( ...imgResults.map(val => { return {localId: val.DB_PATH , SHOW_URL: val.SHOW_URL}}));
+                      let resp = await service.post(apiPath + '/wechat/homeworkH5/upload_pic' , bodyFormData);
+                      console.log(resp);
+                      if(resp.data.status === 200) {
+                        let imgResults = resp.data.data.image_list;
+                        console.log('detail', detail , 'imgResults', imgResults);
+                        detail.imgList.push( ...imgResults.map(val => { return {localId: val.DB_PATH , SHOW_URL: val.SHOW_URL}}));
+
+                        let ele = _this.$refs["answerArea"];
+                        ele.scrollIntoView();
+                        
+                      }
+                  } catch(err){
+                    throw err;
+                  } finally{
+                    _this.$vux.loading.hide();
                   }
-              } catch(err){
-                throw err;
-              } finally{
-                _this.$vux.loading.hide();
+                  
+                  // .then(response => {
+                  //     _this.$vux.loading.hide(); 
+                  //     if (response.status == '200') {
+                  //         if (response.body.code == '-1') {
+                  //             _this.$vux.toast.text(response.body.message);
+                  //         } else {
+                  //             // _this.$vux.toast.text("作业提交成功！")
+                  //         }
+                  //     } else{
+                  //          _this.$vux.toast.text(response.body.message);
+                  //     }
+                  // } , err_response => {
+                  //   alert("请求失败了!!!!")
+                  // });
+              },
+              fail(){
+                console.log("图片选择失败！")
               }
-              
-              // .then(response => {
-              //     _this.$vux.loading.hide(); 
-              //     if (response.status == '200') {
-              //         if (response.body.code == '-1') {
-              //             _this.$vux.toast.text(response.body.message);
-              //         } else {
-              //             // _this.$vux.toast.text("作业提交成功！")
-              //         }
-              //     } else{
-              //          _this.$vux.toast.text(response.body.message);
-              //     }
-              // } , err_response => {
-              //   alert("请求失败了!!!!")
-              // });
-          },
-          fail(){
-            console.log("图片选择失败！")
-          }
-        });
+            });
+        }, 3e2)
+        
       },
       async readWxImages(localIds) {
         let files = [];
@@ -1095,34 +1102,38 @@ async function dataUrlToFile(dataUrl, fileName) {
       },
       //@@@@@@@@@@@@@@@@@@@@@@@@   录音    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       startVoice(detail) {
-        this.showRecording = true;
-        console.log("startVoice");
-        console.log(detail);
-        if (!detail.voiceList) {
-          detail.voiceList = [];
-        }
-        console.log(detail);
-        window.clearInterval(this.voiceTimer);
-        this.goVoiceTimer();
-        wx.startRecord();
         let self = this;
-        wx.onVoiceRecordEnd({
-          // 录音时间超过一分钟没有停止的时候会执行 complete 回调
-          complete: function (res) {
-            let localId = res.localId;
-            self.showRecording = false;
-            window.clearInterval(this.voiceTimer);
-            // alert("时间超过60秒,已自动保存！");
-            self.$vux.toast.text('时间超过60秒,已自动保存！')
-            self.uploadVoice(localId, detail.voiceList)
-          }
-        });
+
+        setTimeout(function(){
+            self.showRecording = true;
+            console.log("start——Voice");
+            console.log(detail);
+            if (!detail.voiceList) {
+              detail.voiceList = [];
+            }
+            console.log(detail);
+            window.clearInterval(self.voiceTimer);
+            self.goVoiceTimer();
+            wx.startRecord();
+            wx.onVoiceRecordEnd({
+              // 录音时间超过一分钟没有停止的时候会执行 complete 回调
+              complete: function (res) {
+                let localId = res.localId;
+                self.showRecording = false;
+                window.clearInterval(self.voiceTimer);
+                // alert("时间超过60秒,已自动保存！");
+                self.$vux.toast.text('时间超过60秒,已自动保存！')
+                self.uploadVoice(localId, detail.voiceList)
+              }
+            });
+        }, 3e2);
+        
         //$('body').append('<span id="recording" class="recording-show"></span>');
       },
       endVoice(detail) {
         let self = this;
         this.showRecording = false;
-        console.log("endVoice");
+        console.log("end——Voice");
         window.clearInterval(this.voiceTimer);
         //说话太短
         if(this.voiceSecond == 60){
@@ -1177,9 +1188,10 @@ async function dataUrlToFile(dataUrl, fileName) {
             console.log(res);
 
             //document.getElementsByClassName('feedbackListSubtitle')[0].scrollIntoView()
-            let ele = document.getElementById("headerBox");
-            console.log(ele.clientHeight);
-            window.scrollTo(0,ele.clientHeight);
+            let ele = self.$refs["answerArea"];
+            ele.scrollIntoView();
+            // console.log(ele.clientHeight);
+            // window.scrollTo(0, ele.clientHeight);
             //判断元素是否出现了滚动条
             // if(ele.scrollHeight > ele.clientHeight) {
             //   //设置滚动条到最底部

@@ -13,7 +13,7 @@
               data-type="checkbox">
             <first-header v-show="currentWork == 0" :headData="workObj"></first-header>
 
-            <div v-if="(checkMap.TYPE=='1' && checkMap.GREATLIST && checkMap.GREATLIST.length) && (checkMap.USER_ID===myInfo.userId)" style="color:#48b319;	padding: 10px; border-bottom: solid 1px #dedede;">
+            <div v-if="(checkMap.GREATLIST && checkMap.GREATLIST.length) && (checkMap.USER_ID===myInfo.userId)" style="color:#48b319;	padding: 10px; border-bottom: solid 1px #dedede;">
               老师推荐了优秀作业：
               <span v-for="(wp , index) in checkMap.GREATLIST"
                :key="wp.USER_ID"><u :style="'text-decoration: ' + (wp.USER_ID === myInfo.userId? '':'underline')" 
