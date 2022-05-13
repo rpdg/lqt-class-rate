@@ -57,7 +57,7 @@
 
 
                     <div style="position: relative" v-else>
-                      <img :src=" vDetail.SHOW_URL "/>
+                      <img :src=" vDetail.SHOW_URL" @load="scrollToDivisionBottom"/>
                       <div @touchstart="gotouchstart('img',detail.imgList,vIndex)"
                         @touchmove="gotouchmove()"
                         @touchend="gotouchend('img',detail.imgList,vIndex)"
@@ -516,9 +516,12 @@ async function dataUrlToFile(dataUrl, fileName) {
                         console.log('detail', detail , 'imgResults', imgResults);
                         detail.imgList.push( ...imgResults.map(val => { return {localId: val.DB_PATH , SHOW_URL: val.SHOW_URL}}));
 
-                        let ele = self.$refs["answerArea"][0];
-                        console.log('[answerArea]', ele);
-                        ele.scrollIntoView();
+                        // let ele = self.$refs["answerArea"][0];
+                        // console.log('[answerArea]', ele);
+                        // setTimeout(function(){
+                        //   ele.scrollIntoView({block: "start", inline: "end", behavior :'smooth'});
+                        // }, 350);
+                        
                         
                       }
                   } catch(err){
@@ -909,6 +912,12 @@ async function dataUrlToFile(dataUrl, fileName) {
         return !reg.test(_str) ? true : false;
       },
 
+      scrollToDivisionBottom(){
+        let ele = this.$refs["answerArea"][0];
+        console.log('[answerArea]', ele);
+        ele.scrollIntoView({block: "start", inline: "end", behavior :'smooth'});
+      },
+
       preWork() {
         let currentWork = this.currentWork;
         if (currentWork > 0) {
@@ -1190,7 +1199,7 @@ async function dataUrlToFile(dataUrl, fileName) {
 
             //document.getElementsByClassName('feedbackListSubtitle')[0].scrollIntoView()
             let ele = self.$refs["answerArea"][0];
-            ele.scrollIntoView();
+            ele.scrollIntoView({block: "start", inline: "end", behavior :'smooth'});
             // console.log(ele.clientHeight);
             // window.scrollTo(0, ele.clientHeight);
             //判断元素是否出现了滚动条
@@ -1358,7 +1367,7 @@ async function dataUrlToFile(dataUrl, fileName) {
   .homework-container .homework-content {
     padding: 10px;
     font-size: 16px;
-    padding-bottom: 90px;
+    // padding-bottom: 90px;
   }
 
   .homework-container .homework-content .homework-title {
