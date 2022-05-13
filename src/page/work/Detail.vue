@@ -481,7 +481,7 @@ async function dataUrlToFile(dataUrl, fileName) {
         if (!detail.imgList) {
           detail.imgList = [];
         }
-        let _this = this;
+        let self = this;
         console.log(detail.imgList) ;
 
         setTimeout(function(){
@@ -492,10 +492,10 @@ async function dataUrlToFile(dataUrl, fileName) {
               success : async (res)=> {
                   // 
                   try {
-                      _this.$vux.loading.show({ text: '上传中...' });
+                      self.$vux.loading.show({ text: '上传中...' });
 
                       // 返回选定照片的本地ID列表
-                      let files = await _this.readWxImages(res.localIds);
+                      let files = await self.readWxImages(res.localIds);
                       // console.log(files);
                       let bodyFormData = new FormData();
                       files.forEach((file) => {
@@ -516,14 +516,15 @@ async function dataUrlToFile(dataUrl, fileName) {
                         console.log('detail', detail , 'imgResults', imgResults);
                         detail.imgList.push( ...imgResults.map(val => { return {localId: val.DB_PATH , SHOW_URL: val.SHOW_URL}}));
 
-                        let ele = _this.$refs["answerArea"];
+                        let ele = self.$refs["answerArea"][0];
+                        console.log('[answerArea]', ele);
                         ele.scrollIntoView();
                         
                       }
                   } catch(err){
                     throw err;
                   } finally{
-                    _this.$vux.loading.hide();
+                    self.$vux.loading.hide();
                   }
                   
                   // .then(response => {
@@ -1188,7 +1189,7 @@ async function dataUrlToFile(dataUrl, fileName) {
             console.log(res);
 
             //document.getElementsByClassName('feedbackListSubtitle')[0].scrollIntoView()
-            let ele = self.$refs["answerArea"];
+            let ele = self.$refs["answerArea"][0];
             ele.scrollIntoView();
             // console.log(ele.clientHeight);
             // window.scrollTo(0, ele.clientHeight);
