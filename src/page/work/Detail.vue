@@ -110,7 +110,7 @@
             <!-- 问答题end -->
 
             <!-- 单选 -->
-            <div v-if="detail.QUESTYPE == '1' ">
+            <div v-if="detail.QUESTYPE == '1' "  style="flex: 1; display: flex; flex-direction: column; overflow: scroll;">
               <div class="homework-content">
                 <p class="homework-title">{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】{{detail.CONTENT}}</p>
                 <thumbs-grid v-if="detail.PICLIST && detail.PICLIST.length" :imgList="detail.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
@@ -132,7 +132,7 @@
             <!-- 单选end -->
 
             <!-- 多选 -->
-            <div v-if="detail.QUESTYPE == '2' ">
+            <div v-if="detail.QUESTYPE == '2' "  style="flex: 1; display: flex; flex-direction: column; overflow: scroll;">
               <!-- id：题目id -->
               <div class="homework-content">
                 <p class="homework-title">{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】{{detail.CONTENT}}</p>
@@ -153,7 +153,7 @@
             <!-- 多选end -->
 
             <!-- 判断 -->
-            <div v-if="detail.QUESTYPE == '5'">
+            <div v-if="detail.QUESTYPE == '5'"  style="flex: 1; display: flex; flex-direction: column; overflow: scroll;">
               <div class="homework-content">
                 <p class="homework-title">{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】{{detail.CONTENT}}</p>
                 <thumbs-grid v-if="detail.PICLIST && detail.PICLIST.length" :imgList="detail.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
@@ -175,7 +175,7 @@
             <!-- 判断end -->
 
             <!-- 填空   -->
-            <div v-if="detail.QUESTYPE == '6'">
+            <div v-if="detail.QUESTYPE == '6'"  style="flex: 1; display: flex; flex-direction: column; overflow: scroll;">
               <div class="homework-content">
                 <p class="homework-title">{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】{{detail.CONTENT}}</p>
                 <thumbs-grid v-if="detail.PICLIST && detail.PICLIST.length" :imgList="detail.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
