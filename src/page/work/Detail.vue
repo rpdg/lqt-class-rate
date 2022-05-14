@@ -1305,7 +1305,7 @@ async function dataUrlToFile(dataUrl, fileName) {
     height: 100%;
     border-radius: 3px;
     margin-left: 0;
-    margin-bottom: 1rem;
+    // margin-bottom: 1rem;
   }
 
   .homework-container .homework-list.active {
@@ -1315,8 +1315,8 @@ async function dataUrlToFile(dataUrl, fileName) {
 
   .homework-container .homework-list .it {
     display: block;
-    position: relative;
-    float: left;
+    // position: relative;
+    // float: left;
     width: 100%;
     /*width: 750rem;*/
     height: 100%;
