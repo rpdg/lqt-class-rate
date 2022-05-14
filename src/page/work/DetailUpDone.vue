@@ -205,51 +205,12 @@
                 <img v-else class="answer-img" src="../../assets/work/error.png">
               </div>
               <input class="answer-data" type="hidden" value="">
-
-              <!--              <div class="homework-content">-->
-              <!--                <p class="homework-title">{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】{{detail.CONTENT}}</p>-->
-              <!--                <div>-->
-              <!--                  <input class="qa-input" placeholder="  (1)"><br>-->
-              <!--                  <input class="qa-input" placeholder="  (2)"><br>-->
-              <!--                  <input class="qa-input" placeholder="  (3)"><br>-->
-
-              <!--                </div>-->
-              <!--              </div>-->
-              <!--              <input class="answer-data" type="hidden" value="">-->
             </div>
             <!-- 填空end -->
           </li>
 
-          <!-- 评论   -->
-          <!-- <li v-show="currentWork == quesList.length && (checkMap.SCORE || checkMap.COMMENT)" class="it banner-sheet"
-              data-type="checkbox">
-            <work-comment ref="wkment"></work-comment>
-          </li> -->
 
           <li v-show="currentWork === quesList.length" class="it banner-sheet" data-type="checkbox">
-            <!-- <div class="up-comment" style="margin-bottom: 1rem">
-              <div style="font-size: 1.2em;margin-top: 10px">请对本次作业进行评分：</div>
-
-              <rater style="margin-top: 0.9em;" v-model="upCheckMap.score" :max="5" active-color="#04BE02"></rater>
-
-              <div style="font-size: 1.2em;margin-top: 1.1em">请对本次作业进行评分留言：</div>
-
-              <textarea rows="4" v-model="upCheckMap.comment"
-                        style="margin-top: 0.9em;border: 1px solid #dedede;width: 100%;padding: 10px;font-size: 1.1em;"></textarea>
-
-
-              <div style="font-size: 1.2em;margin-top: 15px;margin-bottom: 10px;">作业操作：</div>
-
-
-              <x-button @click.native="saveWorkPass" plain type="primary" class="rev-btn" style=" margin-top: 1rem;">
-                批改通过
-              </x-button>
-
-              <x-button @click.native="saveWorkRejected()" plain type="primary" class="rev-btn"
-                        style="color: red;margin-top: 1rem;">发回订正
-              </x-button>
-
-            </div> -->
 			<grade-assignments ref="grament" :workId="checkMap.WORK_ID" :mainId="checkMap.ID" :isGreat="isGreat" :passFunc="saveWorkPass" :rejectFunc="saveWorkRejected" :postCommentFunc="saveCommentOnly" :checkType="checkMap.TYPE" :wx="wx" />
           </li>
           <!-- 评论end -->
@@ -318,13 +279,12 @@
 
   </div>
 
-<iframe ref="ifr" name="editorWin" v-show="showIframe" :src="showIframeSrc" style="position:fixed;z-index:100;height: 100vh; width: 100vw; border:0;" />
+  <iframe ref="ifr" class="editorIframe" v-show="showIframe" :src="showIframeSrc" />
 
   </div>
 </template>
 
 <script type="es6">
-import axios from 'axios';
 
 import {
 	TransferDom,
@@ -585,13 +545,6 @@ export default {
 			param.mainId = this.checkMap.ID;
 			param.homeworkId = this.workId;
 			console.log(param);
-
-			// const service = axios.create({
-            //         headers : {
-            //           'Content-Type': 'multipart/form-data',
-            //         },
-            //         timeout: 0, // `0` (no timeout)
-            //       });
 
 			const self = this;
 
@@ -876,14 +829,11 @@ export default {
 				vm.showIframeSrc = './static/img_editor_iframe/index.html?img=' + url + '&s=' + Math.random() + '&n=' + vm.userName.split('的作业')[0];
 				setTimeout(function() {
 					vm.showIframe = true;
-				}, 100);
+				}, 300);
 			}
 
 			// debugger
 			openIframe();
-
-			//
-			// this.$refs.imgApp.initImg('https://picsum.photos/600/900?grayscale');
 		},
 
 		finishEdit(e) {
@@ -923,12 +873,6 @@ export default {
 			this.$router.push({ path: '/img-pxy', query: { imgUrl: sampleImage } });
 			//this.$router.push({path:'/img-pxy',query: {imgUrl:sampleImage}})
 		},
-		// initImg(sampleImage){
-		//   let imageEditor = this.$refs.tuiImageEditor.editorInstance;
-		//   imageEditor.loadImageFromURL(sampleImage, 'SampleImage').then(function() {
-		//     imageEditor.clearUndoStack();
-		//   });
-		// },
 		saveUrlData() {
 			let imageEditor = this.$refs.tuiImageEditor.editorInstance;
 			let dataURL = imageEditor.toDataURL();
@@ -1093,78 +1037,9 @@ export default {
 					}
 				);
 		},
-		loadDataNext(data) {
-			this.workId = this.$route.query.workId;
-			this.userId = this.$route.query.userId;
-
-			let _this = this;
-
-			//debugger; // _this.picRootPath = response.body.data.PIC_ROOTPATH;
-			// _this.workObj = response.body.data.hkMap;
-			// _this.checkMap = response.body.data.checkMap || {};
-			// let quesList = response.body.data.quesList;
-			// if(quesList.length == 1){
-			//   _this.progress = 100;
-			// }else {
-			//   _this.progress = 20;
-			//
-			// }
-			// //debugger;
-			// //根据类型set答案字段
-			// for (let i = 0; i < quesList.length; i++) {
-			//   let item = quesList[i];
-			//   //debugger;
-			//   switch (item.QUESTYPE) {
-			//     //单选
-			//     case "1":
-			//       break;
-			//     //多选
-			//     case "2":
-			//       item.answer = item.STUANSWER[0].ANSWER.split(',');
-			//       break;
-			//     //判断题
-			//     case "5":
-			//       break;
-			//     //填空 todo
-			//     case "6":
-			//       let tAnswer = item.ANS_CONTENT.split(",");
-			//       let sAnswerList = item.STUANSWER[0].ANSWER.split(",");
-			//       item.sAnswerList = sAnswerList;
-			//       item.tAnswer = tAnswer;
-			//       break;
-			//     // //问答 //自定义  ("3" || "4"):
-			//     default:
-			//       item.sImgList = [];
-			//       item.sVoiceList = [];
-			//       item.sWebImgList = [];
-			//       item.sWebFileList = [];
-			//       for(let i = 0;i<item.STUANSWER.length;i++){
-			//         let ansObj = item.STUANSWER[i];
-			//         if(ansObj.TYPE == ""){
-			//           item.answer = ansObj.ANSWER;
-			//         }else if(ansObj.TYPE == "1"){
-			//           item.sImgList.push(ansObj)
-			//         }else if (ansObj.TYPE == "2"){
-			//           item.sVoiceList.push(ansObj)
-			//         }else if (ansObj.TYPE == "3"){
-			//           let urlList = ansObj.ANSWER.split(";");
-			//           ansObj.sName = urlList[0];
-			//           ansObj.sUrl = urlList[1];
-			//           item.sWebImgList.push(ansObj)
-			//         }else if (ansObj.TYPE == "4"){
-			//           let urlList = ansObj.ANSWER.split(";");
-			//           ansObj.sName = urlList[0];
-			//           ansObj.sUrl = urlList[1];
-			//           item.sWebFileList.push(ansObj)
-			//         }
-			//       }
-			//   }
-			// }
-			// _this.quesList = quesList;
-		},
 		//@@@@@@@@@@@@@@@@@@@@@@@@   录音 start   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 		startVoice(detail) {
-			console.log('startVoice');
+			console.log('start_Voice');
 			console.log(detail);
 			if (!detail.voiceList) {
 				detail.voiceList = [];
@@ -1310,6 +1185,14 @@ html,
 body {
 	background: #f2f2f2;
 	overflow: hidden;
+}
+
+.editorIframe{
+	position:fixed;
+	z-index:100;
+	height: 100vh; 
+	width: 100vw; 
+	border:0;
 }
 
 .lqt-container {
