@@ -18,9 +18,7 @@
 				<span style="flex: 1;">推优分享给已批阅同学</span>
 				<van-switch v-model="isShared" @change="setHomeworkShared" active-color="#48b319" size="22px" />
 			</div>
-			<div v-else-if="isGreat" class="text-12" style="color:#48b319;">
-				已被老师推优，分享给其他同学
-			</div>
+			<div v-else-if="isGreat" class="text-12" style="color:#48b319;">已被老师推优，分享给其他同学</div>
 
 			<hr class="mg-y-20" />
 
@@ -53,8 +51,9 @@
 			</div>
 
 			<hr class="mg-y-20" style="	margin-top: -5px; " />
-			<!-- 留言输入 -->
-			<div class="inputerWrap" v-if="!voiceRecord && !isBrowseOnly">
+
+			<!-- 留言输入框 -->
+			<div class="inputerWrap" v-show="!voiceRecord && !isBrowseOnly && !imgTempList.length">
 				<van-icon
 					name="orders-o"
 					color="#48b319"
@@ -63,16 +62,32 @@
 					@click="popupPicker"
 					v-if="fromTeacher"
 				/>
-				<input class="iptText" type="text" maxlength="100" v-model="comment" />
-				<span
-					class="bar-btn btn-voice"
-					v-show="comment.length===0"
-					@touchstart.prevent="startRecord"
-					@touchend.prevent="endRecord"
-				/>
+				<!-- <textarea ref="inputRef" class="iptText" type="text" maxlength="100" v-model="comment" /> -->
+				<div class="areaWrap">
+					<van-field
+						type="textarea"
+						v-model="comment"
+						rows="1"
+						maxlength="200"
+						:border="true"
+						:show-word-limit="true"
+						:autosize=" { maxHeight: 240, minHeight: 24 }"
+					/>
+				</div>
+
+				<!-- 录音、传图 两个按钮 -->
+				<div class="commentBtnWrap" v-show="comment.length===0">
+					<span
+						class="bar-btn btn-voice"
+						@touchstart.prevent="startRecord"
+						@touchend.prevent="endRecord"
+					/>
+					<span class="bar-btn btn-picture" @click="choosePicture" />
+				</div>
 			</div>
+
 			<!-- 录音记录条 -->
-			<div class="mg-y-20 voiceWrap" v-if="voiceRecord">
+			<div class="mg-y-20 voiceWrap" v-show="voiceRecord">
 				<div
 					@click="playTempVoice"
 					:class="'voice' + (isPlaying? ' playing':'')"
@@ -83,6 +98,17 @@
 					<van-icon name="revoke" size="26" color="#999" @click="removeVoiceRecord" />
 				</div>
 			</div>
+
+			<!-- 临时图片展示区 -->
+			<div class="mg-y-20 picWrap" v-show="imgTempList.length">
+				<van-uploader
+					style="width: 100%;"
+					v-model="imgTempList"
+					:max-count="imgTempMax"
+					@click-upload="choosePicture"
+				/>
+			</div>
+
 			<!-- 三个操作按钮 : 教师端 -->
 			<div class="actionBar" ref="bar1" v-if="fromTeacher">
 				<van-button plain color="#54B331" @click="savePass" :disabled="posting">批改通过</van-button>
@@ -107,10 +133,24 @@
 <script>
 // @ts-nocheck
 
-import apiRouter from '../../../config/api'
-import { Dialog, Rate, Button, Icon, Toast, Popup, Loading, Switch } from 'vant'
+import apiRouter, { apiPath } from '../../../config/api'
+import {
+	Dialog,
+	Rate,
+	Button,
+	Icon,
+	Toast,
+	Popup,
+	Loading,
+	Switch,
+	Field,
+	Uploader,
+} from 'vant'
 import ICON_RECORDING from '../../../assets/work/icon_record.png'
 import VoiceItem from './VoiceItem.vue'
+import authonStore from '../../../utils/authonStore'
+import { readWxImages } from '../../../utils/imgUtil'
+
 export default {
 	name: 'GradeAssignments',
 	components: {
@@ -119,7 +159,9 @@ export default {
 		[Icon.name]: Icon,
 		[Loading.name]: Loading,
 		[Popup.name]: Popup,
+		[Field.name]: Field,
 		[Switch.name]: Switch,
+		[Uploader.name]: Uploader,
 		[VoiceItem.name]: VoiceItem,
 	},
 	props: {
@@ -200,11 +242,13 @@ export default {
 			myUserId: -1,
 			willRemove: false,
 			isShared: false,
+			debounceTimer: 0,
+			imgTempMax: 4,
+			imgTempList: [],
 		}
 	},
 	// mounted() {
-	// 	console.log('mounted')
-	// 	this.init()
+	// 	console.log('mounted');
 	// },
 	// activated() {
 	// 	console.log('activated')
@@ -215,7 +259,7 @@ export default {
 	// 	this.init()
 	// },
 	methods: {
-		init() {
+		async init() {
 			this.isPlaying = false
 			this.loading = true
 			this.posting = false
@@ -226,6 +270,7 @@ export default {
 			this.score = 0
 			this.voiceRecord = null
 			this.recordSecondsLeft = 60
+			this.imgTempList.length = 0
 			// alert('s')
 			// const vm = this
 			// this.wx.onVoicePlayEnd({
@@ -233,9 +278,59 @@ export default {
 			// 		vm.isPlaying = false
 			// 	},
 			// })
-			let userStr = window.localStorage.getItem('USER')
-			let user = JSON.parse(userStr)
+			let user = await authonStore.getUserInfo()
 			this.myUserId = user.userId
+		},
+		choosePicture(evt) {
+			evt.preventDefault()
+			evt.stopPropagation()
+			let self = this
+			if (this.debounceTimer) {
+				clearTimeout(this.debounceTimer)
+			}
+			this.debounceTimer = setTimeout(function () {
+				self.wx.chooseImage({
+					count: self.imgTempMax - self.imgTempList.length,
+					sizeType: ['compressed'],
+					sourceType: ['album', 'camera'],
+					success: async (res) => {
+						let toast
+						try {
+							toast = Toast.loading({
+								message: '上传中...',
+								overlay: true,
+								forbidClick: true,
+								duration: 0,
+							})
+							let files = await readWxImages(res.localIds)
+							// console.log(files)
+							let bodyFormData = new FormData()
+							files.forEach((file) => {
+								bodyFormData.append('files', file)
+							})
+							let resp = await self.$http.post(
+								apiPath + '/wechat/homeworkH5/upload_pic',
+								bodyFormData
+							)
+							let result = resp.data
+							console.log(result)
+							if (result.status === 200) {
+								result.data.image_list.forEach(function (item) {
+									self.imgTempList.push({
+										...item,
+										url: item.SHOW_URL,
+									})
+									console.log('self.imgTempList', self.imgTempList)
+								})
+							}
+						} catch (err) {
+							throw err
+						} finally {
+							toast.clear()
+						}
+					},
+				})
+			}, 3e2)
 		},
 		setHomeworkShared() {
 			// console.log(this.isShared);
@@ -427,19 +522,24 @@ export default {
 			})
 		},
 		startRecord() {
-			const vm = this
-			this.wx.stopRecord()
+			const self = this
+			if (this.debounceTimer) {
+				clearTimeout(this.debounceTimer)
+			}
+			this.debounceTimer = setTimeout(function () {
+				self.wx.stopRecord()
 
-			this.recordSecondsLeft = 60
-			this.showRecordingToast()
-			this.wx.startRecord()
-			this.wx.onVoiceRecordEnd({
-				// 录音时间超过一分钟没有停止的时候会执行 complete 回调
-				complete: function (res) {
-					vm.hideRecordingToast()
-					vm.uploadVoice(res.localId)
-				},
-			})
+				self.recordSecondsLeft = 60
+				self.showRecordingToast()
+				self.wx.startRecord()
+				self.wx.onVoiceRecordEnd({
+					// 录音时间超过一分钟没有停止的时候会执行 complete 回调
+					complete: function (res) {
+						self.hideRecordingToast()
+						self.uploadVoice(res.localId)
+					},
+				})
+			}, 3e2)
 		},
 		endRecord() {
 			this.hideRecordingToast()
@@ -587,6 +687,16 @@ export default {
 									}
 								})
 							}
+
+							//
+							// vm.$nextTick(function (evt) {
+							// 	let ipt = vm.$refs['inputRef']
+							// 	console.log(ipt)
+							// 	ipt.addEventListener('input', function () {
+							// 		// ipt.style.height = '30px'
+							// 		ipt.style.height = ipt.scrollHeight + 'px'
+							// 	})
+							// })
 						}
 					},
 					(response) => {
@@ -656,33 +766,60 @@ export default {
 .inputerWrap {
 	display: flex;
 	margin: 25px 0;
+	align-items: center;
 }
+
+.areaWrap {
+	flex: 1;
+	// padding: 0.5em;
+	border: 1px solid #c7c7c7;
+	border-radius: 2px;
+
+	> .van-cell {
+		padding: 0.5em;
+	}
+}
+
 .iptText {
 	flex: 1;
 	border: 1px solid #c7c7c7;
 	border-radius: 2px;
-	padding: 0 0.5em;
-	height: 30px;
+	padding: 0.5em;
+	min-height: 30px;
+	overflow: hidden;
+	outline: none;
+	resize: none;
+	// transition: all 0.2s linear;
+}
+
+.commentBtnWrap {
+	width: 30px;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	margin-left: 8px;
+	gap: 5px;
 }
 
 .bar-btn {
-	width: 30px;
-	height: 30px;
-	line-height: 30px;
+	width: 26px;
+	height: 26px;
+	line-height: 26px;
 	font-family: 'icon';
 	font-size: 24px;
 	color: #fff;
 	text-align: center;
 	border-radius: 50%;
 	-webkit-touch-callout: none;
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
 
+	&.btn-picture {
+		background-image: url('../../../assets/work/camera.png');
+	}
 	&.btn-voice {
-		// background-color: #2782d7;
 		background-image: url('../../../assets/work/voice.png');
-		background-size: cover;
-		background-position: center center;
-		background-repeat: no-repeat;
-		margin-left: 8px;
 	}
 }
 
@@ -825,6 +962,34 @@ export default {
 // }
 </style>
 <style lang="less">
+.picWrap {
+	.van-uploader__preview-image,
+	.van-uploader__upload {
+		height: 21vw;
+		width: 21vw;
+	}
+	.van-uploader__upload {
+		border: 1px solid #c7c7c7;
+	}
+	.van-uploader__preview,
+	.van-uploader__upload {
+		margin: 0 9px 0 0;
+
+		&:nth-last-of-type(1){
+			margin-right: 0;
+		}
+	}
+
+	.van-uploader__preview-delete {
+		width: 18px;
+		height: 18px;
+		border-radius: 0 0 0 14px;
+
+		> .van-uploader__preview-delete-icon {
+			font-size: 20px;
+		}
+	}
+}
 .nomoreWidth {
 	max-width: 100%;
 	* {

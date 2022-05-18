@@ -30,7 +30,7 @@
                 </div>
                 <divider><x-icon type="ios-arrow-down" size="30"></x-icon></divider>
                 <ul class="homework-answer">
-                  <li class="answer-qs qs-txt" v-html="detail.answer">
+                  <li  v-show="detail.answer" class="answer-qs qs-txt" v-html="detail.answer">
                     <img v-if="detail.STUANSWER.TYPE != ''" :src="detail.STUANSWER.ANSWER"/>
                     <div class="qs-content" contenteditable="true"></div>
                   </li>

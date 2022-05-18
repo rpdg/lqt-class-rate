@@ -25,6 +25,9 @@ class AuthonStore {
 				userTitle: respData.data.userTitle,
 				userType: respData.data.userType,
 			};
+			console.log('AuthonStore Loading ...', this._userInfo);
+		} else{
+			throw new Error('Fetching user profile error');
 		}
 	}
 
@@ -32,7 +35,6 @@ class AuthonStore {
 		if (!this._userInfo) {
 			await this.fetchUserInfo();
 		}
-		console.log('AuthonStore', this._userInfo);
 		return this._userInfo;
 	}
 }
