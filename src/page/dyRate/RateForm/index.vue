@@ -1,6 +1,6 @@
 <template>
 	<div class="box">
-		<title-bar :title="this.$route.query.title" @willBack="handleWillBack" />
+		<title-bar :title="$route.query.title" @willBack="handleWillBack" />
 
 		<van-tabs class="dy-rate-tab" v-model="viewMode" @change="toggleViewStyle">
 			<van-tab title="评分项目视角"></van-tab>
@@ -129,11 +129,12 @@
 		</van-popup>
 	</div>
 </template>
+
 <script>
 import { ViewBox, XButton } from "vux";
-import TitleBar from "./components/TitleBar";
-import FormPanel from "./components/FormPanel";
-import ColorSign from "./components/ColorSign";
+import TitleBar from "./components/TitleBar.vue";
+import FormPanel from "./components/FormPanel.vue";
+import ColorSign from "./components/ColorSign.vue";
 import apiRouter from "../../../config/api.js";
 import wx from "weixin-js-sdk";
 import {
@@ -513,7 +514,7 @@ export default {
             alert(respBody.message);
           }
         } else {
-          alert(respBody.message);
+          alert(result.body.message);
         }
       } catch (e) {
         alert(e.message);
@@ -537,7 +538,7 @@ export default {
           : this.classChecked.CLASS_ID;
       let obj_name = this.lastClickFromGrade ? "T_SCHOOL_GRADE" : "T_CLASS";
 
-      if ((!class_id && obj_name === "T_SCHOOL_GRADE") || see_mode === 1) {
+      if ((!class_id && obj_name === "T_SCHOOL_GRADE") || see_mode ==='CLASS') {
         obj_name = "T_CLASS";
       }
 
@@ -665,13 +666,13 @@ export default {
               this.handleModify(false);
             }
           } else {
-            alert("server.error ", respBody.message);
+            alert("server.error: " + resp.body.message);
           }
         } else {
           alert("请求失败!");
         }
       } catch (e) {
-        alert("server.error ", e.message);
+        alert("server.error: " + e.message);
       }
     },
     toggleViewStyle() {

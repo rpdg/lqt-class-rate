@@ -782,27 +782,31 @@ export default {
     // 上传图片
     onClickUp(item1) {
       let _this = this;
-      wx.chooseImage({
-        //count: _this.imgaesMaxLenght - _this.localIdImgs.length, // 默认9
-        count: 1, // 默认9
-        sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
-        sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
-        success: function(res) {
-          let localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-          if (window.__wxjs_is_wkwebview) {
-            _this.wxgetLocalImgData(item1, localIds);
-          } else {
-            localIds.forEach((item, index) => {
-              item1.imgs.push(item);
-              //_this.localIdImgs.push(item);
-            });
+
+      setTimeout(function(){
+        wx.chooseImage({
+          //count: _this.imgaesMaxLenght - _this.localIdImgs.length, // 默认9
+          count: 1, // 默认9
+          sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
+          sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
+          success: function(res) {
+            let localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+            if (window.__wxjs_is_wkwebview) {
+              _this.wxgetLocalImgData(item1, localIds);
+            } else {
+              localIds.forEach((item, index) => {
+                item1.imgs.push(item);
+                //_this.localIdImgs.push(item);
+              });
+            }
+            _this.wxuploadImage(item1, localIds);
+          },
+          fail: function(res) {
+            console.log("失败");
           }
-          _this.wxuploadImage(item1, localIds);
-        },
-        fail: function(res) {
-          console.log("失败");
-        }
-      });
+        });
+      } , 3e2)
+
     },
     wxuploadImage(subItem, localIds) {
       let _this = this;
@@ -889,30 +893,34 @@ export default {
     //活动配图上传图片
     onClickUpActivity() {
       let _this = this;
-      wx.chooseImage({
-        count: 1, // 默认9
-        sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
-        sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
-        success: function(res) {
-          let localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-          if (window.__wxjs_is_wkwebview) {
-            console.log(">>>>>>>>>>window.__wxjs_is_wkwebview!!!");
-            _this.wxGetLocalImgDataActivity(localIds); //todo
-          } else {
-            console.log(">>>>>>>>>>not----window.__wxjs_is_wkwebview!!!");
-            localIds.forEach((item, index) => {
-              _this.actLocalIdImgs.push(item);
-              if (_this.actLocalIdImgs.length >= _this.actImgaesMaxLenght) {
-                _this.actImgLenght = false;
-              }
-            });
+
+      setTimeout(function(){
+        wx.chooseImage({
+          count: 1, // 默认9
+          sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
+          sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
+          success: function(res) {
+            let localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+            if (window.__wxjs_is_wkwebview) {
+              console.log(">>>>>>>>>>window.__wxjs_is_wkwebview!!!");
+              _this.wxGetLocalImgDataActivity(localIds); //todo
+            } else {
+              console.log(">>>>>>>>>>not----window.__wxjs_is_wkwebview!!!");
+              localIds.forEach((item, index) => {
+                _this.actLocalIdImgs.push(item);
+                if (_this.actLocalIdImgs.length >= _this.actImgaesMaxLenght) {
+                  _this.actImgLenght = false;
+                }
+              });
+            }
+            _this.wxUploadImageActivity(localIds); //todo
+          },
+          fail: function(res) {
+            console.log("活动上传失败");
           }
-          _this.wxUploadImageActivity(localIds); //todo
-        },
-        fail: function(res) {
-          console.log("活动上传失败");
-        }
-      });
+        });
+      } , 3e2)
+
     },
     //
     wxUploadImageActivity(localIds) {

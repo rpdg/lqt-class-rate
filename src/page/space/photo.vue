@@ -346,34 +346,38 @@ export default {
     // 上传图片
     onClickUp() {
       let _this = this;
-      wx.chooseImage({
-        count: _this.imgaesMaxLenght - _this.localIdImgs.length, // 默认9
-        sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
-        sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
-        success: function(res) {
-          let localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-          if (window.__wxjs_is_wkwebview) {
-            //  _this.wxgetLocalImgData(localIds);
+
+      setTimeout(function(){
+        wx.chooseImage({
+          count: _this.imgaesMaxLenght - _this.localIdImgs.length, // 默认9
+          sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
+          sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
+          success: function(res) {
+            let localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+            if (window.__wxjs_is_wkwebview) {
+              //  _this.wxgetLocalImgData(localIds);
+              //  setTimeout(function (){
+              _this.wxgetLocalImgData(localIds);
+              //  }, 10);
+            } else {
+              localIds.forEach((item, index) => {
+                _this.localIdImgs.push(item);
+                if (_this.localIdImgs.length >= _this.imgaesMaxLenght) {
+                  _this.imgLenght = false;
+                }
+              });
+            }
+            //  _this.wxuploadImage(localIds);
             //  setTimeout(function (){
-            _this.wxgetLocalImgData(localIds);
+            _this.wxuploadImage(localIds);
             //  }, 10);
-          } else {
-            localIds.forEach((item, index) => {
-              _this.localIdImgs.push(item);
-              if (_this.localIdImgs.length >= _this.imgaesMaxLenght) {
-                _this.imgLenght = false;
-              }
-            });
+          },
+          fail: function(res) {
+            console.log("失败");
           }
-          //  _this.wxuploadImage(localIds);
-          //  setTimeout(function (){
-          _this.wxuploadImage(localIds);
-          //  }, 10);
-        },
-        fail: function(res) {
-          console.log("失败");
-        }
-      });
+        });
+      } , 3e2)
+
     },
 
     wxuploadImage(localIds) {

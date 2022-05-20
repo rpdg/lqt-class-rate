@@ -263,19 +263,22 @@ export default {
             let _this = this;
             // alert("count: " + JSON.stringify(this.leftImageCount));
 
-            wx.chooseImage({
-              count: this.leftImageCount, // max: 9
-              sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
-              sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
+            setTimeout(function(){
+              wx.chooseImage({
+                count: _this.leftImageCount, // max: 9
+                sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
+                sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
 
-              success: async function(res) {
-                // 返回选定照片的本地ID列表
-                _this.readImages(res.localIds);
-              },
-              fail: function(err) {
-                console.log(err);
-              }
-            });
+                success: async function(res) {
+                  // 返回选定照片的本地ID列表
+                  _this.readImages(res.localIds);
+                },
+                fail: function(err) {
+                  console.log(err);
+                }
+              });
+            }, 3e2)
+            
           });
 
           // console.log("fcc", iptWrapper);
