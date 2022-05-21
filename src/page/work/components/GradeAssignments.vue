@@ -61,7 +61,7 @@
 					</div>
 
 					<!-- 附件列表 -->
-					<div v-if="comment.ATT_LIST" style="margin-top: 10px;">
+					<div v-if="comment.ATT_LIST">
 						<office-item
 							v-for="file in comment.ATT_LIST"
 							:key="file.URL"
