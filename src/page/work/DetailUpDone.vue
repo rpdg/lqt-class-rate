@@ -798,6 +798,7 @@ export default {
 						text: '上传中...',
 					});
 				};
+
 				window.ifrCommit = function(formData){
 					$.ajax({
 						url: apiRouter.POST_HOMEWORK_FILE,
@@ -806,18 +807,31 @@ export default {
 						contentType: false,
 						type: 'POST',
 						success: function(resp) {
-							window.top.ifrSuccess(resp.data);
+							window.ifrSuccess(resp.data , e);							
 						},
 					});
 				};
-				window.ifrSuccess = function(data) {
+				window.ifrSuccess = function(data , srcItem) {
 					vm.$vux.toast.text('图片上传成功!');
 					// vm.$emit('finishEdit', data);
 					vm.finishEdit(data);
-					setTimeout(function() {
-						vm.$vux.loading.hide();
-						vm.showIframe = false;
-					}, 300);
+
+					let urlList = srcItem.URL.split('/');
+					let submitUrl = urlList[urlList.length - 1];
+					let postData = {
+							detailId: srcItem.ID ,
+							type : srcItem.TYPE,
+							value : submitUrl,
+							old_path : srcItem.old_path,
+						};
+					
+					vm.$http.post(apiPath + '/wechat/homeworkH5/changeStuPic' , postData).then(function(commitResp){
+						setTimeout(function() {
+							vm.$vux.loading.hide();
+							vm.showIframe = false;
+						}, 300);	
+					});
+					
 				};
 				window.ifrCancel = function(data) {
 					vm.showIframe = false;

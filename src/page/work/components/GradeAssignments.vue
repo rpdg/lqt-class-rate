@@ -47,6 +47,14 @@
 						:playing="index===currentMp3Index"
 						@click="playMP3(comment.COMMENT[0] , index)"
 					/>
+					<div v-else-if="comment.COMMENT_TYPE==='3'" class="commentImgContainer">
+						<img
+							v-for="(pic , x) in comment.COMMENT"
+							:key="pic.value"
+							:src="ossPath + '/' + pic.value"
+							:data-index="x"
+						/>
+					</div>
 				</div>
 			</div>
 
@@ -245,6 +253,7 @@ export default {
 			debounceTimer: 0,
 			imgTempMax: 4,
 			imgTempList: [],
+			currentImageIndex: -1,
 		}
 	},
 	// mounted() {
@@ -366,7 +375,13 @@ export default {
 					}
 				)
 		},
-		startWillRemove() {
+		startWillRemove(evt) {
+			console.log('startWillRemove', evt)
+
+			if (evt.target.tagName === 'IMG') {
+				this.currentImageIndex = ~~evt.target.dataset['index']
+			}
+
 			document.body.onselectstart = function () {
 				return false
 			}
@@ -394,12 +409,21 @@ export default {
 				})
 				if (answer === 'confirm') {
 					const self = this
+
+					let removeValue
+					if (item.COMMENT_TYPE === '1') {
+						removeValue = item.COMMENT
+					} else if (item.COMMENT_TYPE === '2') {
+						removeValue = item.COMMENT[0].value
+					} else if (item.COMMENT_TYPE === '3') {
+						removeValue = item.COMMENT[this.currentImageIndex].value
+					}
+
 					let param = {
 						commentId: item.ID,
 						type: item.TYPE,
 						comment_type: item.COMMENT_TYPE,
-						value:
-							item.COMMENT_TYPE === '2' ? item.COMMENT[0].value : item.COMMENT,
+						value: removeValue,
 					}
 					this.$http.post(apiRouter.DEL_HOMEWORK_COMMENT, param).then(
 						(response) => {
@@ -599,24 +623,37 @@ export default {
 				]
 			}
 
+			if (this.imgTempList.length) {
+				param.comment_type = 3
+				param.comment = []
+				this.imgTempList.forEach(function (picItem) {
+					param.comment.push({
+						value: picItem.DB_PATH,
+					})
+				})
+			}
+
 			return param
 		},
 		async saveComment() {
-			if (!this.comment && !this.voiceRecord) {
+			if (!this.comment && !this.voiceRecord && !this.imgTempList.length) {
 				Toast('请先输入文字或录音')
 				return
 			}
 
 			this.posting = true
 			let param = this.makeParam()
-			if (param.comment_type === 2) {
+
+			if (param.comment_type === 2 || param.comment_type === 3) {
 				param.comment = JSON.stringify(param.comment)
 			}
+
 			try {
 				await this.postCommentFunc(param)
 				Toast('操作成功')
 				this.comment = ''
 				this.voiceRecord = null
+				this.imgTempList.length = 0
 			} catch (err) {
 				Toast(err.message)
 			} finally {
@@ -710,6 +747,11 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.commentImgContainer {
+	img {
+		width: 100%;
+	}
+}
 .voiceWrap {
 	display: flex;
 	margin-top: 25px;
@@ -975,7 +1017,7 @@ export default {
 	.van-uploader__upload {
 		margin: 0 9px 0 0;
 
-		&:nth-last-of-type(1){
+		&:nth-last-of-type(1) {
 			margin-right: 0;
 		}
 	}

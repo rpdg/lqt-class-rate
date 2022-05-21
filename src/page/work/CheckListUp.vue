@@ -11,80 +11,73 @@
       <tab-item @on-item-click="switchTabItem">已批阅（{{checkObj.pyCount}}）</tab-item>
     </tab>
 
-    <!-- <group v-if="selectTab == '0'">
-      <cell @click.native="goDetail(item , true)"   style="font-size: 14px;padding: 15px 30px;" v-for="(item,index) in checkObj.finalList"
-       :title="item.SHORT_NAME + '　' + item.CLASS_NO +'号　'+item.NAME">
-        <div style="font-size: 12px">
-          <span v-if="!item.ID" style="color: #d9534f; font-size: 12px;">未完成</span>
-          <span v-else-if="item.CAN_CHANGE == 1" style="color: #ED9C28; font-size: 12px;"> 待订正</span>
-          <span v-else-if="item.TYPE !=1 && item.DZ_FLAG != '1'" style="color: #666666; font-size: 12px;">待批阅</span>
-          <span v-else-if="item.TYPE !=1 && item.DZ_FLAG == '1'" style="color: #0093DD; font-size: 12px;">已订正</span>
-          <span v-else style="color:#48B319; font-size: 12px;">已批阅</span>
-        </div>
-      </cell>
-    </group> -->
 
     <group v-if="selectTab == '0'" style="padding-bottom: 80px;" class="">
-      <cell @click.native="goDetail(item , false)"  
-        style="font-size: 14px;padding: 15px 30px;" 
-        v-for="(item,index) in checkObj.noDoList" 
-        :title="item.SHORT_NAME + '　' + item.CLASS_NO +'号　'+item.NAME"
-      >
-        <div style="font-size: 12px">
-          <span v-if="!item.ANID" style="color: #d9534f; font-size: 12px;">未完成</span>
-          <span v-else-if="item.CAN_CHANGE == 1" style="color: #ED9C28; font-size: 12px;"> 待订正</span>
-          <span v-else-if="item.TYPE !=1" style="color: #666666; font-size: 12px;">待批阅</span>
-          <span v-else style="color:#48B319; font-size: 12px;">已批阅</span>
+        <div v-for="(item) in checkObj.noDoList" :key="item.USER_ID"
+          @click="goDetail(item , false)"
+          class="homework_record" 
+        >
+          <span>{{item.SHORT_NAME}} {{item.CLASS_NO}}号</span>
+          <span>{{item.NAME}}</span>
+          <span>
+            <div v-if="item.IS_GREAT==='1'" class="perfectTag">优秀</div>  
+          </span>
+          <span>
+            <span v-if="!item.ANID" style="color: #d9534f; ">未完成</span>
+            <span v-else-if="item.CAN_CHANGE == 1" style="color: #ED9C28; "> 待订正</span>
+          </span>
         </div>
-      </cell>
     </group>
 
     <group v-else-if="selectTab == '1'">
-      <cell @click.native="goDetail(item , true)"   style="font-size: 14px;padding: 15px 30px;" v-for="(item,index) in checkObj.noPYList"
-       :title="item.SHORT_NAME + '　' + item.CLASS_NO +'号　'+item.NAME">
-        <div style="font-size: 12px">
-          <span style="color: #666666; font-size: 12px;">待批阅</span>
+        <div v-for="(item) in checkObj.noPYList" :key="item.USER_ID"
+          @click="goDetail(item , false)"
+          class="homework_record" 
+          >
+          <span>{{item.SHORT_NAME}} {{item.CLASS_NO}}号</span>
+          <span>{{item.NAME}}</span>
+          <span>
+            <div v-if="item.IS_GREAT==='1'" class="perfectTag">优秀</div>  
+          </span>
+          <span>
+            <span style="color: #666666;">待批阅</span>
+          </span>
         </div>
-      </cell>
     </group>
 
     <group v-else-if="selectTab == '2'">
-      <cell @click.native="goDetail(item , true)"   style="font-size: 14px;padding: 15px 30px;" v-for="(item,index) in checkObj.dzList"
-       :title="item.SHORT_NAME + '　' + item.CLASS_NO +'号　'+item.NAME">
-        <div style="font-size: 12px">
-          <span style="color: #0093DD; font-size: 12px;">已订正</span>
-        </div>
-      </cell>
+      <div v-for="(item) in checkObj.dzList" :key="item.USER_ID"
+          @click="goDetail(item , false)"
+          class="homework_record" 
+          >
+          <span>{{item.SHORT_NAME}} {{item.CLASS_NO}}号</span>
+          <span>{{item.NAME}}</span>
+          <span>
+            <div v-if="item.IS_GREAT==='1'" class="perfectTag">优秀</div>  
+          </span>
+          <span>
+            <span style="color: #0093DD;">已订正</span>
+          </span>
+      </div>
     </group>
 
     
     <group v-else-if="selectTab == '3'">
-      <cell @click.native="goDetail(item , true)"   style="font-size: 14px;padding: 15px 30px;" v-for="(item,index) in checkObj.pyList"
-       :title="item.SHORT_NAME + '　' + item.CLASS_NO +'号　'+item.NAME">
-        <div style="font-size: 12px">
-          <span style="color:#48B319; font-size: 12px;">已批阅</span>
-        </div>
-      </cell>
+      <div v-for="(item) in checkObj.pyList" :key="item.USER_ID"
+          @click="goDetail(item , false)"
+          class="homework_record" 
+          >
+          <span>{{item.SHORT_NAME}} {{item.CLASS_NO}}号</span>
+          <span>{{item.NAME}}</span>
+          <span>
+            <div v-if="item.IS_GREAT==='1'" class="perfectTag">优秀</div>  
+          </span>
+          <span>
+            <span style="color: #48B319;">已批阅</span>
+          </span>
+      </div>
     </group>
 
-
-<!--    <ul v-else  class="message"  ref="onScoll">-->
-<!--      <li class="clearfix" v-for="(news,index) in checkObj.noDoCount" :key="index">-->
-<!--        <div class="message-icon"></div>-->
-<!--        <a href="javascript:void(0);"  class="message-info">-->
-<!--          <h3>{{news.TITLE}}</h3>-->
-<!--          <p>发布对象：{{news.NAMES}}</p>-->
-<!--        </a>-->
-<!--        <div class="message-handle">-->
-<!--          <a class="publishBtn inform pubisnBtn">已发布</a>-->
-<!--          <a class="delete" @click="deleteBtn(news.ID)"><em></em>删除</a>-->
-<!--        </div>-->
-<!--        &lt;!&ndash; <div class="edlit-molde clearfix" v-if="(isShow && showItemNumber === index)">-->
-<!--          <a class="revamp" @click="revampBtn(news.id)"><em></em>修改</a>-->
-<!--          <a class="delete" @click="deleteBtn(news.id)"><em></em>删除</a>-->
-<!--        </div> &ndash;&gt;-->
-<!--      </li>-->
-<!--    </ul>-->
     <p class="moreData" v-show="needShow"><span>加载中...</span></p>
     <p class="lastShow" v-show="lastShow"><span>已经全部加载</span></p>
     <div v-transfer-dom>
@@ -347,6 +340,31 @@
 
 <style lang="less" scoped>
   @import '../../style/minxin.less';
+
+  .homework_record {
+    font-size: 14px;
+    padding: 15px;
+    display: flex;
+    width: 100%;
+    align-items: center;
+
+    > span {
+      flex:1;
+      text-align: center;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+  .perfectTag{
+    	display: inline-block;
+      border: 1px solid #04BE02;
+      color: #04BE02;
+      border-radius: 3px;
+      padding: 1px 1em;
+      font-size: 10px;
+  }
+
 
   .message {
     width: 100%;
