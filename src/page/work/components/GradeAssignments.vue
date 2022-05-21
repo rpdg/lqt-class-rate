@@ -25,6 +25,7 @@
 			<div class="mg-y-20 text-16">留言板</div>
 			<div class="mg-y-20 text-12 commentWrap">
 				<div
+					class="commentItem"
 					:key="comment.ID"
 					v-for="(comment , index) in commentList"
 					v-long-press="600"
@@ -33,26 +34,39 @@
 					@long-press-start="removeItem(comment)"
 				>
 					{{comment.ADDUSER_NAME}} {{comment.ADD_TIME.substr(0,16)}}
-					<span
-						:style=" 'margin-left:1em; color:'+ typeColor[comment.TYPE]"
-					>{{typeWord[comment.TYPE]}}</span>
+					<!-- 操作类型 -->
+					<span :style=" 'margin-left:1em; color:'+ typeColor[comment.TYPE]">{{typeWord[comment.TYPE]}}</span>
+
+					<!-- 文字留言 -->
 					<div
 						v-if="comment.COMMENT_TYPE==='1'"
 						class="nomoreWidth richTextWrap"
 						v-html="comment.COMMENT"
 					/>
+					<!-- 录音留言 -->
 					<voice-item
 						v-else-if="comment.COMMENT_TYPE==='2'"
 						:item="comment.COMMENT[0]"
 						:playing="index===currentMp3Index"
 						@click="playMP3(comment.COMMENT[0] , index)"
 					/>
+					<!-- 图片留言 -->
 					<div v-else-if="comment.COMMENT_TYPE==='3'" class="commentImgContainer">
 						<img
 							v-for="(pic , x) in comment.COMMENT"
 							:key="pic.value"
 							:src="ossPath + '/' + pic.value"
 							:data-index="x"
+						/>
+					</div>
+
+					<!-- 附件列表 -->
+					<div v-if="comment.ATT_LIST" style="margin-top: 10px;">
+						<office-item
+							v-for="file in comment.ATT_LIST"
+							:key="file.URL"
+							:ext="file.FILEEXT.toLowerCase()"
+							:url="ossPath + '/upload' + file.URL"
 						/>
 					</div>
 				</div>
@@ -70,7 +84,6 @@
 					@click="popupPicker"
 					v-if="fromTeacher"
 				/>
-				<!-- <textarea ref="inputRef" class="iptText" type="text" maxlength="100" v-model="comment" /> -->
 				<div class="areaWrap">
 					<van-field
 						type="textarea"
@@ -155,6 +168,7 @@ import {
 	Uploader,
 } from 'vant'
 import ICON_RECORDING from '../../../assets/work/icon_record.png'
+import OfficeItem from './OfficeItem.vue'
 import VoiceItem from './VoiceItem.vue'
 import authonStore from '../../../utils/authonStore'
 import { readWxImages } from '../../../utils/imgUtil'
@@ -171,6 +185,7 @@ export default {
 		[Switch.name]: Switch,
 		[Uploader.name]: Uploader,
 		[VoiceItem.name]: VoiceItem,
+		[OfficeItem.name]: OfficeItem,
 	},
 	props: {
 		workId: {
@@ -724,16 +739,6 @@ export default {
 									}
 								})
 							}
-
-							//
-							// vm.$nextTick(function (evt) {
-							// 	let ipt = vm.$refs['inputRef']
-							// 	console.log(ipt)
-							// 	ipt.addEventListener('input', function () {
-							// 		// ipt.style.height = '30px'
-							// 		ipt.style.height = ipt.scrollHeight + 'px'
-							// 	})
-							// })
 						}
 					},
 					(response) => {
@@ -748,13 +753,17 @@ export default {
 
 <style lang="less" scoped>
 .commentImgContainer {
-	img {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	padding-top: 20px;
+
+	> img {
 		width: 100%;
 	}
 }
 .voiceWrap {
 	display: flex;
-	margin-top: 25px;
 
 	> .voiceSeconds {
 		flex: 1;
@@ -782,15 +791,20 @@ export default {
 }
 
 .commentWrap {
-	> div {
+	> .commentItem {
 		user-select: none;
 		color: #999;
 		line-height: 2.2em;
 		border-bottom: 1px dashed #dedede;
-		margin: 20px 0;
+		padding: 20px 0;
+
+		&:nth-of-type(1){
+			padding-top: 0;
+		}
 
 		&:nth-last-of-type(1) {
 			border-bottom: none;
+			padding-bottom: 0;
 		}
 	}
 }
@@ -798,7 +812,6 @@ export default {
 .richTextWrap {
 	font-size: 14px;
 	color: #666;
-	margin-bottom: 20px;
 
 	* {
 		max-width: 100%;

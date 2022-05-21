@@ -8,6 +8,8 @@
 	</div>
 </template>
 <script>
+// @ts-ignore
+
 export default {
 	name: 'VoiceItem',
 	props: {
