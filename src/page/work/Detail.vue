@@ -97,7 +97,7 @@
 
                 <ul class="homework-answer" ref="answerArea">
                   <li class="answer-qs qs-txt" style="padding: 0;">
-                    <x-textarea v-show="detail.answer" class="answer-textarea" @blur="textareaFocusout()"  :max="200" placeholder="" :rows="3" v-model="detail.answer"></x-textarea>
+                    <x-textarea class="answer-textarea" @blur="textareaFocusout()"  :max="200" placeholder="" :rows="3" v-model="detail.answer"></x-textarea>
                   </li>
                 </ul>
               </div>

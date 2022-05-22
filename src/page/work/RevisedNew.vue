@@ -1,24 +1,45 @@
 <template>
 	<div class="wrapper">
 		<div class="up-comment">
-			<div class="mg-t-20 text-16">留言板</div>
+			<div class="mg-y-20 text-16">留言板</div>
 			<div class="text-12 commentWrap">
-				<div :key="comment.ID" v-for="(comment , index) in commentList">
+				<div class="commentItem" :key="comment.ID" v-for="(comment , index) in commentList">
 					{{comment.ADDUSER_NAME}} {{comment.ADD_TIME.substr(0,16)}}
-					<span
-						:style=" 'margin-left:1em; color:'+ typeColor[comment.TYPE]"
-					>{{typeWord[comment.TYPE]}}</span>
+					<!-- 操作类型 -->
+					<span :style=" 'margin-left:1em; color:'+ typeColor[comment.TYPE]">{{typeWord[comment.TYPE]}}</span>
+
+					<!-- 文字留言 -->
 					<div
 						v-if="comment.COMMENT_TYPE==='1'"
 						class="nomoreWidth richTextWrap"
 						v-html="comment.COMMENT"
 					/>
+					<!-- 录音留言 -->
 					<voice-item
 						v-else-if="comment.COMMENT_TYPE==='2'"
 						:item="comment.COMMENT[0]"
 						:playing="index===currentMp3Index"
 						@click="playMP3(comment.COMMENT[0] , index)"
 					/>
+					<!-- 图片留言 -->
+					<div v-else-if="comment.COMMENT_TYPE==='3'" class="commentImgContainer">
+						<img
+							v-for="(pic , x) in comment.COMMENT"
+							:key="pic.value"
+							:src="ossPath + '/' + pic.value"
+							:data-index="x"
+						/>
+					</div>
+
+					<!-- 附件列表 -->
+					<div v-if="comment.ATT_LIST">
+						<office-item
+							v-for="file in comment.ATT_LIST"
+							:key="file.URL"
+							:ext="file.FILEEXT.toLowerCase()"
+							:url="ossPath + '/upload' + file.URL"
+						/>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -31,7 +52,9 @@
 import apiRouter from '../../config/api'
 import { Icon, Button, Popup } from 'vant'
 import VoiceItem from './components/VoiceItem.vue'
+import OfficeItem from './components/OfficeItem.vue'
 
+// @ts-ignore
 export default {
 	name: 'BBSAssignments',
 	components: {
@@ -39,6 +62,7 @@ export default {
 		[Popup.name]: Popup,
 		[Button.name]: Button,
 		[VoiceItem.name]: VoiceItem,
+		[OfficeItem.name]: OfficeItem,
 	},
 	data() {
 		return {
@@ -128,6 +152,16 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.commentImgContainer {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	padding-top: 20px;
+
+	> img {
+		width: 100%;
+	}
+}
 .wrapper {
 	margin: 0 15px;
 	height: 100vmax;
@@ -140,7 +174,6 @@ export default {
 }
 .voiceWrap {
 	display: flex;
-	margin-top: 25px;
 
 	> .voiceSeconds {
 		flex: 1;
@@ -164,15 +197,20 @@ export default {
 }
 
 .commentWrap {
-	> div {
+	> .commentItem {
 		user-select: none;
 		color: #999;
 		line-height: 2.2em;
 		border-bottom: 1px dashed #dedede;
-		margin: 20px 0;
+		padding: 20px 0;
+
+		&:nth-of-type(1){
+			padding-top: 0;
+		}
 
 		&:nth-last-of-type(1) {
 			border-bottom: none;
+			padding-bottom: 0;
 		}
 	}
 }
@@ -180,7 +218,6 @@ export default {
 .richTextWrap {
 	font-size: 14px;
 	color: #666;
-	margin-bottom: 20px;
 
 	* {
 		max-width: 100%;

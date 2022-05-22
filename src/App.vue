@@ -16,8 +16,8 @@ export default {
 <style lang="less">
 @import 'style/common.less';
 @import '~vux/src/styles/reset.less';
-u{
-	text-decoration: underline ;
+u {
+	text-decoration: underline;
 }
 #app {
 	height: 100%;
@@ -26,7 +26,7 @@ u{
 #app.unselectable {
 	-webkit-tap-highlight-color: transparent;
 	-webkit-touch-callout: none;
-	-webkit-user-select:none;
+	-webkit-user-select: none;
 	user-select: none;
 }
 
@@ -49,10 +49,10 @@ hr {
 	margin-top: 15px;
 	margin-bottom: 15px;
 }
-.mg-t-20{
+.mg-t-20 {
 	margin-top: 20px;
 }
-.mg-b-20{
+.mg-b-20 {
 	margin-bottom: 20px;
 }
 .mg-y-20 {
@@ -88,6 +88,9 @@ hr {
 	border-radius: 2px !important;
 }
 
+.van-field__word-limit {
+	color: #c7c7c7 !important;
+}
 .dy-rate-tab {
 	.van-tab--active {
 		.van-tab__text {

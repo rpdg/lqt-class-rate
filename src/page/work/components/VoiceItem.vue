@@ -1,5 +1,5 @@
 <template>
-	<div class="mg-y-20 voiceWrap" @click="emitClick">
+	<div class="voiceWrap" @click="emitClick">
 		<div
 			:class="'voice' + (playing? ' playing':'')"
 			:style="'width: '+ voiceBarWidth +'em;' "
@@ -41,6 +41,7 @@ export default {
 <style lang="less" scoped>
 .voiceWrap {
 	display: flex;
+	margin-top: 0.5em;
 
 	> .voiceSeconds {
 		flex: 1;

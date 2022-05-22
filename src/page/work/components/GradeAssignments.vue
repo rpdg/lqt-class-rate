@@ -833,6 +833,9 @@ export default {
 	> .van-cell {
 		padding: 0.5em;
 	}
+	.van-field__word-limit{
+		color: #c7c7c7;
+	}
 }
 
 .iptText {

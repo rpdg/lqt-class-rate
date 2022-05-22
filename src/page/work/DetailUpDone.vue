@@ -562,7 +562,7 @@ export default {
 			
 		},
 		async saveWorkPass(param) {
-			// alert(JSON.stringify(param));
+			// console.log(JSON.stringify(param));
 			this.upCheckMap.score = param.score;
 			this.upCheckMap.comment = param.comment;
 
