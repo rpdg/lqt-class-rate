@@ -27,33 +27,35 @@
 				<div
 					class="commentItem"
 					:key="comment.ID"
-					v-for="(comment , index) in commentList"
+					v-for="( comment, index ) in commentList"
 					v-long-press="600"
 					@touchstart="startWillRemove"
 					@touchmove="cancelWillRemove"
 					@long-press-start="removeItem(comment)"
 				>
-					{{comment.ADDUSER_NAME}} {{comment.ADD_TIME.substr(0,16)}}
+					{{ comment.ADDUSER_NAME }} {{ comment.ADD_TIME.substr(0, 16) }}
 					<!-- 操作类型 -->
-					<span :style=" 'margin-left:1em; color:'+ typeColor[comment.TYPE]">{{typeWord[comment.TYPE]}}</span>
+					<span
+						:style="'margin-left:1em; color:' + typeColor[ comment.TYPE ]"
+					>{{ typeWord[ comment.TYPE ] }}</span>
 
 					<!-- 文字留言 -->
 					<div
-						v-if="comment.COMMENT_TYPE==='1'"
+						v-if="comment.COMMENT_TYPE === '1'"
 						class="nomoreWidth richTextWrap"
 						v-html="comment.COMMENT"
 					/>
 					<!-- 录音留言 -->
 					<voice-item
-						v-else-if="comment.COMMENT_TYPE==='2'"
-						:item="comment.COMMENT[0]"
-						:playing="index===currentMp3Index"
-						@click="playMP3(comment.COMMENT[0] , index)"
+						v-else-if="comment.COMMENT_TYPE === '2'"
+						:item="comment.COMMENT[ 0 ]"
+						:playing="index === currentMp3Index"
+						@click="playMP3(comment.COMMENT[ 0 ], index)"
 					/>
 					<!-- 图片留言 -->
-					<div v-else-if="comment.COMMENT_TYPE==='3'" class="commentImgContainer">
+					<div v-else-if="comment.COMMENT_TYPE === '3'" class="commentImgContainer">
 						<img
-							v-for="(pic , x) in comment.COMMENT"
+							v-for="( pic, x ) in comment.COMMENT"
 							:key="pic.value"
 							:src="ossPath + '/' + pic.value"
 							:data-index="x"
@@ -63,7 +65,7 @@
 					<!-- 附件列表 -->
 					<div v-if="comment.ATT_LIST">
 						<office-item
-							v-for="file in comment.ATT_LIST"
+							v-for=" file  in comment.ATT_LIST"
 							:key="file.URL"
 							:ext="file.FILEEXT.toLowerCase()"
 							:url="ossPath + '/upload' + file.URL"
@@ -92,12 +94,12 @@
 						maxlength="200"
 						:border="true"
 						:show-word-limit="true"
-						:autosize=" { maxHeight: 240, minHeight: 24 }"
+						:autosize="{ maxHeight: 240, minHeight: 24 }"
 					/>
 				</div>
 
 				<!-- 录音、传图 两个按钮 -->
-				<div class="commentBtnWrap" v-show="comment.length===0">
+				<div class="commentBtnWrap" v-show="comment.length === 0">
 					<span
 						class="bar-btn btn-voice"
 						@touchstart.prevent="startRecord"
@@ -111,10 +113,10 @@
 			<div class="mg-y-20 voiceWrap" v-show="voiceRecord">
 				<div
 					@click="playTempVoice"
-					:class="'voice' + (isPlaying? ' playing':'')"
-					:style="'width: '+ voiceBarWidth +'em;' "
+					:class="'voice' + (isPlaying ? ' playing' : '')"
+					:style="'width: ' + voiceBarWidth + 'em;'"
 				/>
-				<div class="voiceSeconds">{{60 - recordSecondsLeft}}''</div>
+				<div class="voiceSeconds">{{ 60 - recordSecondsLeft }}''</div>
 				<div class="removeVoice">
 					<van-icon name="revoke" size="26" color="#999" @click="removeVoiceRecord" />
 				</div>
@@ -144,7 +146,12 @@
 			<van-popup v-model="showPicker" :style="{ height: '80vh' }" position="bottom">
 				<div class="evaPicker">
 					<div class="evaPickerToolbar">快捷评语</div>
-					<div class="evaPickerRow" v-for="(str,i) in evaRowText" :key="i" @click="putIn(str)">{{str}}</div>
+					<div
+						class="evaPickerRow"
+						v-for="( str, i ) in evaRowText"
+						:key="i"
+						@click="putIn(str)"
+					>{{ str }}</div>
 				</div>
 			</van-popup>
 		</div>
@@ -304,6 +311,22 @@ export default {
 			// })
 			let user = await authonStore.getUserInfo()
 			this.myUserId = user.userId
+
+			if (
+				!sessionStorage.getItem('lqt-allow-record') ||
+				sessionStorage.getItem('lqt-allow-record') !== 'true'
+			) {
+				const self = this;
+				this.wx.startRecord({
+					success: function () {
+						self.wx.stopRecord()
+						sessionStorage.setItem('lqt-allow-record', 'true')
+					},
+					cancel: function () {
+						alert('用户拒绝授权录音')
+					},
+				})
+			}
 		},
 		choosePicture(evt) {
 			evt.preventDefault()
@@ -560,7 +583,13 @@ export default {
 				},
 			})
 		},
-		startRecord() {
+		startRecord(evt) {
+			evt.stopImmediatePropagation()
+			document.body.onselectstart = function () {
+				return false
+			}
+			document.getElementById('app').classList.add('unselectable')
+
 			const self = this
 			if (this.debounceTimer) {
 				clearTimeout(this.debounceTimer)
@@ -581,6 +610,9 @@ export default {
 			}, 3e2)
 		},
 		endRecord() {
+			document.body.onselectstart = null
+			document.getElementById('app').classList.remove('unselectable')
+
 			this.hideRecordingToast()
 			if (this.recordSecondsLeft > 59) {
 				this.wx.stopRecord({
@@ -762,6 +794,7 @@ export default {
 		width: 100%;
 	}
 }
+
 .voiceWrap {
 	display: flex;
 
@@ -785,6 +818,7 @@ export default {
 	margin: 15px 0;
 	font-size: 1.2em;
 }
+
 .divShareGoodwork {
 	display: flex;
 	align-items: center;
@@ -793,18 +827,25 @@ export default {
 .commentWrap {
 	> .commentItem {
 		user-select: none;
+		-webkit-touch-callout: none;
+
 		color: #999;
 		line-height: 2.2em;
 		border-bottom: 1px dashed #dedede;
 		padding: 20px 0;
 
-		&:nth-of-type(1){
+		&:nth-of-type(1) {
 			padding-top: 0;
 		}
 
 		&:nth-last-of-type(1) {
 			border-bottom: none;
 			padding-bottom: 0;
+		}
+
+		img{
+			pointer-events: none;
+			-webkit-touch-callout: none;
 		}
 	}
 }
@@ -833,7 +874,8 @@ export default {
 	> .van-cell {
 		padding: 0.5em;
 	}
-	.van-field__word-limit{
+
+	.van-field__word-limit {
 		color: #c7c7c7;
 	}
 }
@@ -857,6 +899,8 @@ export default {
 	flex-direction: column;
 	margin-left: 8px;
 	gap: 5px;
+	user-select: none;
+	-webkit-touch-callout: none;
 }
 
 .bar-btn {
@@ -876,6 +920,7 @@ export default {
 	&.btn-picture {
 		background-image: url('../../../assets/work/camera.png');
 	}
+
 	&.btn-voice {
 		background-image: url('../../../assets/work/voice.png');
 	}
@@ -936,6 +981,7 @@ export default {
 		margin-top: 3px;
 		background-size: cover;
 	}
+
 	&.playing&::after {
 		animation-name: voicePlay;
 		animation-duration: 1s;
@@ -949,6 +995,7 @@ export default {
 	0% {
 		background-position: 0;
 	}
+
 	100% {
 		background-position: 100%;
 	}
@@ -1026,9 +1073,11 @@ export default {
 		height: 21vw;
 		width: 21vw;
 	}
+
 	.van-uploader__upload {
 		border: 1px solid #c7c7c7;
 	}
+
 	.van-uploader__preview,
 	.van-uploader__upload {
 		margin: 0 9px 0 0;
@@ -1048,8 +1097,10 @@ export default {
 		}
 	}
 }
+
 .nomoreWidth {
 	max-width: 100%;
+
 	* {
 		max-width: 100%;
 	}
@@ -1059,6 +1110,7 @@ export default {
 	> .van-toast__icon {
 		margin-top: 8px !important;
 	}
+
 	> .van-toast__text {
 		margin-top: 16px !important;
 	}
