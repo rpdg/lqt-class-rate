@@ -19,6 +19,7 @@
                 <div class="sub-content" v-html="detail.CONTENT"></div>
                 <thumbs-grid v-if="detail.PICLIST && detail.PICLIST.length" :imgList="detail.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
                 <div v-if="detail.ATT_LIST" style="margin-top: 0.5em;">
+                [{{ossPath}}]
                   <office-item
                     v-for=" file  in detail.ATT_LIST"
                     :key="file.URL"
@@ -397,7 +398,7 @@ async function dataUrlToFile(dataUrl, fileName) {
         descLine: '',
         wwwUrl: roterPath,
         picRootPath:'',
-        ossPath: window.roterOssPath,
+        ossPath: roterOssPath,
         rootDomain: window.location.protocol + "//" + window.location.host,
         id: '',
         typeId: '',
