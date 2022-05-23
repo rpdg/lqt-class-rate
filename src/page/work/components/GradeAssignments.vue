@@ -54,12 +54,9 @@
 					/>
 					<!-- 图片留言 -->
 					<div v-else-if="comment.COMMENT_TYPE === '3'" class="commentImgContainer">
-						<img
-							v-for="( pic, x ) in comment.COMMENT"
-							:key="pic.value"
-							:src="ossPath + '/' + pic.value"
-							:data-index="x"
-						/>
+						<div class="divImg" v-for="( pic, x ) in comment.COMMENT" :key="pic.value" :data-index="x">
+							<img :src="ossPath + '/' + pic.value" />
+						</div>
 					</div>
 
 					<!-- 附件列表 -->
@@ -278,7 +275,6 @@ export default {
 			debounceTimer: 0,
 			imgTempMax: 4,
 			imgTempList: [],
-			currentImageIndex: -1,
 			currentWillRemoveDom: null,
 		}
 	},
@@ -419,13 +415,9 @@ export default {
 				)
 		},
 		startWillRemove(evt) {
-			// console.log('[startWillRemove], evt:', evt)
+			console.log('[startWillRemove], evt:', evt)
 
 			this.currentWillRemoveDom = evt.target
-
-			if (evt.target.tagName === 'IMG') {
-				this.currentImageIndex = ~~evt.target.dataset['index']
-			}
 
 			document.body.onselectstart = function () {
 				return false
@@ -444,7 +436,7 @@ export default {
 		},
 		async removeItem(item) {
 			// debugger
-			// console.log('[removeItem]:', item, this.currentWillRemoveDom)
+			console.log('[removeItem]:', item, this.currentWillRemoveDom)
 			if (
 				this.willRemove &&
 				item.ADDUSER_ID === this.myUserId &&
@@ -482,10 +474,14 @@ export default {
 						else {
 							param.value = item.COMMENT
 						}
-					} else if (item.COMMENT_TYPE === '2') {
+					} 
+					// 录音删除
+					else if (item.COMMENT_TYPE === '2') {
 						param.value = item.COMMENT[0].value
-					} else if (item.COMMENT_TYPE === '3') {
-						param.value = item.COMMENT[this.currentImageIndex].value
+					} 
+					// 图片删除
+					else if (item.COMMENT_TYPE === '3') {
+						param.value = item.COMMENT[this.currentWillRemoveDom.dataset['index']].value
 					}
 
 					this.$http.post(apiRouter.DEL_HOMEWORK_COMMENT, param).then(
@@ -636,6 +632,10 @@ export default {
 			}, 3e2)
 		},
 		endRecord() {
+			if (this.debounceTimer) {
+				clearTimeout(this.debounceTimer)
+			}
+
 			document.body.onselectstart = null
 			// @ts-ignore
 			document.getElementById('app').classList.remove('unselectable')
@@ -817,7 +817,7 @@ export default {
 	gap: 20px;
 	padding-top: 20px;
 
-	> img {
+	img {
 		width: 100%;
 	}
 }
