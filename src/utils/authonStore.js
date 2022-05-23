@@ -18,7 +18,7 @@ class AuthonStore {
 		let resp = await this._axios.post(apiList.GET_LIST);
 		let respData = resp.data;
 		if (respData.status === 200) {
-			localStorage.setItem('USER' , JSON.stringify(respData.data))
+			localStorage.setItem('USER', JSON.stringify(respData.data));
 			this._userInfo = {
 				userId: respData.data.userId,
 				userName: respData.data.userName,
@@ -26,16 +26,21 @@ class AuthonStore {
 				userType: respData.data.userType,
 			};
 			console.log('AuthonStore Loading ...', this._userInfo);
-		} else{
+		} else {
+			alert('当前未登录');
 			throw new Error('Fetching user profile error');
 		}
 	}
 
 	async getUserInfo() {
-		if (!this._userInfo) {
-			await this.fetchUserInfo();
+		try {
+			if (!this._userInfo) {
+				await this.fetchUserInfo();
+			}
+			return this._userInfo;
+		} catch (e) {
+			throw e;
 		}
-		return this._userInfo;
 	}
 }
 

@@ -68,6 +68,7 @@
 							v-for=" file  in comment.ATT_LIST"
 							:key="file.URL"
 							:ext="file.FILEEXT.toLowerCase()"
+                    		:display-name="file.FILENAME"
 							:url="ossPath + '/upload' + file.URL"
 						/>
 					</div>

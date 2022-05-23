@@ -30,6 +30,15 @@
                 <p v-if="quesList.length>1 && detail.QUESTYPE == '4'">{{detail.QUESNO}}.</p>
                 <div class="sub-content" v-html="detail.CONTENT"></div>
                 <thumbs-grid v-if="detail.PICLIST && detail.PICLIST.length" :imgList="detail.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
+                <div v-if="detail.ATT_LIST" style="margin-top: 0.5em;">
+                  <office-item
+                    v-for=" file  in detail.ATT_LIST"
+                    :key="file.URL"
+                    :ext="file.FILEEXT.toLowerCase()"
+                    :display-name="file.FILENAME"
+                    :url="ossPath + '/upload' + file.URL"
+                  />
+                </div>
 
                 <!--老师的图片-->
                 <div class="teacher-img-list">
@@ -268,6 +277,7 @@
   import GradeAssignments from './components/GradeAssignments.vue'
   import Thumbs from './components/Thumbs.vue';
 
+  import OfficeItem from './components/OfficeItem.vue'
   import {formatDate} from "../../utils/TimeUtils";
   import authonStore from "../../utils/AuthonStore";
 
@@ -284,6 +294,7 @@ var mp3;
       XHeader,
       Divider,
       [FirstHeader.name]: FirstHeader,
+		  [OfficeItem.name]: OfficeItem,
       [Thumbs.name]: Thumbs,
       GradeAssignments: GradeAssignments,
     },
@@ -330,6 +341,7 @@ var mp3;
         urlPath: window.location.href.split("#")[0],
         locationLine: '',
         descLine: '',
+			  ossPath: roterOssPath,
         wwwUrl: roterPath,
         wwwImgUrl:roterImgPath,
         picRootPath:'',

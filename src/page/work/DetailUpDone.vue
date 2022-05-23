@@ -20,7 +20,16 @@
                 <p v-if="quesList.length>1 && detail.QUESTYPE == '4'">{{detail.QUESNO}}.</p>
 				<div class="sub-content" v-html="detail.CONTENT"></div>
                 <thumbs-grid v-if="detail.PICLIST && detail.PICLIST.length" :imgList="detail.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
-                
+                <div v-if="detail.ATT_LIST">
+					<office-item
+						v-for=" file  in detail.ATT_LIST"
+						:key="file.URL"
+						:ext="file.FILEEXT.toLowerCase()"
+                    	:display-name="file.FILENAME"
+						:url="ossPath + '/upload' + file.URL"
+					/>
+				</div>
+
 				<!--老师的图片-->
                 <div class="teacher-img-list">
                   <thumbs-grid v-if="detail.IMGLIST && detail.IMGLIST.length" :imgList="detail.IMGLIST" :picBase="picRootPath" :viewFunc="previewImage" />
@@ -305,6 +314,7 @@ import FirstHeader from './FirstHeader.vue';
 
 import GradeAssignments from './components/GradeAssignments.vue'
 import Thumbs from './components/Thumbs.vue';
+import OfficeItem from './components/OfficeItem.vue'
 
 export default {
 	directives: {
@@ -325,7 +335,7 @@ export default {
 		XButton,
 		XDialog,
 		[FirstHeader.name]: FirstHeader,
-
+		[OfficeItem.name]: OfficeItem,
 		[Thumbs.name]: Thumbs,		
 		GradeAssignments: GradeAssignments,
 

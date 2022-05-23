@@ -1,6 +1,6 @@
 <template>
 	<div class="itemRow">
-		<a class="spFileName" :href="url" target="_blank">{{url.substr(url.lastIndexOf('/')+1)}}</a>
+		<a class="spFileName" :href="url" target="_blank">{{displayName}}</a>
 		<a v-if="previewUrl" class="spPreview" :href="previewUrl" target="_blank">预览</a>
 	</div>
 </template>
@@ -18,6 +18,10 @@ export default {
 			type: String,
 			required: true,
 		},
+		displayName:{
+			type: String,
+			required: true,
+		}
 	},
     computed:{
         previewUrl(){
