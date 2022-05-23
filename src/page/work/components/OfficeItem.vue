@@ -1,6 +1,6 @@
 <template>
 	<div class="itemRow">
-		<a class="spFileName" :href="url" target="_blank">{{displayName}}</a>
+		<a class="spFileName" :href="url" target="_blank" :data-id="id">{{displayName}}</a>
 		<a v-if="previewUrl" class="spPreview" :href="previewUrl" target="_blank">预览</a>
 	</div>
 </template>
@@ -10,6 +10,11 @@
 export default {
 	name: 'OfficeItem',
 	props: {
+		id:{
+			type: String,
+			required: false,
+			default: ''
+		},
 		ext: {
 			type: String,
 			required: true,

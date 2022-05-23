@@ -65,10 +65,11 @@
 					<!-- 附件列表 -->
 					<div v-if="comment.ATT_LIST">
 						<office-item
-							v-for=" file  in comment.ATT_LIST"
+							v-for="file in comment.ATT_LIST"
+							:id="file.ID"
 							:key="file.URL"
 							:ext="file.FILEEXT.toLowerCase()"
-                    		:display-name="file.FILENAME"
+							:display-name="file.FILENAME"
 							:url="ossPath + '/upload' + file.URL"
 						/>
 					</div>
@@ -160,8 +161,6 @@
 </template>
 
 <script>
-// @ts-nocheck
-
 import apiRouter, { apiPath } from '../../../config/api'
 import {
 	Dialog,
@@ -175,12 +174,14 @@ import {
 	Field,
 	Uploader,
 } from 'vant'
+// @ts-ignore
 import ICON_RECORDING from '../../../assets/work/icon_record.png'
 import OfficeItem from './OfficeItem.vue'
 import VoiceItem from './VoiceItem.vue'
 import authonStore from '../../../utils/authonStore'
 import { readWxImages } from '../../../utils/imgUtil'
 
+// @ts-ignore
 export default {
 	name: 'GradeAssignments',
 	components: {
@@ -238,6 +239,7 @@ export default {
 	},
 	data() {
 		return {
+			// @ts-ignore
 			ossPath: roterOssPath,
 			typeColor: {
 				1: '#48b319',
@@ -277,6 +279,7 @@ export default {
 			imgTempMax: 4,
 			imgTempList: [],
 			currentImageIndex: -1,
+			currentWillRemoveDom: null,
 		}
 	},
 	// mounted() {
@@ -311,13 +314,13 @@ export default {
 			// 	},
 			// })
 			let user = await authonStore.getUserInfo()
-			this.myUserId = user.userId
+			this.myUserId = user ? user.userId : -1
 
 			if (
 				!sessionStorage.getItem('lqt-allow-record') ||
 				sessionStorage.getItem('lqt-allow-record') !== 'true'
 			) {
-				const self = this;
+				const self = this
 				this.wx.startRecord({
 					success: function () {
 						self.wx.stopRecord()
@@ -374,6 +377,7 @@ export default {
 						} catch (err) {
 							throw err
 						} finally {
+							// @ts-ignore
 							toast.clear()
 						}
 					},
@@ -415,7 +419,9 @@ export default {
 				)
 		},
 		startWillRemove(evt) {
-			console.log('startWillRemove', evt)
+			// console.log('[startWillRemove], evt:', evt)
+
+			this.currentWillRemoveDom = evt.target
 
 			if (evt.target.tagName === 'IMG') {
 				this.currentImageIndex = ~~evt.target.dataset['index']
@@ -424,20 +430,27 @@ export default {
 			document.body.onselectstart = function () {
 				return false
 			}
+
+			// @ts-ignore
 			document.getElementById('app').classList.add('unselectable')
 			this.willRemove = true
 		},
 		cancelWillRemove() {
+			this.currentWillRemoveDom = null
 			document.body.onselectstart = null
+			// @ts-ignore
 			document.getElementById('app').classList.remove('unselectable')
 			this.willRemove = false
 		},
 		async removeItem(item) {
 			// debugger
+			// console.log('[removeItem]:', item, this.currentWillRemoveDom)
 			if (
 				this.willRemove &&
 				item.ADDUSER_ID === this.myUserId &&
-				item.COMMENT
+				(item.COMMENT ||
+					(this.currentWillRemoveDom.tagName === 'A' &&
+						this.currentWillRemoveDom.classList.contains('spFileName')))
 			) {
 				let answer = await Dialog.confirm({
 					className: 'dy-rate-dialog',
@@ -449,21 +462,32 @@ export default {
 				if (answer === 'confirm') {
 					const self = this
 
-					let removeValue
-					if (item.COMMENT_TYPE === '1') {
-						removeValue = item.COMMENT
-					} else if (item.COMMENT_TYPE === '2') {
-						removeValue = item.COMMENT[0].value
-					} else if (item.COMMENT_TYPE === '3') {
-						removeValue = item.COMMENT[this.currentImageIndex].value
-					}
-
 					let param = {
 						commentId: item.ID,
 						type: item.TYPE,
 						comment_type: item.COMMENT_TYPE,
-						value: removeValue,
+						value: null,
 					}
+
+					if (item.COMMENT_TYPE === '1') {
+						// 附件删除
+						if (
+							this.currentWillRemoveDom.tagName === 'A' &&
+							this.currentWillRemoveDom.classList.contains('spFileName')
+						) {
+							param.comment_type = '4'
+							param.value = this.currentWillRemoveDom.dataset['id']
+						}
+						// 留言删除
+						else {
+							param.value = item.COMMENT
+						}
+					} else if (item.COMMENT_TYPE === '2') {
+						param.value = item.COMMENT[0].value
+					} else if (item.COMMENT_TYPE === '3') {
+						param.value = item.COMMENT[this.currentImageIndex].value
+					}
+
 					this.$http.post(apiRouter.DEL_HOMEWORK_COMMENT, param).then(
 						(response) => {
 							if (response.status === 200) {
@@ -589,6 +613,7 @@ export default {
 			document.body.onselectstart = function () {
 				return false
 			}
+			// @ts-ignore
 			document.getElementById('app').classList.add('unselectable')
 
 			const self = this
@@ -612,6 +637,7 @@ export default {
 		},
 		endRecord() {
 			document.body.onselectstart = null
+			// @ts-ignore
 			document.getElementById('app').classList.remove('unselectable')
 
 			this.hideRecordingToast()
@@ -844,7 +870,7 @@ export default {
 			padding-bottom: 0;
 		}
 
-		img{
+		img {
 			pointer-events: none;
 			-webkit-touch-callout: none;
 		}
