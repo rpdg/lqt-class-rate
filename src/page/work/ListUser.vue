@@ -22,11 +22,12 @@
 				class="lqt-list"
 				id="homework"
 				v-model="pageLoading"
-				:finished="pageNum > 0 && pageNum===pageCount"
-				finished-text="到底啦"
+				:finished="pageNum > 0 && (pageNum===pageCount || pageCount===0)"
+				:finished-text="dataList.length ? `到底啦` : `暂无数据`"
 				@load="loadNextPage"
+				:immediate-check="false"
 			>
-        <div class="it clearfix it-m" v-show="false">不知道为啥，但是只能加这个样式才正常</div>
+				<div class="it clearfix it-m" v-show="false">不知道为啥，但是只能加这个样式才正常</div>
 				<div
 					class="it clearfix it-m"
 					style="display: list-item;"
@@ -95,9 +96,9 @@
 </template>
 
 <script>
-import apiRouter from '../../config/api.js';
-import { XHeader } from 'vux';
-import { Icon, Popup, List, Button } from 'vant';
+import apiRouter from '../../config/api.js'
+import { XHeader } from 'vux'
+import { Icon, Popup, List, Button } from 'vant'
 
 // @ts-ignore
 export default {
@@ -109,43 +110,45 @@ export default {
 		[Button.name]: Button,
 	},
 	activated() {
-		this.courseCode = '';
-		this.pageCount = 1;
-		this.pageNum = 0;
-		this.dataList.length = 0;
-		this.courseList.length = 1;
-    this.$refs['listWrapper'].scrollTo(0,0);
-		this.loadNextPage();
+		this.courseCode = ''
+		this.pageCount = 1
+		this.pageNum = 0
+		this.dataList.length = 0
+		this.courseList.length = 1
+		this.$refs['listWrapper'].scrollTo(0, 0)
+		this.pageLoading = true
+		this.loadNextPage()
 
-		this.oldPageTitle = document.title;
-		document.title = '作业';
+		this.oldPageTitle = document.title
+		document.title = '作业'
 	},
 	deactivated() {
-		document.title = this.oldPageTitle;
+		document.title = this.oldPageTitle
 	},
 
 	methods: {
 		goBack() {
 			//debugger;
-			this.$router.push({ path: '/' });
+			this.$router.push({ path: '/' })
 		},
 		showConfigure() {
-			this.isShowConfigure = true;
+			this.isShowConfigure = true
 		},
 		filteCourse(curCode) {
 			if (curCode !== this.courseCode) {
-				this.isShowConfigure = false;
-				this.courseCode = curCode;
-				this.pageCount = 1;
-				this.pageNum = 0;
-				this.dataList.length = 0;
-        this.$refs['listWrapper'].scrollTo(0,0);
+				this.isShowConfigure = false
+				this.courseCode = curCode
+				this.pageCount = 1
+				this.pageNum = 0
+				this.dataList.length = 0
+				this.$refs['listWrapper'].scrollTo(0, 0)
+				this.loadNextPage()
 			}
 		},
 		loadNextPage() {
-			let self = this;
-			self.pageLoading = true;
-			self.pageNum = self.pageNum + 1;
+			let self = this
+			self.pageLoading = true
+			self.pageNum = self.pageNum + 1
 			this.$http
 				.get(
 					apiRouter.GET_HOMEWORK_LIST +
@@ -160,21 +163,23 @@ export default {
 					(response) => {
 						if (response.body.status === 1) {
 							if (self.pageNum === 1) {
-								self.pageCount = Math.ceil(response.body.data.pageCount / this.pageSize);
+								self.pageCount = Math.ceil(
+									response.body.data.pageCount / this.pageSize
+								)
 								if (self.courseCode === '' && response.body.data.course_list) {
-									self.courseList.push(...response.body.data.course_list);
+									self.courseList.push(...response.body.data.course_list)
 								}
 							}
-							self.dataList.push(...response.body.data.infoList);
-							self.pageLoading = false;
+							self.dataList.push(...response.body.data.infoList)
+							self.pageLoading = false
 						} else {
-							alert(response.body.message);
+							alert(response.body.message)
 						}
 					},
 					(response) => {
-						alert('请求失败了!!!!');
+						alert('请求失败了!!!!')
 					}
-				);
+				)
 		},
 		//跳转详情页
 		goDetail(e) {
@@ -183,24 +188,24 @@ export default {
         // ANID:空为未完成，有id则已完成
         // CAN_CHANGE:默认值为0 如果被老师驳回则为1算未完成，需要和ANID一起判断
        */
-			this.scrollTop = document.documentElement.scrollTop;
+			this.scrollTop = document.documentElement.scrollTop
 			if (e.CAN_CHANGE == 1) {
 				this.$router.push({
 					path: 'work-user-rev',
 					query: { workId: e.WORKID, anId: e.ANID },
-				});
-				return;
+				})
+				return
 			}
-			let flag = e.CAN_CHANGE == 0 && e.ANID;
-			let path = 'work-detail';
+			let flag = e.CAN_CHANGE == 0 && e.ANID
+			let path = 'work-detail'
 			if (flag) {
-				path = 'work-detail-done';
+				path = 'work-detail-done'
 			}
 
 			this.$router.push({
 				path: path,
 				query: { workId: e.WORKID, anId: e.ANID },
-			});
+			})
 		},
 	},
 	data() {
@@ -211,13 +216,13 @@ export default {
 			pageSize: 20,
 			pageNum: 0,
 			pageCount: 1,
-			pageLoading: true,
+			pageLoading: false,
 			scrollTop: 0,
 			isShowConfigure: false,
 			courseCode: '',
-		};
+		}
 	},
-};
+}
 </script>
 
 <style lang="less" scoped>
@@ -1512,8 +1517,8 @@ a#button-confirm {
 
 .lqt-wrapper {
 	// margin-top: 100 / @baseSize !important;
-  flex:1;
-  overflow: scroll;
+	flex: 1;
+	overflow: scroll;
 }
 
 /*#vote_list .anonym:after {
