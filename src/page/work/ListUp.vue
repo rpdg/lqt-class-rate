@@ -532,8 +532,8 @@ a.delete {
 	top: 0;
 	left: 0;
 	width: 100%;
-	height: 100 / @baseSize;
-	line-height: 100 / @baseSize;
+	// height: 100 / @baseSize;
+	// line-height: 100 / @baseSize;
 	z-index: 1;
 	border-bottom: solid 1px #dedede;
 }

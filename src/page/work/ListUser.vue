@@ -1,5 +1,5 @@
 <template>
-	<div style="display: flex;flex-direction: column; height: 100vh; overflow: hidden;">
+	<div style="display: flex;flex-direction: column; height: 100vh; overflow: hidden; background-color: #fff !important">
 		<!-- 返回组件 -->
 		<x-header
 			class="title-header"
@@ -30,7 +30,7 @@
 				<div class="it clearfix it-m" v-show="false">不知道为啥，但是只能加这个样式才正常</div>
 				<div
 					class="it clearfix it-m"
-					style="display: list-item;"
+					style="display: list-item; list-style: none;"
 					v-for="item in dataList"
 					:key="item.ID"
 					@click="goDetail(item)"
@@ -626,16 +626,17 @@ body {
 
 .lqt-list {
 	// display: none;
-	padding-left: 10px;
+	// padding-left: 10px;
 	// overflow: hidden;
-	background: #fff;
+	background: #fff !important;
 	// box-shadow: 0 2px 0 rgba(9, 9, 9, 0.2);
 }
 
 .lqt-list .it {
-	padding: 10px 10px 10px 1.4rem;
+	padding: 10px 10px 10px 1.66rem;
 	border-top: solid 1px #dedede;
 	margin-top: -1px;
+	background-color: #fff !important;
 }
 
 .lqt-list .list-title {
@@ -705,9 +706,6 @@ body {
 	left: auto;
 }
 
-.lqt-list .it-m {
-	padding-left: 1.3rem;
-}
 
 .lqt-list .it-m .list-title {
 	margin-left: -1.2rem;
@@ -1496,8 +1494,8 @@ a#button-confirm {
 	top: 0;
 	left: 0;
 	width: 100%;
-	height: 100 / @baseSize;
-	line-height: 100 / @baseSize;
+	// height: 100 / @baseSize;
+	// line-height: 100 / @baseSize;
 	z-index: 1;
 	border-bottom: solid 1px #dedede;
 }
@@ -1519,6 +1517,7 @@ a#button-confirm {
 	// margin-top: 100 / @baseSize !important;
 	flex: 1;
 	overflow: scroll;
+	background-color: #fff !important;
 }
 
 /*#vote_list .anonym:after {

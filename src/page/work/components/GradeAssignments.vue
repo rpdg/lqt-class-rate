@@ -28,7 +28,7 @@
 					class="commentItem"
 					:key="comment.ID"
 					v-for="( comment, index ) in commentList"
-					v-long-press="600"
+					v-long-press="1000"
 					@touchstart="startWillRemove"
 					@touchmove="cancelWillRemove"
 					@long-press-start="removeItem(comment)"
@@ -814,8 +814,12 @@ export default {
 .commentImgContainer {
 	display: flex;
 	flex-direction: column;
-	gap: 20px;
+	gap: 10px;
 	padding-top: 20px;
+
+	>.divImg{
+		display: inline-flex;
+	}
 
 	img {
 		width: 100%;
