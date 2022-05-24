@@ -74,6 +74,10 @@ hr {
 	border-top: none;
 }
 
+.van-button--normal {
+	font-size: 16px;
+}
+
 .vux-header .vux-header-left .left-arrow:before {
 	width: 8px !important;
 	height: 8px !important;

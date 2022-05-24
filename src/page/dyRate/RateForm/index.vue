@@ -877,17 +877,15 @@ export default {
   bottom: 0;
   height: @footerHeight;
   width: 100%;
+  display: flex;
+	gap: 15px;
+  align-items: center;
+	padding: 15px;
 
   > button {
-    display: inline-block;
-    line-height: 0;
-    height: 10.7vw;
-    width: 26.7vw;
+    flex:1;
+    display: block;
     color: #fff;
-    margin: 5px 15px 3vw;
-    padding-top: 2px;
-    border-radius: 0;
-    font-size: 18px;
 
     &.error {
       background-color: #ed561b;
