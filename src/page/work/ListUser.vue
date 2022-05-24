@@ -23,7 +23,7 @@
 				id="homework"
 				v-model="pageLoading"
 				:finished="pageNum > 0 && (pageNum===pageCount || pageCount===0)"
-				:finished-text="dataList.length ? `到底啦` : `暂无数据`"
+				:finished-text="pageLoading? `加载中...` : dataList.length ? `到底啦` : `暂无数据`"
 				@load="loadNextPage"
 				:immediate-check="false"
 			>
