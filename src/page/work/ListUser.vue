@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div style="display: flex;flex-direction: column; height: 100vh; overflow: hidden;">
 		<!-- 返回组件 -->
 		<x-header
 			class="title-header"
@@ -17,15 +17,16 @@
 				/>
 			</template>
 		</x-header>
-		<div class="lqt-wrapper">
+		<div class="lqt-wrapper" ref="listWrapper">
 			<van-list
 				class="lqt-list"
 				id="homework"
 				v-model="pageLoading"
-				:finished="pageCount===pageNum"
+				:finished="pageNum > 0 && pageNum===pageCount"
 				finished-text="到底啦"
 				@load="loadNextPage"
 			>
+        <div class="it clearfix it-m" v-show="false">不知道为啥，但是只能加这个样式才正常</div>
 				<div
 					class="it clearfix it-m"
 					style="display: list-item;"
@@ -78,7 +79,16 @@
 		<van-popup position="bottom" style="height: 50vh;" v-model="isShowConfigure" class="evaPicker">
 			<div class="evaPickerToolbar">作业科目过滤</div>
 			<div class="evaRecord">
-				<van-button plain hairline type="primary" size="small" class="btnGreenBorder">aaa</van-button>
+				<van-button
+					v-for="course in courseList"
+					:key="course.COURSE_CODE"
+					plain
+					hairline
+					type="primary"
+					size="small"
+					class="btnGreenBorder"
+					@click="filteCourse(course.COURSE_CODE)"
+				>{{course.COURSE_NAME}}</van-button>
 			</div>
 		</van-popup>
 	</div>
@@ -99,8 +109,12 @@ export default {
 		[Button.name]: Button,
 	},
 	activated() {
+		this.courseCode = '';
+		this.pageCount = 1;
 		this.pageNum = 0;
 		this.dataList.length = 0;
+		this.courseList.length = 1;
+    this.$refs['listWrapper'].scrollTo(0,0);
 		this.loadNextPage();
 
 		this.oldPageTitle = document.title;
@@ -118,17 +132,38 @@ export default {
 		showConfigure() {
 			this.isShowConfigure = true;
 		},
+		filteCourse(curCode) {
+			if (curCode !== this.courseCode) {
+				this.isShowConfigure = false;
+				this.courseCode = curCode;
+				this.pageCount = 1;
+				this.pageNum = 0;
+				this.dataList.length = 0;
+        this.$refs['listWrapper'].scrollTo(0,0);
+			}
+		},
 		loadNextPage() {
 			let self = this;
 			self.pageLoading = true;
 			self.pageNum = self.pageNum + 1;
 			this.$http
-				.get(apiRouter.GET_HOMEWORK_LIST + '?curPage=' + self.pageNum + '&pageSize=' + this.pageSize)
+				.get(
+					apiRouter.GET_HOMEWORK_LIST +
+						'?curPage=' +
+						self.pageNum +
+						'&pageSize=' +
+						self.pageSize +
+						'&courseCode=' +
+						self.courseCode
+				)
 				.then(
 					(response) => {
 						if (response.body.status === 1) {
 							if (self.pageNum === 1) {
 								self.pageCount = Math.ceil(response.body.data.pageCount / this.pageSize);
+								if (self.courseCode === '' && response.body.data.course_list) {
+									self.courseList.push(...response.body.data.course_list);
+								}
 							}
 							self.dataList.push(...response.body.data.infoList);
 							self.pageLoading = false;
@@ -172,12 +207,14 @@ export default {
 		return {
 			oldPageTitle: '',
 			dataList: [],
+			courseList: [{ COURSE_CODE: '', COURSE_NAME: '全部科目' }],
 			pageSize: 20,
 			pageNum: 0,
-			pageCount: 0,
+			pageCount: 1,
 			pageLoading: true,
 			scrollTop: 0,
 			isShowConfigure: false,
+			courseCode: '',
 		};
 	},
 };
@@ -209,32 +246,16 @@ export default {
 
 	> .evaRecord {
 		margin: 0;
-		flex: 1;
 	}
 }
 
 .evaRecord {
 	margin: 15px 0;
-
-	> .evaRecordRow {
-		font-size: 14px;
-		line-height: 24px;
-		// padding: 15px 0;
-		// border-bottom: 1px dashed #c7c7c7;
-		display: flex;
-		align-items: center;
-
-		> span {
-			display: block;
-			margin: 0.5em 0;
-			flex: 1;
-		}
-
-		> .evaRecordRemark {
-			font-size: 12px;
-			color: #666;
-		}
-	}
+	display: flex;
+	flex-wrap: wrap;
+	flex-grow: initial;
+	gap: 10px;
+	align-items: stretch;
 }
 
 .btnGreenBorder {
@@ -601,7 +622,7 @@ body {
 .lqt-list {
 	// display: none;
 	padding-left: 10px;
-	overflow: hidden;
+	// overflow: hidden;
 	background: #fff;
 	// box-shadow: 0 2px 0 rgba(9, 9, 9, 0.2);
 }
@@ -1466,7 +1487,7 @@ a#button-confirm {
 
 .title-header {
 	background-color: #fff;
-	position: fixed;
+	// position: fixed;
 	top: 0;
 	left: 0;
 	width: 100%;
@@ -1490,7 +1511,9 @@ a#button-confirm {
 }
 
 .lqt-wrapper {
-	margin-top: 100 / @baseSize !important;
+	// margin-top: 100 / @baseSize !important;
+  flex:1;
+  overflow: scroll;
 }
 
 /*#vote_list .anonym:after {
