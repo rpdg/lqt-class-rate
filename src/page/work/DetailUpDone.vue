@@ -824,7 +824,7 @@ export default {
 					// vm.$emit('finishEdit', data);
 					vm.finishEdit(data);
 
-					let urlList = srcItem.URL.split('/');
+					let urlList = url.split('/');
 					let submitUrl = urlList[urlList.length - 1];
 					let postData = {
 							detailId: srcItem.ID ,
