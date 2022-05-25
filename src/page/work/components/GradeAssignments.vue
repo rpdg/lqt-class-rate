@@ -43,8 +43,9 @@
 					<div
 						v-if="comment.COMMENT_TYPE === '1'"
 						class="nomoreWidth richTextWrap"
-						v-html="comment.COMMENT"
+						v-html="comment.COMMENT.replace(/\n/gi , '<p />')"
 					/>
+					
 					<!-- 录音留言 -->
 					<voice-item
 						v-else-if="comment.COMMENT_TYPE === '2'"
