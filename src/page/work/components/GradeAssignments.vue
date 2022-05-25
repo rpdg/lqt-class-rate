@@ -312,10 +312,7 @@ export default {
 			let user = await authonStore.getUserInfo()
 			this.myUserId = user ? user.userId : -1
 
-			if (
-				!sessionStorage.getItem('lqt-allow-record') ||
-				sessionStorage.getItem('lqt-allow-record') !== 'true'
-			) {
+			if (sessionStorage.getItem('lqt-allow-record') !== 'true') {
 				const self = this
 				this.wx.startRecord({
 					success: function () {
@@ -501,7 +498,7 @@ export default {
 						)
 					}
 				} catch (e) {
-				} finally{
+				} finally {
 					this.cancelWillRemove()
 				}
 			} else {
@@ -538,12 +535,13 @@ export default {
 				message: `还可录: ${this.recordSecondsLeft} ''`,
 				icon: ICON_RECORDING,
 			})
+			const self = this
 			this.recordingTimer = setInterval(() => {
-				this.recordSecondsLeft--
-				if (this.recordSecondsLeft) {
-					toast.message = `还可录: ${this.recordSecondsLeft} ''`
+				self.recordSecondsLeft--
+				if (self.recordSecondsLeft) {
+					toast.message = `还可录: ${self.recordSecondsLeft} ''`
 				} else {
-					this.hideRecordingToast()
+					self.endRecord()
 				}
 			}, 1e3)
 		},
@@ -627,14 +625,23 @@ export default {
 			this.debounceTimer = setTimeout(function () {
 				self.wx.stopRecord()
 
-				self.recordSecondsLeft = 60
-				self.showRecordingToast()
-				self.wx.startRecord()
+				self.wx.startRecord({
+					success(res) {
+						self.recordSecondsLeft = 60
+						self.showRecordingToast()
+					},
+					fail() {
+						self.hideRecordingToast()
+						Toast('录音失败')
+					},
+				})
 				self.wx.onVoiceRecordEnd({
 					// 录音时间超过一分钟没有停止的时候会执行 complete 回调
 					complete: function (res) {
 						self.hideRecordingToast()
-						self.uploadVoice(res.localId)
+						if (res.localId) {
+							self.uploadVoice(res.localId)
+						}
 					},
 				})
 			}, 3e2)
@@ -649,25 +656,19 @@ export default {
 			document.getElementById('app').classList.remove('unselectable')
 
 			this.hideRecordingToast()
-			if (this.recordSecondsLeft > 59) {
-				this.wx.stopRecord({
-					success: function (res) {
-						console.log(res)
-					},
-				})
-				Toast('说话时间太短')
-				return
-			}
 			const vm = this
 			this.wx.stopRecord({
 				success: function (res) {
-					if (res.localId) {
+					if (vm.recordSecondsLeft > 59) {
+						Toast('说话时间太短')
+					}
+					else if (res.localId) {
 						vm.uploadVoice(res.localId)
 					}
 				},
 				fail: function (res) {
 					console.log(res)
-					Toast('说话时间太短')
+					Toast('录音失败')
 				},
 			})
 		},
