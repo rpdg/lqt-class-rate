@@ -28,7 +28,7 @@
 					class="commentItem"
 					:key="comment.ID"
 					v-for="( comment, index ) in commentList"
-					v-long-press="1000"
+					v-long-press="1500"
 					@touchstart="startWillRemove"
 					@touchmove="cancelWillRemove"
 					@long-press-start="removeItem(comment)"
@@ -275,7 +275,7 @@ export default {
 			debounceTimer: 0,
 			imgTempMax: 4,
 			imgTempList: [],
-			currentWillRemoveDom: null,
+			willRemoveTargetDom: null,
 		}
 	},
 	// mounted() {
@@ -417,7 +417,7 @@ export default {
 		startWillRemove(evt) {
 			console.log('[startWillRemove], evt:', evt)
 
-			this.currentWillRemoveDom = evt.target
+			this.willRemoveTargetDom = evt.target
 
 			document.body.onselectstart = function () {
 				return false
@@ -428,76 +428,84 @@ export default {
 			this.willRemove = true
 		},
 		cancelWillRemove() {
-			this.currentWillRemoveDom = null
+			this.willRemove = false
+			this.willRemoveTargetDom = null
 			document.body.onselectstart = null
 			// @ts-ignore
 			document.getElementById('app').classList.remove('unselectable')
-			this.willRemove = false
 		},
 		async removeItem(item) {
 			// debugger
-			console.log('[removeItem]:', item, this.currentWillRemoveDom)
+			console.log('[removeItem]:', item, this.willRemoveTargetDom)
 			if (
 				this.willRemove &&
 				item.ADDUSER_ID === this.myUserId &&
 				(item.COMMENT ||
-					(this.currentWillRemoveDom.tagName === 'A' &&
-						this.currentWillRemoveDom.classList.contains('spFileName')))
+					(this.willRemoveTargetDom.tagName === 'A' &&
+						this.willRemoveTargetDom.classList.contains('spFileName')))
 			) {
-				let answer = await Dialog.confirm({
-					className: 'dy-rate-dialog',
-					title: '',
-					message: '确认撤销',
-					confirmButtonText: '撤销',
-					messageAlign: 'center',
-				})
-				if (answer === 'confirm') {
-					const self = this
+				try {
+					let answer = await Dialog.confirm({
+						className: 'dy-rate-dialog',
+						title: '',
+						message: '确认撤销',
+						confirmButtonText: '撤销',
+						messageAlign: 'center',
+					})
+					if (answer === 'confirm') {
+						const self = this
 
-					let param = {
-						commentId: item.ID,
-						type: item.TYPE,
-						comment_type: item.COMMENT_TYPE,
-						value: null,
-					}
-
-					if (item.COMMENT_TYPE === '1') {
-						// 附件删除
-						if (
-							this.currentWillRemoveDom.tagName === 'A' &&
-							this.currentWillRemoveDom.classList.contains('spFileName')
-						) {
-							param.comment_type = '4'
-							param.value = this.currentWillRemoveDom.dataset['id']
+						let param = {
+							commentId: item.ID,
+							type: item.TYPE,
+							comment_type: item.COMMENT_TYPE,
+							value: null,
 						}
-						// 留言删除
-						else {
-							param.value = item.COMMENT
-						}
-					} 
-					// 录音删除
-					else if (item.COMMENT_TYPE === '2') {
-						param.value = item.COMMENT[0].value
-					} 
-					// 图片删除
-					else if (item.COMMENT_TYPE === '3') {
-						param.value = item.COMMENT[this.currentWillRemoveDom.dataset['index']].value
-					}
 
-					this.$http.post(apiRouter.DEL_HOMEWORK_COMMENT, param).then(
-						(response) => {
-							if (response.status === 200) {
-								self.loadComments(
-									{ WORKID: self.workId, ANID: self.mainId },
-									false
-								)
+						if (item.COMMENT_TYPE === '1') {
+							// 附件删除
+							if (
+								this.willRemoveTargetDom.tagName === 'A' &&
+								this.willRemoveTargetDom.classList.contains('spFileName')
+							) {
+								param.comment_type = '4'
+								param.value = this.willRemoveTargetDom.dataset['id']
 							}
-						},
-						(response) => {
-							alert('请求失败了!!!!')
+							// 留言删除
+							else {
+								param.value = item.COMMENT
+							}
 						}
-					)
+						// 录音删除
+						else if (item.COMMENT_TYPE === '2') {
+							param.value = item.COMMENT[0].value
+						}
+						// 图片删除
+						else if (item.COMMENT_TYPE === '3') {
+							param.value =
+								item.COMMENT[this.willRemoveTargetDom.dataset['index']].value
+						}
+
+						this.$http.post(apiRouter.DEL_HOMEWORK_COMMENT, param).then(
+							(response) => {
+								if (response.status === 200) {
+									self.loadComments(
+										{ WORKID: self.workId, ANID: self.mainId },
+										false
+									)
+								}
+							},
+							(response) => {
+								alert('请求失败了!!!!')
+							}
+						)
+					}
+				} catch (e) {
+				} finally{
+					this.cancelWillRemove()
 				}
+			} else {
+				this.cancelWillRemove()
 			}
 		},
 		async playMP3(item, trackIndex) {
@@ -817,7 +825,7 @@ export default {
 	gap: 10px;
 	padding-top: 20px;
 
-	>.divImg{
+	> .divImg {
 		display: inline-flex;
 	}
 

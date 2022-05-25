@@ -1,5 +1,7 @@
 <template>
-	<div style="display: flex;flex-direction: column; height: 100vh; overflow: hidden; background-color: #fff !important">
+	<div
+		style="display: flex;flex-direction: column; height: 100vh; overflow: hidden; background-color: #fff !important"
+	>
 		<!-- 返回组件 -->
 		<x-header
 			class="title-header"
@@ -167,6 +169,7 @@ export default {
 									response.body.data.pageCount / this.pageSize
 								)
 								if (self.courseCode === '' && response.body.data.course_list) {
+									self.courseList.length = 1
 									self.courseList.push(...response.body.data.course_list)
 								}
 							}
@@ -705,7 +708,6 @@ body {
 	bottom: 1px;
 	left: auto;
 }
-
 
 .lqt-list .it-m .list-title {
 	margin-left: -1.2rem;
