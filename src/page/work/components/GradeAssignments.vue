@@ -474,14 +474,15 @@ export default {
 						else {
 							param.value = item.COMMENT
 						}
-					} 
+					}
 					// 录音删除
 					else if (item.COMMENT_TYPE === '2') {
 						param.value = item.COMMENT[0].value
-					} 
+					}
 					// 图片删除
 					else if (item.COMMENT_TYPE === '3') {
-						param.value = item.COMMENT[this.currentWillRemoveDom.dataset['index']].value
+						param.value =
+							item.COMMENT[this.currentWillRemoveDom.dataset['index']].value
 					}
 
 					this.$http.post(apiRouter.DEL_HOMEWORK_COMMENT, param).then(
@@ -530,12 +531,13 @@ export default {
 				message: `还可录: ${this.recordSecondsLeft} ''`,
 				icon: ICON_RECORDING,
 			})
+			const self = this
 			this.recordingTimer = setInterval(() => {
-				this.recordSecondsLeft--
+				self.recordSecondsLeft--
 				if (this.recordSecondsLeft) {
 					toast.message = `还可录: ${this.recordSecondsLeft} ''`
 				} else {
-					this.hideRecordingToast()
+					self.endRecord()
 				}
 			}, 1e3)
 		},
@@ -619,14 +621,23 @@ export default {
 			this.debounceTimer = setTimeout(function () {
 				self.wx.stopRecord()
 
-				self.recordSecondsLeft = 60
-				self.showRecordingToast()
-				self.wx.startRecord()
+				self.wx.startRecord({
+					success(res) {
+						self.recordSecondsLeft = 60
+						self.showRecordingToast()
+					},
+					fail() {
+						self.hideRecordingToast()
+						Toast('录音失败')
+					},
+				})
 				self.wx.onVoiceRecordEnd({
 					// 录音时间超过一分钟没有停止的时候会执行 complete 回调
 					complete: function (res) {
 						self.hideRecordingToast()
-						self.uploadVoice(res.localId)
+						if (res.localId) {
+							self.uploadVoice(res.localId)
+						}
 					},
 				})
 			}, 3e2)
@@ -817,7 +828,7 @@ export default {
 	gap: 10px;
 	padding-top: 20px;
 
-	>.divImg{
+	> .divImg {
 		display: inline-flex;
 	}
 
