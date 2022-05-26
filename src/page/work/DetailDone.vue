@@ -1,9 +1,7 @@
 <template>
   <div>
     <x-header class="title-header" :left-options="{preventGoBack: true}"
-      @on-click-back="
-         $router.push({path:checkMap.USER_ID===myInfo.userId ? '/work-list-user?fresh=1':'/work-detail-done?workId='+workId})
-      " 
+      @on-click-back="goBack" 
       >{{(myInfo && checkMap.USER_ID===myInfo.userId)?'我':checkMap.USERNAME}}的作业</x-header>
 
     <div class="lqt-container lqt-wrapper" style="top: 1em">
@@ -279,7 +277,7 @@
 
   import OfficeItem from './components/OfficeItem.vue'
   import {formatDate} from "../../utils/TimeUtils";
-  import authonStore from "../../utils/AuthonStore";
+  import authonStore from "../../utils/authonStore";
 
 var mp3;
 
@@ -312,15 +310,15 @@ var mp3;
       currentWork(val) {
         this.progress = ((val + 1) / this.quesList.length) * 100;
       },
-      "$route": function (e) {
-        // if (e.path == '/schedule-detail') {
-        //   this.loadData();
-        // }
+      // "$route": function (e) {
+      //   // if (e.path == '/schedule-detail') {
+      //   //   this.loadData();
+      //   // }
 
-      }
+      // }
     },
     async activated() {
-      this.myInfo = await authonStore.getUserInfo();
+      this.myInfo = (await authonStore.getUserInfo()) || {};
       this.currentWork = 0;
       this.loadData();
       this.urlPath = window.location.href.split("#")[0];
@@ -336,7 +334,7 @@ var mp3;
     },
     data() {
       return {
-        myInfo: null,
+        myInfo: {},
         wx,
         urlPath: window.location.href.split("#")[0],
         locationLine: '',
@@ -381,6 +379,17 @@ var mp3;
     },
 
     methods: {
+      goBack(){
+        let currentHomeworkUserId = this.checkMap.USER_ID;
+        let checkUserId = this.myInfo.userId;
+        if(this.myInfo.userType === 'T_PARENT'){
+          checkUserId = this.myInfo.studentId
+        }
+
+        let path = currentHomeworkUserId===checkUserId ? '/work-list-user?fresh=1':'/work-detail-done?workId='+this.workId;
+        
+        this.$router.push({path})
+      },
       goBrowseOthers(targetUserId){
         if(targetUserId !== this.myInfo.userId){
           this.$router.push(`/work-detail-done?browse=1&workId=${this.workId}&termId=${this.workObj.TERM_ID}&schoolId=${this.workObj.SCHOOL_ID}&userId=${targetUserId}`)
