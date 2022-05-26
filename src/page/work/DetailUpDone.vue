@@ -836,13 +836,16 @@ export default {
 					vm.$http.post(apiPath + '/wechat/homeworkH5/changeStuPic' , postData).then(function(commitResp){
 						setTimeout(function() {
 							vm.$vux.loading.hide();
-							vm.showIframe = false;
+							window.ifrCancel();
 						}, 300);	
 					});
 					
 				};
 				window.ifrCancel = function(data) {
 					vm.showIframe = false;
+
+					window.ifrLoading = window.ifrCommit = 
+						window.ifrSuccess = window.ifrCancel = window.ifrFail = null;
 				};
 				window.ifrFail = function(msg) {
 					vm.$vux.toast.text(msg);

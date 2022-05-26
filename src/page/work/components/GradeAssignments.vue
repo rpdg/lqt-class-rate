@@ -15,10 +15,10 @@
 				/>
 			</div>
 			<div v-if="fromTeacher" class="text-12 divShareGoodwork">
-				<span style="flex: 1;">推优分享给已批阅同学</span>
+				<span style="flex: 1;">作为优秀作业展示</span>
 				<van-switch v-model="isShared" @change="setHomeworkShared" active-color="#48b319" size="22px" />
 			</div>
-			<div v-else-if="isGreat" class="text-12" style="color:#48b319;">已被老师推优，分享给其他同学</div>
+			<div v-else-if="isGreat" class="text-12" style="color:#48b319;">已被老师推优，向其他同学展示</div>
 
 			<hr class="mg-y-20" />
 
@@ -45,7 +45,7 @@
 						class="nomoreWidth richTextWrap"
 						v-html="comment.COMMENT.replace(/\n/gi , '<p />')"
 					/>
-					
+
 					<!-- 录音留言 -->
 					<voice-item
 						v-else-if="comment.COMMENT_TYPE === '2'"
@@ -662,8 +662,7 @@ export default {
 				success: function (res) {
 					if (vm.recordSecondsLeft > 59) {
 						Toast('说话时间太短')
-					}
-					else if (res.localId) {
+					} else if (res.localId) {
 						vm.uploadVoice(res.localId)
 					}
 				},
