@@ -8,9 +8,10 @@
 
 
 <script>
+// @ts-ignore
 export default {
 	name: 'app',
-}
+};
 </script>
 
 <style lang="less">
@@ -65,6 +66,9 @@ hr {
 }
 .text-14 {
 	font-size: 14px;
+}
+.text-15 {
+	font-size: 15px;
 }
 .text-16 {
 	font-size: 16px;

@@ -14,7 +14,7 @@
 					@change="updateRate"
 				/>
 			</div>
-			<div v-if="fromTeacher" class="text-12 divShareGoodwork">
+			<div v-if="fromTeacher" class="text-14 divShareGoodwork">
 				<span style="flex: 1;">作为优秀作业展示</span>
 				<van-switch v-model="isShared" @change="setHomeworkShared" active-color="#48b319" size="22px" />
 			</div>
