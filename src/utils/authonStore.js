@@ -24,6 +24,8 @@ class AuthonStore {
 				userName: respData.data.userName,
 				userTitle: respData.data.userTitle,
 				userType: respData.data.userType,
+				studentId: respData.data.studentId, // 家长关联的小孩
+				studentName: respData.data.studentName,
 			};
 			console.log('AuthonStore Loading ...', this._userInfo);
 		} else {
