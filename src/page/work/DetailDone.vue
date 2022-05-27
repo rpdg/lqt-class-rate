@@ -318,10 +318,15 @@ var mp3;
       // }
     },
     async activated() {
+      this.oldPageTitle = document.title;
+      document.title = '作业';
       this.myInfo = (await authonStore.getUserInfo()) || {};
       this.currentWork = 0;
       this.loadData();
       this.urlPath = window.location.href.split("#")[0];
+    },
+    deactivated(){
+      document.title = this.oldPageTitle;
     },
     updated() {
       if (this.$refs.location && this.$refs.location.offsetHeight) {
@@ -334,6 +339,7 @@ var mp3;
     },
     data() {
       return {
+        oldPageTitle: '',
         myInfo: {},
         wx,
         urlPath: window.location.href.split("#")[0],

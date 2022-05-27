@@ -26,12 +26,13 @@
 			<div class="mg-y-20 text-12 commentWrap">
 				<div
 					class="commentItem"
-					:key="comment.ID"
 					v-for="( comment, index ) in commentList"
+					:key="comment.ID"
 					v-long-press="1500"
-					@touchstart="startWillRemove"
+					@touchstart="(evt)=>startWillRemove(evt, comment)"
 					@touchmove="cancelWillRemove"
-					@long-press-start="removeItem(comment)"
+					@long-press-stop="cancelWillRemove"
+					@long-press-start="removeItem"
 				>
 					{{ comment.ADDUSER_NAME }} {{ comment.ADD_TIME.substr(0, 16) }}
 					<!-- 操作类型 -->
@@ -276,6 +277,7 @@ export default {
 			debounceTimer: 0,
 			imgTempMax: 4,
 			imgTempList: [],
+			willRemoveItem: null,
 			willRemoveTargetDom: null,
 		}
 	},
@@ -412,9 +414,10 @@ export default {
 					}
 				)
 		},
-		startWillRemove(evt) {
-			console.log('[startWillRemove], evt:', evt)
+		startWillRemove(evt , item) {
+			console.log('[startWillRemove], evt:', evt , item)
 
+			this.willRemoveItem = item
 			this.willRemoveTargetDom = evt.target
 
 			document.body.onselectstart = function () {
@@ -426,14 +429,16 @@ export default {
 			this.willRemove = true
 		},
 		cancelWillRemove() {
+			console.log('[cancelWillRemove]')
 			this.willRemove = false
 			this.willRemoveTargetDom = null
 			document.body.onselectstart = null
 			// @ts-ignore
 			document.getElementById('app').classList.remove('unselectable')
 		},
-		async removeItem(item) {
+		async removeItem() {
 			// debugger
+			let item = this.willRemoveItem
 			console.log('[removeItem]:', item, this.willRemoveTargetDom)
 			if (
 				this.willRemove &&
