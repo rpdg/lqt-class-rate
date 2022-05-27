@@ -102,6 +102,7 @@
 import apiRouter from '../../config/api.js';
 import { Dialog, Icon } from 'vant';
 import wx from "weixin-js-sdk";
+import authonStore from '../../utils/authonStore'
 
 export default {
 	components: {
@@ -221,7 +222,8 @@ export default {
 					this.spaceUrl = response.body.data.spaceUrl;
 					this.noticeUrl = response.body.data.noticeUrl;
 					window.localStorage.setItem('USER_TYPE', isTeach);
-					window.localStorage.setItem('USER', JSON.stringify(response.body.data));
+					// window.localStorage.setItem('USER', JSON.stringify(response.body.data));
+					authonStore.setupData(response.body.data);
 					if (isTeach === 'T_TEACHER') {
 						this.isTeach = true;
 					} else {

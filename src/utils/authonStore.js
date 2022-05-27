@@ -14,19 +14,23 @@ class AuthonStore {
 		});
 	}
 
+	setupData(data){
+		localStorage.setItem('USER', JSON.stringify(data));
+		this._userInfo = {
+			userId: data.userId,
+			userName: data.userName,
+			userTitle: data.userTitle,
+			userType: data.userType,
+			studentId: data.studentId, // 家长关联的小孩
+			studentName: data.studentName,
+		};
+	}
+
 	async fetchUserInfo() {
 		let resp = await this._axios.post(apiList.GET_LIST);
 		let respData = resp.data;
 		if (respData.status === 200) {
-			localStorage.setItem('USER', JSON.stringify(respData.data));
-			this._userInfo = {
-				userId: respData.data.userId,
-				userName: respData.data.userName,
-				userTitle: respData.data.userTitle,
-				userType: respData.data.userType,
-				studentId: respData.data.studentId, // 家长关联的小孩
-				studentName: respData.data.studentName,
-			};
+			this.setupData(respData.data);
 			console.log('AuthonStore Loading ...', this._userInfo);
 		} else {
 			alert('当前未登录');

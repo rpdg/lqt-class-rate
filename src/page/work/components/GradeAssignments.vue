@@ -420,21 +420,22 @@ export default {
 			this.willRemoveItem = item
 			this.willRemoveTargetDom = evt.target
 
-			document.body.onselectstart = function () {
-				return false
-			}
+			this.willRemove = true
 
 			// @ts-ignore
 			document.getElementById('app').classList.add('unselectable')
-			this.willRemove = true
+			document.body.onselectstart = function () {
+				return false
+			}
 		},
 		cancelWillRemove() {
 			console.log('[cancelWillRemove]')
 			this.willRemove = false
-			this.willRemoveTargetDom = null
-			document.body.onselectstart = null
+			// this.willRemoveItem = null
+			// this.willRemoveTargetDom = null
 			// @ts-ignore
-			document.getElementById('app').classList.remove('unselectable')
+			// document.getElementById('app').classList.remove('unselectable')
+			// document.body.onselectstart = null
 		},
 		async removeItem() {
 			// debugger
@@ -497,6 +498,13 @@ export default {
 										false
 									)
 								}
+								
+								self.willRemoveItem = null
+								self.willRemoveTargetDom = null
+								
+								// @ts-ignore
+								document.getElementById('app').classList.remove('unselectable')
+								document.body.onselectstart = null
 							},
 							(response) => {
 								alert('请求失败了!!!!')
