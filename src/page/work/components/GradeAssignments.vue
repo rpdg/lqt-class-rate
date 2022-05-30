@@ -434,8 +434,11 @@ export default {
 			}
 		},
 		cancelWillRemove() {
-			console.log('[cancelWillRemove]')
-			this.willRemove = false
+			if (this.willRemove) {
+				console.log('[cancelWillRemove]')
+				this.willRemove = false
+			}
+
 			// this.willRemoveItem = null
 			// this.willRemoveTargetDom = null
 			// @ts-ignore
@@ -615,21 +618,26 @@ export default {
 		},
 		uploadVoice(localId) {
 			const vm = this
-			this.wx.uploadVoice({
-				localId: localId,
-				isShowProgressTips: 1, // 默认为1，显示进度提示
-				success: function (resp) {
-					vm.voiceRecord = {
-						localId: localId,
-						value: resp.serverId,
-						audio_time: 60 - vm.recordSecondsLeft,
-					}
-					vm.voiceBarWidth = vm.makeBarWidth(vm.voiceRecord.audio_time)
-					console.log(vm.voiceRecord)
-				},
-			})
+			setTimeout(function () {
+				vm.wx.uploadVoice({
+					localId: localId,
+					isShowProgressTips: 1, // 默认为1，显示进度提示
+					success: function (resp) {
+						vm.voiceRecord = {
+							localId: localId,
+							value: resp.serverId,
+							audio_time: 60 - vm.recordSecondsLeft,
+						}
+						vm.voiceBarWidth = vm.makeBarWidth(vm.voiceRecord.audio_time)
+						console.log(vm.voiceRecord)
+					},
+				})
+			}, 1e2)
 		},
 		startRecord(evt) {
+			if (!authonStore.shallAskRecorderPermission()) {
+				return
+			}
 			evt.stopImmediatePropagation()
 			evt.target.dispatchEvent(new Event('focus'))
 			document.body.onselectstart = function () {
@@ -676,6 +684,7 @@ export default {
 			document.getElementById('app').classList.remove('unselectable')
 
 			this.hideRecordingToast()
+
 			const vm = this
 			this.wx.stopRecord({
 				success: function (res) {
