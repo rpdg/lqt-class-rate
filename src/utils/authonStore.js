@@ -14,7 +14,7 @@ class AuthonStore {
 		});
 	}
 
-	setupData(data){
+	setupData(data) {
 		localStorage.setItem('USER', JSON.stringify(data));
 		this._userInfo = {
 			userId: data.userId,
@@ -46,6 +46,45 @@ class AuthonStore {
 			return this._userInfo;
 		} catch (e) {
 			throw e;
+		}
+	}
+
+	/**
+	 *
+	 * @returns if app shall ask recorder permission
+	 */
+	shallAskRecorderPermission() {
+		let willAsk = true;
+		let strPermmission = localStorage.getItem('lqt-allow-record');
+		if (strPermmission) {
+			try {
+				let permission = JSON.parse(strPermmission);
+				if (permission.rejectTimes > 1 && permission.allow === false) {
+					willAsk = false;
+				}
+			} catch (e) {}
+		}
+
+		return willAsk;
+	}
+
+	setRecorderPermission(allow) {
+		if (!allow) {
+			let permission = {
+				rejectTimes: 0,
+				allow: allow,
+			};
+			let strPermmission = localStorage.getItem('lqt-allow-record');
+			if (strPermmission) {
+				try {
+					permission = JSON.parse(strPermmission);
+				} catch (e) {}
+			}
+			permission.rejectTimes = permission.rejectTimes + 1;
+			permission.allow = allow;
+			localStorage.setItem('lqt-allow-record', JSON.stringify(permission));
+		} else {
+			localStorage.removeItem('lqt-allow-record');
 		}
 	}
 }

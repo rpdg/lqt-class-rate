@@ -319,14 +319,15 @@ export default {
 			let user = await authonStore.getUserInfo()
 			this.myUserId = user ? user.userId : -1
 
-			if (sessionStorage.getItem('lqt-allow-record') !== 'true') {
+			if (authonStore.shallAskRecorderPermission()) {
 				const self = this
 				this.wx.startRecord({
 					success: function () {
 						self.wx.stopRecord()
-						sessionStorage.setItem('lqt-allow-record', 'true')
+						authonStore.setRecorderPermission(true)
 					},
 					cancel: function () {
+						authonStore.setRecorderPermission(false)
 						alert('用户拒绝授权录音')
 					},
 				})

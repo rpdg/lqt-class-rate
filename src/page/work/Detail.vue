@@ -274,6 +274,7 @@
   import axios from 'axios';
 
   import {formatDate} from "../../utils/TimeUtils";
+import authonStore from '../../utils/authonStore.js';
 
 async function dataUrlToFile(dataUrl, fileName) {
   const res = await fetch(dataUrl);
@@ -1123,6 +1124,10 @@ async function dataUrlToFile(dataUrl, fileName) {
       },
       //@@@@@@@@@@@@@@@@@@@@@@@@   录音    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       startVoice(detail) {
+        if (!authonStore.shallAskRecorderPermission()){
+          return 
+        }
+        
         let self = this;
 
         setTimeout(function(){
