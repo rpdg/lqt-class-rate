@@ -347,7 +347,7 @@
     display: flex;
     width: 100%;
     align-items: center;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px dashed #ddd;
 
     > span {
       flex:1;

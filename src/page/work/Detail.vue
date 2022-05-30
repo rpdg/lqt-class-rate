@@ -57,9 +57,9 @@
                   <div v-for="(vDetail,vIndex) in detail.imgList">
                     <div style="position: relative"  v-if="vDetail.ANSWER">
                       <img :src="vDetail.localData || vDetail.URL"/>
-                      <div @touchstart="gotouchstart('img',detail.imgList,vIndex)"
+                      <div @touchstart="gotouchstart('img', detail.imgList, vIndex, vDetail)"
                         @touchmove="gotouchmove()"
-                        @touchend="gotouchend('img',detail.imgList,vIndex)"
+                        @touchend="gotouchend('img', detail.imgList, vIndex , vDetail)"
                         style="background-color: red;position: absolute;
                       top: 0;width: 100%;height: 100%;opacity: 0;"></div>
                     </div>
@@ -443,6 +443,7 @@ async function dataUrlToFile(dataUrl, fileName) {
         showDelImg: false,
         timeOutEvent: 0,
         delList: [],
+        deletedImageList:[],
         delIndex: 0,
         editFlag:false,
       }
@@ -623,7 +624,7 @@ async function dataUrlToFile(dataUrl, fileName) {
       //~~~~~~~~~~~~~~~~~~上传图片 end~~~~~~~~~~~~~~~~~~
 
       //js
-      gotouchstart(type, list, index) {
+      gotouchstart(type, list, index , item) {
         document.body.onselectstart = function () {
           return false
         }
@@ -639,7 +640,7 @@ async function dataUrlToFile(dataUrl, fileName) {
           // debugger;
           //执行长按要执行的内容，
           if (type == 'img') {
-            console.log("长按删除!")
+            console.log("长按删除!" , item)
             let ans = list[index];
             if(ans.URL) {
               let srcUrl = decodeURIComponent(ans.URL.substr(ans.URL.lastIndexOf('/') + 1));
@@ -655,7 +656,7 @@ async function dataUrlToFile(dataUrl, fileName) {
         }, 600);//这里设置定时
       },
       //手释放，如果在500毫秒内就释放，则取消长按事件，此时可以执行onclick应该执行的事件
-      gotouchend(type, list, index) {
+      gotouchend(type, list, index , item) {
         document.body.onselectstart = null
 			  document.getElementById('app').classList.remove('unselectable')
         let that = this;
@@ -663,7 +664,7 @@ async function dataUrlToFile(dataUrl, fileName) {
         if (that.timeOutEvent != 0) {
           //这里写要执行的内容（尤如onclick事件）
           if (type == 'img') {
-
+              console.log(item)
           } else if(type == 'voice'){
             that.playVoice(list[index])
           } else {
@@ -694,7 +695,7 @@ async function dataUrlToFile(dataUrl, fileName) {
       onImgDelete() {
         let delIndex = this.delIndex;
         this.delList = this.delList.splice(delIndex, 1)
-
+        this.deletedImageList.push(this.delList[0])
       },
 
 
@@ -884,7 +885,8 @@ async function dataUrlToFile(dataUrl, fileName) {
 
         let data = {
           'homeworkId': this.workObj.WORKID,
-          'answer': JSON.stringify({'dataList': dataList})
+          'answer'  : JSON.stringify({'dataList': dataList}) ,
+          'delList' : JSON.stringify(vm.deletedImageList) ,
         };
 
         this.$http.post(apiRouter.GET_HOMEWORK_SAVE_ANSWER, data).then(response => {

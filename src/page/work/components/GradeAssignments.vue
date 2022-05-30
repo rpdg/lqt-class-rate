@@ -29,10 +29,10 @@
 					v-for="( comment, index ) in commentList"
 					:key="comment.ID"
 					v-long-press="1500"
-					@touchstart="(evt)=>startWillRemove(evt, comment)"
-					@touchmove="cancelWillRemove"
-					@long-press-stop="cancelWillRemove"
-					@long-press-start="removeItem"
+					@touchstart="(evt)=>{if(comment.ADDUSER_ID === myUserId){startWillRemove(evt, comment)}}"
+					@touchmove="()=>{if(comment.ADDUSER_ID === myUserId){cancelWillRemove()}}"
+					@long-press-stop="()=>{if(comment.ADDUSER_ID === myUserId){cancelWillRemove()}}"
+					@long-press-start="()=>{if(comment.ADDUSER_ID === myUserId){removeItem()}}"
 				>
 					{{ comment.ADDUSER_NAME }} {{ comment.ADD_TIME.substr(0, 16) }}
 					<!-- 操作类型 -->
@@ -54,10 +54,14 @@
 						:playing="index === currentMp3Index"
 						@click="playMP3(comment.COMMENT[ 0 ], index)"
 					/>
+
 					<!-- 图片留言 -->
 					<div v-else-if="comment.COMMENT_TYPE === '3'" class="commentImgContainer">
 						<div class="divImg" v-for="( pic, x ) in comment.COMMENT" :key="pic.value" :data-index="x">
-							<img :src="ossPath + '/' + pic.value" />
+							<img
+								:src="ossPath + '/' + pic.value"
+								:class="comment.ADDUSER_ID === myUserId ? `deletable`: ''"
+							/>
 						</div>
 					</div>
 
@@ -414,8 +418,8 @@ export default {
 					}
 				)
 		},
-		startWillRemove(evt , item) {
-			console.log('[startWillRemove], evt:', evt , item)
+		startWillRemove(evt, item) {
+			console.log('[startWillRemove], evt:', evt, item)
 
 			this.willRemoveItem = item
 			this.willRemoveTargetDom = evt.target
@@ -498,10 +502,10 @@ export default {
 										false
 									)
 								}
-								
+
 								self.willRemoveItem = null
 								self.willRemoveTargetDom = null
-								
+
 								// @ts-ignore
 								document.getElementById('app').classList.remove('unselectable')
 								document.body.onselectstart = null
@@ -626,6 +630,7 @@ export default {
 		},
 		startRecord(evt) {
 			evt.stopImmediatePropagation()
+			evt.target.dispatchEvent(new Event('focus'))
 			document.body.onselectstart = function () {
 				return false
 			}
@@ -896,7 +901,7 @@ export default {
 			padding-bottom: 0;
 		}
 
-		img {
+		img.deletable {
 			pointer-events: none;
 			-webkit-touch-callout: none;
 		}
