@@ -1124,9 +1124,9 @@ async function dataUrlToFile(dataUrl, fileName) {
       },
       //@@@@@@@@@@@@@@@@@@@@@@@@   录音    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       startVoice(detail) {
-        if (!authonStore.shallAskRecorderPermission()){
-          return 
-        }
+        // if (!authonStore.shallAskRecorderPermission()){
+          // return 
+        // }
         
         let self = this;
 

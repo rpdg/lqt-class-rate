@@ -635,9 +635,9 @@ export default {
 			}, 1e2)
 		},
 		startRecord(evt) {
-			if (!authonStore.shallAskRecorderPermission()) {
-				return
-			}
+			// if (!authonStore.shallAskRecorderPermission()) {
+			// 	return
+			// }
 			evt.stopImmediatePropagation()
 			evt.target.dispatchEvent(new Event('focus'))
 			document.body.onselectstart = function () {
