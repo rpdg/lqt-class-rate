@@ -1263,9 +1263,9 @@ async function dataUrlToFile(dataUrl, fileName) {
       playVoice(voiceItem) {
         let self = this;
         this.playingVoice = true;
-        this.currentMp3Id = voiceItem.localId;
         if (voiceItem.localId) {
           console.log("has-localId");
+          self.currentMp3Id = voiceItem.localId;
           setTimeout(function(){
             self.playingVoice = false;
             self.currentMp3Id = -1;
@@ -1278,8 +1278,10 @@ async function dataUrlToFile(dataUrl, fileName) {
             serverId: voiceItem.serverId, // 需要下载的音频的服务器端ID，由uploadVoice接口获得
             isShowProgressTips: 1, // 默认为1，显示进度提示
             success: function (res) {
+              self.currentMp3Id = res.localId;
               setTimeout(function(){
                 self.playingVoice = false;
+                self.currentMp3Id = -1;
               } , voiceItem.second * 1000)
               let localId = res.localId; // 返回音频的本地ID
               voiceItem.localId = localId;
