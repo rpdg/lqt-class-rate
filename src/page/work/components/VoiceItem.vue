@@ -28,7 +28,7 @@ export default {
 	},
 	computed: {
 		voiceBarWidth() {
-			return (this.item.audio_time / 60) * 10 + 5
+			return (this.item.audio_time / 60) * 10 + 3
 		},
 	},
     methods:{

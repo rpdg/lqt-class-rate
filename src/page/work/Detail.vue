@@ -77,9 +77,17 @@
                 </div>
 
                 <div class="answer-qs other-ans-voice">
-                  <div :tabindex="vIndex" :class="detail.ID" v-for="(vDetail,vIndex) in detail.voiceList">
+                  <div :tabindex="vIndex" :class="detail.ID" v-for="(vDetail,vIndex) in detail.voiceList" :key="vDetail.ID">
                     <div v-if="vDetail.ANSWER" style="position: relative;margin-top: 2px">
-                      <p class="voice-play"
+                      <span @touchstart="gotouchstart('voice1',detail.voiceList, vIndex)"
+                         @touchmove="gotouchmove()"
+                         @touchend="gotouchend('voice1',detail.voiceList, vIndex , vDetail)">
+                        <voice-item
+                          :item="{audio_time: vDetail.AUDIO_TIME}"
+                          :playing="playingVoice && vDetail.localId === currentMp3Id"
+                        />
+                      </span>
+                      <!-- <p class="voice-play"
                          @touchstart="gotouchstart('voice1',detail.voiceList,vIndex)"
                          @touchmove="gotouchmove()"
                          @touchend="gotouchend('voice1',detail.voiceList,vIndex)"
@@ -87,11 +95,20 @@
                       >
                         <span class="voice-ready"></span>
                       </p>
-                      <span style="line-height: 2em;vertical-align: top;">{{vDetail.AUDIO_TIME}}''</span>
+                      <span style="line-height: 2em;vertical-align: top;">{{vDetail.AUDIO_TIME}}''</span> -->
                     </div>
 
                     <div v-else>
-                        <p class="voice-play"
+                      <span @touchstart="gotouchstart('voice', detail.voiceList, vIndex)"
+                           @touchmove="gotouchmove()"
+                           @touchend="gotouchend('voice', detail.voiceList, vIndex , vDetail)">
+                        <voice-item
+                          :item="{audio_time: vDetail.second}"
+                          :playing="playingVoice && vDetail.ID === currentMp3Id"
+                        />
+                      </span>
+                      
+                        <!-- <p class="voice-play"
                            @touchstart="gotouchstart('voice',detail.voiceList,vIndex)"
                            @touchmove="gotouchmove()"
                            @touchend="gotouchend('voice',detail.voiceList,vIndex)"
@@ -99,7 +116,7 @@
                         >
                           <span class="voice-ready"></span>
                         </p>
-                        <span>{{vDetail.second}}''</span>
+                        <span>{{vDetail.second}}''</span> -->
                     </div>
                   </div>
                 </div>
@@ -270,11 +287,10 @@
   import wx from "weixin-js-sdk";
   import FirstHeader from './FirstHeader.vue';
   import Thumbs from './components/Thumbs.vue';
+  import VoiceItem from './components/VoiceItem.vue'
   import OfficeItem from './components/OfficeItem.vue'
   import axios from 'axios';
 
-  import {formatDate} from "../../utils/TimeUtils";
-import authonStore from '../../utils/authonStore.js';
 
 async function dataUrlToFile(dataUrl, fileName) {
   const res = await fetch(dataUrl);
@@ -300,6 +316,7 @@ async function dataUrlToFile(dataUrl, fileName) {
       Icon,
       [FirstHeader.name]: FirstHeader,
       [Thumbs.name]: Thumbs,
+      [VoiceItem.name]: VoiceItem,
 		  [OfficeItem.name]: OfficeItem,
     },
     created() {
@@ -447,6 +464,8 @@ async function dataUrlToFile(dataUrl, fileName) {
         deletedImageList:[],
         delIndex: 0,
         editFlag:false,
+        playingVoice:false,
+        currentMp3Id: -1,
       }
     },
 
@@ -662,14 +681,15 @@ async function dataUrlToFile(dataUrl, fileName) {
 			  document.getElementById('app').classList.remove('unselectable')
         let that = this;
         clearTimeout(that.timeOutEvent);
+        debugger
         if (that.timeOutEvent != 0) {
           //这里写要执行的内容（尤如onclick事件）
           if (type == 'img') {
               console.log(item)
           } else if(type == 'voice'){
-            that.playVoice(list[index])
+            that.playVoice(item)
           } else {
-            that.playVoiceMp3(list[index].URL)
+            that.playVoiceMp3(item)
           }
           console.log("点击预览")
         }
@@ -1228,13 +1248,28 @@ async function dataUrlToFile(dataUrl, fileName) {
         });
       },
       //
-      playVoiceMp3(url) {
-        let mp3 = new Audio(url);
+      playVoiceMp3(item) {
+        let self = this;
+        this.playingVoice = true;
+        this.currentMp3Id = item.ID;
+        setTimeout(function(){
+            self.playingVoice = false;
+            self.currentMp3Id = -1;
+        } , (~~item.AUDIO_TIME) * 1000);
+
+        let mp3 = new Audio(item.URL);
         mp3.play();
       },
       playVoice(voiceItem) {
+        let self = this;
+        this.playingVoice = true;
+        this.currentMp3Id = voiceItem.localId;
         if (voiceItem.localId) {
           console.log("has-localId");
+          setTimeout(function(){
+            self.playingVoice = false;
+            self.currentMp3Id = -1;
+          } , voiceItem.second * 1000)
           wx.playVoice({
             localId: voiceItem.localId // 需要播放的音频的本地ID，由stopRecord接口获得
           });
@@ -1243,6 +1278,9 @@ async function dataUrlToFile(dataUrl, fileName) {
             serverId: voiceItem.serverId, // 需要下载的音频的服务器端ID，由uploadVoice接口获得
             isShowProgressTips: 1, // 默认为1，显示进度提示
             success: function (res) {
+              setTimeout(function(){
+                self.playingVoice = false;
+              } , voiceItem.second * 1000)
               let localId = res.localId; // 返回音频的本地ID
               voiceItem.localId = localId;
               wx.playVoice({

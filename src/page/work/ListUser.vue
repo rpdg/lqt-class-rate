@@ -54,7 +54,11 @@
 								<p
 									class="content-info"
 									style="line-height: 2.1em;font-size: 0.9em;padding-left: 7px;"
-								>{{item.OUTDATE.substr(5 , 5) }}截止</p>
+								>{{item.OUTDATE.substr(5 , 5) }}截止
+								<span>
+									<div v-if="item.IS_GREAT==='1'" class="perfectTag">优秀</div>  
+								</span>
+								</p>
 							</a>
 						</div>
 						<em v-if="!item.ANID" class="icon-next status-view" :style=" 'color:#d9534f'">未完成</em>
@@ -230,6 +234,19 @@ export default {
 
 <style lang="less" scoped>
 @import '../../style/minxin.less';
+
+
+  .perfectTag{
+    	display: inline-block;
+      border: 1px solid #04BE02;
+      color: #04BE02;
+      border-radius: 3px;
+      padding: 1px 1em;
+      font-size: 10px;
+	  margin-left: 20px;
+		line-height: 18px;
+		vertical-align: bottom;
+  }
 
 .evaPicker {
 	padding: 0 15px;
