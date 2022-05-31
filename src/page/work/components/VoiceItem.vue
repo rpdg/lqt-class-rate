@@ -28,7 +28,7 @@ export default {
 	},
 	computed: {
 		voiceBarWidth() {
-			return (this.item.audio_time / 60) * 10 + 3
+			return (this.item.audio_time / 60) * 10 + 4
 		},
 	},
     methods:{
@@ -42,6 +42,7 @@ export default {
 .voiceWrap {
 	display: flex;
 	margin-top: 0.5em;
+	font-size: 14px;
 
 	> .voiceSeconds {
 		flex: 1;

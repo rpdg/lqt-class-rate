@@ -79,18 +79,18 @@
                 <div class="answer-qs other-ans-voice">
                   <div :tabindex="vIndex" :class="detail.ID" v-for="(vDetail,vIndex) in detail.voiceList" :key="vDetail.ID">
                     <div v-if="vDetail.ANSWER" style="position: relative;margin-top: 2px">
-                      <span @touchstart="gotouchstart('voice1',detail.voiceList, vIndex)"
+                      <span @touchstart="gotouchstart('mp3',detail.voiceList, vIndex)"
                          @touchmove="gotouchmove()"
-                         @touchend="gotouchend('voice1',detail.voiceList, vIndex , vDetail)">
+                         @touchend="gotouchend('mp3',detail.voiceList, vIndex , vDetail)">
                         <voice-item
                           :item="{audio_time: vDetail.AUDIO_TIME}"
-                          :playing="playingVoice && vDetail.localId === currentMp3Id"
+                          :playing="playingVoice && (vDetail.ID == currentMp3Id)"
                         />
                       </span>
                       <!-- <p class="voice-play"
-                         @touchstart="gotouchstart('voice1',detail.voiceList,vIndex)"
+                         @touchstart="gotouchstart('mp3',detail.voiceList,vIndex)"
                          @touchmove="gotouchmove()"
-                         @touchend="gotouchend('voice1',detail.voiceList,vIndex)"
+                         @touchend="gotouchend('mp3',detail.voiceList,vIndex)"
                          :style="'height: 2em;border-radius: 5px;width: '+ (Number(vDetail.AUDIO_TIME)/20 <1 ?1:Number(vDetail.AUDIO_TIME)/20) *5 +'em;' "
                       >
                         <span class="voice-ready"></span>
@@ -104,7 +104,7 @@
                            @touchend="gotouchend('voice', detail.voiceList, vIndex , vDetail)">
                         <voice-item
                           :item="{audio_time: vDetail.second}"
-                          :playing="playingVoice && vDetail.ID === currentMp3Id"
+                          :playing="playingVoice && (vDetail.localId == currentMp3Id)"
                         />
                       </span>
                       
@@ -688,7 +688,7 @@ async function dataUrlToFile(dataUrl, fileName) {
               console.log(item)
           } else if(type == 'voice'){
             that.playVoice(item)
-          } else {
+          } else if(type === 'mp3'){
             that.playVoiceMp3(item)
           }
           console.log("点击预览")
@@ -1249,9 +1249,10 @@ async function dataUrlToFile(dataUrl, fileName) {
       },
       //
       playVoiceMp3(item) {
+        debugger;
         let self = this;
-        this.playingVoice = true;
-        this.currentMp3Id = item.ID;
+        self.playingVoice = true;
+        self.currentMp3Id = item.ID;
         setTimeout(function(){
             self.playingVoice = false;
             self.currentMp3Id = -1;
