@@ -17,7 +17,7 @@
 					<!-- 录音留言 -->
 					<voice-item
 						v-else-if="comment.COMMENT_TYPE==='2'"
-						:item="comment.COMMENT[0]"
+						:seconds="comment.COMMENT[0].audio_time"
 						:playing="index===currentMp3Index"
 						@click="playMP3(comment.COMMENT[0] , index)"
 					/>

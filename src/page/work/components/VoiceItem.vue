@@ -4,7 +4,7 @@
 			:class="'voice' + (playing? ' playing':'')"
 			:style="'width: '+ voiceBarWidth +'em;' "
 		/>
-		<div class="voiceSeconds">{{item.audio_time}}''</div>
+		<div class="voiceSeconds">{{seconds}}''</div>
 	</div>
 </template>
 <script>
@@ -13,8 +13,8 @@
 export default {
 	name: 'VoiceItem',
 	props: {
-		item: {
-			type: Object,
+		seconds: {
+			type: Number,
 			required: true,
 		},
 		playing: {
@@ -28,7 +28,7 @@ export default {
 	},
 	computed: {
 		voiceBarWidth() {
-			return (this.item.audio_time / 60) * 10 + 4
+			return (this.seconds / 60) * 10 + 4
 		},
 	},
     methods:{

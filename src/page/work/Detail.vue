@@ -83,7 +83,7 @@
                          @touchmove="gotouchmove()"
                          @touchend="gotouchend('mp3',detail.voiceList, vIndex , vDetail)">
                         <voice-item
-                          :item="{audio_time: vDetail.AUDIO_TIME}"
+                          :seconds="~~vDetail.AUDIO_TIME"
                           :playing="playingVoice && (vDetail.ID == currentMp3Id)"
                         />
                       </span>
@@ -103,7 +103,7 @@
                            @touchmove="gotouchmove()"
                            @touchend="gotouchend('voice', detail.voiceList, vIndex , vDetail)">
                         <voice-item
-                          :item="{audio_time: vDetail.second}"
+                          :seconds="~~vDetail.second"
                           :playing="playingVoice && (vDetail.localId == currentMp3Id)"
                         />
                       </span>

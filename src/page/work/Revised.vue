@@ -7,7 +7,7 @@
 			<span v-if="hkMap.COMMENT_TYPE == '1'" v-html="hkMap.BACK_COMMENT"></span>
 			<voice-item
 				v-else-if="hkMap.COMMENT_TYPE === '2'"
-				:item="hkMap.BACK_COMMENT[ 0 ]"
+				:seconds="hkMap.BACK_COMMENT[ 0 ].audio_time"
 				:playing="voicePlaying"
 				@click="playMP3(hkMap.BACK_COMMENT[ 0 ])"
 			/>

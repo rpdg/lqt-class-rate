@@ -77,12 +77,18 @@
                 </div>
 
                 <div v-if="detail.sVoiceList"  class="answer-qs other-ans-voice">
-                  <div v-for="(vDetail,vIndex) in detail.sVoiceList">
+                  <voice-item v-for="(vDetail) in detail.sVoiceList" 
+                    :seconds="~~vDetail.AUDIO_TIME"
+                    :playing="vDetail.ID == currentMp3Id"
+                    :key="vDetail.ID"
+                    @click="playVoice(vDetail)"
+                  />
+                  <!-- <div v-for="(vDetail,vIndex) in detail.sVoiceList">
                     <p  @click="playVoice(vDetail.URL)" class="voice-play" >
                       <span class="voice-ready"></span>
                     </p>
                     <span style="line-height: 2em;vertical-align: top;">{{vDetail.AUDIO_TIME}}''</span>
-                  </div>
+                  </div> -->
                 </div>
               </div>
               <div v-if="detail.QUESTYPE == '3'" class="answer-qs qs-answer">答案：{{detail.ANS_CONTENT}} </div>
@@ -274,6 +280,7 @@
 
   import GradeAssignments from './components/GradeAssignments.vue'
   import Thumbs from './components/Thumbs.vue';
+  import VoiceItem from './components/VoiceItem.vue'
 
   import OfficeItem from './components/OfficeItem.vue'
   import {formatDate} from "../../utils/TimeUtils";
@@ -293,6 +300,7 @@ var mp3;
       Divider,
       [FirstHeader.name]: FirstHeader,
 		  [OfficeItem.name]: OfficeItem,
+		  [VoiceItem.name]: VoiceItem,
       [Thumbs.name]: Thumbs,
       GradeAssignments: GradeAssignments,
     },
@@ -381,6 +389,7 @@ var mp3;
         checkList: [],
         showRecording: false,
         progress: 20,
+        currentMp3Id:-1,
       }
     },
 
@@ -622,8 +631,14 @@ var mp3;
           }
         });
       },
-      playVoice(url) {
-        mp3 = new Audio(url);
+      playVoice(item) {
+        let self = this;
+        self.currentMp3Id = item.ID;
+        let mp3 = new Audio(item.URL);
+        setTimeout(function(){
+          self.currentMp3Id = -1;
+        } , (~~item.AUDIO_TIME) * 1000);
+
         mp3.play();
         // wx.downloadVoice({
         //   serverId: serverId, // 需要下载的音频的服务器端ID，由uploadVoice接口获得
