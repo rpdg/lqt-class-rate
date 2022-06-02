@@ -869,6 +869,7 @@ export default {
 
 .voiceWrap {
 	display: flex;
+	font-size: 14px;
 
 	> .voiceSeconds {
 		flex: 1;

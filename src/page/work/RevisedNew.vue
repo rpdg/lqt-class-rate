@@ -73,10 +73,14 @@ export default {
 			typeColor: {
 				1: '#48b319',
 				2: '#ee0a24',
+				4: '#666',
+				5: '#0093DD',
 			},
 			typeWord: {
 				1: '批改通过',
 				2: '发回订正',
+				4: '提交作业',
+				5: '提交订正',
 			},
 			comment: '',
 			commentList: [],
