@@ -296,6 +296,16 @@ export default {
 	// 	console.log('activated')
 	// 	this.init()
 	// },
+	deactivated(){
+		try{
+			this.wx.stopRecord()
+			this.audio && this.audio.pause()
+			this.voiceRecord && this.stopVoice(this.voiceRecord.localId)
+		}
+		catch(e){
+
+		}
+	},
 	// beforeUpdate() {
 	// 	console.log('beforeUpdate')
 	// 	this.init()

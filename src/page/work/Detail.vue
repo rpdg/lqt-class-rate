@@ -130,7 +130,7 @@
               <!-- 传图，录音，两个按钮 -->
               <div class="qs-bar clearfix">
                 <p><span class="bar-btn btn-img" @click="handleChooseImage(detail)"></span></p>
-                <p><span class="bar-btn btn-voice" @touchstart="startVoice(detail)" @touchend.prevent="endVoice(detail)"></span></p>
+                <p><span class="bar-btn btn-voice" @touchstart.prevent="startVoice(detail)" @touchend.prevent="endVoice(detail)"></span></p>
               </div>
             </div>
             <!-- 问答题end -->
@@ -398,6 +398,15 @@ async function dataUrlToFile(dataUrl, fileName) {
     },
     deactivated() {
       document.title = this.oldPageTitle;
+
+      try{
+        wx.stopRecord()
+        this.mp3Player && this.mp3Player.pause()
+        this.currentMp3Id && this.stopVoice(this.currentMp3Id)
+      }
+      catch(e){
+
+      }
     },
     updated() {
       if (this.$refs.location && this.$refs.location.offsetHeight) {
@@ -466,6 +475,8 @@ async function dataUrlToFile(dataUrl, fileName) {
         editFlag:false,
         playingVoice:false,
         currentMp3Id: -1,
+        mp3Player: null,
+        debounceTimer:0,
       }
     },
 
@@ -1150,17 +1161,25 @@ async function dataUrlToFile(dataUrl, fileName) {
         
         let self = this;
 
-        setTimeout(function(){
+        if (this.debounceTimer) {
+          clearTimeout(this.debounceTimer)
+        }
+
+        this.debounceTimer = setTimeout(function(){
+				    wx.stopRecord()
+
             self.showRecording = true;
             console.log("start——Voice");
             console.log(detail);
             if (!detail.voiceList) {
               detail.voiceList = [];
             }
+
             console.log(detail);
             window.clearInterval(self.voiceTimer);
             self.goVoiceTimer();
             wx.startRecord();
+
             wx.onVoiceRecordEnd({
               // 录音时间超过一分钟没有停止的时候会执行 complete 回调
               complete: function (res) {
@@ -1177,19 +1196,21 @@ async function dataUrlToFile(dataUrl, fileName) {
         //$('body').append('<span id="recording" class="recording-show"></span>');
       },
       endVoice(detail) {
+        if (this.debounceTimer) {
+          clearTimeout(this.debounceTimer)
+        }
+
         let self = this;
         this.showRecording = false;
         console.log("end——Voice");
         window.clearInterval(this.voiceTimer);
         //说话太短
-        if(this.voiceSecond == 60){
+        if(this.voiceSecond > 59){
+          wx.stopRecord();
           self.$vux.toast.text('说话时间太短');
-          wx.stopRecord({
-            success: function (res) {},
-            fail: function (res) {}
-          });
           return;
         }
+
         let voiceList = detail.voiceList;
         wx.stopRecord({
           success: function (res) {
@@ -1204,10 +1225,8 @@ async function dataUrlToFile(dataUrl, fileName) {
             //
           },
           fail: function (res) {
-            console.log("无localId");
             console.log(res);
-            self.$vux.toast.text('说话时间太短');
-
+            self.$vux.toast.text('录音失败');
           }
         });
       },
@@ -1258,8 +1277,8 @@ async function dataUrlToFile(dataUrl, fileName) {
             self.currentMp3Id = -1;
         } , (~~item.AUDIO_TIME) * 1000);
 
-        let mp3 = new Audio(item.URL);
-        mp3.play();
+        self.mp3Player = new Audio(item.URL);
+        self.mp3Player.play();
       },
       playVoice(voiceItem) {
         let self = this;
