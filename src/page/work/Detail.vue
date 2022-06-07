@@ -77,7 +77,7 @@
                 </div>
 
                 <div class="answer-qs other-ans-voice">
-                  <div :tabindex="vIndex" :class="detail.ID" v-for="(vDetail,vIndex) in detail.voiceList" :key="vDetail.ID">
+                  <div :class="detail.ID" v-for="(vDetail,vIndex) in detail.voiceList" :key="vDetail.ID">
                     <div v-if="vDetail.ANSWER" style="position: relative;margin-top: 2px">
                       <span @touchstart="gotouchstart('mp3',detail.voiceList, vIndex)"
                          @touchmove="gotouchmove()"
