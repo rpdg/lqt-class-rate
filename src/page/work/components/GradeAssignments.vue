@@ -880,6 +880,7 @@ export default {
 .voiceWrap {
 	display: flex;
 	font-size: 14px;
+	align-items: center;
 
 	> .voiceSeconds {
 		flex: 1;
