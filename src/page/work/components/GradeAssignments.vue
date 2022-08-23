@@ -28,7 +28,7 @@
 					class="commentItem"
 					v-for="( comment, index ) in commentList"
 					:key="comment.ID"
-					v-long-press="1500"
+					v-long-press="600"
 					@touchstart="(evt)=>{if(comment.ADDUSER_ID === myUserId){startWillRemove(evt, comment)}}"
 					@touchmove="()=>{if(comment.ADDUSER_ID === myUserId){cancelWillRemove()}}"
 					@long-press-stop="()=>{if(comment.ADDUSER_ID === myUserId){cancelWillRemove()}}"

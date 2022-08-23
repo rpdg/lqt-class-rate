@@ -2,7 +2,7 @@
 	<div class="box">
     <back-title-bar title="发通知" />
 		<div class="wapper">
-			<div class="form-info clearfix">
+			<div class="form-info clearfix" style="padding-top:20px;">
 				<!-- <p class="cancel-btn" @click="cancel()">取消发布</p> -->
 
 				<!--<form action="/" method="post">-->
@@ -71,10 +71,27 @@
 					></x-textarea>
 				</div>
 				<div class="accessory-box">
-					<p class="accessory-title">通知附件</p>
+					<p class="accessory-title" style="margin-bottom: 20px;">通知附件</p>
           
-          <van-uploader :accept='fileAccepts' :after-read='uploadHandler'>
-							<van-button plain size='mini' color="#54B331" text='上传'/>
+          <div class="mg-b-20 imgContainer" v-show="imgTempList.length + fileTempList.length > 0">
+            <div class="" v-for="( pic , pIndex ) in imgTempList" :key="pic.newfileName" :data-id='pic.newfileName'
+             v-long-press="600"
+             @long-press-start="removeTmpPic(pIndex)"
+             >
+              <img :src="pic.viewPath" alt="">
+            </div>
+            <div class="" v-for="( file , fIndex) in fileTempList" :key="file.newfileName">
+              <span class="spRow">
+                <a :href="file.viewPath" target='_blank' :data-id='file.newfileName'>
+                  {{file.originalName}}
+                </a>
+                <van-button plain size='mini' color="#ee0a24" text='删除' @click="removeTmpFile(fIndex)"/>
+              </span>
+            </div>
+          </div>
+          
+          <van-uploader :accept='fileAccepts' :after-read='uploadHandler' result-type="file">
+							<van-button plain size='small' color="#54B331" text='上传'/>
 					</van-uploader>
 					<!-- <div class="accessory-img clearfix">
 						<ul class="photo-img">
@@ -107,13 +124,13 @@
           <van-button block color="#54B331" @click="goUploder" :loading="showLoading" :disabled="showLoading">发布通知</van-button>
         </div>
 
-				<toast
+				<!-- <toast
 					v-model="showPositionValue"
 					type="text"
 					:time="800"
 					is-show-mask
 					:position="position"
-				>{{toastMessage}}</toast>
+				>{{toastMessage}}</toast> -->
 
 				<!-- </form>-->
 			</div>
@@ -125,7 +142,7 @@
 import BackTitleBar from '../../components/common/BackTitleBar.vue'
 import { mapGetters } from "vuex";
 import {
-  Toast,
+  // Toast,
   Checker,
   CheckerItem,
   Group,
@@ -135,10 +152,18 @@ import {
   Cell,
   Radio,
 } from "vux";
-import { Button, Uploader } from 'vant';
+import { Button, Uploader ,Toast} from 'vant';
 import { getSelectDates } from "../../utils/DateUtils";
-import apiRouter from "../../config/api.js";
+import apiRouter , { apiPath } from "../../config/api.js";
 
+const getFileExt = function (fullName) {
+	if (fullName.lastIndexOf('.') === -1) {
+		return '';
+	}
+	return fullName.substr(fullName.lastIndexOf('.') + 1).toUpperCase();
+};
+
+const FileTypes_Image = ['PNG', 'JPG', 'JPEG', 'GIF', 'WEBP'];
 
 const getMobileOS = () => {
 	const ua = navigator.userAgent;
@@ -159,7 +184,7 @@ export default {
   },
   components: {
     BackTitleBar,
-    Toast,
+    // Toast,
     Group,
     XAddress,
     Cell,
@@ -173,6 +198,7 @@ export default {
   },
   data() {
     return {
+			ossPath: roterOssPath,
       fileAccepts: 	getMobileOS() === 'iOS' ? '.png,.jpg,.jpeg,.gif,.doc,.docx,.xls,.xlsx,.pdf,.ppt,.pptx,.rar,.zip,.7z,.tar' : '*/*',
       //提交按钮状态
       showLoading: false,
@@ -217,7 +243,12 @@ export default {
       timeData: ["今天", "立刻发送"],
       isBack: ["允许", "不允许"],
       addressData: getSelectDates(),
-      showAddress: false
+      showAddress: false,
+      
+			imgTempList: [],
+			fileTempList: [],
+			imgDelList: [],
+			fileDelList: [],
     };
   },
 
@@ -424,8 +455,49 @@ export default {
     // this.getUrlConfig();
   },
   methods: {
-    uploadHandler(){
+    removeTmpFile(i){
+      let del = this.fileTempList.splice(i,1);
+      this.fileDelList.push(...del);
+    },
+    removeTmpPic(i){
+      let del = this.imgTempList.splice(i,1);
+      this.imgDelList.push(...del);
+    },
+    uploadHandler(fileItem){
+      let ext = getFileExt(fileItem.file.name);
+      if(FileTypes_Image.includes(ext)){
+        this.uploadPic(fileItem.file);
+      } else{
+        this.uploadFile(fileItem.file);
+      }
+    },
+    async uploadPic(pic){
+      let bodyFormData = new FormData()
+      bodyFormData.append('files', pic)
 
+      let self = this;
+      let resp = await this.$http.post( apiPath + '/file/h5/upload_pic', bodyFormData);
+      let result = resp.body
+      let {image_list} = result.data;
+			console.log(image_list);
+      image_list.forEach(function (item) {
+						self.imgTempList.push(item)
+						console.log('self.imgTempList', self.imgTempList)
+			});
+    },
+    async uploadFile(file){
+      let bodyFormData = new FormData()
+      bodyFormData.append('files', file)
+
+      let self = this;
+      let resp = await this.$http.post( apiPath + '/file/h5/upload_file', bodyFormData);
+      let result = resp.body
+      let {file_list} = result.data;
+			console.log(file_list);
+      file_list.forEach(function (item) {
+						self.fileTempList.push(item)
+						console.log('self.imgTempList', self.fileTempList)
+			});
     },
     showTop() {
       window.scrollTo(0, 0);
@@ -453,7 +525,7 @@ export default {
     change(value, label) {
       //  console.log('change:', value, label)
     },
-    goUploder(position, msg) {
+    goUploder() {
       this.showLoading = true;
       if (this.allow === 0) {
         this.commentFlag = true;
@@ -466,14 +538,16 @@ export default {
       let dataDatime = data + " " + time;
 
       if (this.titleValue === "") {
-        this.position = position;
-        this.toastMessage = "请填写标题";
-        this.showPositionValue = true;
+        Toast('请填写标题')
+        // this.position = position;
+        // this.toastMessage = "请填写标题";
+        // this.showPositionValue = true;
         this.showLoading = false;
       } else if (this.contentValue === "") {
-        this.position = position;
-        this.toastMessage = "请填写内容";
-        this.showPositionValue = true;
+        Toast('请填写内容');
+        // this.position = position;
+        // this.toastMessage = "请填写内容";
+        // this.showPositionValue = true;
         this.showLoading = false;
       } else {
         //    console.log(this.userList);return
@@ -486,29 +560,40 @@ export default {
           commentFlag: this.commentFlag,
           noticeTime: dataDatime,
           userList: JSON.stringify(this.userList),
+          img_add: JSON.stringify(this.imgTempList),
+          img_del: JSON.stringify(this.imgDelList),
+          file_add: JSON.stringify(this.fileTempList),
+          file_del: JSON.stringify(this.fileDelList),
           imgList: JSON.stringify(this.serverId)
         };
         //  console.log(JSON.stringify(sendObj))
         let _this = this;
         _this.$http.post(apiRouter.POST_SEND, sendObj).then(
           response => {
+            Toast(response.body.message);
+            _this.showLoading = false;
             if (response.body.status === 200) {
-              _this.position = position;
-              _this.toastMessage = response.body.message;
-              _this.showPositionValue = true;
-              setTimeout(_this.backHome, 1200);
-            } else {
-              _this.position = position;
-              _this.toastMessage = response.body.message;
-              _this.showPositionValue = true;
-              _this.showLoading = false;
+              setTimeout(_this.backHome, 600);
             }
+            // if (response.body.status === 200) {
+            //   // _this.position = position;
+            //   // _this.toastMessage = response.body.message;
+            //   // _this.showPositionValue = true;
+            //   // setTimeout(_this.backHome, 1200);
+            // } else {
+            //   // _this.position = position;
+            //   // _this.toastMessage = response.body.message;
+            //   // _this.showPositionValue = true;
+            //   // _this.showLoading = false;
+            // }
           },
           error => {
-            _this.position = position;
-            _this.toastMessage = response.body.message;
-            _this.showPositionValue = true;
+            Toast(response.body.message);
             _this.showLoading = false;
+            // _this.position = position;
+            // _this.toastMessage = response.body.message;
+            // _this.showPositionValue = true;
+            // _this.showLoading = false;
           }
         );
       }
@@ -687,6 +772,27 @@ export default {
 <style lang="less" scoped>
 @import "../../style/minxin.less";
 
+.imgContainer{
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	// padding-top: 20px;
+
+  img {
+    width: 100%;
+  }
+
+  .spRow{
+    display: inline-flex;
+  }
+
+  a{
+    font-size: 14px;
+		color: #005ba2;
+		text-decoration: none;
+		margin-right: 1em;
+  }
+}
 .wapper {
 	position: absolute;
 	top: 47px;
