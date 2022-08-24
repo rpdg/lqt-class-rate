@@ -70,7 +70,7 @@
 
     <p class="moreData" v-show="needShow"><span>加载中...</span></p>
     <p class="lastShow" v-show="lastShow"><span>已经全部加载</span></p>
-    <div v-transfer-dom>
+    <!-- <div v-transfer-dom>
       <confirm
         v-model="popup"
         :close-on-confirm="false"
@@ -79,7 +79,7 @@
         confirmText="是，我要删除"
       >
       </confirm>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -88,7 +88,7 @@
   import {Field, Tab, Tabs} from 'vant';
   import Back from "../../components/common/Back.vue"
   import apiRouter from "../../config/api.js"
-  import {mapMutations} from 'vuex'
+  // import {mapMutations} from 'vuex';
   export default {
     directives: {
       TransferDom
@@ -126,12 +126,12 @@
       // }
     },
     activated() {
-      if (this.$route.query.fresh && this.$route.query.fresh == '1') {
-        this.loadData();
-      } else {
-        this.loadData();
-      }
-      //this.loadData();
+      // if (this.$route.query.fresh && this.$route.query.fresh == '1') {
+      //   this.loadData();
+      // } else {
+      //   this.loadData();
+      // }
+      this.loadData();
     },
     data(){
       return {
@@ -171,7 +171,7 @@
         selectTab:0,
         id: '',
         page: 1,
-        popup: false,
+        // popup: false,
         isShow: false,
         showItemNumber: -1,
         messageData: [],
@@ -189,10 +189,10 @@
       goDetail(e){
         this.$router.push({path:'/cur-enroll',query: {courseId: e.courseId}})
       },
-      switchTabItem(e){
-        this.selectTab = e;
-        console.log(this.selectTab)
-      },
+      // switchTabItem(e){
+      //   this.selectTab = e;
+      //   console.log(this.selectTab)
+      // },
       loadData(){
         let id = this.$route.query.id;
         let vm = this;
@@ -234,91 +234,93 @@
         });
       },
 
-      edlitBtn(news, index){
-        if (this.isShow && this.showItemNumber === index) {
-          this.isShow = false;
-          return;
-        }
-        this.isShow = true;
-        this.showItemNumber = index;
-      },
+      // edlitBtn(news, index){
+      //   if (this.isShow && this.showItemNumber === index) {
+      //     this.isShow = false;
+      //     return;
+      //   }
+      //   this.isShow = true;
+      //   this.showItemNumber = index;
+      // },
 
-      deleteBtn(id){
-        this.id = id;
-        this.isShow = false;
-        this.popup = true;
+      // deleteBtn(id){
+      //   this.id = id;
+      //   this.isShow = false;
+      //   // this.popup = true;
 
-      },
+      // },
 
-      onConfirm () {
-        this.$http.get( apiRouter.DEL_HOMEWORK +'?id=' + this.id).then(response => {
-          if (response.body.status === 200) {
-            window.location.reload();
-          } else {
-            alert("删除失败");
-          }
-        }, erro => {
-        });
+      // onConfirm () {
+      //   this.$http.get( apiRouter.DEL_HOMEWORK +'?id=' + this.id).then(response => {
+      //     if (response.body.status === 200) {
+      //       window.location.reload();
+      //     } else {
+      //       alert("删除失败");
+      //     }
+      //   }, erro => {
+      //   });
 
-        this.popup = false;
-        return;
-        this.$vux.loading.show({
-          transition: '',
-          text: 'processing'
-        })
-        setTimeout(() => {
-          this.$vux.loading.hide()
-          this.popup = false
-        }, 1000)
-      },
+      //   this.popup = false;
+      //   return;
+      //   this.$vux.loading.show({
+      //     transition: '',
+      //     text: 'processing'
+      //   })
+      //   setTimeout(() => {
+      //     this.$vux.loading.hide()
+      //     this.popup = false
+      //   }, 1000)
+      // },
 
-      massageData(){
-        let _this = this;
-        if (_this.totalPage < _this.page) {
-          _this.needShow = false;
-          _this.lastShow = true;
-          return;
-        };
-        this.$http.get(apiRouter.GET_HOMEWORKLIST+"?" + 'page=' + this.page).then(response => {
-          _this.needShow = false;
-          let list = [];
-          if (_this.page === 1) {
-            let totalPage = response.body.data.totalpage;
-            console.log(totalPage)
-            _this.totalPage = totalPage;
-            list = response.body.data.list;
-            console.log(response.body.data.list)
-          } else {
-            list = _this.messageData.concat(response.body.data.list);
-          }
-          _this.messageData = list;
-          _this.$nextTick(() => {
-            _this.isEndReached = false;
-          });
-        }, erro => {
-          _this.needShow = false;
-          //   alert("请求失败了!!!!")
-        });
-      },
+      // massageData(){
+      //   let _this = this;
+      //   if (_this.totalPage < _this.page) {
+      //     _this.needShow = false;
+      //     _this.lastShow = true;
+      //     return;
+      //   };
+      //   this.$http.get(apiRouter.GET_HOMEWORKLIST+"?" + 'page=' + this.page).then(response => {
+      //     _this.needShow = false;
+      //     let list = [];
+      //     if (_this.page === 1) {
+      //       let totalPage = response.body.data.totalpage;
+      //       console.log(totalPage)
+      //       _this.totalPage = totalPage;
+      //       list = response.body.data.list;
+      //       console.log(response.body.data.list)
+      //     } else {
+      //       list = _this.messageData.concat(response.body.data.list);
+      //     }
+      //     _this.messageData = list;
+      //     _this.$nextTick(() => {
+      //       _this.isEndReached = false;
+      //     });
+      //   }, erro => {
+      //     _this.needShow = false;
+      //     //   alert("请求失败了!!!!")
+      //   });
+      // },
 
-      revampBtn(id){
-        this.$http.get(apiRouter.EDLIT_INFO+'?id=' + id).then(response => {
-          if (response.body.status === 200) {
-            this.messageWay(response.body.data)
-            console.log(response.body.data)
-            let messageString = JSON.stringify(response.body.data)
-            window.localStorage.setItem("MESSAGE",messageString)
-            //    let userList = JSON.stringify(response.body.data.userList)
-            this.$router.push({path: "posted",query: {path:"Message",itemId:id}})
-            this.isShow = false;
-          }
-        }, erro => {
-          alert("失败")
-        });
-      },
-      ...mapMutations({
-        messageWay:"SET_MESSAGE"
-      })
+      // revampBtn(id){
+      //   this.$http.get(apiRouter.EDLIT_INFO+'?id=' + id).then(response => {
+      //     if (response.body.status === 200) {
+      //       this.messageWay(response.body.data)
+      //       console.log(response.body.data)
+      //       let messageString = JSON.stringify(response.body.data)
+      //       window.localStorage.setItem("MESSAGE",messageString)
+      //       //    let userList = JSON.stringify(response.body.data.userList)
+      //       this.$router.push({path: "posted",query: {path:"Message",itemId:id}})
+      //       this.isShow = false;
+      //     }
+      //   }, erro => {
+      //     alert("失败")
+      //   });
+      // },
+
+
+      // ...mapMutations({
+      //   messageWay:"SET_MESSAGE"
+      // })
 
     },
 

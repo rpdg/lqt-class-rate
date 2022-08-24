@@ -152,7 +152,7 @@ import {
   Cell,
   Radio,
 } from "vux";
-import { Button, Uploader ,Toast} from 'vant';
+import { Button, Uploader ,Dialog, Toast} from 'vant';
 import { getSelectDates } from "../../utils/DateUtils";
 import apiRouter , { apiPath } from "../../config/api.js";
 
@@ -455,13 +455,31 @@ export default {
     // this.getUrlConfig();
   },
   methods: {
-    removeTmpFile(i){
-      let del = this.fileTempList.splice(i,1);
-      this.fileDelList.push(...del);
+    async removeTmpFile(i){
+      let answer = await Dialog.confirm({
+				className: 'dy-rate-dialog',
+				title: '',
+				message: '确定要删除吗？',
+				confirmButtonText: '确定',
+				messageAlign: 'center',
+			})
+			if (answer === 'confirm') {
+				let del = this.fileTempList.splice(i,1);
+        this.fileDelList.push(...del);
+			}
     },
-    removeTmpPic(i){
-      let del = this.imgTempList.splice(i,1);
-      this.imgDelList.push(...del);
+    async removeTmpPic(i){
+      let answer = await Dialog.confirm({
+				className: 'dy-rate-dialog',
+				title: '',
+				message: '确定要删除吗？',
+				confirmButtonText: '确定',
+				messageAlign: 'center',
+			})
+			if (answer === 'confirm') {
+				let del = this.imgTempList.splice(i,1);
+        this.imgDelList.push(...del);
+			}
     },
     uploadHandler(fileItem){
       let ext = getFileExt(fileItem.file.name);
@@ -588,7 +606,7 @@ export default {
             // }
           },
           error => {
-            Toast(response.body.message);
+            Toast(error);
             _this.showLoading = false;
             // _this.position = position;
             // _this.toastMessage = response.body.message;

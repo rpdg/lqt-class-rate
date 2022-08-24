@@ -48,17 +48,23 @@
             <img slot="icon" width="20" style="display:block;margin-right:15px;" src="@/assets/curriculum/title-5.png">
           </cell>
 
-          <cell class="time-show" v-if="courseDetail.MY_STATUS == '100'" :title="'距报名开始还剩：'" style="padding-left: 0;padding-top: 5px;padding-bottom: 5px;">
-            <img slot="icon" width="20" style="display:block;margin-right:15px;" src="@/assets/curriculum/title-6.png">
-            <van-count-down style="font-size: 1em" @finish="finishStartTime" @change="changeStartTime" :time="startTime" :format="startFtm" />
-          </cell>
-          <cell v-else-if="courseDetail.MY_STATUS == '300'" :title="'报名已结束：'+curData.lastTime.countDown" style="padding-left: 0;padding-top: 5px;padding-bottom: 5px;">
-            <img slot="icon" width="20" style="display:block;margin-right:15px;" src="@/assets/curriculum/title-6.png">
-          </cell>
-          <cell class="time-show" v-else :title="'距报名结束还剩：'" style="padding-left: 0;padding-top: 5px;padding-bottom: 5px;">
-            <img slot="icon" width="20" style="display:block;margin-right:15px;" src="@/assets/curriculum/title-6.png">
-            <van-count-down style="font-size: 1em" @finish="finishCloseTime" @change="changeCloseTime"  :time="closeTime" :format="closeFtm" />
-          </cell>
+
+          <cell v-if="courseDetail.IS_CLOSED == '1'" :title="'已选报该导师'" style="color:#48B31A;padding-left: 0;padding-top: 5px;padding-bottom: 5px;">
+              <img slot="icon" width="20" style="display:block;margin-right:15px;" src="@/assets/curriculum/title-6.png">
+            </cell>
+          <div v-else>
+            <cell class="time-show" v-if="courseDetail.MY_STATUS == '100'" :title="'距报名开始还剩：'" style="padding-left: 0;padding-top: 5px;padding-bottom: 5px;">
+              <img slot="icon" width="20" style="display:block;margin-right:15px;" src="@/assets/curriculum/title-6.png">
+              <van-count-down style="font-size: 1em" @finish="finishStartTime" @change="changeStartTime" :time="startTime" :format="startFtm" />
+            </cell>
+            <cell v-else-if="courseDetail.MY_STATUS == '300'" :title="'报名已结束：'+curData.lastTime.countDown" style="padding-left: 0;padding-top: 5px;padding-bottom: 5px;">
+              <img slot="icon" width="20" style="display:block;margin-right:15px;" src="@/assets/curriculum/title-6.png">
+            </cell>
+            <cell class="time-show" v-else :title="'距报名结束还剩：'" style="padding-left: 0;padding-top: 5px;padding-bottom: 5px;">
+              <img slot="icon" width="20" style="display:block;margin-right:15px;" src="@/assets/curriculum/title-6.png">
+              <van-count-down style="font-size: 1em" @finish="finishCloseTime" @change="changeCloseTime"  :time="closeTime" :format="closeFtm" />
+            </cell>
+          </div>
 
 
         </group>
@@ -80,7 +86,7 @@
     </div>
 
 
-      <div v-if="!loading" style="text-align: center;position: fixed;width: 90%;left:5%;bottom: 1em;">
+      <div v-if="!loading && courseDetail.IS_CLOSED != '1'" style="text-align: center;position: fixed;width: 90%;left:5%;bottom: 1em;">
         <van-button v-if="courseDetail.MY_STATUS == '200'" @click="submitData" style="width:100%;background-color: #48b41a" type="primary" >立即报名</van-button>
         <div v-else-if="courseDetail.MY_STATUS == '201' && curData.selTime.CAN_CHANGE== '1' " style="position: relative;bottom: 3em;">
           <van-button style="position:absolute;left:0;width: 30%;background-color: red;border-color: #979797;color: white" type="warn" @click="submitDataCancel"  >取消报名</van-button>
@@ -89,7 +95,7 @@
         <van-button v-else style=";width: 100%;background-color: #979797;border-color: #979797" disabled type="primary">{{statusView[courseDetail.MY_STATUS]}}</van-button>
       </div>
 
-      <img @click="setTop" class="top-btn" src="../../assets/curriculum/top.png"/>
+      <img v-if="!loading && courseDetail.IS_CLOSED != '1'" @click="setTop" class="top-btn" src="../../assets/curriculum/top.png"/>
 
       <toast
         v-model="showPositionValue"
