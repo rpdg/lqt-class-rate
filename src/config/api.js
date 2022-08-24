@@ -29,7 +29,7 @@ const apiRouter = {
   GET_LIST: apiPath + "/app/profile/info",
 
   // 发布通知接口
-  POST_SEND: apiPath + "/app/notice/publish",
+  POST_SEND: apiPath + "/app/notice/publish_v2",
 
   // 获取微信签名
   GET_CONFIG: apiPath + "/app/config/wechat?url=",

@@ -75,8 +75,10 @@
           
           <div class="mg-b-20 imgContainer" v-show="imgTempList.length + fileTempList.length > 0">
             <div class="" v-for="( pic , pIndex ) in imgTempList" :key="pic.newfileName" :data-id='pic.newfileName'
-             v-long-press="600"
+             v-long-press="1000"
              @long-press-start="removeTmpPic(pIndex)"
+             @touchstart="startWillRemovePic"
+             @touchmove="cancelWillRemovePic"
              >
               <img :src="pic.viewPath" alt="">
             </div>
@@ -245,6 +247,7 @@ export default {
       addressData: getSelectDates(),
       showAddress: false,
       
+      willRemove: false,
 			imgTempList: [],
 			fileTempList: [],
 			imgDelList: [],
@@ -455,6 +458,14 @@ export default {
     // this.getUrlConfig();
   },
   methods: {
+    startWillRemovePic(){
+      this.willRemove = true;
+    },
+    cancelWillRemovePic(){
+      if (this.willRemove) {
+				this.willRemove = false
+			}
+    },
     async removeTmpFile(i){
       let answer = await Dialog.confirm({
 				className: 'dy-rate-dialog',
@@ -469,17 +480,19 @@ export default {
 			}
     },
     async removeTmpPic(i){
-      let answer = await Dialog.confirm({
-				className: 'dy-rate-dialog',
-				title: '',
-				message: '确定要删除吗？',
-				confirmButtonText: '确定',
-				messageAlign: 'center',
-			})
-			if (answer === 'confirm') {
-				let del = this.imgTempList.splice(i,1);
-        this.imgDelList.push(...del);
-			}
+      if (this.willRemove) {
+        let answer = await Dialog.confirm({
+          className: 'dy-rate-dialog',
+          title: '',
+          message: '确定要删除吗？',
+          confirmButtonText: '确定',
+          messageAlign: 'center',
+        })
+        if (answer === 'confirm') {
+          let del = this.imgTempList.splice(i,1);
+          this.imgDelList.push(...del);
+        }
+      }
     },
     uploadHandler(fileItem){
       let ext = getFileExt(fileItem.file.name);
