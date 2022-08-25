@@ -76,18 +76,18 @@
           <div class="mg-b-20 imgContainer" v-show="imgTempList.length + fileTempList.length > 0">
             <div class="" v-for="( pic , pIndex ) in imgTempList" :key="pic.newfileName" :data-id='pic.newfileName'
              v-long-press="1000"
-             @long-press-start="removeTmpPic(pIndex)"
-             @touchstart="startWillRemovePic"
+             @long-press-start="removeTmpPic(pic , pIndex)"
+             @touchstart="startWillRemovePic(pic.newfileName)"
              @touchmove="cancelWillRemovePic"
              >
-              <img :src="pic.viewPath" alt="">
+              <img :src="pic.viewPath" class="deletable">
             </div>
             <div class="" v-for="( file , fIndex) in fileTempList" :key="file.newfileName">
               <span class="spRow">
                 <a :href="file.viewPath" target='_blank' :data-id='file.newfileName'>
                   {{file.originalName}}
                 </a>
-                <van-button plain size='mini' color="#ee0a24" text='删除' @click="removeTmpFile(fIndex)"/>
+                <van-button plain size='mini' color="#ee0a24" text='删除' @click="removeTmpFile(file ,fIndex)"/>
               </span>
             </div>
           </div>
@@ -123,7 +123,12 @@
 				>发布通知</x-button> -->
 
         <div  style="padding: 20px 15px;">
-          <van-button block color="#54B331" @click="goUploder" :loading="showLoading" :disabled="showLoading">发布通知</van-button>
+          <van-button block color="#54B331" 
+            @click="goUploder" 
+            :loading="showLoading" 
+            :disabled="showLoading">
+              发布通知
+          </van-button>
         </div>
 
 				<!-- <toast
@@ -433,6 +438,25 @@ export default {
         this.localIdImgs = [];
         imgs.forEach((item, index) => {
           this.localIdImgs.push(roterPath + item.url);
+          let picObj = {
+            viewPath: this.ossPath + '/upload' + item.url,
+            newfileName: 'xxx-' + item.id
+          }
+          this.imgTempList.push(picObj)
+        });
+
+        let files = stringArray.fileList;
+        files.forEach(file => {
+          file = Object.assign({
+            viewPath : this.ossPath + '/upload' + file.URL,
+            newfileName: 'xxx-' + file.ID,
+            originalName: file.FILENAME
+          } , file)
+          this.fileTempList.push({
+            viewPath : this.ossPath + '/upload' + file.URL,
+            newfileName: 'xxx-' + file.ID,
+            originalName: file.FILENAME
+          })
         });
 
         this.scope = [];
@@ -458,15 +482,15 @@ export default {
     // this.getUrlConfig();
   },
   methods: {
-    startWillRemovePic(){
-      this.willRemove = true;
+    startWillRemovePic(key){
+        this.willRemove = true;
     },
     cancelWillRemovePic(){
       if (this.willRemove) {
 				this.willRemove = false
 			}
     },
-    async removeTmpFile(i){
+    async removeTmpFile(file , i){
       let answer = await Dialog.confirm({
 				className: 'dy-rate-dialog',
 				title: '',
@@ -476,10 +500,15 @@ export default {
 			})
 			if (answer === 'confirm') {
 				let del = this.fileTempList.splice(i,1);
-        this.fileDelList.push(...del);
+
+        if (file.newfileName.startsWith('xxx-')){
+          this.fileDelList.push(file.newfileName.split('xxx-')[1]);
+        } else{
+          this.fileDelList.push(...del);
+        }
 			}
     },
-    async removeTmpPic(i){
+    async removeTmpPic(pic , i){
       if (this.willRemove) {
         let answer = await Dialog.confirm({
           className: 'dy-rate-dialog',
@@ -490,17 +519,30 @@ export default {
         })
         if (answer === 'confirm') {
           let del = this.imgTempList.splice(i,1);
-          this.imgDelList.push(...del);
+          if (pic.newfileName.startsWith('xxx-')){
+            this.imgDelList.push(pic.newfileName.split('xxx-')[1]);
+          } else{
+            this.imgDelList.push(...del);
+          }
         }
       }
     },
-    uploadHandler(fileItem){
+    async uploadHandler(fileItem){
+
+      let t = Toast.loading({
+        message: '上传中...',
+        forbidClick: true,
+        duration: 0, // 持续展示 toast
+      });
+
       let ext = getFileExt(fileItem.file.name);
       if(FileTypes_Image.includes(ext)){
-        this.uploadPic(fileItem.file);
+        await this.uploadPic(fileItem.file);
       } else{
-        this.uploadFile(fileItem.file);
+        await this.uploadFile(fileItem.file);
       }
+
+      t.clear();
     },
     async uploadPic(pic){
       let bodyFormData = new FormData()
@@ -582,6 +624,21 @@ export default {
         this.showLoading = false;
       } else {
         //    console.log(this.userList);return
+        let c = this.imgTempList.length;
+        while(c--) {
+          let pic = this.imgTempList[c];
+          if(pic.newfileName.startsWith('xxx-')){
+            this.imgTempList.splice(c , 1);
+          }
+        }
+        c = this.fileTempList.length;
+        while(c--) {
+          let file = this.fileTempList[c];
+          if(file.newfileName.startsWith('xxx-')){
+            this.fileTempList.splice(c , 1);
+          }
+        }
+
         let sendObj = {
           id: this.itemId,
           type: this.objType.type,
@@ -809,9 +866,11 @@ export default {
 	gap: 10px;
 	// padding-top: 20px;
 
-  img {
+  img.deletable {
     width: 100%;
-  }
+			pointer-events: none;
+			-webkit-touch-callout: none;
+		}
 
   .spRow{
     display: inline-flex;
