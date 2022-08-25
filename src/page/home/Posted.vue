@@ -624,18 +624,20 @@ export default {
         this.showLoading = false;
       } else {
         //    console.log(this.userList);return
-        let c = this.imgTempList.length;
+        let imgTempList = JSON.parse(JSON.stringify(this.imgTempList));
+        let c = imgTempList.length;
         while(c--) {
-          let pic = this.imgTempList[c];
+          let pic = imgTempList[c];
           if(pic.newfileName.startsWith('xxx-')){
-            this.imgTempList.splice(c , 1);
+            imgTempList.splice(c , 1);
           }
         }
-        c = this.fileTempList.length;
+        let fileTempList = JSON.parse(JSON.stringify(this.fileTempList));
+        c = fileTempList.length;
         while(c--) {
-          let file = this.fileTempList[c];
+          let file = fileTempList[c];
           if(file.newfileName.startsWith('xxx-')){
-            this.fileTempList.splice(c , 1);
+            fileTempList.splice(c , 1);
           }
         }
 
@@ -648,9 +650,9 @@ export default {
           commentFlag: this.commentFlag,
           noticeTime: dataDatime,
           userList: JSON.stringify(this.userList),
-          img_add: JSON.stringify(this.imgTempList),
+          img_add: JSON.stringify(imgTempList),
           img_del: JSON.stringify(this.imgDelList),
-          file_add: JSON.stringify(this.fileTempList),
+          file_add: JSON.stringify(fileTempList),
           file_del: JSON.stringify(this.fileDelList),
           imgList: JSON.stringify(this.serverId)
         };
