@@ -92,9 +92,14 @@
             </div>
           </div>
           
-          <van-uploader :accept='fileAccepts' :after-read='uploadHandler' result-type="file">
-							<van-button plain size='small' color="#54B331" text='上传'/>
+          <van-uploader v-show="false"
+            ref="uploader" 
+            :accept='fileAccepts' 
+            :after-read='uploadHandler' 
+            result-type="file"
+          >
 					</van-uploader>
+							<van-button @click="chooseFile" plain size='small' color="#54B331" text='上传'/>
 					<!-- <div class="accessory-img clearfix">
 						<ul class="photo-img">
 							<li v-for="(item,index) in localIdImgs" :key="index">
@@ -527,6 +532,12 @@ export default {
         }
       }
     },
+    chooseFile(){
+			let self = this;
+      setTimeout(async function() {
+        self.$refs.uploader.chooseFile();
+      } , 3e2);
+    },
     async uploadHandler(fileItem){
 
       let t = Toast.loading({
@@ -535,14 +546,13 @@ export default {
         duration: 0, // 持续展示 toast
       });
 
-      let ext = getFileExt(fileItem.file.name);
-      if(FileTypes_Image.includes(ext)){
-        await this.uploadPic(fileItem.file);
-      } else{
-        await this.uploadFile(fileItem.file);
-      }
-
-      t.clear();
+        let ext = getFileExt(fileItem.file.name);
+        if(FileTypes_Image.includes(ext)){
+          await this.uploadPic(fileItem.file);
+        } else{
+          await this.uploadFile(fileItem.file);
+        }
+        t.clear();
     },
     async uploadPic(pic){
       let bodyFormData = new FormData()
