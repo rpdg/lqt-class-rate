@@ -1,7 +1,8 @@
 <template>
 	<div class="itemRow">
-		<a class="spFileName" :href="url" target="_blank" :data-id="id">{{displayName}}</a>
-		<a v-if="previewUrl" class="spPreview" :href="previewUrl" target="_blank">预览</a>
+		<a v-if="previewUrl !== '__VIDEO__'" class="spFileName" :href="url" target="_blank" :data-id="id">{{displayName}}</a>
+		<center v-if="previewUrl === '__VIDEO__'"><video :src="url" width="320" height="240" controls autobuffer></video></center>
+		<a v-else-if="previewUrl" class="spPreview" :href="previewUrl" target="_blank">预览</a>
 	</div>
 </template>
 <script>
@@ -10,10 +11,10 @@
 export default {
 	name: 'OfficeItem',
 	props: {
-		id:{
+		id: {
 			type: String,
 			required: false,
-			default: ''
+			default: '',
 		},
 		ext: {
 			type: String,
@@ -23,14 +24,14 @@ export default {
 			type: String,
 			required: true,
 		},
-		displayName:{
+		displayName: {
 			type: String,
 			required: true,
-		}
+		},
 	},
-    computed:{
-        previewUrl(){
-            const filePath = window.location.protocol + this.url
+	computed: {
+		previewUrl() {
+			const filePath = window.location.protocol + this.url
 			if (
 				this.ext.indexOf('doc') === 0 ||
 				this.ext.indexOf('xls') === 0 ||
@@ -38,12 +39,14 @@ export default {
 			) {
 				return 'https://view.officeapps.live.com/op/view.aspx?src=' + filePath
 			} else if (this.ext === 'pdf') {
-                return '/weixin/wechat/fileview/go_page.jsp?filePath=' + filePath
-			} else{
-                return ''
-            }
-        }
-    }
+				return '/weixin/wechat/fileview/go_page.jsp?filePath=' + filePath
+			} else if (this.ext === 'mp4') {
+				return '__VIDEO__'
+			} else {
+				return ''
+			}
+		},
+	},
 }
 </script>
 <style lang="less" scoped>
