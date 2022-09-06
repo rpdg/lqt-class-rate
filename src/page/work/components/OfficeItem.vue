@@ -1,7 +1,8 @@
 <template>
 	<div class="itemRow">
-		<a v-if="previewUrl !== '__VIDEO__'" class="spFileName" :href="url" target="_blank" :data-id="id">{{displayName}}</a>
+		<a v-if="previewUrl !== '__VIDEO__' && previewUrl !== '__AUDIO__'" class="spFileName" :href="url" target="_blank" :data-id="id">{{displayName}}</a>
 		<center v-if="previewUrl === '__VIDEO__'"><video :src="url" width="320" height="240" controls autobuffer></video></center>
+		<center v-else-if="previewUrl === '__AUDIO__'"><audio :src="url" width="320" height="50" controls autobuffer></audio></center>
 		<a v-else-if="previewUrl" class="spPreview" :href="previewUrl" target="_blank">预览</a>
 	</div>
 </template>
@@ -42,6 +43,8 @@ export default {
 				return '/weixin/wechat/fileview/go_page.jsp?filePath=' + filePath
 			} else if (this.ext === 'mp4') {
 				return '__VIDEO__'
+			} else if (this.ext === 'mp3') {
+				return '__AUDIO__'
 			} else {
 				return ''
 			}
