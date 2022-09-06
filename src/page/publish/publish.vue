@@ -226,17 +226,16 @@ export default {
   //     }
   //   }
   // },
-  activated() {
-    this.getStorage();
-  },
+  // activated() {
+  //   this.getStorage();
+  // },
   created() {
     //getSelectDates();
     //timeData()
     this.showTop();
     this.localIdImgs = [];
   },
-  mounted() {
-    // this.getStorage();
+  activated() {
     this.titleDate();
     // console.log(apiRouter.POST_SEND)
     this.localIdImgs = [];
@@ -244,6 +243,9 @@ export default {
     this.getUrlConfig();
     // this.getNowFormatDate();
     // this.titleDate();
+    this.getStorage();
+    this.newContent = ''
+    this.timeCode = ''
   },
   methods: {
     setTimecode(obj) {

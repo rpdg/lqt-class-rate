@@ -86,7 +86,7 @@ export default {
   },
   computed: {},
   created() {},
-  mounted() {
+  activated() {
     this.showData();
   },
   methods: {

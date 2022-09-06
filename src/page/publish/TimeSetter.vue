@@ -33,16 +33,17 @@ export default {
       timecodeInputer: 0
     };
   },
-  // activated: function() {
-  //   // alert(this.timecodeValue);
-  //   this.$emit("check", { val: this.timecodeValue, ipt: this.timecodeInputer });
-  // },
+  activated: function() {
+    // alert(this.timecodeValue);
+    this.timecodeValue = ''
+    // this.$emit("check", { val: this.timecodeValue, ipt: this.timecodeInputer });
+  },
   methods: {
-    check(v) {
-      this.timecodeValue = v;
-      this.timecodeInputer = v === "自定义" ? 1 : 0;
-      this.$emit("check", { val: v, ipt: this.timecodeInputer });
-    },
+    // check(v) {
+    //   this.timecodeValue = v;
+    //   this.timecodeInputer = v === "自定义" ? 1 : 0;
+    //   this.$emit("check", { val: v, ipt: this.timecodeInputer });
+    // },
     handleCheck() {
       this.timecodeInputer = this.timecodeValue === "自定义" ? 1 : 0;
       this.$emit("check", {
