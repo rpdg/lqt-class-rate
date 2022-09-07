@@ -1,8 +1,18 @@
 <template>
 	<div class="itemRow">
-		<a v-if="previewUrl !== '__VIDEO__' && previewUrl !== '__AUDIO__'" class="spFileName" :href="url" target="_blank" :data-id="id">{{displayName}}</a>
-		<center v-if="previewUrl === '__VIDEO__'"><video :src="url" width="320" height="240" controls autobuffer></video></center>
-		<center v-else-if="previewUrl === '__AUDIO__'"><audio :src="url" width="320" height="50" controls autobuffer></audio></center>
+		<a
+			v-if="previewUrl !== '__VIDEO__' && previewUrl !== '__AUDIO__'"
+			class="spFileName"
+			:href="url"
+			target="_blank"
+			:data-id="id"
+		>{{displayName}}</a>
+		<center v-if="previewUrl === '__VIDEO__'">
+			<video :src="url" width="320" height="240" controls autobuffer></video>
+		</center>
+		<center v-else-if="previewUrl === '__AUDIO__'">
+			<audio :src="url" width="320" height="50" controls autobuffer></audio>
+		</center>
 		<a v-else-if="previewUrl" class="spPreview" :href="previewUrl" target="_blank">预览</a>
 	</div>
 </template>
@@ -38,6 +48,17 @@ export default {
 				this.ext.indexOf('xls') === 0 ||
 				this.ext.indexOf('ppt') === 0
 			) {
+				if (/^https:\/\/pub3.lqtedu.com/g.test(filePath)) {
+					filePath = filePath.replace(
+						'https://pub3.lqtedu.com',
+						'https://lqtgz.oss-cn-hangzhou-internal.aliyuncs.com'
+					)
+				} else if (/^https:\/\/pub.lqtedu.com/g.test(filePath)) {
+					filePath = filePath.replace(
+						'https://pub.lqtedu.com',
+						'https://lqtedu.oss-cn-hangzhou.aliyuncs.com'
+					)
+				}
 				return 'https://view.officeapps.live.com/op/view.aspx?src=' + filePath
 			} else if (this.ext === 'pdf') {
 				return '/weixin/wechat/fileview/go_page.jsp?filePath=' + filePath
