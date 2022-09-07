@@ -42,7 +42,7 @@ export default {
 	},
 	computed: {
 		previewUrl() {
-			const filePath = window.location.protocol + this.url
+			let filePath = window.location.protocol + this.url
 			if (
 				this.ext.indexOf('doc') === 0 ||
 				this.ext.indexOf('xls') === 0 ||
