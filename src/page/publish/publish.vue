@@ -159,10 +159,7 @@ export default {
       imgLenght: true,
       imgaesMaxLenght: 9,
       value7: "",
-      images: {
-        localId: [],
-        serverId: []
-      },
+      
 
       loading: false,
 
@@ -234,13 +231,19 @@ export default {
     //timeData()
     this.showTop();
     this.localIdImgs = [];
+    this.localData = [];
     this.newClassId = [];
+    this.serverId = [];
+    
   },
   activated() {
     this.titleDate();
     // console.log(apiRouter.POST_SEND)
     this.localIdImgs = [];
+    this.localData = [];
     this.newClassId = [];
+    this.serverId = [];
+    
     this.urlPath = window.location.href.split("#")[0];
     this.getUrlConfig();
     // this.getNowFormatDate();
