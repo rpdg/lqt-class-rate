@@ -61,7 +61,7 @@ export default {
 		XButton,
 		XHeader,
 	},
-	mounted() {
+	activated() {
 		let self = this;
 		self.massageData();
 		let clientHeight = document.body.clientHeight - self.$refs['heightBackPub'].$el.clientHeight;
@@ -80,6 +80,9 @@ export default {
 				}
 			}
 		};
+	},
+	deactivated(){
+		window.onscroll = null
 	},
 	methods: {
 		getTimecode(timeStr) {
