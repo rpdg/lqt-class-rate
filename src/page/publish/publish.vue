@@ -234,11 +234,13 @@ export default {
     //timeData()
     this.showTop();
     this.localIdImgs = [];
+    this.newClassId = [];
   },
   activated() {
     this.titleDate();
     // console.log(apiRouter.POST_SEND)
     this.localIdImgs = [];
+    this.newClassId = [];
     this.urlPath = window.location.href.split("#")[0];
     this.getUrlConfig();
     // this.getNowFormatDate();
