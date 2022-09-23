@@ -13,7 +13,7 @@
               <p style="color: #777777">{{news.typeCodeName}}</p>
             </a>
             <div class="message-handle" v-if="news.status == 100">
-              <a class="publishBtn inform" :style="'color:' + statusView[news.status].color">{{ new Date(news.openTime.replace(/-/g, '/')).format("MM月dd日 hh:mm ")}}</a>
+              <a class="publishBtn inform" :style="'color:' + statusView[news.status].color">{{ renderTime(news) }}</a>
               <a class="delete">{{statusView[news.status].text}}</a>
             </div>
             <div class="message-handle" style="padding-top: 0.5rem;" v-else>
@@ -31,7 +31,7 @@
               <p style="color: #777777">{{news.typeCodeName}}</p>
             </a>
             <div class="message-handle" v-if="news.status == 100">
-              <a class="publishBtn inform" :style="'color:' + statusView[news.status].color">{{ new Date(news.openTime.replace(/-/g, '/')).format("MM月dd日 hh:mm ")}}</a>
+              <a class="publishBtn inform" :style="'color:' + statusView[news.status].color">{{ renderTime(news) }}</a>
               <a class="delete">{{statusView[news.status].text}}</a>
             </div>
             <div class="message-handle" style="padding-top: 0.5rem;" v-else>
@@ -53,7 +53,7 @@
               <p style="color: #777777">{{news.typeCodeName}}</p>
             </a>
             <div class="message-handle" v-if="news.status == 100">
-              <a class="publishBtn inform" :style="'color:' + statusView[news.status].color">{{ new Date(news.openTime.replace(/-/g, '/')).format("MM月dd日 hh:mm ")}}</a>
+              <a class="publishBtn inform" :style="'color:' + statusView[news.status].color">{{ renderTime(news) }}</a>
               <a class="delete">{{statusView[news.status].text}}</a>
             </div>
             <div class="message-handle" style="padding-top: 0.5rem;" v-else>
@@ -183,6 +183,13 @@
       }
     },
     methods: {
+      renderTime(news){
+        if(news.openTime.substr(0,10) === news.serverTime.substr(0,10)){
+          return news.openTime.substr(11,5)
+        }else{
+          return new Date(news.openTime.replace(/-/g, '/')).format("MM月dd日 hh:mm ")
+        }
+      },
       goBack(){
         this.$router.push({path:'/'})
       },
