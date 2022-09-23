@@ -183,11 +183,11 @@
       }
     },
     methods: {
-      renderTime(news){
-        if(news.openTime.substr(0,10) === news.serverTime.substr(0,10)){
-          return news.openTime.substr(11,5)
-        }else{
-          return new Date(news.openTime.replace(/-/g, '/')).format("MM月dd日 hh:mm ")
+      renderTime(record) {
+        if (record.openTime.substr(0,10) === record.serverTime.substr(0,10)) {
+          return record.openTime.substr(11,5);
+        } else {
+          return record.openTime.substr(5,5);
         }
       },
       goBack(){
