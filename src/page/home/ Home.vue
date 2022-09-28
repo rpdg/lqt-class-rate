@@ -46,6 +46,14 @@
             </div>
             <p class="name" style="font-size: 0.5rem">{{item.name}}</p>
           </a>
+		  <a v-else-if="item.code === 'tea_leave'" class="link-class" :class=" item.newFlag ? 'new' : '' " :href="item.pageUrl">
+            <div
+                :style="{background:item.color, display:'block', borderRadius: '5px' , fontSize: '.80357143rem'}"
+              >
+                <van-icon class="icon" name="records" />
+            </div>
+            <p class="name" style="font-size: 0.5rem">{{item.name}}</p>
+          </a>
           <a v-else class="link-class" :class=" item.newFlag ? 'new' : '' " :href="item.pageUrl.startsWith('/weixin/wechat/dist/index.html#/')? '#' + item.pageUrl.split('#')[1] : item.pageUrl ">
             <div
               :style="{background:item.color,display:'block',borderRadius: '5px'}"
@@ -70,7 +78,15 @@
       <h2 class="mune-title">我的管理</h2>
       <ul class="iocn-list">
         <li v-for="(item,index) in mgrIcon" :type="item.code" :key="index">
-          <a class="link-class" :href="item.pageUrl.startsWith('/weixin/wechat/dist/index.html#/')? '#' + item.pageUrl.split('#')[1] : item.pageUrl ">
+		  <a v-if="item.code === 'leave_mgr'" class="link-class" :href="item.pageUrl">
+			<div
+              :style="{background:item.color,display:'block',borderRadius: '5px', fontSize: '.80357143rem'}"
+            >
+				<van-icon class="icon" name="records" />
+            </div>
+            <p class="name" style="font-size: 0.5rem">{{item.name}}</p>
+		  </a>
+          <a v-else class="link-class" :href="item.pageUrl.startsWith('/weixin/wechat/dist/index.html#/')? '#' + item.pageUrl.split('#')[1] : item.pageUrl ">
             <div
               :style="{background:item.color,display:'block',borderRadius: '5px'}"
             >
