@@ -49,7 +49,7 @@
           </cell>
 
 
-          <cell v-if="courseDetail.IS_CLOSED == '1'" :title="'已选报该导师'" style="color:#48B31A;padding-left: 0;padding-top: 5px;padding-bottom: 5px;">
+          <cell v-if="courseDetail.IS_CLOSED == '1'" :title="'已选报该课程'" style="color:#48B31A;padding-left: 0;padding-top: 5px;padding-bottom: 5px;">
               <img slot="icon" width="20" style="display:block;margin-right:15px;" src="@/assets/curriculum/title-6.png">
             </cell>
           <div v-else>
