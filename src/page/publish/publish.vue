@@ -84,7 +84,7 @@
 			<time-setter @check="setTimecode" />
 		</div>
 		<div class="accessory-box">
-			<p class="accessory-title">上传图片作业</p>
+			<p class="accessory-title">作业附件</p>
 			<div class="accessory-img clearfix">
 				<ul class="photo-img">
 					<li v-for="(item,index) in localIdImgs" :key="index">
