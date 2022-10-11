@@ -96,6 +96,8 @@
             ref="uploader" 
             :accept='fileAccepts' 
             :after-read='uploadHandler' 
+            :max-size="50 * 1024 * 1024"
+            @oversize="onOversize"
             result-type="file"
           >
 					</van-uploader>
@@ -487,6 +489,9 @@ export default {
     // this.getUrlConfig();
   },
   methods: {
+    onOversize(file) {
+      Toast('文件不可超过50M');
+    },
     startWillRemovePic(key){
         this.willRemove = true;
     },
