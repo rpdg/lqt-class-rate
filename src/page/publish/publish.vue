@@ -84,8 +84,8 @@
 			<time-setter @check="setTimecode" />
 		</div>
 		<div class="accessory-box">
-			<p class="accessory-title">作业附件</p>
-			<div class="accessory-img clearfix">
+			<p class="accessory-title" style="margin-bottom: 20px;">作业附件</p>
+			<!-- <div class="accessory-img clearfix">
 				<ul class="photo-img">
 					<li v-for="(item,index) in localIdImgs" :key="index">
 						<img :src="item" alt class="imgud" />
@@ -95,18 +95,55 @@
 				<a class="up-photo" href="javascript:;" @click="onClickUp()" v-show="imgLenght">
 					<img src="../../assets/addup.jpg" alt />
 				</a>
-			</div>
+			</div> -->
+      <div class="mg-b-20 imgContainer" v-show="imgTempList.length + fileTempList.length > 0">
+          <div class="" v-for="( pic , pIndex ) in imgTempList" :key="pic.newfileName" :data-id='pic.newfileName'
+             v-long-press="1000"
+             @long-press-start="removeTmpPic(pic , pIndex)"
+             @touchstart="startWillRemovePic(pic.newfileName)"
+             @touchmove="cancelWillRemovePic"
+             >
+              <img :src="pic.viewPath" class="deletable">
+            </div>
+            <div class="" v-for="( file , fIndex) in fileTempList" :key="file.newfileName">
+              <span class="spRow">
+                <a :href="file.viewPath" target='_blank' :data-id='file.newfileName'>
+                  {{file.originalName}}
+                </a>
+                <van-button plain size='mini' color="#ee0a24" text='删除' @click="removeTmpFile(file ,fIndex)"/>
+              </span>
+            </div>
+          </div>
+          
+          <van-uploader v-show="false"
+            ref="uploader" 
+            :accept='fileAccepts' 
+            :after-read='uploadHandler' 
+            :max-size="50 * 1024 * 1024"
+            @oversize="onOversize"
+            result-type="file"
+          >
+					</van-uploader>
+					<van-button @click="chooseFile" plain size='small' color="#54B331" text='上传'/>
 		</div>
 
-		<button @click="goUploder()" class="btn-uploder right" type="submit" :disabled="loading">发布作业</button>
+    <div  style="padding: 20px 15px;">
+          <van-button block color="#54B331" 
+            @click="goUploder" 
+            :loading="loading" 
+            :disabled="loading">
+            发布作业
+          </van-button>
+    </div>
+		<!-- <button @click="goUploder()" class="btn-uploder right" type="submit" :disabled="loading">发布作业</button> -->
 
-		<toast
+		<!-- <toast
 			v-model="showPositionValue"
 			type="text"
 			:time="800"
 			is-show-mask
 			:position="position"
-		>{{toastMessage}}</toast>
+		>{{toastMessage}}</toast> -->
 
 		<!-- </form>-->
 	</div>
@@ -116,7 +153,7 @@
 import { mapGetters } from "vuex";
 import TimeSetter from "./TimeSetter.vue";
 import {
-  Toast,
+  // Toast,
   Checker,
   CheckerItem,
   Group,
@@ -130,10 +167,33 @@ import {
   Value2nameFilter as value2name,
   XHeader
 } from "vux";
+
+import { Button, Uploader ,Dialog, Toast} from 'vant';
 import axios from "axios";
 import wx from "weixin-js-sdk";
 import { getSelectTimes } from "../../utils/TimeUtils";
-import apiRouter from "../../config/api.js";
+import apiRouter , { apiPath } from "../../config/api.js";
+
+
+const getFileExt = function (fullName) {
+	if (fullName.lastIndexOf('.') === -1) {
+		return '';
+	}
+	return fullName.substr(fullName.lastIndexOf('.') + 1).toUpperCase();
+};
+
+const FileTypes_Image = ['PNG', 'JPG', 'JPEG', 'GIF', 'WEBP'];
+
+const getMobileOS = () => {
+	const ua = navigator.userAgent;
+	if (/android/i.test(ua)) {
+		return 'Android';
+	} else if (/iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) {
+		return 'iOS';
+	}
+	return 'Other';
+};
+
 export default {
   components: {
     Toast,
@@ -147,7 +207,9 @@ export default {
     Radio,
     Datetime,
     XHeader,
-    TimeSetter
+    TimeSetter,
+    [Button.name]:Button, 
+    [Uploader.name]:Uploader
   },
 
   data() {
@@ -208,7 +270,16 @@ export default {
       newContent: "", //  内容
       newImgList: "", // 附件
 
-      newClassIds: ""
+      newClassIds: "",
+
+			ossPath: roterOssPath,
+      fileAccepts: 	getMobileOS() === 'iOS' ? '.png,.jpg,.jpeg,.gif,.doc,.docx,.xls,.xlsx,.pdf,.ppt,.pptx,.rar,.zip,.7z,.tar' : '*/*',
+      
+      willRemove: false,
+			imgTempList: [],
+			fileTempList: [],
+			imgDelList: [],
+			fileDelList: [],
     };
   },
   // computed: {
@@ -251,8 +322,114 @@ export default {
     this.getStorage();
     this.newContent = ''
     this.timeCode = ''
+
+    this.imgTempList.length = 
+    this.fileTempList.length =
+    this.imgDelList.length =
+    this.fileDelList.length = 0
   },
   methods: {
+    onOversize(file) {
+      Toast('文件不可超过50M');
+    },
+    startWillRemovePic(key){
+        this.willRemove = true;
+    },
+    cancelWillRemovePic(){
+      if (this.willRemove) {
+				this.willRemove = false
+			}
+    },
+    async removeTmpFile(file , i){
+      let answer = await Dialog.confirm({
+				className: 'dy-rate-dialog',
+				title: '',
+				message: '确定要删除吗？',
+				confirmButtonText: '确定',
+				messageAlign: 'center',
+			})
+			if (answer === 'confirm') {
+				let del = this.fileTempList.splice(i,1);
+
+        if (file.newfileName.startsWith('xxx-')){
+          this.fileDelList.push(file.newfileName.split('xxx-')[1]);
+        } else{
+          this.fileDelList.push(...del);
+        }
+			}
+    },
+    async removeTmpPic(pic , i){
+      if (this.willRemove) {
+        let answer = await Dialog.confirm({
+          className: 'dy-rate-dialog',
+          title: '',
+          message: '确定要删除吗？',
+          confirmButtonText: '确定',
+          messageAlign: 'center',
+        })
+        if (answer === 'confirm') {
+          let del = this.imgTempList.splice(i,1);
+          if (pic.newfileName.startsWith('xxx-')){
+            this.imgDelList.push(pic.newfileName.split('xxx-')[1]);
+          } else{
+            this.imgDelList.push(...del);
+          }
+        }
+      }
+    },
+    chooseFile(){
+			let self = this;
+      setTimeout(async function() {
+        self.$refs.uploader.chooseFile();
+      } , 3e2);
+    },
+    async uploadHandler(fileItem){
+
+      let t = Toast.loading({
+        message: '上传中...',
+        forbidClick: true,
+        duration: 0, // 持续展示 toast
+      });
+
+        let ext = getFileExt(fileItem.file.name);
+        if(FileTypes_Image.includes(ext)){
+          await this.uploadPic(fileItem.file);
+        } else{
+          await this.uploadFile(fileItem.file);
+        }
+        t.clear();
+    },
+    async uploadPic(pic){
+      let bodyFormData = new FormData()
+      bodyFormData.append('files', pic)
+
+      let self = this;
+      let resp = await this.$http.post( apiPath + '/file/h5/upload_pic', bodyFormData);
+      let result = resp.body
+      let {image_list} = result.data;
+			console.log(image_list);
+      image_list.forEach(function (item) {
+						self.imgTempList.push(item)
+						console.log('self.imgTempList', self.imgTempList)
+			});
+    },
+    async uploadFile(file){
+      let bodyFormData = new FormData()
+      bodyFormData.append('files', file)
+
+      let self = this;
+      let resp = await this.$http.post( apiPath + '/file/h5/upload_file', bodyFormData);
+      let result = resp.body
+      let {file_list} = result.data;
+			console.log(file_list);
+      file_list.forEach(function (item) {
+						self.fileTempList.push(item)
+						console.log('self.imgTempList', self.fileTempList)
+			});
+    },
+    showTop() {
+      window.scrollTo(0, 0);
+    },
     setTimecode(obj) {
       // alert(this.timeMinus)
       // debugger;
@@ -383,16 +560,36 @@ export default {
       // let time = this.timeData[1]
       // let dataDatime = data + " " + time
 
+      // debugger;
       let dataDatime = this.format(this.timeData[0]);
       if (this.newTitle === "") {
-        this.position = position;
-        this.toastMessage = "请填写标题";
-        this.showPositionValue = true;
-      } else if (this.newContent === "" && this.serverId.length === 0) {
-        this.position = position;
-        this.toastMessage = "请填写内容或上传图片";
-        this.showPositionValue = true;
+        Toast('请填写标题');
+        // this.position = position;
+        // this.toastMessage = "请填写标题";
+        // this.showPositionValue = true;
+      } else if (this.newContent === "" && this.imgTempList.length === 0) {
+        Toast('请填写内容或上传图片');
+        // this.position = position;
+        // this.toastMessage = "请填写内容或上传图片";
+        // this.showPositionValue = true;
       } else {
+        let imgTempList = JSON.parse(JSON.stringify(this.imgTempList));
+        let c = imgTempList.length;
+        while(c--) {
+          let pic = imgTempList[c];
+          if(pic.newfileName.startsWith('xxx-')){
+            imgTempList.splice(c , 1);
+          }
+        }
+        let fileTempList = JSON.parse(JSON.stringify(this.fileTempList));
+        c = fileTempList.length;
+        while(c--) {
+          let file = fileTempList[c];
+          if(file.newfileName.startsWith('xxx-')){
+            fileTempList.splice(c , 1);
+          }
+        }
+
         let sendObj = {
           WORK_DATE: this.format(this.timePublishData[0]),
           SPACE_ID: this.newSpaceId,
@@ -404,7 +601,11 @@ export default {
             .replace(/>/g, "&gt")
             .replace(/\n/g, "<br>"),
           IMG_LIST: JSON.stringify(this.serverId),
-          FIN_OF_TIME: this.timeMinus
+          FIN_OF_TIME: this.timeMinus,
+          IMG_ADD: JSON.stringify(imgTempList),
+          img_del: JSON.stringify(this.imgDelList),
+          FILE_ADD: JSON.stringify(fileTempList),
+          file_del: JSON.stringify(this.fileDelList),
         };
         console.log(JSON.stringify(sendObj));
         console.log(sendObj);
@@ -417,22 +618,27 @@ export default {
           .post(apiRouter.POST_HOMEWORKPUBLISH, sendObj)
           .then(
             response => {
+              Toast(response.body.message);
               if (response.status === 200) {
-                _this.position = position;
-                _this.toastMessage = "发布成功";
-                _this.showPositionValue = true;
-                window.localStorage.removeItem('CLAEEINFO');
-                setTimeout(_this.backHome, 1e3);
-              } else {
-                _this.position = position;
-                _this.toastMessage = "发布失败";
-                _this.showPositionValue = true;
+                setTimeout(_this.backHome, 600);
               }
+              // if (response.status === 200) {
+              //   _this.position = position;
+              //   _this.toastMessage = "发布成功";
+              //   _this.showPositionValue = true;
+              //   window.localStorage.removeItem('CLAEEINFO');
+              //   setTimeout(_this.backHome, 1e3);
+              // } else {
+              //   _this.position = position;
+              //   _this.toastMessage = "发布失败";
+              //   _this.showPositionValue = true;
+              // }
             },
             error => {
-              _this.position = position;
-              _this.toastMessage = "发布失败";
-              _this.showPositionValue = true;
+              Toast(error);
+              // _this.position = position;
+              // _this.toastMessage = "发布失败";
+              // _this.showPositionValue = true;
             }
           )
           .then(() => {
@@ -607,6 +813,12 @@ export default {
 </style>
 <style lang="less" scoped>
 @import "../../style/minxin.less";
+
+img.deletable {
+    width: 100%;
+			pointer-events: none;
+			-webkit-touch-callout: none;
+		}
 
 .form-info {
   padding-bottom: 100 / @baseSize;

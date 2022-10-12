@@ -101,7 +101,7 @@
             result-type="file"
           >
 					</van-uploader>
-							<van-button @click="chooseFile" plain size='small' color="#54B331" text='上传'/>
+					<van-button @click="chooseFile" plain size='small' color="#54B331" text='上传'/>
 					<!-- <div class="accessory-img clearfix">
 						<ul class="photo-img">
 							<li v-for="(item,index) in localIdImgs" :key="index">
