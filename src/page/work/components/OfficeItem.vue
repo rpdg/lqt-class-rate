@@ -51,7 +51,7 @@ export default {
 				if (/^https:\/\/pub3.lqtedu.com/g.test(filePath)) {
 					filePath = filePath.replace(
 						'https://pub3.lqtedu.com',
-						'https://lqtgz.oss-cn-hangzhou-internal.aliyuncs.com'
+						'https://lqtgz.oss-cn-hangzhou.aliyuncs.com'
 					)
 				} else if (/^https:\/\/pub.lqtedu.com/g.test(filePath)) {
 					filePath = filePath.replace(
