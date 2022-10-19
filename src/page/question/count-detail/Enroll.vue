@@ -7,7 +7,7 @@
       left-text="返回"
       right-text=""
       left-arrow
-      @click-left="$router.push('/qa_list_up?fresh=1')"
+      @click-left="goNewList"
     />
     <div class="" style="margin-top: 1rem;padding: 1rem 1rem 1em 1rem">
       <h2 style="font-size: 1.3em;text-align: center">{{detail.title}}</h2>
@@ -163,6 +163,9 @@
     },
 
     methods: {
+      goNewList(){
+			  window.location.href = '/weixin/wechat/v2/index.html#/questionnaireManage' 
+		  } ,
       showDetail(item) {
         this.undoListShow = false;
         this.currentOption = item.userList;

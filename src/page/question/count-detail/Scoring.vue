@@ -7,7 +7,7 @@
       left-text="返回"
       right-text=""
       left-arrow
-      @click-left="$router.push('/qa_list_up?fresh=1')"
+      @click-left="goNewList"
     />
     <div class="" style="margin-top: 1rem;padding: 1rem">
 
@@ -145,6 +145,9 @@
 
 
     methods: {
+      goNewList(){
+			  window.location.href = '/weixin/wechat/v2/index.html#/questionnaireManage' 
+		  } ,
       loadData() {
         this.detail = {};
         this.id = this.$route.query.id;

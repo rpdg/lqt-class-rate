@@ -70,7 +70,7 @@ export default {
 		},
 
 		goNewDetail(){
-		window.location.href = '/weixin/wechat/v2/index.html#/evaluate/records' 
+			window.location.href = '/weixin/wechat/v2/index.html#/evaluate/records' 
 		} ,
 
 		evluatObj(evalId, detailCode, nameBt) {
