@@ -273,7 +273,7 @@ export default {
       newClassIds: "",
 
 			ossPath: roterOssPath,
-      fileAccepts: 	getMobileOS() === 'iOS' ? '.png,.jpg,.jpeg,.gif,.doc,.docx,.xls,.xlsx,.pdf,.ppt,.pptx,.rar,.zip,.7z,.tar' : '*/*',
+      fileAccepts: 	getMobileOS() === 'iOS' ? '.png,.jpg,.jpeg,.gif,.doc,.docx,.xls,.xlsx,.pdf,.ppt,.pptx,.rar,.zip,.7z,.tar,.mp4' : '*/*',
       
       willRemove: false,
 			imgTempList: [],
