@@ -80,23 +80,46 @@
       pltneBtn(){
         let path = this.$route.name
         let choices = [];
+        let choosedClass = {}
+
         this.curriculum.forEach((course, index) => {
-          course.members.forEach((student) => {
-            if (student.selected) {
-              choices.push(...student.users);
+          
+          course.members.forEach((member) => {
+            if (member.selected) {
+              choices.push(...member.users);
+
+              choosedClass[member.toObjectId+member.typeCode] = {
+                toName: member.toName ,
+                toObjectId: member.toObjectId ,
+                toObjectName: member.toObjectName ,
+                typeCode: member.typeCode
+              }
+
             }else{
-              student.users.forEach((user,index)=>{
+              member.users.forEach((user,index)=>{
                 if(user.selected){
                   choices.push(user);
+                  
+                  choosedClass[member.toObjectId+member.typeCode] = {
+                    toName: member.toName ,
+                    toObjectId: member.toObjectId ,
+                    toObjectName: member.toObjectName ,
+                    typeCode: member.typeCode
+                  }
+
                 }
               })
             }
           });
+
+          // this.choosedClass = choosedClass;
         });
 
         this.setGrade(choices)
-        let gradeString = JSON.stringify(choices)
-        window.localStorage.setItem("GRADE",gradeString)
+        let gradeString = JSON.stringify(choices);
+        window.localStorage.setItem("GRADE",gradeString);
+        window.localStorage.setItem("CLASSES_CHOOSED", JSON.stringify(choosedClass));
+
         if( gradeString === "[]" && gradeString.length === 2 ){
           this.position = position
           this.toastMessage=msg
@@ -197,6 +220,7 @@
     font-size: @fontSize30;
     color: @white;
     line-height: 60/@baseSize;
+    margin-top: 47px;
   }
 
   .curriculum-list {

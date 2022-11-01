@@ -264,6 +264,7 @@ export default {
 			fileTempList: [],
 			imgDelList: [],
 			fileDelList: [],
+      grade_choosed_classes : []
     };
   },
 
@@ -354,6 +355,12 @@ export default {
         });
       }
     } else if (path === "Grade") {
+      // debugger;
+      try{
+        let grade_choosed_classes_dic = JSON.parse(window.localStorage.CLASSES_CHOOSED);
+        this.grade_choosed_classes = Object.values(grade_choosed_classes_dic);
+      }catch(e){
+      }
       let stringStore = JSON.stringify(this.gradeStore);
       let stringArray = this.gradeStore;
       if (stringStore === "[]" && stringStore.length === 2) {
@@ -671,6 +678,11 @@ export default {
           file_del: JSON.stringify(this.fileDelList),
           imgList: JSON.stringify(this.serverId)
         };
+
+        if(this.$route.query.path === 'Grade'){
+          sendObj.cls_mbrs = JSON.stringify(this.grade_choosed_classes);
+        }
+
         //  console.log(JSON.stringify(sendObj))
         let _this = this;
         _this.$http.post(apiRouter.POST_SEND, sendObj).then(
