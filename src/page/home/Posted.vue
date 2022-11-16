@@ -244,7 +244,7 @@ export default {
       urlPath: "",
       commentFlag: true,
       objectName: "",
-      allow: 0,
+      allow: localStorage.getItem('notice_can_reply')=='1'? 0 : 1,
       scope: [],
       titleValue: "",
       contentValue: "",

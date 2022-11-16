@@ -166,6 +166,25 @@ export default {
           alert("请求失败了!!!!");
         }
       );
+
+      let pathUrl2 =
+        apiRouter.NOTICE_LASTSET +
+        "?" +
+        "type=CLASS&objectId=" +
+        this.objType.objectId +
+        "&type=" +
+        this.objType.type +
+        "&objectName=" +
+        this.objType.objectName;
+      this.$http.get(pathUrl2).then(
+        response => {
+          // 0不允许，1允许
+          localStorage.setItem('notice_can_reply' , response.body.data);
+        },
+        response => {
+          alert("请求失败了!!!!");
+        }
+      )
     },
     completeBtn() {
       let arr = [];

@@ -13,6 +13,7 @@ const apiPath = process.env.API_BASE_URL;
 export { apiPath };
 
 const apiRouter = {
+  NOTICE_LASTSET: apiPath + "/app/notice/notice_last_set",
   NOTICE_TYPE: apiPath + "/app/notice/type",
   SCOPE_DEPT: apiPath + "/app/notice/scope",
   SCOPE_SPACE: apiPath + "/app/notice/scope",
