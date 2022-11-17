@@ -169,8 +169,7 @@ export default {
 
       let pathUrl2 =
         apiRouter.NOTICE_LASTSET +
-        "?" +
-        "type=CLASS&objectId=" +
+        "?objectId=" +
         this.objType.objectId +
         "&type=" +
         this.objType.type +
