@@ -53,7 +53,7 @@ function init(editor, editorWrapper, Panzoom) {
 		currentPan = panzoom.getPan();
 
 		panzoom.destroy();
-		editorWrapper.parentElement.removeEventListener('wheel', panzoom?.zoomWithWheel);
+		// editorWrapper.parentElement.removeEventListener('wheel', panzoom?.zoomWithWheel);
 
 		// console.log(panzoom);
 
@@ -987,7 +987,7 @@ function init(editor, editorWrapper, Panzoom) {
 		return new Blob([u8arr], { type: mime });
 	}
 	/**
-	 * 
+	 *
  		// GET TUI IMAGE AS A BLOB
         var blob = dataURLtoBlob(imageEditor.toDataURL());
 
