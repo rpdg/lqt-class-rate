@@ -847,33 +847,39 @@ function init(editor, editorWrapper, Panzoom) {
 		imgSrc = 'https://picsum.photos/seed/rrrrrrrr/800/1760';
 	}
 
-	imageEditor.loadImageFromURL(imgSrc, 'SampleImage').then(function() {
-		// 	// init start mode
-		startEditorUseCfgMode();
+	imageEditor
+		.loadImageFromURL(imgSrc, 'SampleImage')
+		.then(function() {
+			$('#btnPostImage').prop('disabled', false);
+			// 	// init start mode
+			startEditorUseCfgMode();
 
-		//
-		let obj = calcScale();
-		// currentScale =
-		// 	obj.img.height > obj.img.width
-		// 		? obj.canvas.maxHeight / obj.img.height
-		// 		: obj.canvas.maxWidth / obj.img.width;
+			//
+			let obj = calcScale();
+			// currentScale =
+			// 	obj.img.height > obj.img.width
+			// 		? obj.canvas.maxHeight / obj.img.height
+			// 		: obj.canvas.maxWidth / obj.img.width;
 
-		// // fix mobile ui
+			// // fix mobile ui
 
-		// debugger;
-		fixMobileUI();
-		// // zoom 中心是根据原图来的
-		imageEditor.zoom({ zoomLevel: 1, x: obj.img.width / 2, y: obj.img.height / 2 });
+			// debugger;
+			fixMobileUI();
+			// // zoom 中心是根据原图来的
+			imageEditor.zoom({ zoomLevel: 1, x: obj.img.width / 2, y: obj.img.height / 2 });
 
-		// setTimeout(()=>{
-		// 	imageEditor.zoom({x:400,y:880, zoomLevel:2.5});
-		// } ,3e3);
+			// setTimeout(()=>{
+			// 	imageEditor.zoom({x:400,y:880, zoomLevel:2.5});
+			// } ,3e3);
 
-		setTimeout(() => {
-			imageEditor.clearRedoStack();
-			imageEditor.clearUndoStack();
-		}, 10);
-	});
+			setTimeout(() => {
+				imageEditor.clearRedoStack();
+				imageEditor.clearUndoStack();
+			}, 10);
+		})
+		.catch((error) => {
+			console.log(error);
+		});
 
 	// Load image
 	// function getBase64Image(img) {
