@@ -1,304 +1,455 @@
 <template>
-<div>
-  <div>
-    <x-header class="title-header" :left-options="{preventGoBack: true}"
-              @on-click-back="goBack">{{userName}}
-    </x-header>
+	<div>
+		<div>
+			<x-header
+				class="title-header"
+				:left-options="{preventGoBack: true}"
+				@on-click-back="goBack"
+			>{{userName}}</x-header>
 
-    <div class="lqt-container lqt-wrapper" style="top: 1em">
-      <!--      <div class='js-signature' style="background-image: url('demo.png')" ></div>-->
-      <div class="homework-container" id="headerBox">
-        <ul class="homework-list clearfix header-banner" id="bannerBox" style="padding: 1em">
-          <li v-for="(detail,index) in quesList" v-show="currentWork == index" class="it banner-sheet"
-              data-type="checkbox">
-            <!--<first-header v-show="currentWork == 0" :headData="workObj"></first-header>-->
+			<div class="lqt-container lqt-wrapper" style="top: 1em">
+				<!--      <div class='js-signature' style="background-image: url('demo.png')" ></div>-->
+				<div class="homework-container" id="headerBox">
+					<ul class="homework-list clearfix header-banner" id="bannerBox" style="padding: 1em">
+						<li
+							v-for="(detail,index) in quesList"
+							v-show="currentWork == index"
+							class="it banner-sheet"
+							data-type="checkbox"
+						>
+							<!--<first-header v-show="currentWork == 0" :headData="workObj"></first-header>-->
 
-            <!-- 问答题 或 自定义 -->
-            <div v-if="detail.QUESTYPE == '3' || detail.QUESTYPE == '4'">
-              <div class="homework-content">
-				<p v-if=" detail.QUESTYPE != '4' " class="homework-title">{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】</p>
-                <p v-if="quesList.length>1 && detail.QUESTYPE == '4'">{{detail.QUESNO}}.</p>
-				<div class="sub-content" v-html="detail.CONTENT"></div>
-                <thumbs-grid v-if="detail.PICLIST && detail.PICLIST.length" :imgList="detail.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
-                <div v-if="detail.ATT_LIST" style="margin-top: 0.5em;">
-					<office-item
-						v-for=" file  in detail.ATT_LIST"
-						:key="file.URL"
-						:ext="file.FILEEXT.toLowerCase()"
-                    	:display-name="file.FILENAME"
-						:url="ossPath + '/upload' + file.URL"
-					/>
-				</div>
+							<!-- 问答题 或 自定义 -->
+							<div v-if="detail.QUESTYPE == '3' || detail.QUESTYPE == '4'">
+								<div class="homework-content">
+									<p
+										v-if=" detail.QUESTYPE != '4' "
+										class="homework-title"
+									>{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】</p>
+									<p v-if="quesList.length>1 && detail.QUESTYPE == '4'">{{detail.QUESNO}}.</p>
+									<div class="sub-content" v-html="detail.CONTENT"></div>
+									<thumbs-grid
+										v-if="detail.PICLIST && detail.PICLIST.length"
+										:imgList="detail.PICLIST"
+										:picBase="picRootPath"
+										:viewFunc="previewImage"
+									/>
+									<div v-if="detail.ATT_LIST" style="margin-top: 0.5em;">
+										<office-item
+											v-for=" file  in detail.ATT_LIST"
+											:key="file.URL"
+											:ext="file.FILEEXT.toLowerCase()"
+											:display-name="file.FILENAME"
+											:url="ossPath + '/upload' + file.URL"
+										/>
+									</div>
 
-				<!--老师的图片-->
-                <div class="teacher-img-list">
-                  <thumbs-grid v-if="detail.IMGLIST && detail.IMGLIST.length" :imgList="detail.IMGLIST" :picBase="picRootPath" :viewFunc="previewImage" />
-                  <!-- <p v-for="(tDetail,tIndex) in detail.IMGLIST"
+									<!--老师的图片-->
+									<div class="teacher-img-list">
+										<thumbs-grid
+											v-if="detail.IMGLIST && detail.IMGLIST.length"
+											:imgList="detail.IMGLIST"
+											:picBase="picRootPath"
+											:viewFunc="previewImage"
+										/>
+										<!-- <p v-for="(tDetail,tIndex) in detail.IMGLIST"
                      @click="previewImage(picRootPath+tDetail.URL,detail.IMGLIST)"
-                     :style='{ backgroundImage:"url(" + picRootPath+tDetail.URL + ")" , backgroundSize:"cover"}'></p> -->
-                </div>
-                <divider><x-icon type="ios-arrow-down" size="30"></x-icon></divider>
-                <ul class="homework-answer">
-                  <li v-if="detail.answer" class="answer-qs qs-txt" v-html="detail.answer">
-                  </li>
-                </ul>
+										:style='{ backgroundImage:"url(" + picRootPath+tDetail.URL + ")" , backgroundSize:"cover"}'></p>-->
+									</div>
+									<divider>
+										<x-icon type="ios-arrow-down" size="30"></x-icon>
+									</divider>
+									<ul class="homework-answer">
+										<li v-if="detail.answer" class="answer-qs qs-txt" v-html="detail.answer"></li>
+									</ul>
 
-                <!--图片编辑-->
-                <div v-if="detail.sWebImgList" class="answer-qs ans-web-img">
-                  <div v-for="(vDetail,vIndex) in detail.sWebImgList">
-                    <!-- <img style="max-width: 100%" @click="goEdit(vIndex,vDetail,'1',index)" :src="picRootPath+(vDetail.sUrl).split(picRootPath)[1]"/> -->
-                    <img v-if="!vDetail.isEdit" style="max-width: 100%" @click="goEdit(vIndex,vDetail,'1',index)" :src="picRootPath+vDetail.sUrl"/>
-                    <img v-else style="max-width: 100%" @click="goEdit(vIndex, vDetail, '1' ,index)" :src="vDetail.sUrl"/>
+									<!--图片编辑-->
+									<div v-if="detail.sWebImgList" class="answer-qs ans-web-img">
+										<div v-for="(vDetail,vIndex) in detail.sWebImgList">
+											<!-- <img style="max-width: 100%" @click="goEdit(vIndex,vDetail,'1',index)" :src="picRootPath+(vDetail.sUrl).split(picRootPath)[1]"/> -->
+											<img
+												v-if="!vDetail.isEdit"
+												style="max-width: 100%"
+												@click="goEdit(vIndex,vDetail,'1',index)"
+												:src="picRootPath+vDetail.sUrl"
+											/>
+											<img
+												v-else
+												style="max-width: 100%"
+												@click="goEdit(vIndex, vDetail, '1' ,index)"
+												:src="vDetail.sUrl"
+											/>
+										</div>
+									</div>
 
-                  </div>
-                </div>
+									<div v-if="detail.sWebFileList" class="answer-qs ans-web-file">
+										<div v-for="(vDetail,vIndex) in detail.sWebFileList">
+											<div v-if="vDetail.sUrl.indexOf('.pdf') > 0">
+												<a
+													:href="picRootPath+vDetail.sUrl"
+													style="text-decoration: underline;color: yellowgreen;"
+												>{{vDetail.sName}}</a>
+												&nbsp;&nbsp;
+												<a
+													:href="'/common/fileview/go_page.jsp?filePath='+vDetail.sUrl"
+													style="color: yellowgreen;"
+												>预览</a>
+											</div>
+											<div
+												v-else-if="vDetail.sUrl.indexOf('.doc') > 0 || vDetail.sUrl.indexOf('.xls') > 0 || vDetail.sUrl.indexOf('.ppt') > 0"
+											>
+												<a
+													style="text-decoration: underline;color: yellowgreen;"
+													:href="picRootPath+vDetail.sUrl"
+												>{{vDetail.sName}}</a>&nbsp;&nbsp;
+												<a
+													style="color: yellowgreen;"
+													:href="'https://view.officeapps.live.com/op/view.aspx?src='+picRootPath+vDetail.sUrl"
+												>预览</a>
+											</div>
 
-                <div v-if="detail.sWebFileList" class="answer-qs ans-web-file">
-                  <div v-for="(vDetail,vIndex) in detail.sWebFileList">
-                    <div v-if="vDetail.sUrl.indexOf('.pdf') > 0">
-                      <a :href="picRootPath+vDetail.sUrl" style="text-decoration: underline;color: yellowgreen;">{{vDetail.sName}} </a>
-                      &nbsp;&nbsp;
-                      <a :href="'/common/fileview/go_page.jsp?filePath='+vDetail.sUrl"
-                         style="color: yellowgreen;">预览</a>
-                    </div>
-                    <div
-                      v-else-if="vDetail.sUrl.indexOf('.doc') > 0 || vDetail.sUrl.indexOf('.xls') > 0 || vDetail.sUrl.indexOf('.ppt') > 0">
-                      <a style="text-decoration: underline;color: yellowgreen;" :href="picRootPath+vDetail.sUrl">{{vDetail.sName}}</a>&nbsp;&nbsp;
-                      <a style="color: yellowgreen;"
-                         :href="'https://view.officeapps.live.com/op/view.aspx?src='+picRootPath+vDetail.sUrl">预览</a>
+											<a
+												v-else
+												style="text-decoration: underline;color: yellowgreen;"
+												:href="picRootPath+vDetail.sUrl"
+											>{{vDetail.sName}}</a>
+											<!--                    <a style="text-decoration: underline;color: yellowgreen;" :href="picRootPath+'/weixin/wechat/fileview/go_page.jsp?filePath='+vDetail.sUrl+'&fileName='+vDetail.sName">{{vDetail.sName}}</a>-->
+										</div>
+									</div>
 
-                    </div>
+									<div v-if="detail.sImgList" class="answer-qs other-ans-img">
+										<div v-for="(vDetail,vIndex) in detail.sImgList">
+											<img @click="goEdit(vIndex,vDetail,'2',index)" :src="vDetail.URL" />
+											<!--<div class="qs-content" contenteditable="true"></div>-->
+										</div>
+									</div>
 
-                    <a v-else style="text-decoration: underline;color: yellowgreen;" :href="picRootPath+vDetail.sUrl">{{vDetail.sName}}</a>
-                    <!--                    <a style="text-decoration: underline;color: yellowgreen;" :href="picRootPath+'/weixin/wechat/fileview/go_page.jsp?filePath='+vDetail.sUrl+'&fileName='+vDetail.sName">{{vDetail.sName}}</a>-->
-                  </div>
-                </div>
-
-                <div v-if="detail.sImgList" class="answer-qs other-ans-img">
-                  <div v-for="(vDetail,vIndex) in detail.sImgList">
-                    <img @click="goEdit(vIndex,vDetail,'2',index)" :src="vDetail.URL"/>
-                    <!--<div class="qs-content" contenteditable="true"></div>-->
-                  </div>
-                </div>
-
-                <div v-if="detail.sVoiceList" class="answer-qs other-ans-voice">
-					<voice-item v-for="(vDetail) in detail.sVoiceList" 
-						:seconds="~~vDetail.AUDIO_TIME"
-						:playing="vDetail.ID == currentMp3Id"
-						:key="vDetail.ID"
-						@click="playVoice(vDetail)"
-					 />
-                  <!-- <div v-for="(vDetail,vIndex) in detail.sVoiceList">
+									<div v-if="detail.sVoiceList" class="answer-qs other-ans-voice">
+										<voice-item
+											v-for="(vDetail) in detail.sVoiceList"
+											:seconds="~~vDetail.AUDIO_TIME"
+											:playing="vDetail.ID == currentMp3Id"
+											:key="vDetail.ID"
+											@click="playVoice(vDetail)"
+										/>
+										<!-- <div v-for="(vDetail,vIndex) in detail.sVoiceList">
                     <p @click="playVoice(vDetail.URL)" class="voice-play">
                       <span class="voice-ready"></span>
                     </p>
                     <span style="line-height: 2em;vertical-align: top;">{{vDetail.AUDIO_TIME}}''</span>
-                  </div> -->
-                </div>
-              </div>
-              <div v-if="detail.QUESTYPE == '3'" class="answer-qs qs-answer">答案：{{detail.ANS_CONTENT}}</div>
-            </div>
-            <!-- 问答题end -->
+										</div>-->
+									</div>
+								</div>
+								<div v-if="detail.QUESTYPE == '3'" class="answer-qs qs-answer">答案：{{detail.ANS_CONTENT}}</div>
+							</div>
+							<!-- 问答题end -->
 
-            <!-- 单选 -->
-            <div v-if="detail.QUESTYPE == '1' ">
-              <div class="homework-content">
-                <p class="homework-title">{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】{{detail.CONTENT}}</p>
-                <thumbs-grid v-if="detail.PICLIST && detail.PICLIST.length" :imgList="detail.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
-                <!-- <div>
+							<!-- 单选 -->
+							<div v-if="detail.QUESTYPE == '1' ">
+								<div class="homework-content">
+									<p
+										class="homework-title"
+									>{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】{{detail.CONTENT}}</p>
+									<thumbs-grid
+										v-if="detail.PICLIST && detail.PICLIST.length"
+										:imgList="detail.PICLIST"
+										:picBase="picRootPath"
+										:viewFunc="previewImage"
+									/>
+									<!-- <div>
                   <img @click="previewImage(picRootPath+dItem.URL,detail.PICLIST)" v-for="dItem in detail.PICLIST" width="49%" :src="picRootPath+dItem.URL">
-                </div> -->
-                <checker style="margin-top: 10px;margin-left: -5px;" v-model="detail.STUANSWER[0].ANSWER"
-                         default-item-class="demo3-item" selected-item-class="demo3-item-selected">
-<!--                  <checker-item :disabled="true" v-for="item in detail.OPTIONLIST" :key="item.ID" :value="item.ORDERNO">-->
-<!--                    <span class="demo3-item-default"></span>-->
-<!--                    <span style="font-size: 16px;margin-left: 10px;word-break: break-word">{{item.ORDERNO}}.{{item.CONTENT}}</span><br>-->
-<!--                  </checker-item>-->
-                  <div v-for="item in detail.OPTIONLIST" :key="item.ID">
-                    <checker-item :key="item.ID" :value="item.ORDERNO" disabled>
-                      <span class="demo3-item-default"></span>
-                      <span style="font-size: 16px;margin-left: 10px;word-break: break-word">{{item.ORDERNO}}.{{item.CONTENT}}</span><br>
-                    </checker-item>
-                    <thumbs-grid v-if="item.PICLIST && item.PICLIST.length" :imgList="item.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
-                    <!-- <div>
+									</div>-->
+									<checker
+										style="margin-top: 10px;margin-left: -5px;"
+										v-model="detail.STUANSWER[0].ANSWER"
+										default-item-class="demo3-item"
+										selected-item-class="demo3-item-selected"
+									>
+										<!--                  <checker-item :disabled="true" v-for="item in detail.OPTIONLIST" :key="item.ID" :value="item.ORDERNO">-->
+										<!--                    <span class="demo3-item-default"></span>-->
+										<!--                    <span style="font-size: 16px;margin-left: 10px;word-break: break-word">{{item.ORDERNO}}.{{item.CONTENT}}</span><br>-->
+										<!--                  </checker-item>-->
+										<div v-for="item in detail.OPTIONLIST" :key="item.ID">
+											<checker-item :key="item.ID" :value="item.ORDERNO" disabled>
+												<span class="demo3-item-default"></span>
+												<span
+													style="font-size: 16px;margin-left: 10px;word-break: break-word"
+												>{{item.ORDERNO}}.{{item.CONTENT}}</span>
+												<br />
+											</checker-item>
+											<thumbs-grid
+												v-if="item.PICLIST && item.PICLIST.length"
+												:imgList="item.PICLIST"
+												:picBase="picRootPath"
+												:viewFunc="previewImage"
+											/>
+											<!-- <div>
                       <img @click="previewImage(picRootPath+subDItem.URL,item.PICLIST)" v-for="subDItem in item.PICLIST" style="max-height: 200px" :src="picRootPath+subDItem.URL">
-                    </div> -->
-                  </div>
-                </checker>
-              </div>
-              <div class="answer-qs qs-answer">
-                答案：{{detail.ANS_CONTENT}}
-                <img v-if="detail.ANS_CONTENT == detail.STUANSWER[0].ANSWER" class="answer-img"
-                     src="../../assets/work/correct.png"/>
-                <img v-else class="answer-img" src="../../assets/work/error.png">
-              </div>
-              <input class="answer-data" type="hidden" value="">
-            </div>
-            <!-- 单选end -->
+											</div>-->
+										</div>
+									</checker>
+								</div>
+								<div class="answer-qs qs-answer">
+									答案：{{detail.ANS_CONTENT}}
+									<img
+										v-if="detail.ANS_CONTENT == detail.STUANSWER[0].ANSWER"
+										class="answer-img"
+										src="../../assets/work/correct.png"
+									/>
+									<img v-else class="answer-img" src="../../assets/work/error.png" />
+								</div>
+								<input class="answer-data" type="hidden" value />
+							</div>
+							<!-- 单选end -->
 
-            <!-- 多选 -->
-            <div v-if="detail.QUESTYPE == '2' ">
-              <!-- id：题目id -->
-              <div class="homework-content">
-                <p class="homework-title">{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】{{detail.CONTENT}}</p>
-                <thumbs-grid v-if="detail.PICLIST && detail.PICLIST.length" :imgList="detail.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
-                <!-- <div>
+							<!-- 多选 -->
+							<div v-if="detail.QUESTYPE == '2' ">
+								<!-- id：题目id -->
+								<div class="homework-content">
+									<p
+										class="homework-title"
+									>{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】{{detail.CONTENT}}</p>
+									<thumbs-grid
+										v-if="detail.PICLIST && detail.PICLIST.length"
+										:imgList="detail.PICLIST"
+										:picBase="picRootPath"
+										:viewFunc="previewImage"
+									/>
+									<!-- <div>
                   <img @click="previewImage(picRootPath+dItem.URL,detail.PICLIST)" v-for="dItem in detail.PICLIST" width="49%" :src="picRootPath+dItem.URL">
-                </div> -->
-                <checker style="margin-top: 10px;margin-left: -5px;" v-model="detail.answer" :min="2" type="checkbox"
-                         default-item-class="demo3-item" selected-item-class="checkbox-item-selected">
-<!--                  <checker-item :disabled="true" v-for="item in detail.OPTIONLIST" :key="item.ID" :value="item.ORDERNO">-->
-<!--                    <span class="checkbox-item-default"></span>-->
-<!--                    <span style="font-size: 16px;margin-left: 10px;word-break: break-word">{{item.ORDERNO}}.{{item.CONTENT}}</span><br>-->
-<!--                  </checker-item>-->
-                  <div v-for="item in detail.OPTIONLIST" >
-                    <checker-item :key="item.ID" :value="item.ORDERNO" disabled>
-                      <span class="checkbox-item-default"></span>
-                      <span style="font-size: 16px;margin-left: 10px;word-break: break-word">{{item.ORDERNO}}.{{item.CONTENT}}</span><br>
-                    </checker-item>
-                    <thumbs-grid v-if="item.PICLIST && item.PICLIST.length" :imgList="item.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
-                    <!-- <div>
+									</div>-->
+									<checker
+										style="margin-top: 10px;margin-left: -5px;"
+										v-model="detail.answer"
+										:min="2"
+										type="checkbox"
+										default-item-class="demo3-item"
+										selected-item-class="checkbox-item-selected"
+									>
+										<!--                  <checker-item :disabled="true" v-for="item in detail.OPTIONLIST" :key="item.ID" :value="item.ORDERNO">-->
+										<!--                    <span class="checkbox-item-default"></span>-->
+										<!--                    <span style="font-size: 16px;margin-left: 10px;word-break: break-word">{{item.ORDERNO}}.{{item.CONTENT}}</span><br>-->
+										<!--                  </checker-item>-->
+										<div v-for="item in detail.OPTIONLIST">
+											<checker-item :key="item.ID" :value="item.ORDERNO" disabled>
+												<span class="checkbox-item-default"></span>
+												<span
+													style="font-size: 16px;margin-left: 10px;word-break: break-word"
+												>{{item.ORDERNO}}.{{item.CONTENT}}</span>
+												<br />
+											</checker-item>
+											<thumbs-grid
+												v-if="item.PICLIST && item.PICLIST.length"
+												:imgList="item.PICLIST"
+												:picBase="picRootPath"
+												:viewFunc="previewImage"
+											/>
+											<!-- <div>
                       <img @click="previewImage(picRootPath+subDItem.URL,item.PICLIST)" v-for="subDItem in item.PICLIST" style="max-height: 200px" :src="picRootPath+subDItem.URL">
-                    </div> -->
-                  </div>
-                </checker>
-              </div>
-              <div class="answer-qs qs-answer">
-                答案：{{detail.ANS_CONTENT}}
-                <img v-if="detail.ANS_CONTENT == detail.STUANSWER[0].ANSWER" class="answer-img"
-                     src="../../assets/work/correct.png"/>
-                <img v-else class="answer-img" src="../../assets/work/error.png">
-              </div>
-              <input class="answer-data" type="hidden" value="">
-            </div>
-            <!-- 多选end -->
+											</div>-->
+										</div>
+									</checker>
+								</div>
+								<div class="answer-qs qs-answer">
+									答案：{{detail.ANS_CONTENT}}
+									<img
+										v-if="detail.ANS_CONTENT == detail.STUANSWER[0].ANSWER"
+										class="answer-img"
+										src="../../assets/work/correct.png"
+									/>
+									<img v-else class="answer-img" src="../../assets/work/error.png" />
+								</div>
+								<input class="answer-data" type="hidden" value />
+							</div>
+							<!-- 多选end -->
 
-            <!-- 判断 -->
-            <div v-if="detail.QUESTYPE == '5'">
-              <div class="homework-content">
-                <p class="homework-title">{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】{{detail.CONTENT}}</p>
-                <thumbs-grid v-if="detail.PICLIST && detail.PICLIST.length" :imgList="detail.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
-                
-				<checker style="margin-top: 16px;margin-left: -5px;" v-model="detail.STUANSWER[0].ANSWER"
-                         default-item-class="demo3-item" selected-item-class="demo3-item-selected">
-                  <checker-item :disabled="true" key="1" value="true">
-                    <span class="demo3-item-default"></span>
-                    <span style="font-size: 16px;margin-left: 10px;word-break: break-word">对</span><br>
-                  </checker-item>
-                  <checker-item :disabled="true" key="2" value="false">
-                    <span class="demo3-item-default"></span>
-                    <span style="font-size: 16px;margin-left: 10px;word-break: break-word">错</span><br>
-                  </checker-item>
-                </checker>
-              </div>
-              <div class="answer-qs qs-answer">
-                答案：{{detail.ANS_CONTENT == "true"?'对':'错'}}
-                <img v-if="detail.ANS_CONTENT == detail.STUANSWER[0].ANSWER" class="answer-img"
-                     src="../../assets/work/correct.png"/>
-                <img v-else class="answer-img" src="../../assets/work/error.png">
-              </div>
-              <input class="answer-data" type="hidden" value="">
-            </div>
-            <!-- 判断end -->
+							<!-- 判断 -->
+							<div v-if="detail.QUESTYPE == '5'">
+								<div class="homework-content">
+									<p
+										class="homework-title"
+									>{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】{{detail.CONTENT}}</p>
+									<thumbs-grid
+										v-if="detail.PICLIST && detail.PICLIST.length"
+										:imgList="detail.PICLIST"
+										:picBase="picRootPath"
+										:viewFunc="previewImage"
+									/>
 
-            <!-- 填空   -->
-            <div v-if="detail.QUESTYPE == '6'">
-              <div class="homework-content">
-                <p class="homework-title">{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】{{detail.CONTENT}}</p>
-                <thumbs-grid v-if="detail.PICLIST && detail.PICLIST.length" :imgList="detail.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
-                <div style="margin-bottom: 12px" v-for="(sItem,sIndex) in detail.sAnswerList">
-                  <input readonly="readonly" class="qa-input" v-model="detail.sAnswerList[sIndex]"
-                         :placeholder="     '('+(sIndex+1)+')'"><br>
-                  <div style="margin-top: 8px;font-size: 14px">({{sIndex+1}})答案：{{ detail.tAnswer[sIndex] }}</div>
-                </div>
-              </div>
-              <div class="answer-qs qs-answer" style='margin-top: 4rem'>
-                <img v-if="detail.ANS_CONTENT == detail.STUANSWER[0].ANSWER" class="answer-img"
-                     src="../../assets/work/correct.png"/>
-                <img v-else class="answer-img" src="../../assets/work/error.png">
-              </div>
-              <input class="answer-data" type="hidden" value="">
-            </div>
-            <!-- 填空end -->
-          </li>
+									<checker
+										style="margin-top: 16px;margin-left: -5px;"
+										v-model="detail.STUANSWER[0].ANSWER"
+										default-item-class="demo3-item"
+										selected-item-class="demo3-item-selected"
+									>
+										<checker-item :disabled="true" key="1" value="true">
+											<span class="demo3-item-default"></span>
+											<span style="font-size: 16px;margin-left: 10px;word-break: break-word">对</span>
+											<br />
+										</checker-item>
+										<checker-item :disabled="true" key="2" value="false">
+											<span class="demo3-item-default"></span>
+											<span style="font-size: 16px;margin-left: 10px;word-break: break-word">错</span>
+											<br />
+										</checker-item>
+									</checker>
+								</div>
+								<div class="answer-qs qs-answer">
+									答案：{{detail.ANS_CONTENT == "true"?'对':'错'}}
+									<img
+										v-if="detail.ANS_CONTENT == detail.STUANSWER[0].ANSWER"
+										class="answer-img"
+										src="../../assets/work/correct.png"
+									/>
+									<img v-else class="answer-img" src="../../assets/work/error.png" />
+								</div>
+								<input class="answer-data" type="hidden" value />
+							</div>
+							<!-- 判断end -->
 
+							<!-- 填空   -->
+							<div v-if="detail.QUESTYPE == '6'">
+								<div class="homework-content">
+									<p
+										class="homework-title"
+									>{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】{{detail.CONTENT}}</p>
+									<thumbs-grid
+										v-if="detail.PICLIST && detail.PICLIST.length"
+										:imgList="detail.PICLIST"
+										:picBase="picRootPath"
+										:viewFunc="previewImage"
+									/>
+									<div style="margin-bottom: 12px" v-for="(sItem,sIndex) in detail.sAnswerList">
+										<input
+											readonly="readonly"
+											class="qa-input"
+											v-model="detail.sAnswerList[sIndex]"
+											:placeholder="     '('+(sIndex+1)+')'"
+										/>
+										<br />
+										<div style="margin-top: 8px;font-size: 14px">({{sIndex+1}})答案：{{ detail.tAnswer[sIndex] }}</div>
+									</div>
+								</div>
+								<div class="answer-qs qs-answer" style="margin-top: 4rem">
+									<img
+										v-if="detail.ANS_CONTENT == detail.STUANSWER[0].ANSWER"
+										class="answer-img"
+										src="../../assets/work/correct.png"
+									/>
+									<img v-else class="answer-img" src="../../assets/work/error.png" />
+								</div>
+								<input class="answer-data" type="hidden" value />
+							</div>
+							<!-- 填空end -->
+						</li>
 
-          <li v-show="currentWork === quesList.length" class="it banner-sheet" data-type="checkbox">
-			<grade-assignments ref="grament" :workId="checkMap.WORK_ID" :mainId="checkMap.ID" :isGreat="isGreat" :passFunc="saveWorkPass" :rejectFunc="saveWorkRejected" :postCommentFunc="saveCommentOnly" :checkType="checkMap.TYPE" :wx="wx" />
-          </li>
-          <!-- 评论end -->
-        </ul>
+						<li v-show="currentWork === quesList.length" class="it banner-sheet" data-type="checkbox">
+							<grade-assignments
+								ref="grament"
+								:workId="checkMap.WORK_ID"
+								:mainId="checkMap.ID"
+								:isGreat="isGreat"
+								:passFunc="saveWorkPass"
+								:rejectFunc="saveWorkRejected"
+								:postCommentFunc="saveCommentOnly"
+								:checkType="checkMap.TYPE"
+								:wx="wx"
+							/>
+						</li>
+						<!-- 评论end -->
+					</ul>
+				</div>
+			</div>
 
-      </div>
-    </div>
+			<div class="homework-bar clearfix" id="bar">
+				<a
+					id="pre"
+					@click="preWork"
+					class="homework-btn homework-pre clearfix"
+					href="javascript:void(0)"
+					style="opacity: 1; z-index: 5;"
+				>
+					<em class="icon-change icon-pre" style="height: 28px;">
+						<span
+							v-show="currentWork>0"
+							class="icon-work-pre"
+							style="width: 1.1em;height: 1em;display: block;"
+						></span>
+					</em>
+					<span v-show="currentWork>0" class="txt-change">
+						上一
+						<span v-if="currentWork == quesList.length">步</span>
+						<span v-else>题</span>
+					</span>
+				</a>
+				<a
+					id="next"
+					@click="nextWork"
+					v-if="currentWork+1 < quesList.length"
+					class="homework-btn homework-next clearfix"
+					href="javascript:void(0)"
+					style="opacity: 1; z-index: 5;"
+				>
+					<span class="txt-change">下一题 &nbsp;&nbsp;({{currentWork+1}}/{{quesList.length}})</span>
 
-    <div class="homework-bar clearfix" id="bar">
-      <a id="pre" @click="preWork" class="homework-btn homework-pre clearfix" href="javascript:void(0)"
-         style="opacity: 1; z-index: 5;">
-        <em class="icon-change icon-pre" style="height: 28px;">
-          <span v-show="currentWork>0" class="icon-work-pre" style="width: 1.1em;height: 1em;display: block;"></span>
-        </em>
-        <span v-show="currentWork>0" class="txt-change">上一
-          <span v-if="currentWork == quesList.length">步</span>
-          <span v-else>题</span>
-        </span>
+					<em class="icon-change icon-next" style="height: 28px;">
+						<span class="icon-work-next" style="width: 1.1em;height: 1em;display: block;margin-top: 6px;"></span>
+					</em>
+				</a>
 
-      </a>
-      <a id="next" @click="nextWork" v-if="currentWork+1 < quesList.length"
-         class="homework-btn homework-next clearfix" href="javascript:void(0)" style="opacity: 1; z-index: 5;">
-        <span class="txt-change">下一题 &nbsp;&nbsp;({{currentWork+1}}/{{quesList.length}})</span>
+				<a
+					id="comment"
+					@click="nextComment"
+					v-else-if="(checkMap.SCORE || checkMap.COMMENT) && currentWork+1 == quesList.length"
+					class="homework-btn homework-next clearfix"
+					href="javascript:void(0)"
+					style="opacity: 1; z-index: 5;"
+				>
+					<span class="txt-change">留言板</span>
 
-        <em class="icon-change icon-next" style="height: 28px;">
-          <span class="icon-work-next" style="width: 1.1em;height: 1em;display: block;margin-top: 6px;"></span>
-        </em>
-      </a>
+					<em class="icon-change icon-next" style="height: 28px;">
+						<span class="icon-work-next" style="width: 1.1em;height: 1em;display: block;margin-top: 6px;"></span>
+					</em>
+				</a>
 
-      <a id="comment" @click="nextComment"
-         v-else-if="(checkMap.SCORE || checkMap.COMMENT) && currentWork+1 == quesList.length"
-         class="homework-btn homework-next clearfix" href="javascript:void(0)" style="opacity: 1; z-index: 5;">
-        <span class="txt-change">留言板</span>
+				<a
+					id="commentAdd"
+					@click="nextComment"
+					v-else-if="(checkMap.TYPE !=1) && currentWork+1 == quesList.length"
+					class="homework-btn homework-next clearfix"
+					href="javascript:void(0)"
+					style="opacity: 1; z-index: 5;"
+				>
+					<span class="txt-change">留言板</span>
+					<em class="icon-change icon-next" style="height: 28px;">
+						<span class="icon-work-next" style="width: 1.1em;height: 1em;display: block;margin-top: 6px;"></span>
+					</em>
+				</a>
 
-        <em class="icon-change icon-next" style="height: 28px;">
-          <span class="icon-work-next" style="width: 1.1em;height: 1em;display: block;margin-top: 6px;"></span>
-        </em>
-      </a>
+				<span class="pre-loc" :style=" 'height: 100%;width:' + progress +'%'"></span>
+			</div>
 
-      <a id="commentAdd" @click="nextComment" v-else-if="(checkMap.TYPE !=1) && currentWork+1 == quesList.length"
-         class="homework-btn homework-next clearfix" href="javascript:void(0)" style="opacity: 1; z-index: 5;">
-        <span class="txt-change">留言板</span>
-        <em class="icon-change icon-next" style="height: 28px;">
-          <span class="icon-work-next" style="width: 1.1em;height: 1em;display: block;margin-top: 6px;"></span>
-        </em>
-      </a>
+			<!--    <div v-transfer-dom>-->
+			<!--      <popup v-model="show8" position="left" width="100%">-->
+			<!--        <ImgApp @finishEdit="finishEdit" @cancelEdit="cancelEdit" ref="imgApp"></ImgApp>-->
+			<!--      </popup>-->
+			<!--    </div>-->
 
-
-      <span class="pre-loc" :style=" 'height: 100%;width:' + progress +'%'"></span>
-    </div>
-
-<!--    <div v-transfer-dom>-->
-<!--      <popup v-model="show8" position="left" width="100%">-->
-<!--        <ImgApp @finishEdit="finishEdit" @cancelEdit="cancelEdit" ref="imgApp"></ImgApp>-->
-<!--      </popup>-->
-<!--    </div>-->
-
-<!--    <div v-show="show8" style="height:100%;width: 100%">-->
-<!--      -->
-<!--    </div>-->
-        <!-- <div v-transfer-dom>
+			<!--    <div v-show="show8" style="height:100%;width: 100%">-->
+			<!--      -->
+			<!--    </div>-->
+			<!-- <div v-transfer-dom>
           <x-dialog :dialog-style="{width:'100%', height:'100%', maxWidth:'100%' }" v-model="show8">
             <ImgApp @finishEdit="finishEdit" @cancelEdit="cancelEdit" ref="imgApp"></ImgApp>
           </x-dialog>
-        </div> -->
+			</div>-->
+		</div>
 
-  </div>
-
-  <iframe ref="ifr" class="editorIframe" v-if="showIframe" :src="showIframeSrc" />
-
-  </div>
+		<iframe ref="ifr" class="editorIframe" v-if="showIframe" :src="showIframeSrc" />
+	</div>
 </template>
 
 <script type="es6">
-
 import {
 	TransferDom,
 	Popup,
@@ -312,17 +463,18 @@ import {
 	XHeader,
 	Rater,
 	XButton,
-	XDialog } from 'vux';
-import { Dialog } from 'vant';
-import apiRouter, {apiPath} from '../../config/api.js';
-import wx from 'weixin-js-sdk';
-import FirstHeader from './FirstHeader.vue';
+	XDialog,
+} from 'vux'
+import { Dialog } from 'vant'
+import apiRouter, { apiPath } from '../../config/api.js'
+import wx from 'weixin-js-sdk'
+import FirstHeader from './FirstHeader.vue'
 
 import GradeAssignments from './components/GradeAssignments.vue'
-import Thumbs from './components/Thumbs.vue';
+import Thumbs from './components/Thumbs.vue'
 import OfficeItem from './components/OfficeItem.vue'
 
-  import VoiceItem from './components/VoiceItem.vue'
+import VoiceItem from './components/VoiceItem.vue'
 export default {
 	directives: {
 		TransferDom,
@@ -343,8 +495,8 @@ export default {
 		XDialog,
 		[FirstHeader.name]: FirstHeader,
 		[OfficeItem.name]: OfficeItem,
-		[VoiceItem.name]: VoiceItem,		
-		[Thumbs.name]: Thumbs,		
+		[VoiceItem.name]: VoiceItem,
+		[Thumbs.name]: Thumbs,
 		GradeAssignments: GradeAssignments,
 
 		//'tui-image-editor': ImageEditor
@@ -354,16 +506,16 @@ export default {
 	},
 	mounted() {
 		//this.loadData();
-		this.urlPath = window.location.href.split("#")[0];
-		this.getUrlConfigTrue();
+		this.urlPath = window.location.href.split('#')[0]
+		this.getUrlConfigTrue()
 		//this.getUrlConfig();
 	},
 	computed: {},
 	watch: {
 		currentWork(val) {
-			this.progress = ((val + 1) / this.quesList.length) * 100;
+			this.progress = ((val + 1) / this.quesList.length) * 100
 		},
-		$route: function(e) {
+		$route: function (e) {
 			//debugger
 			// if (e.path == '/schedule-detail') {
 			//   this.loadData();
@@ -371,25 +523,25 @@ export default {
 		},
 		upCheckMap(val) {
 			// debugger
-			this.handleModify(!!val.score || !!val.comment);
+			this.handleModify(!!val.score || !!val.comment)
 		},
 	},
 	activated() {
-		console.log('activated');
-		this.currentWork = -1;
-		this.workId = this.$route.query.workId;
-		this.userId = this.$route.query.userId;
+		console.log('activated')
+		this.currentWork = -1
+		this.workId = this.$route.query.workId
+		this.userId = this.$route.query.userId
 		// this.userName = this.$route.query.stuName;
-		this.loadData();
-		this.loadConfig();
+		this.loadData()
+		this.loadConfig()
 
-		this.oldPageTitle = document.title;
-		document.title = '作业批改';
+		this.oldPageTitle = document.title
+		document.title = '作业批改'
 	},
 	deactivated() {
-		console.log('deactivated');
+		console.log('deactivated')
 		// this.reset();
-		document.title = this.oldPageTitle;
+		document.title = this.oldPageTitle
 	},
 	beforeRouteLeave(to, from, next) {
 		// console.log('beforeRouteLeave');
@@ -397,32 +549,33 @@ export default {
 		//   next(false);
 		// }
 		// else {
-		window.onbeforeunload = null;
-		next();
+		window.onbeforeunload = null
+		next()
 		// }
 	},
 	beforeRouteUpdate(to, from, next) {
-		console.log('beforeRouteUpdate');
-		this.loadData();
-		next();
+		console.log('beforeRouteUpdate')
+		this.loadData()
+		next()
 	},
 	updated() {
-		console.log('updated');
+		console.log('updated')
 		if (this.$refs.location && this.$refs.location.offsetHeight) {
-			this.locationLine = this.$refs.location.offsetHeight > 20 ? '-webkit-box' : '';
+			this.locationLine =
+				this.$refs.location.offsetHeight > 20 ? '-webkit-box' : ''
 		}
 		if (this.$refs.desc && this.$refs.desc.offsetHeight) {
-			this.descLine = this.$refs.desc.offsetHeight > 20 ? '-webkit-box' : '';
+			this.descLine = this.$refs.desc.offsetHeight > 20 ? '-webkit-box' : ''
 		}
 	},
 	data() {
 		return {
 			oldPageTitle: '',
-			urlPath: window.location.href.split("#")[0],
+			urlPath: window.location.href.split('#')[0],
 			wx,
 			checkedJump: true,
 			checkedWarn: true,
-        
+
 			showIframe: false,
 			showIframeSrc: false,
 
@@ -496,128 +649,126 @@ export default {
 			showRecording: false,
 			progress: 20,
 			isGreat: false,
-	        currentMp3Id: -1,
-		};
+			currentMp3Id: -1,
+		}
 	},
 
 	methods: {
-		reset(){
+		reset() {
+			this.dataModified = false
+			this.upCheckMap.score = 0
+			this.upCheckMap.comment = ''
 
-			this.dataModified = false;
-			this.upCheckMap.score = 0;
-			this.upCheckMap.comment = '';
+			this.currentImg = {}
+			this.currentIndex = 0
+			this.currentVIndex = 0
+			this.currentType = ''
+			this.show8 = false
+			this.show1 = false
+			this.dataUrl = ''
 
-			this.currentImg= {};
-			this.currentIndex= 0;
-			this.currentVIndex= 0;
-			this.currentType= '';
-			this.show8= false;
-			this.show1= false;
-			this.dataUrl= '';
-
-			this.workObj= {};
-			this.detail= {};
-			this.imgObj= {
+			this.workObj = {}
+			this.detail = {}
+			this.imgObj = {
 				content: '',
 				serverid: [],
 				imgs: [],
-			};
-			
-			this.trueList= [];
-			
-			this.checkMap= {};
-			this.quesList= [];
-			this.checkList= [];
-			this.showRecording= false;
-			this.progress= 20;
+			}
 
+			this.trueList = []
+
+			this.checkMap = {}
+			this.quesList = []
+			this.checkList = []
+			this.showRecording = false
+			this.progress = 20
 		},
-		loadConfig(){
-			let cfgStr = localStorage.getItem('lqt-homework-teacherCfg');
-			if(cfgStr){
-				try{
-					let cfg = JSON.parse(cfgStr);
-					this.checkedJump = cfg.checkedJump;
-					this.checkedWarn = cfg.checkedWarn;
-				}
-				catch(e){
-
-				}
+		loadConfig() {
+			let cfgStr = localStorage.getItem('lqt-homework-teacherCfg')
+			if (cfgStr) {
+				try {
+					let cfg = JSON.parse(cfgStr)
+					this.checkedJump = cfg.checkedJump
+					this.checkedWarn = cfg.checkedWarn
+				} catch (e) {}
 			}
 		},
 
 		handleModify(b) {
-			this.dataModified = b;
+			this.dataModified = b
 
 			if (b) {
-				window.onbeforeunload = function(e) {
-					e.preventDefault();
-					e.returnValue = '已有录入数据，确定放弃数据并离开页面？';
-				};
+				window.onbeforeunload = function (e) {
+					e.preventDefault()
+					e.returnValue = '已有录入数据，确定放弃数据并离开页面？'
+				}
 			} else {
-				window.onbeforeunload = null;
+				window.onbeforeunload = null
 			}
 		},
-		async saveCommentOnly(param){
-			param.mainId = this.checkMap.ID;
-			param.homeworkId = this.workId;
-			console.log(param);
+		async saveCommentOnly(param) {
+			param.mainId = this.checkMap.ID
+			param.homeworkId = this.workId
+			console.log(param)
 
-			const self = this;
+			const self = this
 
-			await this.$http.post(apiPath + '/wechat/homeworkH5/addCommentHis', param).then(response =>{
-				if (response.body.code == '200') {
-						self.$refs.grament.loadComments({
-							WORKID: self.checkMap.WORK_ID,
-							ANID: self.checkMap.ID,
-						}, false);
-				} else{
-					throw new Error(response.body.message)
-				}
-			});
-
-			
+			await this.$http
+				.post(apiPath + '/wechat/homeworkH5/addCommentHis', param)
+				.then((response) => {
+					if (response.body.code == '200') {
+						self.$refs.grament.loadComments(
+							{
+								WORKID: self.checkMap.WORK_ID,
+								ANID: self.checkMap.ID,
+							},
+							false
+						)
+					} else {
+						throw new Error(response.body.message)
+					}
+				})
 		},
 		async saveWorkPass(param) {
 			// console.log(JSON.stringify(param));
-			this.upCheckMap.score = param.score;
-			this.upCheckMap.comment = param.comment;
+			this.upCheckMap.score = param.score
+			this.upCheckMap.comment = param.comment
 
-			let vm = this;
+			let vm = this
 			// let e = vm.checkedJump ? 1: 0 ;
-			let quesList = this.quesList;
-			let dataList = [];
+			let quesList = this.quesList
+			let dataList = []
 			for (let i = 0; i < quesList.length; i++) {
-				let sWebImgList = quesList[i].sWebImgList || [];
+				let sWebImgList = quesList[i].sWebImgList || []
 
-				let sImgList = quesList[i].sImgList || [];
+				let sImgList = quesList[i].sImgList || []
 
 				// debugger;
 				for (let j = 0; j < sWebImgList.length; j++) {
 					if (sWebImgList[j].isEdit) {
-						let item = sWebImgList[j];
-						let urlList = item.sUrl.split('/');
-						let submitUrl = urlList[urlList.length - 1];
+						let item = sWebImgList[j]
+						let urlList = item.sUrl.split('/')
+						let submitUrl = urlList[urlList.length - 1]
 						dataList.push({
 							id: item.ID,
 							type: item.TYPE,
 							value: submitUrl,
-							old_path : item.old_path
-						});
+							old_path: item.old_path,
+						})
 					}
 				}
 
 				for (let j = 0; j < sImgList.length; j++) {
 					if (sImgList[j].isEdit) {
-						let item = sImgList[j];
-						let urlList = item.URL.split('/');
-						let submitUrl = urlList[urlList.length - 1];
+						let item = sImgList[j]
+						let urlList = item.URL.split('/')
+						let submitUrl = urlList[urlList.length - 1]
 						dataList.push({
 							id: item.ID,
 							type: item.TYPE,
 							value: submitUrl,
-							old_path : item.old_path
-						});
+							old_path: item.old_path,
+						})
 					}
 				}
 			}
@@ -626,17 +777,17 @@ export default {
 				score: vm.upCheckMap.score,
 				comment: vm.upCheckMap.comment,
 				dataList: dataList,
-				comment_type: param.comment_type
-			};
+				comment_type: param.comment_type,
+			}
 
 			let data = {
 				mainId: vm.checkMap.ID,
 				details: JSON.stringify(details),
-				imgType: vm.checkedJump ? 1: 0,
+				imgType: vm.checkedJump ? 1 : 0,
 				isCheckAuto: vm.checkedWarn ? 1 : 0,
-			};
+			}
 
-			console.log('passed:', data);
+			console.log('passed:', data)
 			// return;
 			await this.$http.post(apiRouter.POST_HOMEWORK_UP_SAVE, data).then(
 				(response) => {
@@ -645,69 +796,69 @@ export default {
 						vm.upCheckMap = {
 							score: 0,
 							comment: '',
-						};
+						}
 						if (!vm.checkedJump || !response.body.data.studentMap) {
-							vm.$vux.toast.text(response.body.message);
+							vm.$vux.toast.text(response.body.message)
 							// setTimeout(function() {
-								vm.goBack();
+							vm.goBack()
 							// }, 500);
 						} else if (vm.checkedJump && response.body.data.studentMap) {
-							vm.reset();
-							let studentMap = response.body.data.studentMap;
-							let workId = vm.$route.query.workId;
-							vm.currentWork = 0;
+							vm.reset()
+							let studentMap = response.body.data.studentMap
+							let workId = vm.$route.query.workId
+							vm.currentWork = 0
 							//this.userId = vm.$route.query.userId;
-							vm.userId = studentMap.STUDENT_ID;
+							vm.userId = studentMap.STUDENT_ID
 							vm.$router.push({
 								path: '/detail-up',
 								query: { userId: studentMap.STUDENT_ID, workId: workId },
-							});
+							})
 						}
 					} else {
-						vm.$vux.toast.text(response.body.message);
-						vm.$vux.loading.hide();
+						vm.$vux.toast.text(response.body.message)
+						vm.$vux.loading.hide()
 					}
 				},
 				(response) => {
-					alert('请求失败了!!!!');
+					alert('请求失败了!!!!')
 				}
-			);
+			)
 		},
 		async saveWorkRejected(param) {
-			let vm = this;
+			let vm = this
 			//dataList:[],
-			let quesList = this.quesList;
-			let dataList = [];
+			let quesList = this.quesList
+			let dataList = []
 			for (let i = 0; i < quesList.length; i++) {
-				let sWebImgList = quesList[i].sWebImgList || [];
+				let sWebImgList = quesList[i].sWebImgList || []
 
-				let sImgList = quesList[i].sImgList || [];
+				let sImgList = quesList[i].sImgList || []
 
 				for (let j = 0; j < sWebImgList.length; j++) {
 					if (sWebImgList[j].isEdit) {
-						let item = sWebImgList[j];
-						let urlList = item.sUrl.split('/');
-						let submitUrl = urlList[urlList.length - 1];
+						let item = sWebImgList[j]
+						let urlList = item.sUrl.split('/')
+						let submitUrl = urlList[urlList.length - 1]
 						dataList.push({
 							id: item.ID,
 							type: item.TYPE,
 							value: submitUrl,
-							old_path : item.old_path
-						});
+							old_path: item.old_path,
+						})
 					}
 				}
 
 				for (let j = 0; j < sImgList.length; j++) {
 					if (sImgList[j].isEdit) {
-						let item = sImgList[j];
-						let urlList = item.URL.split('/');
-						let submitUrl = urlList[urlList.length - 1];
+						let item = sImgList[j]
+						let urlList = item.URL.split('/')
+						let submitUrl = urlList[urlList.length - 1]
 						dataList.push({
 							id: item.ID,
 							type: item.TYPE,
 							value: submitUrl,
-							old_path : item.old_path
-						});
+							old_path: item.old_path,
+						})
 					}
 				}
 			}
@@ -717,7 +868,7 @@ export default {
 				comment: param.comment,
 				comment_type: param.comment_type,
 				dataList: dataList,
-			};
+			}
 
 			// let data = {
 			//   mainId: vm.checkMap.ID,
@@ -733,189 +884,212 @@ export default {
 			let data = {
 				mainId: vm.checkMap.ID,
 				details: JSON.stringify(details),
-				imgType: vm.checkedJump ? 1: 0,
+				imgType: vm.checkedJump ? 1 : 0,
 				isCheckAuto: 1,
-			};
-			console.log('reject:' , data)
+			}
+			console.log('reject:', data)
 			// return
 
 			await this.$http.post(apiRouter.POST_HOMEWORK_BACK, data).then(
 				(response) => {
-					vm.$vux.loading.hide();
+					vm.$vux.loading.hide()
 					if (response.body.code == '200') {
 						if (!vm.checkedJump || !response.body.data.studentMap) {
-							vm.$vux.toast.text('发回订正成功！');
+							vm.$vux.toast.text('发回订正成功！')
 							// setTimeout(function() {
-								// debugger
-								vm.upCheckMap.score = 0;
-								vm.upCheckMap.comment = '';
-								vm.goBack();
+							// debugger
+							vm.upCheckMap.score = 0
+							vm.upCheckMap.comment = ''
+							vm.goBack()
 							// }, 500);
-						} else if(vm.checkedJump && response.body.data.studentMap) {
-							let studentMap = response.body.data.studentMap;
-							let workId = vm.$route.query.workId;
-							vm.currentWork = 0;
-							vm.userId = studentMap.STUDENT_ID;
-							vm.reset();
+						} else if (vm.checkedJump && response.body.data.studentMap) {
+							let studentMap = response.body.data.studentMap
+							let workId = vm.$route.query.workId
+							vm.currentWork = 0
+							vm.userId = studentMap.STUDENT_ID
+							vm.reset()
 							vm.$router.push({
 								path: '/detail-up',
 								query: { userId: studentMap.STUDENT_ID, workId: workId },
-							});
+							})
 						}
 					} else {
-						vm.$vux.toast.text(response.body.message);
-						vm.$vux.loading.hide();
+						vm.$vux.toast.text(response.body.message)
+						vm.$vux.loading.hide()
 					}
 				},
 				(response) => {
-					alert('请求失败了!!!!');
+					alert('请求失败了!!!!')
 				}
-			);
+			)
 		},
 
 		goEdit(i, e, type, parentIndex) {
 			// this.show8 = true;
-			this.currentImg = e;
-			let url = '';
+			this.currentImg = e
+			let url = ''
 
 			//let preFix = '/api';
-			let preFix = '';
-			this.currentType = type;
-			this.currentVIndex = i;
-			this.currentIndex = parentIndex;
+			let preFix = ''
+			this.currentType = type
+			this.currentVIndex = i
+			this.currentIndex = parentIndex
 			// debugger;
 			if (type == '1') {
 				// debugger;
 				url = e.sUrl.includes(this.picRootPath)
 					? e.sUrl
-					: this.picRootPath + e.sUrl;
+					: this.picRootPath + e.sUrl
 				//let url = e.sUrl;
 			} else {
 				url = e.URL.includes(this.picRootPath)
 					? e.URL
-					: this.picRootPath + e.URL;
+					: this.picRootPath + e.URL
 			}
 			// debugger;
 
-			if(!e.old_path) {
-				e.old_path = url.split(this.ossPath)[1];
-				if(e.old_path.startsWith('/')){
-					e.old_path = e.old_path.substr(1);
+			if (!e.old_path) {
+				e.old_path = url.split(this.ossPath)[1]
+				if (e.old_path.startsWith('/')) {
+					e.old_path = e.old_path.substr(1)
 				}
 			}
 
 			// init editor
 			// this.$refs.imgApp.initImg(url);
 
-			let vm = this;
+			let vm = this
 			function openIframe() {
 				// window.ifrHandler = vm.$refs.ifr;
-				window.ifrLoading = function() {
+				window.ifrLoading = function () {
 					vm.$vux.loading.show({
 						text: '上传中...',
-					});
-				};
+					})
+				}
 
-				window.ifrCommit = function(formData){
+				const evtHdl = function () {
+					if(vm.showIframe){
+						history.pushState(null, '', document.URL);
+						window.ifrCancel();
+					}
+				}
+
+				window.ifrCommit = function (formData) {
 					$.ajax({
 						url: apiRouter.POST_HOMEWORK_FILE,
 						data: formData,
 						processData: false,
 						contentType: false,
 						type: 'POST',
-						success: function(resp) {
-							window.ifrSuccess(resp.data , e);							
+						success: function (resp) {
+							window.ifrSuccess(resp.data, e)
 						},
-					});
-				};
-				window.ifrSuccess = function(data , srcItem) {
-					vm.$vux.toast.text('图片上传成功!');
+					})
+				}
+				window.ifrSuccess = function (data, srcItem) {
+					vm.$vux.toast.text('图片上传成功!')
 					// vm.$emit('finishEdit', data);
-					vm.finishEdit(data);
+					vm.finishEdit(data)
 
-					let urlList = (srcItem.URL || srcItem.sUrl).split('/');
-					let submitUrl = urlList[urlList.length - 1];
+					let urlList = (srcItem.URL || srcItem.sUrl).split('/')
+					let submitUrl = urlList[urlList.length - 1]
 					let postData = {
-							detailId: srcItem.ID ,
-							type : srcItem.TYPE,
-							value : submitUrl,
-							old_path : srcItem.old_path,
-						};
-					
-					vm.$http.post(apiPath + '/wechat/homeworkH5/changeStuPic' , postData).then(function(commitResp){
-						setTimeout(function() {
-							vm.$vux.loading.hide();
-							window.ifrCancel();
-						}, 300);	
-					});
-					
-				};
-				window.ifrCancel = function(data) {
-					vm.showIframe = false;
+						detailId: srcItem.ID,
+						type: srcItem.TYPE,
+						value: submitUrl,
+						old_path: srcItem.old_path,
+					}
 
-					window.ifrLoading = window.ifrCommit = 
-						window.ifrSuccess = window.ifrCancel = window.ifrFail = null;
-				};
-				window.ifrFail = function(msg) {
-					vm.$vux.toast.text(msg);
-					vm.$vux.loading.hide();
-				};
-				vm.showIframeSrc = './static/img_editor_iframe/index.html?img=' + url + '&s=' + Math.random() + '&n=' + vm.userName.split('的作业')[0];
-				setTimeout(function() {
+					vm.$http
+						.post(apiPath + '/wechat/homeworkH5/changeStuPic', postData)
+						.then(function (commitResp) {
+							setTimeout(function () {
+								vm.$vux.loading.hide()
+								window.ifrCancel()
+							}, 300)
+						})
+				}
+				window.ifrCancel = function (data) {
+					vm.showIframe = false;
+					window.removeEventListener('popstate',evtHdl);
+
+					window.ifrLoading =
+						window.ifrCommit =
+						window.ifrSuccess =
+						window.ifrCancel =
+						window.ifrFail =
+							null
+				}
+				window.ifrFail = function (msg) {
+					vm.$vux.toast.text(msg)
+					vm.$vux.loading.hide()
+				}
+				vm.showIframeSrc =
+					'./static/img_editor_iframe/index.html?img=' +
+					url +
+					'&s=' +
+					Math.random() +
+					'&n=' +
+					vm.userName.split('的作业')[0]
+
+				setTimeout(function () {
 					vm.showIframe = true;
-				}, 300);
+					//
+					history.pushState(null, '', document.URL);
+					window.addEventListener('popstate', evtHdl);
+				}, 300)
 			}
 
 			// debugger
-			openIframe();
+			openIframe()
 		},
 
 		finishEdit(e) {
-			debugger;
-			let detail = this.quesList[this.currentIndex];
-			this.currentImg.sUrl = e.url;
-			this.currentImg.isEdit = true;
+			debugger
+			let detail = this.quesList[this.currentIndex]
+			this.currentImg.sUrl = e.url
+			this.currentImg.isEdit = true
 			if (this.currentType == '1') {
-				detail.sWebImgList[this.currentVIndex].sUrl = e.url;
+				detail.sWebImgList[this.currentVIndex].sUrl = e.url
 			} else {
-				detail.sImgList[this.currentVIndex].URL = e.url;
+				detail.sImgList[this.currentVIndex].URL = e.url
 			}
 			// this.show8 = false;
 		},
 
 		cancelEdit() {
-			this.show8 = false;
+			this.show8 = false
 		},
 
 		onAddText(res) {
 			/* eslint-disable no-console */
-			console.group('addText');
-			console.log('Client Position : ', res.clientPosition);
-			console.log('Origin Position : ', res.originPosition);
-			console.groupEnd();
+			console.group('addText')
+			console.log('Client Position : ', res.clientPosition)
+			console.log('Origin Position : ', res.originPosition)
+			console.groupEnd()
 			/* eslint-enable no-console */
 		},
 		onObjectMoved(res) {
 			/* eslint-disable no-console */
-			console.group('objectMoved');
-			console.log('Left : ', res.left);
-			console.log('Top : ', res.top);
-			console.groupEnd();
+			console.group('objectMoved')
+			console.log('Left : ', res.left)
+			console.log('Top : ', res.top)
+			console.groupEnd()
 			/* eslint-enable no-console */
 		},
 		showImg(sampleImage) {
-			this.$router.push({ path: '/img-pxy', query: { imgUrl: sampleImage } });
+			this.$router.push({ path: '/img-pxy', query: { imgUrl: sampleImage } })
 			//this.$router.push({path:'/img-pxy',query: {imgUrl:sampleImage}})
 		},
 		saveUrlData() {
-			let imageEditor = this.$refs.tuiImageEditor.editorInstance;
-			let dataURL = imageEditor.toDataURL();
-			this.dataUrl = dataURL;
-			this.show1 = false;
+			let imageEditor = this.$refs.tuiImageEditor.editorInstance
+			let dataURL = imageEditor.toDataURL()
+			this.dataUrl = dataURL
+			this.show1 = false
 		},
 		showImgNext() {
 			// debugger;
-			this.show8 = true;
+			this.show8 = true
 		},
 		//------------------------------------
 		async goBack() {
@@ -927,219 +1101,225 @@ export default {
 					message: '页面已录入部分数据，关闭页面后数据将被清空。',
 					confirmButtonText: '确定',
 					messageAlign: 'left',
-				});
+				})
 				if (answer === 'confirm') {
-					this.$router.push({ path: '/check-work-list?id=' + this.workId });
+					this.$router.push({ path: '/check-work-list?id=' + this.workId })
 				}
 			} else {
-				this.$router.push({ path: '/check-work-list?id=' + this.workId });
+				this.$router.push({ path: '/check-work-list?id=' + this.workId })
 			}
 		},
 		preWork() {
-			let currentWork = this.currentWork;
+			let currentWork = this.currentWork
 			if (currentWork > 0) {
-				this.currentWork = currentWork - 1;
+				this.currentWork = currentWork - 1
 			}
-			window.scrollTo(0, 0);
+			window.scrollTo(0, 0)
 		},
 		nextWork() {
-			let currentWork = this.currentWork;
+			let currentWork = this.currentWork
 			if (currentWork < this.quesList.length - 1) {
-				this.currentWork = currentWork + 1;
+				this.currentWork = currentWork + 1
 			}
-			window.scrollTo(0, 0);
+			window.scrollTo(0, 0)
 		},
 		nextComment() {
-			let currentWork = this.currentWork;
+			let currentWork = this.currentWork
 			if (currentWork < this.quesList.length) {
-				this.currentWork = currentWork + 1;
-				let _this = this;
+				this.currentWork = currentWork + 1
+				let _this = this
 				this.$refs.grament.loadComments({
 					WORKID: _this.checkMap.WORK_ID,
 					ANID: _this.checkMap.ID,
-				});
+				})
 			}
 		},
 
 		previewImage(url, imgList) {
-			let urls = [];
+			let urls = []
 			for (let i = 0; i < imgList.length; i++) {
-				urls.push(this.picRootPath + imgList[i].URL);
+				urls.push(this.picRootPath + imgList[i].URL)
 			}
 			// console.info(this.picRootPath + url , urls);
 
 			wx.previewImage({
 				current: this.picRootPath + url, // 当前显示图片的http链接
 				urls: urls, // 需要预览的图片http链接列表
-			});
+			})
 		},
 
 		onClickLeft() {
-			this.$router.go(-1);
+			this.$router.go(-1)
 		},
 		loadData() {
 			this.upCheckMap = {
 				score: 0,
 				comment: '',
-			};
+			}
 			// this.currentWork = -1;
 			// this.workId = this.$route.query.workId;
 			// this.userId = this.$route.query.userId;
 			// alert(this.$route.query.userId)
 
-			let _this = this;
+			let _this = this
 			this.$http
-				.get(apiRouter.GET_HOMEWORK_UP_ANSWER + '?workId=' + _this.workId + '&userId=' + _this.userId)
+				.get(
+					apiRouter.GET_HOMEWORK_UP_ANSWER +
+						'?workId=' +
+						_this.workId +
+						'&userId=' +
+						_this.userId
+				)
 				.then(
 					(response) => {
 						if (response.status === 200) {
 							//debugger;
-							_this.currentWork = 0 ;
-							_this.userName = response.body.data.STUDENT_SHOW_NAME + '的作业';
-							_this.picRootPath = response.body.data.PIC_ROOTPATH;
-							_this.workObj = response.body.data.hkMap;
-							_this.checkMap = response.body.data.checkMap || {};
-							_this.isGreat = _this.checkMap.IS_GREAT == '1';
-							let quesList = response.body.data.quesList;
+							_this.currentWork = 0
+							_this.userName = response.body.data.STUDENT_SHOW_NAME + '的作业'
+							_this.picRootPath = response.body.data.PIC_ROOTPATH
+							_this.workObj = response.body.data.hkMap
+							_this.checkMap = response.body.data.checkMap || {}
+							_this.isGreat = _this.checkMap.IS_GREAT == '1'
+							let quesList = response.body.data.quesList
 							if (quesList.length == 1) {
-								_this.progress = 100;
+								_this.progress = 100
 							} else {
-								_this.progress = 20;
+								_this.progress = 20
 							}
 							//debugger;
 							//根据类型set答案字段
 							for (let i = 0; i < quesList.length; i++) {
-								let item = quesList[i];
+								let item = quesList[i]
 								//debugger;
 								switch (item.QUESTYPE) {
 									//单选
 									case '1':
-										break;
+										break
 									//多选
 									case '2':
-										item.answer = item.STUANSWER[0].ANSWER.split(',');
-										break;
+										item.answer = item.STUANSWER[0].ANSWER.split(',')
+										break
 									//判断题
 									case '5':
-										break;
+										break
 									//填空 todo
 									case '6':
-										let tAnswer = item.ANS_CONTENT.split(',');
-										let sAnswerList = item.STUANSWER[0].ANSWER.split(',');
-										item.sAnswerList = sAnswerList;
-										item.tAnswer = tAnswer;
-										break;
+										let tAnswer = item.ANS_CONTENT.split(',')
+										let sAnswerList = item.STUANSWER[0].ANSWER.split(',')
+										item.sAnswerList = sAnswerList
+										item.tAnswer = tAnswer
+										break
 									// //问答 //自定义  ("3" || "4"):
 									default:
-										item.sImgList = [];
-										item.sVoiceList = [];
-										item.sWebImgList = [];
-										item.sWebFileList = [];
+										item.sImgList = []
+										item.sVoiceList = []
+										item.sWebImgList = []
+										item.sWebFileList = []
 										for (let i = 0; i < item.STUANSWER.length; i++) {
-											let ansObj = item.STUANSWER[i];
+											let ansObj = item.STUANSWER[i]
 											if (ansObj.TYPE == '') {
-												item.answer = ansObj.ANSWER;
+												item.answer = ansObj.ANSWER
 											} else if (ansObj.TYPE == '1') {
-												item.sImgList.push(ansObj);
+												item.sImgList.push(ansObj)
 											} else if (ansObj.TYPE == '2') {
-												item.sVoiceList.push(ansObj);
+												item.sVoiceList.push(ansObj)
 											} else if (ansObj.TYPE == '3') {
-												let urlList = ansObj.ANSWER.split(';');
-												ansObj.sName = urlList[0];
-												if(urlList[1].indexOf('upload')===0){
+												let urlList = ansObj.ANSWER.split(';')
+												ansObj.sName = urlList[0]
+												if (urlList[1].indexOf('upload') === 0) {
 													urlList[1] = urlList[1].substr(6)
 												}
-												ansObj.sUrl = urlList[1];
-												item.sWebImgList.push(ansObj);
+												ansObj.sUrl = urlList[1]
+												item.sWebImgList.push(ansObj)
 											} else if (ansObj.TYPE == '4') {
-												let urlList = ansObj.ANSWER.split(';');
-												ansObj.sName = urlList[0];
-												if(urlList[1].indexOf('upload')===0){
+												let urlList = ansObj.ANSWER.split(';')
+												ansObj.sName = urlList[0]
+												if (urlList[1].indexOf('upload') === 0) {
 													urlList[1] = urlList[1].substr(6)
 												}
-												ansObj.sUrl = urlList[1];
-												item.sWebFileList.push(ansObj);
+												ansObj.sUrl = urlList[1]
+												item.sWebFileList.push(ansObj)
 											}
 										}
 								}
 							}
-							_this.quesList = quesList;
+							_this.quesList = quesList
 						}
 					},
 					(response) => {
-						alert('请求失败了!!!!');
+						alert('请求失败了!!!!')
 					}
-				);
+				)
 		},
 		//@@@@@@@@@@@@@@@@@@@@@@@@   录音 start   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 		startVoice(detail) {
-			console.log('start_Voice');
-			console.log(detail);
+			console.log('start_Voice')
+			console.log(detail)
 			if (!detail.voiceList) {
-				detail.voiceList = [];
+				detail.voiceList = []
 			}
-			console.log(detail);
-			this.goVoiceTimer();
-			wx.startRecord();
-			this.showRecording = true;
-			let self = this;
+			console.log(detail)
+			this.goVoiceTimer()
+			wx.startRecord()
+			this.showRecording = true
+			let self = this
 			wx.onVoiceRecordEnd({
 				// 录音时间超过一分钟没有停止的时候会执行 complete 回调
-				complete: function(res) {
-					let localId = res.localId;
-					alert('时间超过60秒,已自动保存！');
-					self.uploadVoice(localId, detail.voiceList);
+				complete: function (res) {
+					let localId = res.localId
+					alert('时间超过60秒,已自动保存！')
+					self.uploadVoice(localId, detail.voiceList)
 				},
-			});
+			})
 			//$('body').append('<span id="recording" class="recording-show"></span>');
 		},
 		endVoice(detail) {
-			console.log('endVoice');
-			let voiceList = detail.voiceList;
-			window.clearInterval(this.voiceTimer);
-			let self = this;
+			console.log('endVoice')
+			let voiceList = detail.voiceList
+			window.clearInterval(this.voiceTimer)
+			let self = this
 			//$('#recording').remove();
-			this.showRecording = false;
+			this.showRecording = false
 			wx.stopRecord({
-				success: function(res) {
+				success: function (res) {
 					//isrecording = false;
 					//self.recordComplete(res.localId, id, recordtime);
-					self.uploadVoice(res.localId, voiceList);
+					self.uploadVoice(res.localId, voiceList)
 				},
-			});
+			})
 		},
 		uploadVoice(localId, voiceList) {
-			let self = this;
+			let self = this
 			//self.g_param.isuploadcomplete = false;
-			console.log('voice-upload：');
-			console.log(JSON.stringify(voiceList));
-			let second = 60 - self.voiceSecond;
-			if (second == 0) second = 1;
-			let voiceObj = { localId: localId, second: second };
-			voiceList.push(voiceObj);
+			console.log('voice-upload：')
+			console.log(JSON.stringify(voiceList))
+			let second = 60 - self.voiceSecond
+			if (second == 0) second = 1
+			let voiceObj = { localId: localId, second: second }
+			voiceList.push(voiceObj)
 			wx.uploadVoice({
 				localId: localId,
 				isShowProgressTips: 1, // 默认为1，显示进度提示
-				success: function(res) {
-					console.log('voice-upload：@@@@@@@@@@@');
-					console.log(res);
-					voiceObj.serverId = res.serverId;
+				success: function (res) {
+					console.log('voice-upload：@@@@@@@@@@@')
+					console.log(res)
+					voiceObj.serverId = res.serverId
 					//返回音频的服务器端ID
 					//$container.find('.qs-voice').eq($container.find('.qs-voice').length - 1).find('input').val(res.serverId);
 					//self.g_param.isuploadcomplete = true;
-					console.log(res);
+					console.log(res)
 				},
-			});
+			})
 		},
 		playVoice(item) {
-			let self = this;
-       		self.currentMp3Id = item.ID;
-			let mp3 = new Audio(item.URL);
-			setTimeout(function(){
-				self.currentMp3Id = -1;
-			} , (~~item.AUDIO_TIME) * 1000);
+			let self = this
+			self.currentMp3Id = item.ID
+			let mp3 = new Audio(item.URL)
+			setTimeout(function () {
+				self.currentMp3Id = -1
+			}, ~~item.AUDIO_TIME * 1000)
 
-			mp3.play();
+			mp3.play()
 			// wx.downloadVoice({
 			//   serverId: serverId, // 需要下载的音频的服务器端ID，由uploadVoice接口获得
 			//   isShowProgressTips: 1, // 默认为1，显示进度提示
@@ -1154,23 +1334,23 @@ export default {
 		stopVoice(localId) {
 			wx.stopVoice({
 				localId: localId, // 需要停止的音频的本地ID，由stopRecord接口获得
-			});
+			})
 		},
 		translateVoice(localId) {
 			wx.translateVoice({
 				localId: localId, // 需要识别的音频的本地Id，由录音相关接口获得
 				isShowProgressTips: 1, // 默认为1，显示进度提示
-				success: function(res) {
-					alert(res.translateResult); // 语音识别的结果
+				success: function (res) {
+					alert(res.translateResult) // 语音识别的结果
 				},
-			}); //设备信息
+			}) //设备信息
 		},
 		//@@@@@@@@@@@@@@@@@@@@@@@@   录音 end   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 		getUrlConfigTrue() {
-			let wiexin = apiRouter.GET_CONFIG + encodeURIComponent(this.urlPath);
+			let wiexin = apiRouter.GET_CONFIG + encodeURIComponent(this.urlPath)
 			this.$http.get(wiexin).then(
 				(response) => {
-					let data = response.body;
+					let data = response.body
 					wx.config({
 						// debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
 						appId: data.appId, // 必填，企业号的唯一标识，此处填写企业号corpid
@@ -1194,25 +1374,25 @@ export default {
 							'uploadImage',
 							'uploadVoice',
 						], // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-					});
+					})
 					wx.ready(() => {
 						wx.onVoicePlayEnd({
 							success: function (res) {
 								// alert('stop voice')
-							}
-						});
-					});
-					wx.error(function(res) {
+							},
+						})
+					})
+					wx.error(function (res) {
 						//   alert(res)
-					});
+					})
 				},
 				(response) => {
 					// console.log("请求失败了!!!!")
 				}
-			);
+			)
 		},
 	},
-};
+}
 </script>
 
 
@@ -1227,12 +1407,12 @@ body {
 	overflow: hidden;
 }
 
-.editorIframe{
-	position:fixed;
-	z-index:100;
-	height: 100vh; 
-	width: 100vw; 
-	border:0;
+.editorIframe {
+	position: fixed;
+	z-index: 100;
+	height: 100vh;
+	width: 100vw;
+	border: 0;
 }
 
 .lqt-container {
