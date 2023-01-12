@@ -463,7 +463,7 @@ import {
 	XHeader,
 	Rater,
 	XButton,
-	XDialog,
+	XDialog
 } from 'vux'
 import { Dialog } from 'vant'
 import apiRouter, { apiPath } from '../../config/api.js'
@@ -969,8 +969,8 @@ export default {
 
 				const evtHdl = function () {
 					if(vm.showIframe){
-						history.pushState(null, '', document.URL);
-						window.ifrCancel();
+						// history.pushState(null, '', document.URL);
+						window.ifrCancel(true);
 					}
 				}
 
@@ -1009,7 +1009,7 @@ export default {
 							}, 300)
 						})
 				}
-				window.ifrCancel = function (data) {
+				window.ifrCancel = function (isOnBack) {
 					vm.showIframe = false;
 					window.removeEventListener('popstate',evtHdl);
 
@@ -1018,7 +1018,10 @@ export default {
 						window.ifrSuccess =
 						window.ifrCancel =
 						window.ifrFail =
-							null
+							null;
+					if(!isOnBack){
+						history.back()
+					}
 				}
 				window.ifrFail = function (msg) {
 					vm.$vux.toast.text(msg)
