@@ -54,6 +54,14 @@
             </div>
             <p class="name" style="font-size: 0.5rem">{{item.name}}</p>
           </a>
+		  <a v-else-if="item.code==='sel_kq' || item.code==='my_attendance'" class="link-class" :class=" item.newFlag ? 'new' : '' " :href="item.pageUrl">
+            <div
+                :style="{background:item.color, display:'block', borderRadius: '5px' , fontSize: '.80357143rem'}"
+              >
+                <van-icon class="icon" name="location-o" />
+            </div>
+            <p class="name" style="font-size: 0.5rem">{{item.name}}</p>
+          </a>
           <a v-else class="link-class" :class=" item.newFlag ? 'new' : '' " :href="item.pageUrl.startsWith('/weixin/wechat/dist/index.html#/')? '#' + item.pageUrl.split('#')[1] : item.pageUrl ">
             <div
               :style="{background:item.color,display:'block',borderRadius: '5px'}"
@@ -83,6 +91,14 @@
               :style="{background:item.color,display:'block',borderRadius: '5px', fontSize: '.80357143rem'}"
             >
 				<van-icon class="icon" name="records" />
+            </div>
+            <p class="name" style="font-size: 0.5rem">{{item.name}}</p>
+		  </a>
+		  <a v-else-if="item.code === 'class_attendance'" class="link-class" :href="item.pageUrl">
+			<div
+              :style="{background:item.color,display:'block',borderRadius: '5px', fontSize: '.80357143rem'}"
+            >
+				<van-icon class="icon" name="location-o" />
             </div>
             <p class="name" style="font-size: 0.5rem">{{item.name}}</p>
 		  </a>
@@ -181,10 +197,10 @@ export default {
 			}catch(e){
 				alert(JSON.stringify(e.message));
 			}
-			
 
 
-		  
+
+
         },
 		fail: function(res){
 				console.log(res);
@@ -203,7 +219,7 @@ export default {
           appId: data.appId, // 必填，企业号的唯一标识，此处填写企业号corpid
           timestamp: data.timestamp, // 必填，生成签名的时间戳
           nonceStr: data.nonceStr, // 必填，生成签名的随机串
-          signature: data.signature,// 必填，签名，见附录1         
+          signature: data.signature,// 必填，签名，见附录1
           jsApiList: [
 			  "scanQRCode"
           ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
