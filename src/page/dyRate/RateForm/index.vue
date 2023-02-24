@@ -208,6 +208,7 @@ export default {
     let that = this;
 
     return {
+			ossPath: roterOssPath,
       inited: false,
       loading: false,
       urlPath: "",
@@ -471,8 +472,13 @@ export default {
               // task.__shown = false;
               task.__hash = task.ID + "-" + Date.now() + "-" + Math.random();
 
-              if (task.IMG_LIST.length > 4) {
-                task.IMG_LIST.length = 4;
+              if (task.IMG_LIST.length > 0){
+                if (task.IMG_LIST.length > 4) {
+                  task.IMG_LIST.length = 4;
+                }
+                task.IMG_LIST.forEach(img => {
+                  img.url = this.ossPath + '/upload' + img.url
+                })
               }
             });
             this.taskList = data_list;
@@ -569,8 +575,14 @@ export default {
               // task.__shown = false;
               task.__hash = task.ID + "-" + Date.now() + "-" + Math.random();
 
-              if (task.IMG_LIST.length > 4) {
-                task.IMG_LIST.length = 4;
+
+              if (task.IMG_LIST.length > 0){
+                if (task.IMG_LIST.length > 4) {
+                  task.IMG_LIST.length = 4;
+                }
+                task.IMG_LIST.forEach(img => {
+                  img.url = this.ossPath + '/upload' + img.url
+                })
               }
             });
             this.taskList = data_list;

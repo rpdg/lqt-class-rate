@@ -27,7 +27,20 @@
           <span style="color:#999;">(最多4张)</span>
           <br />
           <van-uploader
+            v-if="isWx"
             ref="fcc"
+            class="inline-uploader"
+            v-model="task.IMG_LIST"
+            max-count="4"
+            multiple
+            preview-size="12vw"
+            :capture="cameraOnly"
+            :after-read="afterRead"
+            @delete="deleteImg"
+            @click-preview="setPreviewState(true)"
+            @close-preview="setPreviewState(false)"
+          />
+          <van-uploader
             class="inline-uploader"
             v-model="task.IMG_LIST"
             max-count="4"
@@ -151,6 +164,20 @@ async function dataUrlToFile(dataUrl, fileName) {
   return new File([blob], fileName, { type: "image/jpeg" });
 }
 
+function platform() {
+	//检查用户代理
+	const ua = navigator.userAgent.toLowerCase();
+	if (/iphone|ipad|ipod/.test(ua)) {
+		return 'iOS';
+	} else if (/android/.test(ua) || /harmonyos/.test(ua)) {
+		return 'Android';
+	} else if (/micromessenger/.test(ua)) {
+		return 'wechat';
+	} else {
+		return 'unkown';
+	}
+}
+
 export default {
   props: {
     step: {
@@ -203,7 +230,8 @@ export default {
   data() {
     return {
       showActions: false,
-      cameraOnly: ""
+      cameraOnly: "",
+      isWx : platform()==='wechat'
     };
   },
   mounted_old() {
@@ -215,12 +243,14 @@ export default {
     // this.io.unobserve(this.$refs.panel);
   },
   mounted() {
-    // console.log("mmm");
-    this.patchVant();
+    if(platform()==='wechat'){
+      this.patchVant();
+    }
   },
   updated() {
-    // console.log("upup");
-    this.patchVant();
+    if(platform()==='wechat'){
+      this.patchVant();
+    }
   },
   methods: {
     // async beforeRead(imgItem) {
@@ -278,7 +308,7 @@ export default {
                 }
               });
             }, 3e2)
-            
+
           });
 
           // console.log("fcc", iptWrapper);
