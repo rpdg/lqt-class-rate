@@ -89,14 +89,21 @@
 			>{{ toastMessage }}</toast>
 
 			<div v-transfer-dom>
-				<confirm
+				<!-- <confirm
 					v-model="showDetail"
 					show-input
 					ref="confirm5"
 					:title="studentInfo.SHORT_NAME+'-'+studentInfo.NAME"
 					@on-cancel="onCancel"
 					@on-confirm="onConfirm5"
-				></confirm>
+				></confirm> -->
+        <confirm
+          v-model="showDetail"
+          ref="confirm5"
+					:title="studentInfo.SHORT_NAME+'-'+studentInfo.NAME"
+					@on-cancel="onCancel"
+					@on-confirm="onConfirm5"
+          ></confirm>
 			</div>
 
 			<div v-if="showCheck" style="margin: 10px;overflow: hidden;">
@@ -259,8 +266,9 @@ export default {
   },
   methods: {
     editDetail(item) {
-      this.showDetail = true;
+      // debugger;
       this.studentInfo = item;
+      this.showDetail = true;
     },
     editCheck(item) {
       if (item.STATUS == "1") {
