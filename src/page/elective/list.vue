@@ -9,7 +9,7 @@
 			@click-left="goBack"
 		>
     <template #right>
-      <van-button v-if="hasClass" plain type="primary" size="mini" class="btnBlueBorder">查看我班</van-button>
+      <van-button v-if="hasClass" plain type="primary" size="mini" class="btnBlueBorder" @click="viewClassDetail">查看我班</van-button>
     </template>
   </van-nav-bar>
 		<div class="wapper">
@@ -151,7 +151,9 @@ export default {
 		goBack() {
 			this.$router.push({ path: '/' })
 		},
-
+		viewClassDetail(){
+			window.location.href = `/weixin/wechat/v2/index.html#/class_attendance/elective_course`;
+		},
 		loadData() {
 			let vm = this
 			vm.messageData = []
