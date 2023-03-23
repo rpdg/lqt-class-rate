@@ -2,7 +2,7 @@
 	<div class="box">
 		<van-nav-bar
 			class="title-return-top"
-			title="选修列表"
+			title="课程列表"
 			left-text="返回"
 			right-text
 			left-arrow
