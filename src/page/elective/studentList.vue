@@ -107,9 +107,9 @@
 						<span class="m-time">
 							<h1 class="listBtn chidao" @click="changeStauts('2')">迟到</h1>
 							<h1 class="listBtn zaotui" @click="changeStauts('3')">早退</h1>
-							<h1 class="listBtn kuangke" @click="changeStauts('4')">旷课</h1>
-							<h1 class="listBtn bingjia" @click="changeStauts('5')">病假</h1>
-							<h1 class="listBtn shijia" @click="changeStauts('6')">事假</h1>
+							<h1 class="listBtn kuangke" @click="changeStauts('6')">旷课</h1>
+							<h1 class="listBtn bingjia" @click="changeStauts('4')">病假</h1>
+							<h1 class="listBtn shijia" @click="changeStauts('5')">事假</h1>
 						</span>
 
 						<span class="m-time">
@@ -209,9 +209,9 @@ export default {
         1: "到勤",
         2: "迟到",
         3: "早退",
-        4: "旷课",
-        5: "病假",
-        6: "事假"
+        4: "病假",
+        5: "事假",
+        6: "旷课",
       },
       studentInfo: {},
       showDatePicker: false,

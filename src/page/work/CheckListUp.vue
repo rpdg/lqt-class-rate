@@ -3,7 +3,7 @@
     <x-header class="title-header" :left-options="{preventGoBack: true}"
               @on-click-back="goBack" >{{navBarTitle}}</x-header>
 
-    <tab class="tab-check" active-color="#48b319" prevent-default >
+    <tab class="tab-check" active-color="#48b319">
       <!-- <tab-item @on-item-click="switchTabItem">已完成（{{checkObj.finalcount}}）</tab-item> -->
       <tab-item  selected @on-item-click="switchTabItem">未完成（{{checkObj.noDoCount}}）</tab-item>
       <tab-item @on-item-click="switchTabItem">待批阅（{{checkObj.noPYCount}}）</tab-item>
@@ -15,12 +15,12 @@
     <group v-if="selectTab == '0'" style="padding-bottom: 80px;" class="">
         <div v-for="(item) in checkObj.noDoList" :key="item.USER_ID"
           @click="goDetail(item , false)"
-          class="homework_record" 
+          class="homework_record"
         >
           <span>{{item.SHORT_NAME}} {{item.CLASS_NO}}号</span>
           <span>{{item.NAME}}</span>
           <span>
-            <div v-if="item.IS_GREAT==='1'" class="perfectTag">优秀</div>  
+            <div v-if="item.IS_GREAT==='1'" class="perfectTag">优秀</div>
           </span>
           <span>
             <span v-if="!item.ANID" style="color: #d9534f; ">未完成</span>
@@ -32,12 +32,12 @@
     <group v-else-if="selectTab == '1'">
         <div v-for="(item) in checkObj.noPYList" :key="item.USER_ID"
           @click="goDetail(item , false)"
-          class="homework_record" 
+          class="homework_record"
           >
           <span>{{item.SHORT_NAME}} {{item.CLASS_NO}}号</span>
           <span>{{item.NAME}}</span>
           <span>
-            <div v-if="item.IS_GREAT==='1'" class="perfectTag">优秀</div>  
+            <div v-if="item.IS_GREAT==='1'" class="perfectTag">优秀</div>
           </span>
           <span>
             <span style="color: #666666;">待批阅</span>
@@ -48,12 +48,12 @@
     <group v-else-if="selectTab == '2'">
       <div v-for="(item) in checkObj.dzList" :key="item.USER_ID"
           @click="goDetail(item , false)"
-          class="homework_record" 
+          class="homework_record"
           >
           <span>{{item.SHORT_NAME}} {{item.CLASS_NO}}号</span>
           <span>{{item.NAME}}</span>
           <span>
-            <div v-if="item.IS_GREAT==='1'" class="perfectTag">优秀</div>  
+            <div v-if="item.IS_GREAT==='1'" class="perfectTag">优秀</div>
           </span>
           <span>
             <span style="color: #0093DD;">已订正</span>
@@ -61,16 +61,16 @@
       </div>
     </group>
 
-    
+
     <group v-else-if="selectTab == '3'">
       <div v-for="(item) in checkObj.pyList" :key="item.USER_ID"
           @click="goDetail(item , false)"
-          class="homework_record" 
+          class="homework_record"
           >
           <span>{{item.SHORT_NAME}} {{item.CLASS_NO}}号</span>
           <span>{{item.NAME}}</span>
           <span>
-            <div v-if="item.IS_GREAT==='1'" class="perfectTag">优秀</div>  
+            <div v-if="item.IS_GREAT==='1'" class="perfectTag">优秀</div>
           </span>
           <span>
             <span style="color: #48B319;">已批阅</span>
@@ -90,10 +90,10 @@
       >
       </confirm>
     </div>
-    <div v-show="selectTab==0 && checkObj.noDoCount > 0" 
+    <div v-show="selectTab==0 && checkObj.noDoCount > 0"
       style="position:fixed; bottom:0; background:#fff;width: 100vw;
       padding: 15px;">
-      <van-button block type="danger" 
+      <van-button block type="danger"
         @click="handleConfirm"
         style="background-color: #ED9C28;border-color: #ED9C28">
           未交作业提醒
@@ -107,7 +107,7 @@
   import Back from "../../components/common/Back.vue"
   import apiRouter from "../../config/api.js"
   import {mapMutations} from 'vuex'
-  
+
   import 'vant/lib/index.css';
   import { Button ,Dialog} from 'vant';
   export default {
@@ -203,7 +203,7 @@
           let classId = this.checkObj.noDoList[0].CLASSID;
           let homeworkId = this.$route.query.id;
           this.$http.post(apiRouter.MENSIOPN_HOMEWORK , {
-            homeworkId , classId 
+            homeworkId , classId
           }).then(response => {
               Dialog.alert({
                 message: response.body.message,
@@ -215,7 +215,7 @@
               // } else {
               //   alert(response.body.message);
               // }
-            }, 
+            },
             error => {
               debugger;
             });
@@ -225,7 +225,7 @@
         this.$router.push({path:'/work-list'})
       },
       goDetail(e , finished){
-        if(finished || e.ANID) { 
+        if(finished || e.ANID) {
           this.$router.push({path:'/detail-up',query: {userId: e.USER_ID,workId:e.WORK_ID , stuName: e.NAME}})
         }
       },
@@ -465,7 +465,7 @@
     box-sizing: border-box;
   }
 
- 
+
   a.delete em {
     width: 18/@baseSize;
     height: 22/@baseSize;
@@ -576,5 +576,5 @@
 
 </style>
 <style>
-  
+
 </style>
