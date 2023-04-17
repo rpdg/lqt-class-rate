@@ -89,16 +89,9 @@
 			>{{ toastMessage }}</toast>
 
 			<div v-transfer-dom>
-				<!-- <confirm
-					v-model="showDetail"
-					show-input
-					ref="confirm5"
-					:title="studentInfo.SHORT_NAME+'-'+studentInfo.NAME"
-					@on-cancel="onCancel"
-					@on-confirm="onConfirm5"
-				></confirm> -->
         <confirm
           v-model="showDetail"
+          show-input
           ref="confirm5"
 					:title="studentInfo.SHORT_NAME+'-'+studentInfo.NAME"
 					@on-cancel="onCancel"
@@ -280,7 +273,7 @@ export default {
       this.studentInfo = item;
     },
     onCancel() {
-      debugger;
+      // debugger;
     },
     onDatePickerConfirm(date) {
       console.log(date);
@@ -318,12 +311,17 @@ export default {
         );
     },
     onConfirm5(value) {
+      if (!value.trim()){
+        this.$vux.toast.text('请输入备注');
+        return;
+      }
+
       let vm = this;
       this.$refs.confirm5.setInputValue("");
       let student = vm.studentInfo;
       let courseId = vm.$route.query.courseId;
       let checkMainId = vm.$route.query.checkMainId;
-      //this.$vux.toast.text('input value: ' + value)
+
 
       this.$http
         .get(
@@ -331,7 +329,7 @@ export default {
             "?mainId=" +
             checkMainId +
             "&status=" +
-            student.STATUS +
+            // student.STATUS +
             "&studentId=" +
             student.ID +
             "&remark=" +
