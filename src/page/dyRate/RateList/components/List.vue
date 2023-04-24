@@ -12,7 +12,7 @@
       </a>
       <div class="message-handle">
         <a class="inform btn-gray">{{item.END_DATE}}</a>
-        <a :class="item.STATUS==='0'?'btn-red':'btn-gray'">{{item.STATUS_NAME}}</a>
+        <a :class="item.STATUS==='0'?'btn-red':item.STATUS==='1'?'btn-green':'btn-gray'">{{item.STATUS_NAME}}</a>
       </div>
     </li>
   </ul>
@@ -47,7 +47,7 @@ export default {
   }
 };
 </script>
-    
+
 <style lang="less" scoped>
 @import "../../../../style/minxin.less";
 @color-gray: #a7a7a7;
@@ -126,6 +126,9 @@ export default {
 }
 .btn-red {
   color: #ee0a24;
+}
+.btn-green {
+  color: @green;
 }
 .btn-gray {
   color: @color-gray;

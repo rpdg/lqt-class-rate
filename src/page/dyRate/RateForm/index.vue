@@ -663,9 +663,9 @@ export default {
                 if (this.viewMode === 0) {
                   this.gradeChecked = defaultGradeChecked;
                   this.classChecked = defaultClassChecked;
-                  this["pickerShow1"] = true;
-                } else {
                   this["pickerShow0"] = true;
+                } else {
+                  this["pickerShow1"] = true;
                 }
                 this.fetchList();
               }
