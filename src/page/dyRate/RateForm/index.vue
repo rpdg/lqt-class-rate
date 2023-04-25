@@ -131,828 +131,806 @@
 </template>
 
 <script>
-import { ViewBox, XButton } from "vux";
-import TitleBar from "./components/TitleBar.vue";
-import FormPanel from "./components/FormPanel.vue";
-import ColorSign from "./components/ColorSign.vue";
-import apiRouter from "../../../config/api.js";
-import wx from "weixin-js-sdk";
-import {
-  Col,
-  Row,
-  Cell,
-  Button,
-  Dialog,
-  Tab,
-  Tabs,
-  Popup,
-  Loading,
-  Toast,
-  Picker
-} from "vant";
+import { ViewBox, XButton } from 'vux';
+import TitleBar from './components/TitleBar.vue';
+import FormPanel from './components/FormPanel.vue';
+import ColorSign from './components/ColorSign.vue';
+import apiRouter from '../../../config/api.js';
+import wx from 'weixin-js-sdk';
+import { Col, Row, Cell, Button, Dialog, Tab, Tabs, Popup, Loading, Toast, Picker } from 'vant';
 
 const defaultOptionChecked = {
-  CODE: "",
-  NAME: "所有评价项"
+	CODE: '',
+	NAME: '所有评价项',
 };
 
 const defaultClassChecked = {
-  CLASS_ID: "",
-  CLASS_NAME: "所有班级"
+	CLASS_ID: '',
+	CLASS_NAME: '所有班级',
 };
 
 const defaultGradeChecked = {
-  GRADE_CODE: "",
-  GRADE_NAME: "所有班级"
+	GRADE_CODE: '',
+	GRADE_NAME: '所有班级',
 };
 
 export default {
-  components: {
-    [Dialog.Component.name]: Dialog.Component,
-    [Button.name]: Button,
-    [Row.name]: Row,
-    [Col.name]: Col,
-    [Cell.name]: Cell,
-    [Tab.name]: Tab,
-    [Tabs.name]: Tabs,
-    [Popup.name]: Popup,
-    [Loading.name]: Loading,
-    [Picker.name]: Picker,
-    ViewBox,
-    TitleBar,
-    XButton,
-    FormPanel,
-    ColorSign
-  },
-  data() {
-    /**
-     * 任务ID
-     */
-    this.seq_id = this.$route.query.id;
+	components: {
+		[Dialog.Component.name]: Dialog.Component,
+		[Button.name]: Button,
+		[Row.name]: Row,
+		[Col.name]: Col,
+		[Cell.name]: Cell,
+		[Tab.name]: Tab,
+		[Tabs.name]: Tabs,
+		[Popup.name]: Popup,
+		[Loading.name]: Loading,
+		[Picker.name]: Picker,
+		ViewBox,
+		TitleBar,
+		XButton,
+		FormPanel,
+		ColorSign,
+	},
+	data() {
+		/**
+		 * 任务ID
+		 */
+		this.seq_id = this.$route.query.id;
 
-    /**
-     * 第一个选项ID
-     */
-    this.first_optionId = this.$route.query.foId;
+		/**
+		 * 第一个选项ID
+		 */
+		this.first_optionId = this.$route.query.foId;
 
-    /**
-     * 第一个班级ID
-     */
-    this.first_classId = this.$route.query.fcId;
+		/**
+		 * 第一个班级ID
+		 */
+		this.first_classId = this.$route.query.fcId;
 
-    this.previewOn = false;
-    this.setPreviewState = s => {
-      this.previewOn = s;
-    };
+		this.previewOn = false;
+		this.setPreviewState = (s) => {
+			this.previewOn = s;
+		};
 
-    let that = this;
+		let that = this;
 
-    return {
+		return {
 			ossPath: roterOssPath,
-      inited: false,
-      loading: false,
-      urlPath: "",
+			inited: false,
+			loading: false,
+			urlPath: '',
 
-      // io: new IntersectionObserver((entries, observer) => {
-      //   // console.log(entries);
-      //   entries.forEach(entry => {
-      //     // debugger;
-      //     if (entry.intersectionRatio > 0) {
-      //       // console.log('change', entry.target.getAttribute('data-index'));
-      //       let taskIndex = entry.target.getAttribute("data-index");
-      //       let task = that.taskList[taskIndex];
-      //       task.__shown = true;
-      //       observer.unobserve(entry.target);
-      //     }
-      //   });
-      // }),
+			// io: new IntersectionObserver((entries, observer) => {
+			//   // console.log(entries);
+			//   entries.forEach(entry => {
+			//     // debugger;
+			//     if (entry.intersectionRatio > 0) {
+			//       // console.log('change', entry.target.getAttribute('data-index'));
+			//       let taskIndex = entry.target.getAttribute("data-index");
+			//       let task = that.taskList[taskIndex];
+			//       task.__shown = true;
+			//       observer.unobserve(entry.target);
+			//     }
+			//   });
+			// }),
 
-      /**
-       * 选择0显示状态
-       */
-      pickerShow0: false,
-      /**
-       * 选择器1显示状态
-       */
-      pickerShow1: false,
+			/**
+			 * 选择0显示状态
+			 */
+			pickerShow0: false,
+			/**
+			 * 选择器1显示状态
+			 */
+			pickerShow1: false,
 
-      /**
-       * 0: 选项视角， 1：班级视角
-       */
-      viewMode: 0,
+			/**
+			 * 0: 选项视角， 1：班级视角
+			 */
+			viewMode: 0,
 
-      /**
-       * 数据是否改变
-       */
-      dataModified: false,
+			/**
+			 * 数据是否改变
+			 */
+			dataModified: false,
 
-      /**
-       * 数字评分的步进长
-       */
-      step: 1,
+			/**
+			 * 数字评分的步进长
+			 */
+			step: 1,
 
-      /**
-       * 评分表单数组
-       */
-      taskList: [],
+			/**
+			 * 评分表单数组
+			 */
+			taskList: [],
 
-      /**
-       * 评分选项数组
-       */
-      optionList: [],
-      optionIndex: -1,
-      optionFullCheck: defaultOptionChecked,
+			/**
+			 * 评分选项数组
+			 */
+			optionList: [],
+			optionIndex: -1,
+			optionFullCheck: defaultOptionChecked,
 
-      /**
-       * 班级数组
-       */
-      classList: [],
-      // classIndex: -1,
-      classChecked: defaultGradeChecked,
-      classFullCheck: defaultClassChecked,
+			/**
+			 * 班级数组
+			 */
+			classList: [],
+			// classIndex: -1,
+			classChecked: defaultGradeChecked,
+			classFullCheck: defaultClassChecked,
 
-      /**
-       * 年级数组
-       */
-      gradeList: [],
-      gradeChecked: defaultGradeChecked,
-      gradeFullCheck: defaultGradeChecked,
+			/**
+			 * 年级数组
+			 */
+			gradeList: [],
+			gradeChecked: defaultGradeChecked,
+			gradeFullCheck: defaultGradeChecked,
 
-      //
-      lastClickFromGrade: false,
-      tabLabel: defaultGradeChecked.GRADE_NAME
-    };
-  },
-  mounted() {
-    //this.loadData();
-    this.urlPath = window.location.href.split("#")[0];
-    this.configWechat();
-  },
-  activated() {
-    // console.log("form", this.$route.query);
-    // debugger;
-    this.seq_id = this.$route.query.id;
-    this.first_optionId = this.$route.query.foId;
-    this.first_classId = this.$route.query.fcId;
+			//
+			lastClickFromGrade: false,
+			tabLabel: defaultGradeChecked.GRADE_NAME,
+		};
+	},
+	mounted() {
+		//this.loadData();
+		this.urlPath = window.location.href.split('#')[0];
+		this.configWechat();
+	},
+	activated() {
+		// console.log("form", this.$route.query);
+		// debugger;
+		this.seq_id = this.$route.query.id;
+		this.first_optionId = this.$route.query.foId;
+		this.first_classId = this.$route.query.fcId;
 
-    this.viewMode = 0;
-    this.previewOn = false;
-    this.inited = false;
+		this.viewMode = 0;
+		this.previewOn = false;
+		this.inited = false;
 
-    this.dataModified = false;
+		this.dataModified = false;
 
-    this.init();
-  },
-  beforeRouteLeave(to, from, next) {
-    if (this.previewOn) {
-      next(false);
-    }
-    // else if (this.dataModified) {
-    //   const answer = window.confirm("已有录入数据，确定放弃数据并离开页面？");
-    //   if (answer) {
-    //     next();
-    //   } else {
-    //     next(false);
-    //   }
-    // }
-    else {
-      window.onbeforeunload = null;
-      next();
-    }
-  },
-  computed: {
-    optionChecked() {
-      if (this.optionIndex === -1) {
-        return this.optionFullCheck;
-      }
-      return this.optionList[this.optionIndex];
-    }
-    // classChecked() {
-    //   if (this.classCheckedId === -1) {
-    //     return this.classFullCheck;
-    //   }
-    //   return this.classList[this.classIndex];
-    // }
-    // gradeChecked() {
-    //   if (this.gradeCheckedCode === '') {
-    //     return this.gradeFullCheck;
-    //   }
-    //   return this.gradeList[this.gradeIndex];
-    // },
+		this.init();
+	},
+	beforeRouteLeave(to, from, next) {
+		if (this.previewOn) {
+			next(false);
+		}
+		// else if (this.dataModified) {
+		//   const answer = window.confirm("已有录入数据，确定放弃数据并离开页面？");
+		//   if (answer) {
+		//     next();
+		//   } else {
+		//     next(false);
+		//   }
+		// }
+		else {
+			window.onbeforeunload = null;
+			next();
+		}
+	},
+	computed: {
+		optionChecked() {
+			if (this.optionIndex === -1) {
+				return this.optionFullCheck;
+			}
+			return this.optionList[this.optionIndex];
+		},
+		// classChecked() {
+		//   if (this.classCheckedId === -1) {
+		//     return this.classFullCheck;
+		//   }
+		//   return this.classList[this.classIndex];
+		// }
+		// gradeChecked() {
+		//   if (this.gradeCheckedCode === '') {
+		//     return this.gradeFullCheck;
+		//   }
+		//   return this.gradeList[this.gradeIndex];
+		// },
 
-    // classesShouldRender(){
-    //   return this.classList.map((classes)=> (!this.gradeChecked.GRADE_CODE || ))
-    // }
-  },
-  methods: {
-    configWechat() {
-      let wiexin =
-        (process.env.NODE_ENV === "development"
-          ? "http://opg.vaiwan.com/api/wechat?url="
-          : apiRouter.GET_CONFIG) + encodeURIComponent(this.urlPath);
+		// classesShouldRender(){
+		//   return this.classList.map((classes)=> (!this.gradeChecked.GRADE_CODE || ))
+		// }
+	},
+	methods: {
+		configWechat() {
+			let wiexin =
+				(process.env.NODE_ENV === 'development'
+					? 'http://opg.vaiwan.com/api/wechat?url='
+					: apiRouter.GET_CONFIG) + encodeURIComponent(this.urlPath);
 
-      this.$http.get(wiexin).then(
-        response => {
-          let data = response.body;
-          // debugger;
-          wx.config({
-            debug: process.env.NODE_ENV === "development", // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-            appId: data.appId, // 必填，企业号的唯一标识，此处填写企业号corpid
-            timestamp: data.timestamp, // 必填，生成签名的时间戳
-            nonceStr: data.nonceStr, // 必填，生成签名的随机串
-            signature: data.signature, // 必填，签名，见附录1
-            jsApiList: [
-              "chooseImage",
-              "uploadImage",
-              "downloadImage",
-              "getLocalImgData",
-              "previewImage",
-              "getFileSystemManager",
-              "chooseWXPay"
-            ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-          });
-          wx.error(function(res) {
-            console.log(res);
-            // alert(res.errMsg);
-          });
-        },
-        response => {
-          // console.log("请求失败了!!!!")
-        }
-      );
-    },
-    async handleWillBack() {
-      if (this.dataModified) {
-        let answer = await Dialog.confirm({
-          className: "dy-rate-dialog",
-          title: "关闭页面提醒",
-          message: "页面已录入部分数据，关闭页面后数据将被清空。",
-          confirmButtonText: "确定",
-          messageAlign: "left"
-        });
-        if (answer === "confirm") {
-          this.viewMode = 0;
-          this.$router.back();
-        }
-      } else {
-        this.viewMode = 0;
-        this.$router.back();
-      }
-    },
-    handleModify(b) {
-      this.dataModified = b;
+			this.$http.get(wiexin).then(
+				(response) => {
+					let data = response.body;
+					// debugger;
+					wx.config({
+						debug: process.env.NODE_ENV === 'development', // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+						appId: data.appId, // 必填，企业号的唯一标识，此处填写企业号corpid
+						timestamp: data.timestamp, // 必填，生成签名的时间戳
+						nonceStr: data.nonceStr, // 必填，生成签名的随机串
+						signature: data.signature, // 必填，签名，见附录1
+						jsApiList: [
+							'chooseImage',
+							'uploadImage',
+							'downloadImage',
+							'getLocalImgData',
+							'previewImage',
+							'getFileSystemManager',
+							'chooseWXPay',
+						], // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+					});
+					wx.error(function(res) {
+						console.log(res);
+						// alert(res.errMsg);
+					});
+				},
+				(response) => {
+					// console.log("请求失败了!!!!")
+				}
+			);
+		},
+		async handleWillBack() {
+			if (this.dataModified) {
+				let answer = await Dialog.confirm({
+					className: 'dy-rate-dialog',
+					title: '关闭页面提醒',
+					message: '页面已录入部分数据，关闭页面后数据将被清空。',
+					confirmButtonText: '确定',
+					messageAlign: 'left',
+				});
+				if (answer === 'confirm') {
+					this.viewMode = 0;
+					this.$router.back();
+				}
+			} else {
+				this.viewMode = 0;
+				this.$router.back();
+			}
+		},
+		handleModify(b) {
+			this.dataModified = b;
 
-      if (b) {
-        window.onbeforeunload = function(e) {
-          e.preventDefault();
-          e.returnValue = "已有录入数据，确定放弃数据并离开页面？";
-        };
-      } else {
-        window.onbeforeunload = null;
-      }
-    },
-    async init() {
-      this.inited = false;
-      this.loading = true;
-      // reset
-      this.taskList = [];
+			if (b) {
+				window.onbeforeunload = function(e) {
+					e.preventDefault();
+					e.returnValue = '已有录入数据，确定放弃数据并离开页面？';
+				};
+			} else {
+				window.onbeforeunload = null;
+			}
+		},
+		async init() {
+			this.inited = false;
+			this.loading = true;
+			// reset
+			this.taskList = [];
 
-      this.optionIndex = -1;
-      this.optionList = [];
+			this.optionIndex = -1;
+			this.optionList = [];
 
-      // this.classIndex = -1;
-      this.classChecked = defaultClassChecked;
-      this.classList = [];
+			// this.classIndex = -1;
+			this.classChecked = defaultClassChecked;
+			this.classList = [];
 
-      this.gradeChecked = defaultGradeChecked;
-      this.gradeList = [];
+			this.gradeChecked = defaultGradeChecked;
+			this.gradeList = [];
 
-      const seq_id = this.seq_id;
-      // fetch and auto select the first option
-      const see_mode = this.viewMode === 0 ? "DETAIL" : "CLASS";
-      const detail_id = this.viewMode === 0 ? this.first_optionId : "";
-      const class_id = this.viewMode === 0 ? "" : this.first_classId;
-      const obj_name = "T_CLASS";
+			const seq_id = this.seq_id;
+			// fetch and auto select the first option
+			const see_mode = this.viewMode === 0 ? 'DETAIL' : 'CLASS';
+			const detail_id = this.viewMode === 0 ? this.first_optionId : '';
+			const class_id = this.viewMode === 0 ? '' : this.first_classId;
+			const obj_name = 'T_CLASS';
 
-      // alert(JSON.stringify({ seq_id, detail_id, class_id, see_mode }));
-      try {
-        let result = await this.$http.get(
-          `${
-            apiRouter.CLASS_RATE_TASK_LIST2
-          }?seq_id=${seq_id}&obj_name=${obj_name}&obj_id=${class_id}&detail_id=${detail_id}&see_mode=${see_mode}`
-        );
+			// alert(JSON.stringify({ seq_id, detail_id, class_id, see_mode }));
+			try {
+				let result = await this.$http.get(
+					`${
+						apiRouter.CLASS_RATE_TASK_LIST2
+					}?seq_id=${seq_id}&obj_name=${obj_name}&obj_id=${class_id}&detail_id=${detail_id}&see_mode=${see_mode}`
+				);
 
-        if (result.status === 200) {
-          let respBody = result.body;
-          if (respBody.code === 200) {
-            let {
-              grade_list,
-              class_list,
-              detail_list,
-              step_value,
-              data_list
-            } = respBody.data;
+				if (result.status === 200) {
+					let respBody = result.body;
+					if (respBody.code === 200) {
+						let { grade_list, class_list, detail_list, step_value, data_list } = respBody.data;
 
-            // if (this.viewMode === 1) {
-            // 	detail_list.unshift(defaultOptionChecked)
-            // }
-            this.optionList = detail_list;
+						// if (this.viewMode === 1) {
+						// 	detail_list.unshift(defaultOptionChecked)
+						// }
+						this.optionList = detail_list;
 
-            this.classList = class_list;
+						this.classList = class_list;
 
-            if (this.viewMode === 0) {
-              grade_list.unshift(defaultGradeChecked);
-            }
-            this.gradeList = grade_list;
+						if (this.viewMode === 0) {
+							grade_list.unshift(defaultGradeChecked);
+						}
+						this.gradeList = grade_list;
 
-            this.step = Number(step_value);
+						this.step = Number(step_value);
 
-            data_list.forEach(task => {
-              task.__shown = true;
-              // task.__shown = false;
-              task.__hash = task.ID + "-" + Date.now() + "-" + Math.random();
+						data_list.forEach((task) => {
+							task.__shown = true;
+							// task.__shown = false;
+							task.__hash = task.ID + '-' + Date.now() + '-' + Math.random();
 
-              if (task.IMG_LIST.length > 0){
-                if (task.IMG_LIST.length > 4) {
-                  task.IMG_LIST.length = 4;
-                }
-                task.IMG_LIST.forEach(img => {
-                  img.url = this.ossPath + '/upload' + img.url
-                })
-              }
-            });
-            this.taskList = data_list;
+							if (task.IMG_LIST.length > 0) {
+								if (task.IMG_LIST.length > 4) {
+									task.IMG_LIST.length = 4;
+								}
+								task.IMG_LIST.forEach((img) => {
+									img.url = this.ossPath + '/upload' + img.url;
+								});
+							}
+						});
+						this.taskList = data_list;
 
-            this.$nextTick(() => {
-              // debugger;
-              if (this.viewMode === 1) {
-                if (
-                  this.classList &&
-                  this.classList.length &&
-                  this.classList[0].length
-                ) {
-                  this.classChecked = this.classList[0][0];
-                  this.tabLabel = this.classChecked.CLASS_NAME;
-                }
-                // this.classIndex = 0;
-                this.optionIndex = -1;
-                // if (this.$refs.picker1) {
-                // 	// let a = this.$refs.picker1.getColumnIndex(0);
-                // 	this.$refs.picker1.setColumnIndex(0, 1)
-                // 	this.classIndex = 1
-                // }
-              } else {
-                this.tabLabel = this.gradeList[0].GRADE_NAME;
-                this.optionIndex = 0;
-                // this.classIndex = -1;
-                // if (this.$refs.picker0) {
-                // 	// let a = this.$refs.picker0.getColumnIndex(0);
-                // 	this.$refs.picker0.setColumnIndex(0, 1)
-                // 	this.optionIndex = 1
-                // }
-              }
+						this.$nextTick(() => {
+							// debugger;
+							if (this.viewMode === 1) {
+								if (this.classList && this.classList.length && this.classList[0].length) {
+									this.classChecked = this.classList[0][0];
+									this.tabLabel = this.classChecked.CLASS_NAME;
+								}
+								// this.classIndex = 0;
+								this.optionIndex = -1;
+								// if (this.$refs.picker1) {
+								// 	// let a = this.$refs.picker1.getColumnIndex(0);
+								// 	this.$refs.picker1.setColumnIndex(0, 1)
+								// 	this.classIndex = 1
+								// }
+							} else {
+								this.tabLabel = this.gradeList[0].GRADE_NAME;
+								this.optionIndex = 0;
+								// this.classIndex = -1;
+								// if (this.$refs.picker0) {
+								// 	// let a = this.$refs.picker0.getColumnIndex(0);
+								// 	this.$refs.picker0.setColumnIndex(0, 1)
+								// 	this.optionIndex = 1
+								// }
+							}
 
-              this.inited = true;
+							this.inited = true;
 
-              // this.fetchList();
-            });
-          } else {
-            alert(respBody.message);
-          }
-        } else {
-          alert(result.body.message);
-        }
-      } catch (e) {
-        alert(e.message);
-      } finally {
-        this.inited = true;
-        this.loading = false;
-      }
+							// this.fetchList();
+						});
+					} else {
+						alert(respBody.message);
+					}
+				} else {
+					alert(result.body.message);
+				}
+			} catch (e) {
+				alert(e.message);
+			} finally {
+				this.inited = true;
+				this.loading = false;
+			}
 
-      //
-    },
-    // async fetchListNew() {},
-    async fetchList() {
-      this.loading = true;
-      let see_mode = this.viewMode === 0 ? "DETAIL" : "CLASS";
-      let detail_id = this.optionChecked.CODE;
-      let class_id =
-        this.viewMode === 0
-          ? this.lastClickFromGrade
-            ? this.gradeChecked.GRADE_CODE
-            : this.classChecked.CLASS_ID
-          : this.classChecked.CLASS_ID;
-      let obj_name = this.lastClickFromGrade ? "T_SCHOOL_GRADE" : "T_CLASS";
+			//
+		},
+		// async fetchListNew() {},
+		async fetchList() {
+			this.loading = true;
+			let see_mode = this.viewMode === 0 ? 'DETAIL' : 'CLASS';
+			let detail_id = this.optionChecked.CODE;
+			let class_id =
+				this.viewMode === 0
+					? this.lastClickFromGrade
+						? this.gradeChecked.GRADE_CODE
+						: this.classChecked.CLASS_ID
+					: this.classChecked.CLASS_ID;
+			let obj_name = this.lastClickFromGrade ? 'T_SCHOOL_GRADE' : 'T_CLASS';
 
-      if ((!class_id && obj_name === "T_SCHOOL_GRADE") || see_mode ==='CLASS') {
-        obj_name = "T_CLASS";
-      }
+			if ((!class_id && obj_name === 'T_SCHOOL_GRADE') || see_mode === 'CLASS') {
+				obj_name = 'T_CLASS';
+			}
 
-      try {
-        // debugger;
-        let resp = await this.$http.get(
-          `${apiRouter.CLASS_RATE_TASK_LIST2}?seq_id=${
-            this.seq_id
-          }&obj_name=${obj_name}&obj_id=${class_id}&detail_id=${detail_id}&see_mode=${see_mode}`
-        );
-        if (resp.status === 200) {
-          let respBody = resp.body;
-          if (respBody.code === 200) {
-            let container = this.$refs.container;
-            // console.log('container' ,container.offsetTop  ,container.scrollTop);
-            container.scrollTop = 0;
-            // debugger;
-            let {
-              grade_list,
-              class_list,
-              data_list,
-              detail_list,
-              step_value
-            } = respBody.data;
+			try {
+				// debugger;
+				let resp = await this.$http.get(
+					`${apiRouter.CLASS_RATE_TASK_LIST2}?seq_id=${
+						this.seq_id
+					}&obj_name=${obj_name}&obj_id=${class_id}&detail_id=${detail_id}&see_mode=${see_mode}`
+				);
+				if (resp.status === 200) {
+					let respBody = resp.body;
+					if (respBody.code === 200) {
+						let container = this.$refs.container;
+						// console.log('container' ,container.offsetTop  ,container.scrollTop);
+						container.scrollTop = 0;
+						// debugger;
+						let { grade_list, class_list, data_list, detail_list, step_value } = respBody.data;
 
-            data_list.forEach(task => {
-              task.__shown = true;
-              // task.__shown = false;
-              task.__hash = task.ID + "-" + Date.now() + "-" + Math.random();
+						data_list.forEach((task) => {
+							task.__shown = true;
+							// task.__shown = false;
+							task.__hash = task.ID + '-' + Date.now() + '-' + Math.random();
 
+							if (task.IMG_LIST.length > 0) {
+								if (task.IMG_LIST.length > 4) {
+									task.IMG_LIST.length = 4;
+								}
+								task.IMG_LIST.forEach((img) => {
+									img.url = this.ossPath + '/upload' + img.url;
+								});
+							}
+						});
+						this.taskList = data_list;
 
-              if (task.IMG_LIST.length > 0){
-                if (task.IMG_LIST.length > 4) {
-                  task.IMG_LIST.length = 4;
-                }
-                task.IMG_LIST.forEach(img => {
-                  img.url = this.ossPath + '/upload' + img.url
-                })
-              }
-            });
-            this.taskList = data_list;
+						if (this.viewMode === 1) {
+							// detail_list.unshift(defaultOptionChecked)
+							this.optionList = detail_list;
+						} else {
+							grade_list.unshift(defaultGradeChecked);
+							this.gradeList = grade_list;
+							// class_list.unshift(defaultClassChecked)
+							this.classList = class_list;
+						}
+					} else {
+						alert(respBody.message);
+					}
+				} else {
+					alert('请求失败!');
+				}
+			} catch (e) {
+				alert(e.message);
+			} finally {
+				this.loading = false;
+			}
+		},
+		async doAbanden() {
+			Dialog.confirm({
+				className: 'dy-rate-dialog',
+				title: '弃填',
+				message: '确定将这些项目标记为弃填？',
+				confirmButtonText: '确定',
+			}).then(() => {
+				this.doSubmit(1);
+			});
+		},
+		async doSubmit(is_give_up) {
+			let detail_arr = [];
+			let taskArr = JSON.parse(JSON.stringify(this.taskList));
+			taskArr.forEach((task) => {
+				detail_arr.push({
+					SCORE: '' + task.SCORE,
+					ID: task.ID,
+					COMMENT: task.COMMENT,
+				});
+			});
+			// console.log(is_give_up, detail_arr);
 
-            if (this.viewMode === 1) {
-              // detail_list.unshift(defaultOptionChecked)
-              this.optionList = detail_list;
-            } else {
-              grade_list.unshift(defaultGradeChecked);
-              this.gradeList = grade_list;
-              // class_list.unshift(defaultClassChecked)
-              this.classList = class_list;
-            }
-          } else {
-            alert(respBody.message);
-          }
-        } else {
-          alert("请求失败!");
-        }
-      } catch (e) {
-        alert(e.message);
-      } finally {
-        this.loading = false;
-      }
-    },
-    async doAbanden() {
-      Dialog.confirm({
-        className: "dy-rate-dialog",
-        title: "弃填",
-        message: "确定将这些项目标记为弃填？",
-        confirmButtonText: "确定"
-      }).then(() => {
-        this.doSubmit(1);
-      });
-    },
-    async doSubmit(is_give_up) {
-      let detail_arr = [];
-      let taskArr = JSON.parse(JSON.stringify(this.taskList));
-      taskArr.forEach(task => {
-        detail_arr.push({
-          SCORE: "" + task.SCORE,
-          ID: task.ID,
-          COMMENT: task.COMMENT
-        });
-      });
-      // console.log(is_give_up, detail_arr);
+			try {
+				// debugger;
+				const sendData = {
+					seq_id: this.seq_id,
+					is_give_up,
+					detail_arr: JSON.stringify(detail_arr),
+				};
 
-      try {
-        // debugger;
-        const sendData = {
-          seq_id: this.seq_id,
-          is_give_up,
-          detail_arr: JSON.stringify(detail_arr)
-        };
+				let resp = await this.$http.post(apiRouter.CLASS_RATE_SUBMIT, sendData);
 
-        let resp = await this.$http.post(apiRouter.CLASS_RATE_SUBMIT, sendData);
+				if (resp.status === 200) {
+					let respBody = resp.body;
+					if (respBody.code === 200) {
+						// alert();
 
-        if (resp.status === 200) {
-          let respBody = resp.body;
-          if (respBody.code === 200) {
-            // alert();
+						this.taskList.forEach((task) => {
+							task.WRITE_STATUS = is_give_up ? '-1' : '1';
+						});
 
-            this.taskList.forEach(task => {
-              task.WRITE_STATUS = is_give_up ? "-1" : "1";
-            });
+						try {
+							let answer = await Dialog.confirm({
+								className: 'dy-rate-dialog',
+								title: is_give_up ? '弃填成功' : '本页所有项目评分成功',
+								message: '',
+								confirmButtonText: '继续评分',
+								confirmButtonColor: '#54B331',
+								cancelButtonText: '回到列表页面',
+							});
 
-            try {
-              let answer = await Dialog.confirm({
-                className: "dy-rate-dialog",
-                title: is_give_up ? "弃填成功" : "本页所有项目评分成功",
-                message: "",
-                confirmButtonText: "继续评分",
-                confirmButtonColor: "#54B331",
-                cancelButtonText: "回到列表页面"
-              });
+							if (answer === 'confirm') {
+								let popId = 0;
+								if (this.viewMode === 0) {
+									if (this.classChecked.CLASS_ID === '' && this.gradeChecked.GRADE_CODE === '') {
+										popId = 0;
+									} else {
+										popId = 1;
+									}
+								} else {
+									if (this.optionChecked.CODE === '') {
+										popId = 1;
+									} else {
+										popId = 0;
+									}
+								}
+								if (this.viewMode === 0) {
+									this.gradeChecked = defaultGradeChecked;
+									this.classChecked = defaultClassChecked;
+								}
+								this[`pickerShow${popId}`] = true;
+								this.fetchList();
+							}
+						} catch (e) {
+							// Toast("已完成本页所有项目的评分操作。");
+							this.$nextTick(() => {
+								this.$router.back();
+							});
+						} finally {
+							this.handleModify(false);
+						}
+					} else {
+						alert('server.error: ' + resp.body.message);
+					}
+				} else {
+					alert('请求失败!');
+				}
+			} catch (e) {
+				alert('server.error: ' + e.message);
+			}
+		},
+		toggleViewStyle() {
+			// console.log(this.viewMode);
+			// this.classIndex = 0;
+			// this.optionIndex = 0;
+			// this.classList = [defaultClassChecked];
+			// this.optionList = [defaultOptionChecked];
+			this.init();
+		},
+		showPicker(i) {
+			// console.log(i, this.viewMode);
+			this['pickerShow' + i] = true;
+		},
+		onGradeConfirm(grade) {
+			if (!this.lastClickFromGrade || grade.GRADE_CODE !== this.gradeChecked.GRADE_CODE) {
+				this.gradeChecked = grade;
+				this.tabLabel = grade.GRADE_NAME + (grade.GRADE_CODE ? '年级' : '');
 
-              if (answer === "confirm") {
-                if (this.viewMode === 0) {
-                  this.gradeChecked = defaultGradeChecked;
-                  this.classChecked = defaultClassChecked;
-                  this["pickerShow0"] = true;
-                } else {
-                  this["pickerShow1"] = true;
-                }
-                this.fetchList();
-              }
-            } catch (e) {
-              // Toast("已完成本页所有项目的评分操作。");
-              this.$nextTick(() => {
-                this.$router.back();
-              });
-            } finally {
-              this.handleModify(false);
-            }
-          } else {
-            alert("server.error: " + resp.body.message);
-          }
-        } else {
-          alert("请求失败!");
-        }
-      } catch (e) {
-        alert("server.error: " + e.message);
-      }
-    },
-    toggleViewStyle() {
-      // console.log(this.viewMode);
-      // this.classIndex = 0;
-      // this.optionIndex = 0;
-      // this.classList = [defaultClassChecked];
-      // this.optionList = [defaultOptionChecked];
-      this.init();
-    },
-    showPicker(i) {
-      // console.log(i, this.viewMode);
-      this["pickerShow" + i] = true;
-    },
-    onGradeConfirm(grade) {
-      if (
-        !this.lastClickFromGrade ||
-        grade.GRADE_CODE !== this.gradeChecked.GRADE_CODE
-      ) {
-        this.gradeChecked = grade;
-        this.tabLabel = grade.GRADE_NAME + (grade.GRADE_CODE ? "年级" : "");
+				if (this.viewMode === 1) {
+					this.optionIndex = 0;
+					this['pickerShow0'] = true;
+				}
+				this.lastClickFromGrade = true;
+				this.fetchList();
+			}
+			this['pickerShow1'] = false;
+		},
+		onClassConfirm(cls) {
+			let class_id = cls.CLASS_ID;
+			if (this.lastClickFromGrade || class_id !== this.classChecked.CLASS_ID) {
+				this.tabLabel = cls.CLASS_NAME;
+				this.classChecked = cls;
+				this.gradeChecked = this.gradeList.find((obj) => obj.GRADE_CODE === cls.GRADE_CODE);
 
-        if (this.viewMode === 1) {
-          this.optionIndex = 0;
-          this["pickerShow0"] = true;
-        }
-        this.lastClickFromGrade = true;
-        this.fetchList();
-      }
-      this["pickerShow1"] = false;
-    },
-    onClassConfirm(cls) {
-      let class_id = cls.CLASS_ID;
-      if (this.lastClickFromGrade || class_id !== this.classChecked.CLASS_ID) {
-        this.tabLabel = cls.CLASS_NAME;
-        this.classChecked = cls;
-        this.gradeChecked = this.gradeList.find(
-          obj => obj.GRADE_CODE === cls.GRADE_CODE
-        );
+				if (this.viewMode === 1) {
+					this.optionIndex = 0;
+					this['pickerShow0'] = true;
+				}
+				this.lastClickFromGrade = false;
+				this.fetchList();
+			}
+			this['pickerShow1'] = false;
+		},
+		// onClassConfirm(checkedItem, index) {
+		//   if (index !== this.classIndex) {
+		//     this.classIndex = index;
 
-        if (this.viewMode === 1) {
-          this.optionIndex = 0;
-          this["pickerShow0"] = true;
-        }
-        this.lastClickFromGrade = false;
-        this.fetchList();
-      }
-      this["pickerShow1"] = false;
-    },
-    // onClassConfirm(checkedItem, index) {
-    //   if (index !== this.classIndex) {
-    //     this.classIndex = index;
+		//     if (this.viewMode === 1) {
+		//       this.optionIndex = 0;
+		//       this.$refs.picker0 && this.$refs.picker0.setColumnIndex(0, 0);
+		//     }
 
-    //     if (this.viewMode === 1) {
-    //       this.optionIndex = 0;
-    //       this.$refs.picker0 && this.$refs.picker0.setColumnIndex(0, 0);
-    //     }
+		//     this.fetchList();
+		//   }
 
-    //     this.fetchList();
-    //   }
+		//   this["pickerShow1"] = false;
+		// },
+		onOptionConfirmNew(index) {
+			if (index != this.optionIndex) {
+				// console.log(this.optionIndex, index);
+				this.optionIndex = index;
 
-    //   this["pickerShow1"] = false;
-    // },
-    onOptionConfirmNew(index) {
-      if (index != this.optionIndex) {
-        // console.log(this.optionIndex, index);
-        this.optionIndex = index;
+				if (this.viewMode === 0) {
+					this.gradeChecked = defaultGradeChecked;
+					this.classChecked = defaultClassChecked;
+					this['pickerShow1'] = true;
+				}
 
-        if (this.viewMode === 0) {
-          this.gradeChecked = defaultGradeChecked;
-          this.classChecked = defaultClassChecked;
-          this["pickerShow1"] = true;
-        }
+				this.fetchList();
+			} else {
+			}
 
-        this.fetchList();
-      } else {
-      }
+			this['pickerShow0'] = false;
+		},
+		// onOptionConfirm(checkedItem, index) {
+		//   if (index !== this.optionIndex) {
+		//     // console.log(this.optionIndex, index);
+		//     this.optionIndex = index;
 
-      this["pickerShow0"] = false;
-    },
-    // onOptionConfirm(checkedItem, index) {
-    //   if (index !== this.optionIndex) {
-    //     // console.log(this.optionIndex, index);
-    //     this.optionIndex = index;
+		//     if (this.viewMode === 0) {
+		//       this.classIndex = 0;
+		//       this.$refs.picker1 && this.$refs.picker1.setColumnIndex(0, 0);
+		//     }
 
-    //     if (this.viewMode === 0) {
-    //       this.classIndex = 0;
-    //       this.$refs.picker1 && this.$refs.picker1.setColumnIndex(0, 0);
-    //     }
+		//     this.fetchList();
+		//   }
 
-    //     this.fetchList();
-    //   }
+		//   this["pickerShow0"] = false;
 
-    //   this["pickerShow0"] = false;
-
-    //   // console.log(
-    //   //   "onOptionConfirm",
-    //   //   JSON.parse(JSON.stringify(checkedItem)),
-    //   //   index
-    //   // );
-    // },
-    getOptionButtonColor(found) {
-      if (this.viewMode === 0) {
-        return "btnGrayBorder";
-      }
-      // let curClass = this.classChecked;
-      // let found = this.optionList.find((v, i) => v.DETAIL_CODE === code);
-      // let found = this.taskList.find(val => val.DETAIL_CODE === code);
-      if (found) {
-        if (found.WRITE_STATUS === "0") {
-          return "btnBlueBorder";
-        } else if (found.WRITE_STATUS === "-1") {
-          return "btnRedBorder";
-        } else {
-          return "btnGreenBorder";
-        }
-      }
-      return "btnBlueBorder";
-    },
-    getClassButtonColor(found) {
-      if (this.viewMode === 1) {
-        return "btnGrayBorder";
-      }
-      // debugger
-      // let found = this.taskList.find((v, i) => v.CLASS_ID === class_id)
-      if (found) {
-        if (found.WRITE_STATUS === "0") {
-          return "btnBlueBorder";
-        } else if (found.WRITE_STATUS === "-1") {
-          return "btnRedBorder";
-        } else {
-          return "btnGreenBorder";
-        }
-      }
-      return "btnBlueBorder";
-    }
-  }
+		//   // console.log(
+		//   //   "onOptionConfirm",
+		//   //   JSON.parse(JSON.stringify(checkedItem)),
+		//   //   index
+		//   // );
+		// },
+		getOptionButtonColor(found) {
+			if (this.viewMode === 0) {
+				return 'btnGrayBorder';
+			}
+			// let curClass = this.classChecked;
+			// let found = this.optionList.find((v, i) => v.DETAIL_CODE === code);
+			// let found = this.taskList.find(val => val.DETAIL_CODE === code);
+			if (found) {
+				if (found.WRITE_STATUS === '0') {
+					return 'btnBlueBorder';
+				} else if (found.WRITE_STATUS === '-1') {
+					return 'btnRedBorder';
+				} else {
+					return 'btnGreenBorder';
+				}
+			}
+			return 'btnBlueBorder';
+		},
+		getClassButtonColor(found) {
+			if (this.viewMode === 1) {
+				return 'btnGrayBorder';
+			}
+			// debugger
+			// let found = this.taskList.find((v, i) => v.CLASS_ID === class_id)
+			if (found) {
+				if (found.WRITE_STATUS === '0') {
+					return 'btnBlueBorder';
+				} else if (found.WRITE_STATUS === '-1') {
+					return 'btnRedBorder';
+				} else {
+					return 'btnGreenBorder';
+				}
+			}
+			return 'btnBlueBorder';
+		},
+	},
 };
 </script>
 <style lang="less">
 .dy-rate-tab {
-  .van-tab--active {
-    .van-tab__text {
-      font-size: 14px;
-      color: #48b319;
-    }
-  }
+	.van-tab--active {
+		.van-tab__text {
+			font-size: 14px;
+			color: #48b319;
+		}
+	}
 
-  .van-tabs__line {
-    width: 50%;
-    background-color: #48b319;
-  }
+	.van-tabs__line {
+		width: 50%;
+		background-color: #48b319;
+	}
 }
 
 .dy-rate-dialog {
-  border-radius: 6px;
+	border-radius: 6px;
 
-  .van-dialog__header {
-    font-weight: bold;
-  }
-  .van-dialog__message {
-    font-size: 16px;
-    font-weight: normal;
-    color: #333;
-  }
+	.van-dialog__header {
+		font-weight: bold;
+	}
+	.van-dialog__message {
+		font-size: 16px;
+		font-weight: normal;
+		color: #333;
+	}
 
-  .van-button__text {
-    font-weight: bold;
-  }
-  .van-dialog__confirm {
-    // color: #ED561B;
-  }
+	.van-button__text {
+		font-weight: bold;
+	}
+	.van-dialog__confirm {
+		// color: #ED561B;
+	}
 }
 .van-picker__confirm {
-  font-size: 16px;
-  color: #333;
+	font-size: 16px;
+	color: #333;
 }
 </style>
 <style lang="less" scoped>
-@import "../../../style/minxin.less";
+@import '../../../style/minxin.less';
 @footerHeight: 60px;
 
 .box {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
 }
 .wapper {
-  position: relative;
-  height: 100%;
-  background-color: #fafafa;
+	position: relative;
+	height: 100%;
+	background-color: #fafafa;
 }
 .content {
-  position: absolute;
-  top: 0;
-  bottom: @footerHeight;
-  overflow: scroll;
-  width: 100%;
+	position: absolute;
+	top: 0;
+	bottom: @footerHeight;
+	overflow: scroll;
+	width: 100%;
 }
 .footer {
-  position: fixed;
-  bottom: 0;
-  height: @footerHeight;
-  width: 100%;
-  display: flex;
+	position: fixed;
+	bottom: 0;
+	height: @footerHeight;
+	width: 100%;
+	display: flex;
 	gap: 15px;
-  align-items: center;
+	align-items: center;
 	padding: 15px;
 
-  > button {
-    flex:1;
-    display: block;
-    color: #fff;
+	> button {
+		flex: 1;
+		display: block;
+		color: #fff;
 
-    &.error {
-      background-color: #ed561b;
-    }
+		&.error {
+			background-color: #ed561b;
+		}
 
-    &.submit {
-      background-color: #48b319;
-      float: right;
-    }
-  }
+		&.submit {
+			background-color: #48b319;
+			float: right;
+		}
+	}
 
-  .van-button--default {
-    border: 1px solid transparent;
-    border-radius: 3px;
-  }
+	.van-button--default {
+		border: 1px solid transparent;
+		border-radius: 3px;
+	}
 }
 
 .popContainer {
-  height: 80vh;
-  padding: 20px;
-  overflow-y: auto;
-  // text-align: center;
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  grid-gap: 20px;
-  align-content: start;
+	height: 80vh;
+	padding: 20px;
+	overflow-y: auto;
+	// text-align: center;
+	display: grid;
+	grid-template-columns: repeat(1, 1fr);
+	grid-gap: 20px;
+	align-content: start;
 }
 .popSection {
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  // grid-template-rows: repeat(100, 1fr);
-  grid-gap: 10px 10px;
-  align-items: stretch;
-  justify-items: stretch;
-  align-content: start;
+	width: 100%;
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	// grid-template-rows: repeat(100, 1fr);
+	grid-gap: 10px 10px;
+	align-items: stretch;
+	justify-items: stretch;
+	align-content: start;
 }
 
 .btnRedBorder {
-  border-color: #ed561b;
-  color: #ed561b;
+	border-color: #ed561b;
+	color: #ed561b;
 }
 
 .btnGreenBorder {
-  border-color: #48b319;
-  color: #48b319;
+	border-color: #48b319;
+	color: #48b319;
 }
 
 .btnBlueBorder {
-  border-color: #0093dd;
-  color: #0093dd;
+	border-color: #0093dd;
+	color: #0093dd;
 }
 
 .btnGrayBorder {
-  border-color: #6d6d6d;
-  color: #6d6d6d;
+	border-color: #6d6d6d;
+	color: #6d6d6d;
 }
 </style>
