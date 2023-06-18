@@ -62,6 +62,22 @@
             </div>
             <p class="name" style="font-size: 0.5rem">{{item.name}}</p>
           </a>
+		  <a v-else-if="item.code==='score'" class="link-class" :class=" item.newFlag ? 'new' : '' " :href="item.pageUrl">
+            <div
+                :style="{background:item.color, display:'block', borderRadius: '5px' , fontSize: '.80357143rem'}"
+              >
+                <van-icon class="icon" name="gift-o" />
+            </div>
+            <p class="name" style="font-size: 0.5rem">{{item.name}}</p>
+          </a>
+		  <a v-else-if="item.code==='honor'" class="link-class" :class=" item.newFlag ? 'new' : '' " :href="item.pageUrl">
+            <div
+                :style="{background:item.color, display:'block', borderRadius: '5px' , fontSize: '.80357143rem'}"
+              >
+                <van-icon class="icon" name="gem-o" />
+            </div>
+            <p class="name" style="font-size: 0.5rem">{{item.name}}</p>
+          </a>
           <a v-else class="link-class" :class=" item.newFlag ? 'new' : '' " :href="item.pageUrl.startsWith('/weixin/wechat/dist/index.html#/')? '#' + item.pageUrl.split('#')[1] : item.pageUrl ">
             <div
               :style="{background:item.color,display:'block',borderRadius: '5px'}"
