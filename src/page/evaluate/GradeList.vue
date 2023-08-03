@@ -1,15 +1,15 @@
 <template>
-  <div class="box">
-     <x-header class="title-header" :title="`选择班级`"  :left-options="{preventGoBack: true}" @on-click-back="goBack" />
-    <div class="context clearfix">
-      <h3 class="title">评价条目：{{nameBt}}</h3>
-      <ul class="maple-info">
-        <li @click="remarkInfo(item.ID,item.NAME)" v-for="(item,index) in getGradeData" :key="index">
-          <span>{{item.NAME}}</span>
-        </li>
-      </ul>
-    </div>
-  </div>
+	<div class="box">
+		<x-header class="title-header" :title="`选择班级`" :left-options="{ preventGoBack: true }" @on-click-back="goBack" />
+		<div class="context clearfix">
+			<h3 class="title">评价条目：{{ nameBt }}</h3>
+			<ul class="maple-info">
+				<li @click="remarkInfo(item.ID, item.NAME)" v-for="(item, index) in getGradeData" :key="index">
+					<span>{{ item.NAME }}</span>
+				</li>
+			</ul>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -21,7 +21,9 @@ export default {
 		BackTitleBar,
 		XHeader,
 	},
-	mounted() {},
+	mounted() {
+
+	},
 	activated() {
 		this.evalId = this.$route.query.evalId;
 		this.detailCode = this.$route.query.detailCode;
@@ -191,9 +193,9 @@ export default {
 	padding-top: 0;
 }
 
-.context {
-	margin-top: 100 / @baseSize;
-}
+// .context {
+// 	margin-top: 100 / @baseSize;
+// }
 
 .context .weui-cell {
 	width: 100%;
@@ -244,7 +246,7 @@ export default {
 
 .title-header {
 	background-color: #fff;
-	position: fixed;
+	// position: fixed;
 	top: 0;
 	left: 0;
 	width: 100%;
