@@ -46,6 +46,14 @@
             </div>
             <p class="name" style="font-size: 0.5rem">{{item.name}}</p>
           </a>
+		  <a v-else-if="item.code === 'assetsApply'" class="link-class" :class=" item.newFlag ? 'new' : '' " :href="item.pageUrl">
+            <div
+                :style="{background:item.color, display:'block', borderRadius: '5px' , fontSize: '.80357143rem'}"
+              >
+                <van-icon class="icon" name="desktop-o" />
+            </div>
+            <p class="name" style="font-size: 0.5rem">{{item.name}}</p>
+          </a>
 		  <a v-else-if="item.code === 'tea_leave'" class="link-class" :class=" item.newFlag ? 'new' : '' " :href="item.pageUrl">
             <div
                 :style="{background:item.color, display:'block', borderRadius: '5px' , fontSize: '.80357143rem'}"
@@ -107,6 +115,23 @@
               :style="{background:item.color,display:'block',borderRadius: '5px', fontSize: '.80357143rem'}"
             >
 				<van-icon class="icon" name="records" />
+            </div>
+            <p class="name" style="font-size: 0.5rem">{{item.name}}</p>
+		  </a>
+		  <div v-else-if="item.code === 'qr'" class="link-class">
+            <div
+                :style="{background:item.color, display:'block', borderRadius: '5px' , fontSize: '.80357143rem'}"
+                @click="scanMaterialQR"
+              >
+                <van-icon class="icon" name="qr" />
+            </div>
+            <p class="name" style="font-size: 0.5rem">{{item.name}}</p>
+          </div>
+		  <a v-else-if="item.code === 'assetsProcess'" class="link-class" :href="item.pageUrl">
+			<div
+              :style="{background:item.color,display:'block',borderRadius: '5px', fontSize: '.80357143rem'}"
+            >
+				<van-icon class="icon" name="desktop-o" />
             </div>
             <p class="name" style="font-size: 0.5rem">{{item.name}}</p>
 		  </a>
@@ -177,87 +202,103 @@ export default {
 		// $(".vux-x-dialog").hide();
 	},
 	methods: {
-    scanQR(){
-		let vm = this;
-      wx.scanQRCode({
-        needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
-        scanType: ["qrCode"], // 可以指定扫二维码还是一维码，默认二者都有
-        success: function (res) {
-			console.log(res);
-          	var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
-          	// alert('[' + result + ']');
-
-			try{
-				vm.$http.get(result).then(response => {
-					let result = response.body;
-					if(result.code != 200){
-						return alert(result.message);
-					}
-					// alert(JSON.stringify(result));
-
-					Dialog.confirm({
-						className: "dy-rate-dialog",
-						title: "",
-						message: "奖章扫码登记成功",
-						confirmButtonColor:'#0093DD',
-						confirmButtonText: "继续扫码",
-						cancelButtonText: "完成",
-					}).then(() => {
-						vm.scanQR();
-					}).catch(()=>{
-						window.location.href = '/weixin/wechat/v2/index.html#/evaluate/stu';
-					});
-				}).catch((err)=>{
-					alert(JSON.stringify(err));
-				});
-			}catch(e){
-				alert(JSON.stringify(e.message));
-			}
-
-
-
-
-        },
-		fail: function(res){
-				console.log(res);
-				alert(JSON.stringify(res));
-			}
-		});
-    },
-    getUrlConfigTrue() {
-
-      let wiexin = (apiRouter.GET_CONFIG) + encodeURIComponent(this.urlPath);
-
-      this.$http.get(wiexin).then(response => {
-        let data = response.body
-        wx.config({
-        //   debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-          appId: data.appId, // 必填，企业号的唯一标识，此处填写企业号corpid
-          timestamp: data.timestamp, // 必填，生成签名的时间戳
-          nonceStr: data.nonceStr, // 必填，生成签名的随机串
-          signature: data.signature,// 必填，签名，见附录1
-          jsApiList: [
-			  "scanQRCode"
-          ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-        });
-
-		wx.checkJsApi({
-			jsApiList: ['chooseImage','scanQRCode'], // 需要检测的JS接口列表，所有JS接口列表见附录2,
-			success: function(res) {
-				console.log(res)
-			// 以键值对的形式返回，可用的api值true，不可用为false
-			// 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
-			}
+		scanMaterialQR(){
+			wx.scanQRCode({
+				needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+				scanType: [ "qrCode" ], // 可以指定扫二维码还是一维码，默认二者都有
+				success: function (res) {
+					let url = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+					const clip = '/app/assets/';
+					url = encodeURIComponent(clip + url.split(clip)[1]);
+					window.location.href = '/weixin/wechat/v2/index.html#/material_application/scan?url=' + url;
+				},
+				fail: function (res) {
+					console.log(res);
+					alert(JSON.stringify(res));
+				}
 			});
+		},
+		scanQR() {
+			let vm = this;
+			wx.scanQRCode({
+				needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+				scanType: [ "qrCode" ], // 可以指定扫二维码还是一维码，默认二者都有
+				success: function (res) {
+					console.log(res);
+					var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+					// alert('[' + result + ']');
 
-        wx.error(function (res) {
-          //   alert(res)
-        });
+					try {
+						vm.$http.get(result).then(response => {
+							let result = response.body;
+							if (result.code != 200) {
+								return alert(result.message);
+							}
+							// alert(JSON.stringify(result));
 
-      }, response => {
-        // console.log("请求失败了!!!!")
-      });
-    },
+							Dialog.confirm({
+								className: "dy-rate-dialog",
+								title: "",
+								message: "奖章扫码登记成功",
+								confirmButtonColor: '#0093DD',
+								confirmButtonText: "继续扫码",
+								cancelButtonText: "完成",
+							}).then(() => {
+								vm.scanQR();
+							}).catch(() => {
+								window.location.href = '/weixin/wechat/v2/index.html#/evaluate/stu';
+							});
+						}).catch((err) => {
+							alert(JSON.stringify(err));
+						});
+					} catch (e) {
+						alert(JSON.stringify(e.message));
+					}
+
+
+
+
+				},
+				fail: function (res) {
+					console.log(res);
+					alert(JSON.stringify(res));
+				}
+			});
+		},
+		getUrlConfigTrue() {
+
+			let wiexin = (apiRouter.GET_CONFIG) + encodeURIComponent(this.urlPath);
+
+			this.$http.get(wiexin).then(response => {
+				let data = response.body;
+				wx.config({
+					//   debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+					appId: data.appId, // 必填，企业号的唯一标识，此处填写企业号corpid
+					timestamp: data.timestamp, // 必填，生成签名的时间戳
+					nonceStr: data.nonceStr, // 必填，生成签名的随机串
+					signature: data.signature,// 必填，签名，见附录1
+					jsApiList: [
+						"scanQRCode"
+					] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+				});
+
+				wx.checkJsApi({
+					jsApiList: [ 'chooseImage', 'scanQRCode' ], // 需要检测的JS接口列表，所有JS接口列表见附录2,
+					success: function (res) {
+						console.log(res);
+						// 以键值对的形式返回，可用的api值true，不可用为false
+						// 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
+					}
+				});
+
+				wx.error(function (res) {
+					//   alert(res)
+				});
+
+			}, response => {
+				// console.log("请求失败了!!!!")
+			});
+		},
 		closedSend() {
 			this.isActive = false;
 		},
@@ -266,9 +307,8 @@ export default {
 		},
 
 		//  获取首页列表数据
-
 		showList() {
-			this.$http.post(apiRouter.GET_LIST + '?__=' + Date.now()).then(function(response) {
+			this.$http.post(apiRouter.GET_LIST + '?__=' + Date.now()).then(function (response) {
 				//    console.log(response)
 				if (response.body.status === 200) {
 					this.myIcon = response.body.data.myIcon;
