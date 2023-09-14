@@ -32,9 +32,9 @@
       <tr>
         <td valign="top">
 
-          <div style="display: flex; height: 106px;">
+          <div style="display: flex; width: 155px; height: 106px;">
 
-            <div style="flex: 1;">
+            <div style="width: 45px;">
               <span style="float:left;">
                 备注：
               </span>
@@ -47,7 +47,7 @@
             </div>
 
             <div style="flex: 1;">
-              <textarea style="height: 98px;" maxlength="50" v-model="task.COMMENT"
+              <textarea style="height: 98%;" maxlength="50" v-model="task.COMMENT"
                 @change="handleChange(false)"></textarea>
             </div>
           </div>
@@ -55,7 +55,7 @@
         </td>
         <td>
           <div style="display: flex; height: 106px;">
-            <div style="width: 106px;">
+            <div style="flex: 1;">
               <van-uploader v-if="isWx" ref="fcc" class="inline-uploader" v-model="task.IMG_LIST" max-count="4" multiple
                 preview-size="12vw" :capture="cameraOnly" :after-read="afterRead" @delete="deleteImg"
                 @click-preview="setPreviewState(true)" @close-preview="setPreviewState(false)" />
@@ -64,7 +64,7 @@
                 @close-preview="setPreviewState(false)" />
             </div>
 
-            <div style="flex: 1; display: flex; align-items: end;">
+            <div style="width: 38px; display: flex; align-items: end;">
               <van-tag style="font-size: 9px; padding: 2px 5px; margin-bottom: 8px;"
                 :color="task.WRITE_STATUS == '-1' ? '#FEF0F0' : task.WRITE_STATUS == '0' ? '#ECF5FF' : '#D5F6AC'"
                 :text-color="task.WRITE_STATUS == '-1' ? '#EE0A24' : task.WRITE_STATUS == '0' ? '#0093DD' : '#48B319'"
@@ -551,7 +551,7 @@ export default {
   margin: 10px 15px 20px 15px;
   border-radius: 12px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
-  padding: 5vw 7vw;
+  padding: 3vw 4vw;
 
   .van-tag {
     font-size: 10px;
