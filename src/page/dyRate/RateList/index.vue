@@ -45,6 +45,7 @@ export default {
     };
   },
   async activated() {
+		document.title = '班级综评'
     // console.log("list-length: ", this.listData.length);
     this.ajaxLoading = false;
     this.loading = false;
@@ -54,6 +55,9 @@ export default {
 
     this.fetchList();
   },
+	deactivated() {
+		document.title = '个人中心'
+	},
   methods: {
     async fetchList() {
       if (!this.ajaxLoading) {

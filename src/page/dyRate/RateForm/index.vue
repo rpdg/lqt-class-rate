@@ -3,7 +3,7 @@
 		<title-bar :title="$route.query.title" @willBack="handleWillBack" />
 
 		<van-tabs class="dy-rate-tab" v-model="viewMode" @change="toggleViewStyle">
-			<van-tab title="评分项目视角"></van-tab>
+			<van-tab title="评分项视角"></van-tab>
 			<van-tab title="班级视角"></van-tab>
 		</van-tabs>
 
@@ -277,6 +277,7 @@ export default {
 		this.configWechat();
 	},
 	activated() {
+		document.title = '班级综评'
 		// console.log("form", this.$route.query);
 		// debugger;
 		this.seq_id = this.$route.query.id;
@@ -290,6 +291,9 @@ export default {
 		this.dataModified = false;
 
 		this.init();
+	},
+	deactivated() {
+		document.title = '个人中心'
 	},
 	beforeRouteLeave(to, from, next) {
 		if (this.previewOn) {

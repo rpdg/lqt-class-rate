@@ -2,56 +2,24 @@
   <div class="panel" ref="panel" :data-index="index">
     <table v-if="task.__shown">
       <tr>
-        <td>班级：{{task.CLASS_NAME}}</td>
-        <td>评分项：{{task.NAME}}</td>
+        <td>班级：{{ task.CLASS_NAME }}</td>
+        <td>评分项：{{ task.NAME }}</td>
       </tr>
       <tr>
-        <td>日期：{{task.END_TIME}}</td>
-        <td>评分范围：{{task.SCORE_UP}}~{{task.SCORE_DN}}分</td>
+        <td>日期：{{ task.END_TIME }}</td>
+        <td>评分范围：{{ task.SCORE_UP }}~{{ task.SCORE_DN }}分</td>
       </tr>
       <tr>
         <td>
           评分：
-          <van-stepper
-            class="inline-stepper"
-            :min="task.SCORE_UP"
-            :max="task.SCORE_DN"
-            :step="step"
-            v-model="task.SCORE"
-            @change="handleChange(true)"
-            @blur="handleStepBlur"
-          />
+          <van-stepper class="inline-stepper" :min="task.SCORE_UP" :max="task.SCORE_DN" :step="step" v-model="task.SCORE"
+            @change="handleChange(true)" @blur="handleStepBlur" />
         </td>
-        <td rowspan="2">
+        <td>
           添加图片：
           <span style="color:#999;">(最多4张)</span>
-          <br />
-          <van-uploader
-            v-if="isWx"
-            ref="fcc"
-            class="inline-uploader"
-            v-model="task.IMG_LIST"
-            max-count="4"
-            multiple
-            preview-size="12vw"
-            :capture="cameraOnly"
-            :after-read="afterRead"
-            @delete="deleteImg"
-            @click-preview="setPreviewState(true)"
-            @close-preview="setPreviewState(false)"
-          />
-          <van-uploader
-            class="inline-uploader"
-            v-model="task.IMG_LIST"
-            max-count="4"
-            multiple
-            preview-size="12vw"
-            :capture="cameraOnly"
-            :after-read="afterRead"
-            @delete="deleteImg"
-            @click-preview="setPreviewState(true)"
-            @close-preview="setPreviewState(false)"
-          />
+
+
           <!-- <van-action-sheet
             v-model="showActions"
             cancel-text="取消"
@@ -63,23 +31,67 @@
       </tr>
       <tr>
         <td valign="top">
-          <span style="float:left;">
-            备注：
-            <br />
-            <van-tag
-              plain
-              :type="task.WRITE_STATUS=='-1'?'danger':task.WRITE_STATUS=='0'?'primary':'success'"
-              size="medium"
-            >{{statusText}}</van-tag>
-          </span>
-          <textarea maxlength="50" v-model="task.COMMENT" @change="handleChange(false)"></textarea>
+
+          <div style="display: flex; height: 106px;">
+
+            <div style="flex: 1;">
+              <span style="float:left;">
+                备注：
+              </span>
+              <br />
+              <van-button plain hairline color="#48b319" size="mini" v-bind:disabled="!task.COMMENT1"
+                @click="showPopup1">语库1</van-button>
+              <br />
+              <van-button plain hairline color="#EE0A24" size="mini" v-bind:disabled="!task.COMMENT2"
+                @click="showPopup2">语库2</van-button>
+            </div>
+
+            <div style="flex: 1;">
+              <textarea style="height: 98px;" maxlength="50" v-model="task.COMMENT"
+                @change="handleChange(false)"></textarea>
+            </div>
+          </div>
+
+        </td>
+        <td>
+          <div style="display: flex; height: 106px;">
+            <div style="width: 106px;">
+              <van-uploader v-if="isWx" ref="fcc" class="inline-uploader" v-model="task.IMG_LIST" max-count="4" multiple
+                preview-size="12vw" :capture="cameraOnly" :after-read="afterRead" @delete="deleteImg"
+                @click-preview="setPreviewState(true)" @close-preview="setPreviewState(false)" />
+              <van-uploader class="inline-uploader" v-model="task.IMG_LIST" max-count="4" multiple preview-size="12vw"
+                :capture="cameraOnly" :after-read="afterRead" @delete="deleteImg" @click-preview="setPreviewState(true)"
+                @close-preview="setPreviewState(false)" />
+            </div>
+
+            <div style="flex: 1; display: flex; align-items: end;">
+              <van-tag style="font-size: 9px; padding: 2px 5px; margin-bottom: 8px;"
+                :color="task.WRITE_STATUS == '-1' ? '#FEF0F0' : task.WRITE_STATUS == '0' ? '#ECF5FF' : '#D5F6AC'"
+                :text-color="task.WRITE_STATUS == '-1' ? '#EE0A24' : task.WRITE_STATUS == '0' ? '#0093DD' : '#48B319'"
+                size="medium">{{ statusText }}</van-tag>
+            </div>
+
+          </div>
+
         </td>
       </tr>
     </table>
+    <van-popup v-model="showFastComment1" position="bottom" :style="{ height: '80vh' }">
+      <div class="evaPicker">
+        <div class="evaPickerToolbar">语库1</div>
+        <div class="evaPickerRow" v-for="( str, i ) in comment1" :key="'yk1'+i" @click="putIn(str)">{{ str }}</div>
+      </div>
+    </van-popup>
+    <van-popup v-model="showFastComment2" position="bottom" :style="{ height: '80vh' }">
+      <div class="evaPicker">
+        <div class="evaPickerToolbar">语库2</div>
+        <div class="evaPickerRow" v-for="( str, i ) in comment2" :key="'yk2'+i" @click="putIn(str)">{{ str }}</div>
+      </div>
+    </van-popup>
   </div>
 </template>
 <script>
-import { Stepper, Uploader, Toast, Tag, ActionSheet, Button } from "vant";
+import { Stepper, Uploader, Toast, Tag, ActionSheet, Button, Popup } from "vant";
 // import ImageUploader from './Uploader';
 import wx from "weixin-js-sdk";
 import apiRouter from "../../../../config/api.js";
@@ -89,7 +101,7 @@ async function imgCompress(src) {
     let img = new Image();
     img.src = src;
 
-    img.onload = function() {
+    img.onload = function () {
       let w = this.naturalWidth,
         h = this.naturalHeight,
         resizeW = 0,
@@ -137,45 +149,45 @@ async function getBase64(blob) {
 function dataURLtoFile(dataURI, filename) {
   // convert base64/URLEncoded data component to raw binary data held in a string
   let byteString;
-  if (dataURI.split(",")[0].indexOf("base64") >= 0) {
-    byteString = atob(dataURI.split(",")[1]);
+  if (dataURI.split(",")[ 0 ].indexOf("base64") >= 0) {
+    byteString = atob(dataURI.split(",")[ 1 ]);
   } else {
-    byteString = unescape(dataURI.split(",")[1]);
+    byteString = unescape(dataURI.split(",")[ 1 ]);
   }
 
   // separate out the mime component
   let mimeString = dataURI
-    .split(",")[0]
-    .split(":")[1]
-    .split(";")[0];
+    .split(",")[ 0 ]
+    .split(":")[ 1 ]
+    .split(";")[ 0 ];
 
   // write the bytes of the string to a typed array
   let ia = new Uint8Array(byteString.length);
   for (let i = 0; i < byteString.length; i++) {
-    ia[i] = byteString.charCodeAt(i);
+    ia[ i ] = byteString.charCodeAt(i);
   }
 
-  return new Blob([ia], { type: mimeString });
+  return new Blob([ ia ], { type: mimeString });
 }
 
 async function dataUrlToFile(dataUrl, fileName) {
   const res = await fetch(dataUrl);
   const blob = await res.blob();
-  return new File([blob], fileName, { type: "image/jpeg" });
+  return new File([ blob ], fileName, { type: "image/jpeg" });
 }
 
 function platform() {
-	//检查用户代理
-	const ua = navigator.userAgent.toLowerCase();
-	if (/iphone|ipad|ipod/.test(ua)) {
-		return 'iOS';
-	} else if (/android/.test(ua) || /harmonyos/.test(ua)) {
-		return 'Android';
-	} else if (/micromessenger/.test(ua)) {
-		return 'wechat';
-	} else {
-		return 'unkown';
-	}
+  //检查用户代理
+  const ua = navigator.userAgent.toLowerCase();
+  if (/iphone|ipad|ipod/.test(ua)) {
+    return 'iOS';
+  } else if (/android/.test(ua) || /harmonyos/.test(ua)) {
+    return 'Android';
+  } else if (/micromessenger/.test(ua)) {
+    return 'wechat';
+  } else {
+    return 'unkown';
+  }
 }
 
 export default {
@@ -206,12 +218,13 @@ export default {
   },
   components: {
     // ImageUploader,
-    [Stepper.name]: Stepper,
-    [Uploader.name]: Uploader,
-    [Toast.name]: Toast,
-    [Tag.name]: Tag,
-    [Button.name]: Button,
-    [ActionSheet.name]: ActionSheet
+    [ Stepper.name ]: Stepper,
+    [ Uploader.name ]: Uploader,
+    [ Toast.name ]: Toast,
+    [ Tag.name ]: Tag,
+    [ Button.name ]: Button,
+    [ ActionSheet.name ]: ActionSheet,
+    [ Popup.name ]: Popup,
   },
   computed: {
     statusText() {
@@ -225,13 +238,23 @@ export default {
     },
     leftImageCount() {
       return 4 - this.task.IMG_LIST.length;
+    },
+    comment1(){
+      const { COMMENT1 } = this.task;
+      return COMMENT1.split('<br />\n')
+    },
+    comment2(){
+      const { COMMENT2 } = this.task;
+      return COMMENT2.split('<br />\n')
     }
   },
   data() {
     return {
       showActions: false,
       cameraOnly: "",
-      isWx : platform()==='wechat'
+      isWx: platform() === 'wechat',
+      showFastComment1: false,
+      showFastComment2: false,
     };
   },
   mounted_old() {
@@ -243,12 +266,12 @@ export default {
     // this.io.unobserve(this.$refs.panel);
   },
   mounted() {
-    if(platform()==='wechat'){
+    if (platform() === 'wechat') {
       this.patchVant();
     }
   },
   updated() {
-    if(platform()==='wechat'){
+    if (platform() === 'wechat') {
       this.patchVant();
     }
   },
@@ -259,6 +282,19 @@ export default {
     //     resolve(imgItem);
     //   });
     // },
+
+    putIn(str) {
+			this.task.COMMENT = (this.task.COMMENT ? this.task.COMMENT + '' : '') + str;
+			this.showFastComment1 = this.showFastComment2 = false;
+		},
+
+    showPopup1() {
+      this.showFastComment1 = true;
+    },
+
+    showPopup2() {
+      this.showFastComment2 = true;
+    },
 
     patchVant() {
       // patch vant-uploader to use wechat image choose style
@@ -281,7 +317,7 @@ export default {
             // debugger;
             // iptWrapper.appendChild(dom);
             // console.log(doms);
-            doms.forEach(dom=>dom.remove())
+            doms.forEach(dom => dom.remove());
           }
 
           let placeholder = document.createElement("div");
@@ -293,21 +329,21 @@ export default {
             let _this = this;
             // alert("count: " + JSON.stringify(this.leftImageCount));
 
-            setTimeout(function(){
+            setTimeout(function () {
               wx.chooseImage({
                 count: _this.leftImageCount, // max: 9
-                sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
-                sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
+                sizeType: [ "original", "compressed" ], // 可以指定是原图还是压缩图，默认二者都有
+                sourceType: [ "album", "camera" ], // 可以指定来源是相册还是相机，默认二者都有
 
-                success: async function(res) {
+                success: async function (res) {
                   // 返回选定照片的本地ID列表
                   _this.readImages(res.localIds);
                 },
-                fail: function(err) {
+                fail: function (err) {
                   console.log(err);
                 }
               });
-            }, 3e2)
+            }, 3e2);
 
           });
 
@@ -320,7 +356,7 @@ export default {
       return new Promise(resolve => {
         wx.getLocalImgData({
           localId: item,
-          success: function(res) {
+          success: function (res) {
             let { localData } = res;
 
             if (localData.indexOf("data:image") != 0) {
@@ -334,7 +370,7 @@ export default {
 
             resolve(localData);
           },
-          fail: function(err) {
+          fail: function (err) {
             console.error(err);
           }
         });
@@ -343,7 +379,7 @@ export default {
     async readImages(localIds) {
       let files = [];
       for (let i = 0; i < localIds.length; i++) {
-        let base64 = await this.doReadImage(localIds[i]);
+        let base64 = await this.doReadImage(localIds[ i ]);
         let file = await dataUrlToFile(base64);
         files.push(file);
       }
@@ -360,7 +396,7 @@ export default {
         });
 
         for (let i = 0, l = imgItems.length; i < l; i++) {
-          await this.uploadImage(imgItems[i]);
+          await this.uploadImage(imgItems[ i ]);
         }
       } else {
         this.uploadImage(imgItems);
@@ -463,12 +499,14 @@ export default {
     color: #ddd;
   }
 }
+
 .inline-uploader {
   .van-uploader__upload {
     width: 12vw;
     height: 12vw;
     border: 1px solid #ccc;
   }
+
   .photoChooser {
     position: absolute;
     top: 0;
@@ -483,6 +521,7 @@ export default {
     }
   }
 }
+
 .inline-stepper {
   vertical-align: middle;
   display: inline-flex;
@@ -519,10 +558,12 @@ export default {
     margin-right: 0.5em;
     padding-top: 3px;
   }
-  .van-tag--success{
+
+  .van-tag--success {
     color: #48b319;
   }
-  .van-tag--danger{
+
+  .van-tag--danger {
     color: #ed561b;
   }
 
@@ -534,11 +575,13 @@ export default {
       vertical-align: top;
       line-height: 2em;
     }
+
     tr {
-      > td:nth-of-type(2) {
+      >td:nth-of-type(2) {
         padding-left: 1.3vw;
       }
     }
+
     tr:last-of-type {
       td {
         padding-top: 6px;
@@ -559,6 +602,34 @@ export default {
         border-color: #999;
       }
     }
+  }
+}
+
+
+.evaPicker {
+  padding: 0 15px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  >.evaPickerToolbar {
+    height: 44px;
+    line-height: 44px;
+    font-size: 16px;
+    text-align: center;
+  }
+
+  >.evaPickerRow {
+    height: 40px;
+    line-height: 40px;
+    font-size: 14px;
+    text-align: left;
+    border-bottom: 1px dashed #dedede;
+  }
+
+  >.evaRecord {
+    margin: 0;
+    flex: 1;
   }
 }
 </style>
