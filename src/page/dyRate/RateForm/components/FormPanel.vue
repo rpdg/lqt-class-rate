@@ -66,7 +66,7 @@
 
             <div style="width: 38px; display: flex; align-items: end;">
               <van-tag style="font-size: 9px; padding: 2px 5px; margin-bottom: 8px;"
-                :color="task.WRITE_STATUS == '-1' ? '#FEF0F0' : task.WRITE_STATUS == '0' ? '#ECF5FF' : '#D5F6AC'"
+                :color="task.WRITE_STATUS == '-1' ? '#EEE1E1' : task.WRITE_STATUS == '0' ? '#ECF5FF' : '#EBF9D9'"
                 :text-color="task.WRITE_STATUS == '-1' ? '#EE0A24' : task.WRITE_STATUS == '0' ? '#0093DD' : '#48B319'"
                 size="medium">{{ statusText }}</van-tag>
             </div>
