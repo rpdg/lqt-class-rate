@@ -9,7 +9,7 @@
 			@click-left="goBack"
 		>
     <template #right>
-      <van-button v-if="hasClass" plain type="primary" size="mini" class="btnBlueBorder" @click="viewClassDetail">查看我班</van-button>
+      <van-button v-if="hasClass" plain type="primary" size="mini" class="btnBlueBorder" @click="viewClassDetail">查看考勤</van-button>
     </template>
   </van-nav-bar>
 		<div class="wapper">
@@ -172,7 +172,7 @@ export default {
 							vm.pageLoading = false
 							vm.pageCount = Math.ceil(response.body.data.pageCount / 10)
 							vm.messageData = vm.messageData.concat(messageData)
-							vm.hasClass = !!response.body.data.classCount
+							vm.hasClass = (response.body.data.classCount>0 || response.body.data.hasViewPower >0)
 						} else {
 							alert(response.body.message)
 						}
