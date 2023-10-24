@@ -18,7 +18,7 @@ export function getSelectTimes(curDate, days = 30) {
         date['value'] = '' + nextDate.getTime();
         date['date'] = nextDate;
       } else {
-        date['name'] = formatDate('yyyy-MM-dd', nextDate);
+        date['name'] = formatDate('yyyy/MM/dd', nextDate);
         date['value'] = '' + nextDate.getTime();
         date['date'] = nextDate;
       }
@@ -26,7 +26,7 @@ export function getSelectTimes(curDate, days = 30) {
     }
     return dates;
   }
-  
+
   //转换成日期
   export function formatDate(format1 = 'yyyy-MM-dd hh:mm:ss', timestamp = new Date()) {
     try {
@@ -39,7 +39,7 @@ export function getSelectTimes(curDate, days = 30) {
     }
     return '';
   }
-  
+
   //时间处理
   Date.prototype.format = function (format) {
     let date = {
@@ -62,4 +62,3 @@ export function getSelectTimes(curDate, days = 30) {
     }
     return format;
   };
-  
