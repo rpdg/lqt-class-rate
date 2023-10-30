@@ -515,7 +515,7 @@ export default {
       // let time = this.timeData[1]
       // let dataDatime = data + " " + time
 
-      debugger;
+      // debugger;
       let dataDatime = this.format(this.timeData[ 0 ]);
 
       let t1 = parseInt(this.timePublishData[ 0 ]);
