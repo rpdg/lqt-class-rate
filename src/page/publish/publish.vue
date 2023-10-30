@@ -515,11 +515,11 @@ export default {
       // let time = this.timeData[1]
       // let dataDatime = data + " " + time
 
-      // debugger;
+      debugger;
       let dataDatime = this.format(this.timeData[ 0 ]);
 
-      let t1 = ~~this.timePublishData[ 0 ];
-      let t2 = ~~this.timeData[ 0 ];
+      let t1 = parseInt(this.timePublishData[ 0 ]);
+      let t2 = parseInt(this.timeData[ 0 ]);
       if (t1 > t2) {
         Toast('截止日期不可早于作业日期');
         return;
