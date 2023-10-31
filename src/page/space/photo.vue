@@ -274,7 +274,7 @@ export default {
       } else {
         let sendObj = {
           SPACE_ID: _this.SPACE_ID,
-          CONTENT: _this.contentValue,
+          CONTENT: _this.contentValue.replace(/＃/g,'#'),
           IMG_LIST: JSON.stringify(_this.serverId),
           TOPIC_ID: _this.TOPIC_ID,
           IS_VIDEO: 0
