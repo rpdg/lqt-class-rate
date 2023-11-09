@@ -471,17 +471,17 @@ figure {
 	height: 180 / @baseSize;
 }
 .icon {
-  font-size: 45 / @baseSize;
-	width: 45 / @baseSize;
+	font-size: 50 / @baseSize;
+	width: 50 / @baseSize;
 	height: 110 / @baseSize;
 
-  &.van-icon {
-    height: 120 / @baseSize;
-  }
-  &.van-icon:before {
-    margin-top: 0.7rem;
-    color: #fff;
-  }
+	&.van-icon {
+    	height: 120 / @baseSize;
+  	}
+	&.van-icon:before {
+		margin-top: 0.6rem;
+		color: #fff;
+	}
 }
 
 .iocn-list .name {

@@ -328,7 +328,7 @@ export default {
           apiRouter.GET_CHANGE_TCHECKON_MAIN +
             "?mainId=" +
             checkMainId +
-            "&status=" +
+            "&status=remark" +
             // student.STATUS +
             "&studentId=" +
             student.ID +
