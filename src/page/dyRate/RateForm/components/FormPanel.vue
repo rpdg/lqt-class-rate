@@ -39,10 +39,10 @@
                 备注：
               </span>
               <br />
-              <van-button plain hairline color="#48b319" size="mini" v-bind:disabled="!task.COMMENT1"
+              <van-button plain hairline color="#EBF9D9" style="color:#48B319;" size="mini" v-bind:disabled="!task.COMMENT1"
                 @click="showPopup1">语库1</van-button>
               <br />
-              <van-button plain hairline color="#EE0A24" size="mini" v-bind:disabled="!task.COMMENT2"
+              <van-button plain hairline color="#EEE1E1" style="color:#EE0A24;" size="mini" v-bind:disabled="!task.COMMENT2"
                 @click="showPopup2">语库2</van-button>
             </div>
 
@@ -56,12 +56,9 @@
         <td>
           <div style="display: flex; height: 106px;">
             <div style="flex: 1;">
-              <van-uploader v-if="isWx" ref="fcc" class="inline-uploader" v-model="task.IMG_LIST" max-count="4" multiple
-                preview-size="12vw" :capture="cameraOnly" :after-read="afterRead" @delete="deleteImg"
+              <van-uploader ref="fcc" class="inline-uploader" v-model="task.IMG_LIST" max-count="4" multiple
+                preview-size="12vw" :after-read="afterRead" @delete="deleteImg"
                 @click-preview="setPreviewState(true)" @close-preview="setPreviewState(false)" />
-              <van-uploader class="inline-uploader" v-model="task.IMG_LIST" max-count="4" multiple preview-size="12vw"
-                :capture="cameraOnly" :after-read="afterRead" @delete="deleteImg" @click-preview="setPreviewState(true)"
-                @close-preview="setPreviewState(false)" />
             </div>
 
             <div style="width: 38px; display: flex; align-items: end;">
@@ -79,13 +76,13 @@
     <van-popup v-model="showFastComment1" position="bottom" :style="{ height: '80vh' }">
       <div class="evaPicker">
         <div class="evaPickerToolbar">语库1</div>
-        <div class="evaPickerRow" v-for="( str, i ) in comment1" :key="'yk1'+i" @click="putIn(str)">{{ str }}</div>
+        <div class="evaPickerRow" v-for="( str, i ) in comment1" :key="'yk1' + i" @click="putIn(str)">{{ str }}</div>
       </div>
     </van-popup>
     <van-popup v-model="showFastComment2" position="bottom" :style="{ height: '80vh' }">
       <div class="evaPicker">
         <div class="evaPickerToolbar">语库2</div>
-        <div class="evaPickerRow" v-for="( str, i ) in comment2" :key="'yk2'+i" @click="putIn(str)">{{ str }}</div>
+        <div class="evaPickerRow" v-for="( str, i ) in comment2" :key="'yk2' + i" @click="putIn(str)">{{ str }}</div>
       </div>
     </van-popup>
   </div>
@@ -179,12 +176,12 @@ async function dataUrlToFile(dataUrl, fileName) {
 function platform() {
   //检查用户代理
   const ua = navigator.userAgent.toLowerCase();
-  if (/iphone|ipad|ipod/.test(ua)) {
+  if (/micromessenger/.test(ua)) {
+    return 'wechat';
+  } else if (/iphone|ipad|ipod/.test(ua)) {
     return 'iOS';
   } else if (/android/.test(ua) || /harmonyos/.test(ua)) {
     return 'Android';
-  } else if (/micromessenger/.test(ua)) {
-    return 'wechat';
   } else {
     return 'unkown';
   }
@@ -239,13 +236,13 @@ export default {
     leftImageCount() {
       return 4 - this.task.IMG_LIST.length;
     },
-    comment1(){
+    comment1() {
       const { COMMENT1 } = this.task;
-      return COMMENT1.split('<br />\n')
+      return COMMENT1.split('<br />\n');
     },
-    comment2(){
+    comment2() {
       const { COMMENT2 } = this.task;
-      return COMMENT2.split('<br />\n')
+      return COMMENT2.split('<br />\n');
     }
   },
   data() {
@@ -284,9 +281,9 @@ export default {
     // },
 
     putIn(str) {
-			this.task.COMMENT = (this.task.COMMENT ? this.task.COMMENT + '' : '') + str;
-			this.showFastComment1 = this.showFastComment2 = false;
-		},
+      this.task.COMMENT = (this.task.COMMENT ? this.task.COMMENT + '' : '') + str;
+      this.showFastComment1 = this.showFastComment2 = false;
+    },
 
     showPopup1() {
       this.showFastComment1 = true;
@@ -297,6 +294,7 @@ export default {
     },
 
     patchVant() {
+      debugger;
       // patch vant-uploader to use wechat image choose style
       // if using lazy-render, this should be trigged at "updated"
       let vUploader = this.$refs.fcc;
