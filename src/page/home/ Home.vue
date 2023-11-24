@@ -34,7 +34,7 @@
                 :style="{background:item.color, display:'block', borderRadius: '5px' , fontSize: '.80357143rem'}"
                 @click="scanQR"
               >
-                <van-icon class="icon" name="qr" />
+                <van-icon class="icon" name="scan" />
             </div>
             <p class="name" style="font-size: 0.5rem">{{item.name}}</p>
           </div>
@@ -123,7 +123,7 @@
                 :style="{background:item.color, display:'block', borderRadius: '5px' , fontSize: '.80357143rem'}"
                 @click="scanMaterialQR"
               >
-                <van-icon class="icon" name="scan" />
+                <van-icon class="icon" name="qr" />
             </div>
             <p class="name" style="font-size: 0.5rem">{{item.name}}</p>
           </div>
