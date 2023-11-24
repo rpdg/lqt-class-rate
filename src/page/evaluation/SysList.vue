@@ -156,8 +156,8 @@ export default {
 
 
         goBack() {
-            this.$router.push({path: '/'})
-
+            // this.$router.push({path: '/'});
+            window.location.href = '/weixin/wechat/v2/index.html#/evaluate/stu_home';
         }
 
     },
