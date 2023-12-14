@@ -39,10 +39,10 @@
                 备注：
               </span>
               <br />
-              <van-button plain hairline color="#EBF9D9" style="color:#48B319;" size="mini" v-bind:disabled="!task.COMMENT1"
+              <van-button plain hairline color="#48B319" style="color:#48B319;" size="mini" v-bind:disabled="!task.COMMENT1"
                 @click="showPopup1">语库1</van-button>
               <br />
-              <van-button plain hairline color="#EEE1E1" style="color:#EE0A24;" size="mini" v-bind:disabled="!task.COMMENT2"
+              <van-button plain hairline color="#EE0A24" style="color:#EE0A24;" size="mini" v-bind:disabled="!task.COMMENT2"
                 @click="showPopup2">语库2</van-button>
             </div>
 
