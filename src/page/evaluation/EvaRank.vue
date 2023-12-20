@@ -192,15 +192,15 @@ export default {
             this.loadData(typeCode);
         },
         goBack() {
-            let userType = window.localStorage.getItem("USER_TYPE");
-            let singleFlag = this.$route.query.singleFlag;
+            this.$router.push({path:"/eval-sList"});
 
-            if(userType =='T_TEACHER' && !singleFlag){
-                this.$router.go(-1);
-            }else{
-                this.$router.push({path:"/"});
-
-            }
+            // let userType = window.localStorage.getItem("USER_TYPE");
+            // let singleFlag = this.$route.query.singleFlag;
+            // if (userType == 'T_TEACHER' && !singleFlag){
+            //     this.$router.push({path:"/eval-sList"});
+            // } else{
+            //     this.$router.push({path:"/"});
+            // }
         },
         goDetail(e) {
             this.$router.push({path: '/cur-enroll', query: {courseId: e.courseId}})
