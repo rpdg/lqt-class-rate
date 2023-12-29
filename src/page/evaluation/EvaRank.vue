@@ -192,7 +192,7 @@ export default {
             this.loadData(typeCode);
         },
         goBack() {
-            this.$router.push({path:"/eval-sList"});
+            this.$router.push({path:"/eval-sList", query:{bk: 1}});
 
             // let userType = window.localStorage.getItem("USER_TYPE");
             // let singleFlag = this.$route.query.singleFlag;

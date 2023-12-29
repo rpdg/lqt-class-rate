@@ -112,10 +112,15 @@ export default {
                             // "YCB_TYPE": "WEEK",
                             // "TYPE_CODE": "0",
                             // "TO_URL": "/app/zh/teacher/tea_ycb_class_view"
-                            this.$router.push({
-                                path: "eval-rank",
-                                query: {evalId: data.EVAL_ID, classId: data.CLASS_ID}
-                            })
+                            let isFromBack = this.$route.query.bk;
+                            if(isFromBack){
+                                this.goBack();
+                            } else {
+                                this.$router.push({
+                                    path: "eval-rank",
+                                    query: {evalId: data.EVAL_ID, classId: data.CLASS_ID}
+                                });
+                            }
                         } else {
                             _this.showList = true;
                             _this.getStuObjData();
