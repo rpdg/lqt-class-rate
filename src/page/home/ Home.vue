@@ -62,6 +62,14 @@
             </div>
             <p class="name" style="font-size: 0.5rem">{{item.name}}</p>
           </a>
+		  <a v-else-if="item.code === 'stu_leave'" class="link-class" :class=" item.newFlag ? 'new' : '' " :href="item.pageUrl">
+            <div
+                :style="{background:item.color, display:'block', borderRadius: '5px' , fontSize: '.80357143rem'}"
+              >
+                <van-icon class="icon" name="records" />
+            </div>
+            <p class="name" style="font-size: 0.5rem">{{item.name}}</p>
+          </a>
 		  <a v-else-if="item.code==='sel_kq' || item.code==='my_attendance'" class="link-class" :class=" item.newFlag ? 'new' : '' " :href="item.pageUrl">
             <div
                 :style="{background:item.color, display:'block', borderRadius: '5px' , fontSize: '.80357143rem'}"
@@ -88,9 +96,10 @@
           </a>
           <a v-else class="link-class" :class=" item.newFlag ? 'new' : '' " :href="item.pageUrl.startsWith('/weixin/wechat/dist/index.html#/')? '#' + item.pageUrl.split('#')[1] : item.pageUrl ">
             <div
-              :style="{background:item.color,display:'block',borderRadius: '5px'}"
+              :style="{background:item.color,display:'block',borderRadius: '5px', fontSize: '.80357143rem'}"
             >
-              <img class="icon" :src=wwwUrl+item.iconUrl alt="">
+				<van-icon v-if="item.iconUrl.startsWith('icon:')" class="icon" :name="item.iconUrl.substr(5)" />
+            	<img v-else class="icon" :src=wwwUrl+item.iconUrl alt="">
             </div>
             <p class="name" style="font-size: 0.5rem">{{item.name}}</p>
           </a>
