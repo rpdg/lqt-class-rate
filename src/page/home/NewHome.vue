@@ -1,6 +1,6 @@
 <template>
     <div v-if="loaded">
-        <TabHeader :noticeUrl="noticeUrl" :spaceUrl="spaceUrl" :wwwUrl="wwwUrl" :userType="userType" />
+        <TabTopHeader :noticeUrl="noticeUrl" :spaceUrl="spaceUrl" :userType="userType" />
 
         <div class="pannel" v-for="(menu) in menuList" :key="menu[ 'MENU_CODE' ]">
             <div class="title">{{ menu[ 'MENU_NAME' ] }}</div>
@@ -15,7 +15,7 @@
 
 <script>
 
-import TabHeader from './components/TabHeader.vue';
+import TabTopHeader from './components/TabTopHeader.vue';
 import HomeIcon from './components/HomeIcon.vue';
 import apiRouter from '../../config/api.js';
 import wx from "weixin-js-sdk";
@@ -24,12 +24,11 @@ import authonStore from '../../utils/authonStore';
 export default {
     components: {
         HomeIcon,
-        TabHeader,
+        TabTopHeader,
     },
     data() {
         return {
             loaded: false ,
-            wwwUrl: window[ 'roterPath' ],
             spaceUrl: '',
             noticeUrl: '',
             urlPath: '',

@@ -1,12 +1,12 @@
 <template>
     <ul class="tab-btn clearfix">
         <li>
-            <a :href="wwwUrl + spaceUrl">
+            <a :href="spaceUrl">
                 <p><span>空间</span></p>
             </a>
         </li>
         <li>
-            <a :href="wwwUrl + noticeUrl">
+            <a :href="noticeUrl">
                 <p><span>通知</span></p>
             </a>
         </li>
@@ -27,10 +27,6 @@
 export default {
     props: {
         userType: {
-            type: String,
-            required: true,
-        },
-        wwwUrl: {
             type: String,
             required: true,
         },

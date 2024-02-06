@@ -8,8 +8,9 @@
 </template>
 <script>
 import { Dialog, Icon } from 'vant';
-import { COLOR_MAP } from '../../../config/colorMap';
+import { THEME_COLOR_MAP } from '../../../config/colorMap';
 import wx from "weixin-js-sdk";
+
 
 export default {
     props: {
@@ -40,11 +41,11 @@ export default {
     methods: {
         forward(code) {
             if (code === 'qr') {
-                this.scanMaterialQR()
+                this.scanMaterialQR();
                 return;
             }
             else if (code === 'ZH_MEDAL') {
-                this.scanQR()
+                this.scanQR();
                 return;
             }
 
@@ -55,7 +56,7 @@ export default {
             if (clr.startsWith('#')) {
                 return clr;
             } else {
-                return COLOR_MAP[ clr ] || 'black';
+                return THEME_COLOR_MAP[ clr ] || 'black';
             }
         },
         scanMaterialQR() {

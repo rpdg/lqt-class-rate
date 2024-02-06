@@ -1,4 +1,4 @@
-export const COLOR_MAP = [
+export const THEME_COLOR_LIST = [
 	{
 		desc: '浅粉',
 		name: 'lightPink',
@@ -140,3 +140,8 @@ export const COLOR_MAP = [
 		value: '#006134',
 	},
 ];
+
+export const THEME_COLOR_MAP = THEME_COLOR_LIST.reduce((acc, item) => {
+	acc[item.name] = item.value;
+	return acc;
+}, {});
