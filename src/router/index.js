@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import Login from '../page/home/Login.vue'
-import Home from '../page/home/ Home.vue'
+import Home from '../page/home/NewHome.vue'
 import Type from '../page/home/Type.vue'
 import Notice from '../page/home/Notice.vue'
 import Grade from '../page/home/Grade.vue'
@@ -425,7 +425,7 @@ export default new Router({
       name: 'detailUpDone',
       component: DetailUpDone
     },
-    
+
     {
       path: '/cur-enroll',
       name: 'curEnroll',

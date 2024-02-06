@@ -88,7 +88,7 @@
           </a>
 		  <a v-else-if="item.code==='honor'" class="link-class" :class=" item.newFlag ? 'new' : '' " :href="item.pageUrl">
             <div
-                :style="{background:item.color, display:'block', borderRadius: '5px' , fontSize: '.80357143rem'}"
+                :style="{background:item.color, display:'block', borderRadius: '5px' , }"
               >
                 <van-icon class="icon" name="gem-o" />
             </div>
@@ -96,7 +96,7 @@
           </a>
           <a v-else class="link-class" :class=" item.newFlag ? 'new' : '' " :href="item.pageUrl.startsWith('/weixin/wechat/dist/index.html#/')? '#' + item.pageUrl.split('#')[1] : item.pageUrl ">
             <div
-              :style="{background:item.color,display:'block',borderRadius: '5px', fontSize: '.80357143rem'}"
+              :style="{background:item.color,display:'block',borderRadius: '5px', fontSize: item.iconUrl.startsWith('icon:')?'.80357143rem':undefined}"
             >
 				<van-icon v-if="item.iconUrl.startsWith('icon:')" class="icon" :name="item.iconUrl.substr(5)" />
             	<img v-else class="icon" :src=wwwUrl+item.iconUrl alt="">

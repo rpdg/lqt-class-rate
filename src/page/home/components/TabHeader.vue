@@ -1,0 +1,91 @@
+<template>
+    <ul class="tab-btn clearfix">
+        <li>
+            <a :href="wwwUrl + spaceUrl">
+                <p><span>空间</span></p>
+            </a>
+        </li>
+        <li>
+            <a :href="wwwUrl + noticeUrl">
+                <p><span>通知</span></p>
+            </a>
+        </li>
+        <li class="currt-actiove">
+            <a href="#">
+                <p>
+                    <span>我的</span>
+                    <img v-if="userType === 'T_TEACHER'" class="user-type" src="../../../assets/teacher.png" alt="">
+                    <img v-else-if="userType === 'T_PARENT'" class="user-type" src="../../../assets/teacher3.png" alt="">
+                    <img v-else="userType === 'T_STUDENT'" class="user-type" src="../../../assets/teacher2.png" alt="">
+                </p>
+            </a>
+            <div class="border-bottom"> </div>
+        </li>
+    </ul>
+</template>
+<script>
+export default {
+    props: {
+        userType: {
+            type: String,
+            required: true,
+        },
+        wwwUrl: {
+            type: String,
+            required: true,
+        },
+        spaceUrl: {
+            type: String,
+            required: true,
+        },
+        noticeUrl: {
+            type: String,
+            required: true,
+        },
+    }
+}
+</script>
+<style lang="less" scoped>
+@import '../../../style/minxin.less';
+
+.tab-btn {
+    width: 100%;
+    height: 100 / @baseSize;
+    line-height: 100 / @baseSize;
+    border-bottom: 1px solid #eee;
+}
+
+.tab-btn li {
+    width: 100/3 * 1%;
+    float: left;
+    text-align: center;
+    position: relative;
+}
+
+.tab-btn li p span {
+    font-size: 36 / @baseSize;
+    color: #000000;
+    padding-right: 0.2rem;
+}
+
+.tab-btn li.currt-actiove p span {
+    color: #48b319;
+}
+
+.user-type {
+    position: absolute;
+    width: 39 / @baseSize;
+    height: 38 / @baseSize;
+    top: 0.55rem;
+}
+
+.border-bottom {
+    width: 100%;
+    height: 5px;
+    background: #48b319;
+    position: absolute;
+    bottom: 1px;
+    left: 0;
+    border-radius: 6px;
+}
+</style>
