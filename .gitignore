@@ -16,3 +16,4 @@ service/
 test/
 wechat/
 /pkg
+/.vscode

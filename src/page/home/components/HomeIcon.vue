@@ -133,7 +133,7 @@ export default {
     position: relative;
     // background-color: #bbb;
     display: flex;
-    height: 55px;
+    height: 53px;
     align-items: center;
 }
 

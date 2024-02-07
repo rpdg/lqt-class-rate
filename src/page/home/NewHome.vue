@@ -116,7 +116,7 @@ export default {
 <style lang="less" type="text/less">
 .pannel {
     padding: 20px 15px;
-    border-bottom: 14px solid #ededed;
+    border-bottom: 10px solid #ededed;
 }
 
 .pannel:nth-last-of-type(1) {
