@@ -1,5 +1,0 @@
-{
-    "npm-scripts.showStartNotification": false,
-    "editor.inlineSuggest.showToolbar": "always",
-    "cmake.configureOnOpen": false
-}
