@@ -1,7 +1,7 @@
 <template>
     <div class="wrap" @click="forward(code)">
         <div class="iconWrap">
-            <van-icon class="icon" :color="renderColor(color)" :name="iconUrl" />
+            <van-icon class="icon" :color="renderColor(color)" :name="iconUrl" style="font-weight: 900;" />
         </div>
         <div class="babel">{{ name }}</div>
     </div>
@@ -133,7 +133,7 @@ export default {
     position: relative;
     // background-color: #bbb;
     display: flex;
-    height: 50px;
+    height: 55px;
     align-items: center;
 }
 

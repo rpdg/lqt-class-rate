@@ -2,6 +2,15 @@
     <div v-if="loaded">
         <TabTopHeader :noticeUrl="noticeUrl" :spaceUrl="spaceUrl" :userType="userType" />
 
+        <!-- pinned icons -->
+        <div v-if="topList.length > 0" class="pannel">
+            <div class="container">
+                <HomeIcon v-for="( icon ) in topList" :key="'t_'+icon.code" :name="icon.name"
+                    :code="icon.code" :iconUrl="icon.iconUrl" :color="icon.color" :pageUrl="icon.pageUrl" />
+            </div>
+        </div>
+
+        <!-- module icons -->
         <div class="pannel" v-for="(menu) in menuList" :key="menu[ 'MENU_CODE' ]">
             <div class="title">{{ menu[ 'MENU_NAME' ] }}</div>
             <div class="container">
@@ -36,6 +45,7 @@ export default {
             isTeach: false,
             fullData: null,
             menuList: [],
+            topList: [],
         };
     },
     mounted() {
@@ -63,6 +73,7 @@ export default {
                     }
                     this.fullData = res;
                     this.menuList = res.menu_list;
+                    this.topList = res.top_list;
                     this.loaded = true;
                 }
             });
