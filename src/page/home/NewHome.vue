@@ -28,10 +28,10 @@ export default {
     },
     data() {
         return {
-            loaded: false ,
+            loaded: false,
             spaceUrl: '',
             noticeUrl: '',
-            urlPath: '',
+            urlPath: encodeURIComponent(window.location.href.split('#')[ 0 ]),
             userType: '',
             isTeach: false,
             fullData: null,
@@ -68,7 +68,7 @@ export default {
             });
         },
         configWx() {
-            let wxCfgApi = (apiRouter.GET_CONFIG) + encodeURIComponent(this.urlPath);
+            let wxCfgApi = apiRouter.GET_CONFIG + this.urlPath;
             this.$http.get(wxCfgApi).then(response => {
                 let data = response.body;
                 wx.config({
@@ -103,7 +103,6 @@ export default {
 };
 </script>
 <style lang="less" type="text/less">
-
 .pannel {
     padding: 20px 15px;
     border-bottom: 14px solid #ededed;

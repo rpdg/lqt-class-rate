@@ -1,5 +1,5 @@
 {
     "npm-scripts.showStartNotification": false,
-    "editor.inlineSuggest.showToolbar": "onHover",
+    "editor.inlineSuggest.showToolbar": "always",
     "cmake.configureOnOpen": false
 }
