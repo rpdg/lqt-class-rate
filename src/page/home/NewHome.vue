@@ -1,24 +1,27 @@
 <template>
-    <div v-if="loaded">
+    <div class="layoutMain" v-if="loaded">
         <TabTopHeader :noticeUrl="noticeUrl" :spaceUrl="spaceUrl" :userType="userType" />
 
-        <!-- pinned icons -->
-        <div v-if="topList.length > 0" class="pannel">
-            <div class="container">
-                <HomeIcon v-for="( icon ) in topList" :key="'t_'+icon.code" :name="icon.name"
-                    :code="icon.code" :iconUrl="icon.iconUrl" :color="icon.color" :pageUrl="icon.pageUrl" />
-            </div>
-        </div>
+        <div class="pannelContainer">
 
-        <!-- module icons -->
-        <div class="pannel" v-for="(menu) in menuList" :key="menu[ 'MENU_CODE' ]">
-            <div class="title">{{ menu[ 'MENU_NAME' ] }}</div>
-            <div class="container">
-                <HomeIcon v-for="( icon ) in fullData[ menu[ 'MENU_CODE' ] ]" :key="icon.code" :name="icon.name"
-                    :code="icon.code" :iconUrl="icon.iconUrl" :color="icon.color" :pageUrl="icon.pageUrl" />
+            <!-- pinned icons -->
+            <div v-if="topList.length > 0" class="pannel">
+                <div class="container">
+                    <HomeIcon v-for="( icon ) in topList" :key="'t_' + icon.code" :name="icon.name" :code="icon.code"
+                        :iconUrl="icon.iconUrl" :color="icon.color" :pageUrl="icon.pageUrl" />
+                </div>
             </div>
-        </div>
 
+            <!-- module icons -->
+            <div class="pannel" v-for="(menu) in menuList" :key="menu[ 'MENU_CODE' ]">
+                <div class="title">{{ menu[ 'MENU_NAME' ] }}</div>
+                <div class="container">
+                    <HomeIcon v-for="( icon ) in fullData[ menu[ 'MENU_CODE' ] ]" :key="icon.code" :name="icon.name"
+                        :code="icon.code" :iconUrl="icon.iconUrl" :color="icon.color" :pageUrl="icon.pageUrl" />
+                </div>
+            </div>
+
+        </div>
     </div>
 </template>
 
@@ -114,6 +117,17 @@ export default {
 };
 </script>
 <style lang="less" type="text/less">
+.layoutMain {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.pannelContainer {
+    flex: 1;
+    overflow: auto;
+}
+
 .pannel {
     padding: 20px 15px;
     border-bottom: 10px solid #ededed;
