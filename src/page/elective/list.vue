@@ -91,7 +91,7 @@ export default {
 		document.title = '选修考勤'
 	},
 	deactivated() {
-		document.title = '个人中心'
+		document.title = "绿蜻蜓"
 	},
 	data() {
 		return {

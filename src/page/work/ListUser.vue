@@ -7,7 +7,7 @@
 			class="title-header"
 			:left-options="{preventGoBack: true}"
 			@on-click-back="goBack"
-			:title="`作业列表`"
+			:title="`我的作业`"
 		>
 			<template slot="right">
 				<van-icon

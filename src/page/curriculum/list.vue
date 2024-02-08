@@ -132,6 +132,10 @@
       //   this.loadData();
       // }
       this.loadData();
+      document.title = '在线选课'
+    },
+    deactivated() {
+      document.title = "绿蜻蜓"
     },
     data(){
       return {

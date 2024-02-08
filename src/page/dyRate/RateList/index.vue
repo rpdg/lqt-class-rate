@@ -56,7 +56,7 @@ export default {
     this.fetchList();
   },
 	deactivated() {
-		document.title = '个人中心'
+		document.title = "绿蜻蜓"
 	},
   methods: {
     async fetchList() {

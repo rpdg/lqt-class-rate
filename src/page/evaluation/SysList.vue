@@ -46,6 +46,10 @@ export default {
 
         //this.getObjData();
 
+        document.title = '综评榜单'
+    },
+    deactivated() {
+      document.title = "绿蜻蜓"
     },
     methods: {
         evluatObj(data) {

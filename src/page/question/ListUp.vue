@@ -1,7 +1,7 @@
 <template>
   <div>
       <x-header class="title-header" :left-options="{preventGoBack: true}"
-                @on-click-back="$router.push({path:'/'})">问卷
+                @on-click-back="$router.push({path:'/'})">我的事务
       </x-header>
 
     <div class="lqt-wrapper" style="" id="qa_list">
@@ -85,6 +85,10 @@
         this.showData();
       }
       $(".vux-x-dialog").show();
+      document.title = '事务'
+    },
+    deactivated() {
+      document.title = "绿蜻蜓"
     },
     // mounted() {
     //

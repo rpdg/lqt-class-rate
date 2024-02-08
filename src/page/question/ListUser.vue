@@ -12,7 +12,7 @@
 <!--    />-->
 
       <x-header class="title-header" :left-options="{preventGoBack: true}"
-                @on-click-back="$router.push({path:'/'})">问卷
+                @on-click-back="$router.push({path:'/'})">我的问卷
       </x-header>
 
     <div class="lqt-wrapper" style="margin-top: 2rem" id="qa_list">
@@ -77,6 +77,10 @@
         this.showData();
       }
       //this.showData();
+      document.title = '问卷'
+    },
+    deactivated() {
+      document.title = "绿蜻蜓"
     },
     methods: {
       cancel() {

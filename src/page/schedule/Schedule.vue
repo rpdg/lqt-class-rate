@@ -4,7 +4,7 @@
 			class="title-header"
 			:left-options="{preventGoBack: true}"
 			@on-click-back="onClickLeft"
-		>日程</x-header>
+		>我的日程</x-header>
 		<div v-if="!this.imgShow" class="realContent">
 			<div class="payroll-div">
 				<div class="payroll-title">
@@ -209,6 +209,12 @@ export default {
         this.loadUrl();
       }*/
   },
+    activated() {
+      document.title = '日程'
+    },
+    deactivated() {
+      document.title = "绿蜻蜓"
+    },
   updated() {
     //  this.showDetailData();
   },

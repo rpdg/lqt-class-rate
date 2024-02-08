@@ -1,7 +1,7 @@
 <template>
   <div style="color: #414141;">
       <x-header class="title-header" :left-options="{preventGoBack: true}"
-                @on-click-back="onClickLeft">课程表
+                @on-click-back="onClickLeft">我的课表
       </x-header>
     <!--<div class="week-title">{{className}}第{{weekNum}}教学周（{{new Date(startDate).format('MM/dd')}}〜{{new Date(endDate).format('MM/dd')}}）</div>-->
     <div class="week-title" style="margin-top: 2rem">{{title}}</div>
@@ -162,6 +162,12 @@
       //let b = nDayLater(new Date(a),6);
       this.loadWeekNum(now);
       //this.loadData(1);
+    },
+    activated() {
+      document.title = '课程表'
+    },
+    deactivated() {
+      document.title = "绿蜻蜓"
     },
     updated() {
 

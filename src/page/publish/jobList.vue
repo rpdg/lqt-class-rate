@@ -4,7 +4,7 @@
 		<!--      <p @click="goBack()" class="up-back">返回</p>-->
 		<!--    </div>-->
 
-		<x-header class="title-header" :left-options="{preventGoBack: true}" @on-click-back="goBack">已发作业</x-header>
+		<x-header class="title-header" :left-options="{preventGoBack: true}" @on-click-back="goBack">作业列表</x-header>
 		<back ref="heightBackPub" style="display: none"></back>
 		<ul class="message" ref="onScoll">
 			<li class="clearfix" v-for="(news,index) in messageData" :key="index">
@@ -80,9 +80,11 @@ export default {
 				}
 			}
 		};
+      	document.title = '已发作业';
 	},
 	deactivated(){
-		window.onscroll = null
+		window.onscroll = null;
+      	document.title = "绿蜻蜓";
 	},
 	methods: {
 		getTimecode(timeStr) {

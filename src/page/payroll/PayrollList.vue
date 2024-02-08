@@ -3,7 +3,7 @@
 		<!--  <div class="back-div" ref="heightBack">-->
 		<!--    <p @click="goBack()" class="up-back">返回</p>-->
 		<!--  </div>-->
-		<x-header class="title-header" :left-options="{preventGoBack: true}" @on-click-back="goBack">工资单</x-header>
+		<x-header class="title-header" :left-options="{preventGoBack: true}" @on-click-back="goBack">我的工资</x-header>
 		<div v-if="!showEmptyImg">
 			<div class="payroll-div">
 				<div class="payroll-title">
@@ -120,6 +120,12 @@ export default {
       this.loadUrl();
     }
   },
+  activated() {
+      document.title = '工资单'
+    },
+    deactivated() {
+      document.title = "绿蜻蜓"
+    },
   computed: {
     isUnion: function() {
       return this.wageObjectName === "T_WAGE_UNION_TOTAL";

@@ -1,7 +1,7 @@
 <template>
     <div class="box">
         <x-header class="title-header" :left-options="{preventGoBack: true}"
-                  @on-click-back="goBack">选择课堂
+                  @on-click-back="goBack">选择科目
         </x-header>
         <div class="context clearfix">
             <h3 class="title">请选择班级科目</h3>
@@ -45,6 +45,10 @@ export default {
             //this.$router.push({ path: '/eval-eList-std'})
             this.getStdData();
         }
+        document.title = '课堂评价'
+    },
+    deactivated() {
+      document.title = "绿蜻蜓"
     },
 
     methods: {
