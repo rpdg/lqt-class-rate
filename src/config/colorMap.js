@@ -122,7 +122,7 @@ export const THEME_COLOR_LIST = [
 	{
 		desc: '浅绿',
 		name: 'lightGreen',
-		value: '#6BDB1F',
+		value: '#55D11D',
 	},
 	{
 		desc: '背景灰',
