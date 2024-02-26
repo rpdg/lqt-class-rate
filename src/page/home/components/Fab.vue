@@ -1,10 +1,11 @@
 <template>
     <div :class="'mask ' + (expanded ? 'expand' : '')" @click="expanded = false">
-        <div :class="'typeBtn ' + (expanded ? 'expand' : '')" @click="expanded = !expanded">发{{ expanded ? '布' : '' }}</div>
-        <div :class="'send act1 ' + (expanded ? 'expand' : '')" @click="sendNotice()">发通知</div>
-        <div :class="'send act2 ' + (expanded ? 'expand' : '')" @click="sendQuestion()">发问卷</div>
-        <div :class="'send act3 ' + (expanded ? 'expand' : '')">请期待</div>
-        <div :class="'send act4 ' + (expanded ? 'expand' : '')" @click="announce()">发作业</div>
+        <div :class="'typeBtn ' + (expanded ? 'expand' : '')" @click.stop="expanded = !expanded">发{{ expanded ? '布' : '' }}
+        </div>
+        <div :class="'send act1 ' + (expanded ? 'expand' : '')" @click.stop="sendNotice()">发通知</div>
+        <div :class="'send act2 ' + (expanded ? 'expand' : '')" @click.stop="sendQuestion()">发问卷</div>
+        <div :class="'send act3 ' + (expanded ? 'expand' : '')" @click.stop="noneAction()">请期待</div>
+        <div :class="'send act4 ' + (expanded ? 'expand' : '')" @click.stop="announce()">发作业</div>
     </div>
 </template>
 <script>
@@ -19,21 +20,26 @@ export default {
             setTimeout(() => {
                 this.expanded = false;
                 this.$router.push({ path: 'type' });
-            }, 300);
+            }, 200);
 
         },
         sendQuestion() {
             setTimeout(() => {
                 this.$router.push({ path: 'q-type' });
                 this.expanded = false;
-            }, 300);
+            }, 200);
         },
         announce() {
             setTimeout(() => {
                 this.$router.push({ path: 'announce' });
                 this.expanded = false;
-            }, 300);
+            }, 200);
         },
+        noneAction() {
+            setTimeout(() => {
+                this.expanded = false;
+            }, 100);
+        }
     }
 };
 </script>
@@ -47,20 +53,6 @@ export default {
 @bigBtnSize: 60px;
 @subBtnSize: 50px;
 
-.BtnPosition(@size, @zIndex) {
-    display: block;
-    position: fixed;
-    z-index: @zIndex;
-
-    right: 13.5vmin;
-    bottom: 14.4vmin;
-
-    width: @size;
-    height: @size;
-
-    transform: translate3d((@size / 2), (@size / 2), 0);
-}
-
 .mask {
     position: fixed;
     top: 0;
@@ -70,22 +62,24 @@ export default {
     &.expand {
         bottom: 0;
         right: 0;
-        background-color: #ffffff70;
+        background-color: #ffffffc0;
+        // backdrop-filter: blur(3px);
     }
 }
 
 .typeBtn {
-    transition: 0.2s ease-out;
     position: fixed;
     z-index: 10;
 
     right: 33px;
     bottom: 70px;
 
-    width: 50px;
-    height: 50px;
-    line-height: 50px;
-    // transform: translate3d(25px, 25px, 0);
+    width: @subBtnSize;
+    height: @subBtnSize;
+    line-height: @subBtnSize;
+
+    transform: translate3d(0, 0, 0);
+    transition: 0.2s ease-out;
 
     border-radius: 60%;
 
@@ -96,12 +90,17 @@ export default {
     background-color: @mainGreen;
 
     &.expand {
-        width: 60px;
-        height: 60px;
-        line-height: 60px;
+        width: @bigBtnSize;
+        height: @bigBtnSize;
+        line-height: @bigBtnSize;
 
         right: 28px;
         bottom: 65px;
+    }
+
+
+    &:active {
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 1), 0 0 0 6px fade(@mainGreen, 35%)
     }
 }
 
@@ -113,13 +112,12 @@ export default {
     right: 33px;
     bottom: 70px;
 
-    width: 50px;
-    height: 50px;
-    line-height: 50px;
+    width: @subBtnSize/1.5;
+    height: @subBtnSize/1.5;
+    line-height: @subBtnSize/1.5;
 
-    // transform: translate3d(25px, 25px, 0);
-    transition: all 0.3s ease-out;
-    // transition: box-shadow 0.3s ease;
+    transform: translate3d(0, 0, 0);
+    transition: all 0.3s ease-out, box-shadow 0.2s;
 
     border-radius: 60%;
 
@@ -131,6 +129,9 @@ export default {
 
     &.expand {
         opacity: 1;
+        width: @subBtnSize;
+        height: @subBtnSize;
+        line-height: @subBtnSize;
     }
 
     &.act1 {
