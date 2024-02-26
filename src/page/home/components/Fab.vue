@@ -1,5 +1,5 @@
 <template>
-    <div style="position: fixed; top:0; bottom: 0; left: 0; right: 0;">
+    <div :class="'mask ' + (expanded ? 'expand' : '')" @click="expanded = false">
         <div :class="'typeBtn ' + (expanded ? 'expand' : '')" @click="expanded = !expanded">发{{ expanded ? '布' : '' }}</div>
         <div :class="'send act1 ' + (expanded ? 'expand' : '')" @click="sendNotice()">发通知</div>
         <div :class="'send act2 ' + (expanded ? 'expand' : '')" @click="sendQuestion()">发问卷</div>
@@ -59,6 +59,19 @@ export default {
     height: @size;
 
     transform: translate3d((@size / 2), (@size / 2), 0);
+}
+
+.mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    transition: 0.2s;
+
+    &.expand {
+        bottom: 0;
+        right: 0;
+        background-color: #ffffff70;
+    }
 }
 
 .typeBtn {

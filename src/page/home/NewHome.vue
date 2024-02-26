@@ -23,7 +23,7 @@
 
         </div>
 
-        <Fab />
+        <Fab v-if="isTeach"/>
     </div>
 </template>
 
