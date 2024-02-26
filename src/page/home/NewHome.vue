@@ -22,6 +22,8 @@
             </div>
 
         </div>
+
+        <Fab />
     </div>
 </template>
 
@@ -29,12 +31,14 @@
 
 import TabTopHeader from './components/TabTopHeader.vue';
 import HomeIcon from './components/HomeIcon.vue';
+import Fab from './components/Fab.vue';
 import apiRouter from '../../config/api.js';
 import wx from "weixin-js-sdk";
 import authonStore from '../../utils/authonStore';
 
 export default {
     components: {
+        Fab,
         HomeIcon,
         TabTopHeader,
     },
