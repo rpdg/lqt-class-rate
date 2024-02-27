@@ -2,10 +2,10 @@
     <div :class="'mask ' + (expanded ? 'expand' : '')" @click="expanded = false">
         <div :class="'typeBtn ' + (expanded ? 'expand' : '')" @click.stop="expanded = !expanded">发{{ expanded ? '布' : '' }}
         </div>
-        <div :class="'send act1 ' + (expanded ? 'expand' : '')" @click.stop="sendNotice()">发通知</div>
-        <div :class="'send act2 ' + (expanded ? 'expand' : '')" @click.stop="sendQuestion()">发问卷</div>
-        <div :class="'send act3 ' + (expanded ? 'expand' : '')" @click.stop="noneAction()">请期待</div>
-        <div :class="'send act4 ' + (expanded ? 'expand' : '')" @click.stop="announce()">发作业</div>
+        <div :class="'send act1 ' + (expanded ? 'expand' : '')" @click.stop="sendNotice()">通知</div>
+        <div :class="'send act2 ' + (expanded ? 'expand' : '')" @click.stop="sendQuestion()">问卷</div>
+        <div :class="'send act3 ' + (expanded ? 'expand' : '')" @click.stop="announce()">作业</div>
+        <div :class="'send act4 ' + (expanded ? 'expand' : '')" @click.stop="noneAction()">请期待</div>
     </div>
 </template>
 <script>
@@ -57,6 +57,7 @@ export default {
     position: fixed;
     top: 0;
     left: 0;
+
     transition: 0.2s;
 
     &.expand {
@@ -143,7 +144,7 @@ export default {
         }
 
         &:active {
-            box-shadow: 0 0 0 1px rgba(255, 255, 255, 1), 0 0 0 6px fade(@mainRed, 50%)
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 1), 0 0 0 6px fade(@mainRed, 35%)
         }
     }
 
@@ -156,12 +157,12 @@ export default {
         }
 
         &:active {
-            box-shadow: 0 0 0 1px rgba(255, 255, 255, 1), 0 0 0 6px fade(@mainBlue, 50%)
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 1), 0 0 0 6px fade(@mainBlue, 35%)
         }
     }
 
     &.act3 {
-        background-color: @lightGray;
+        background-color: @mainOrange;
 
         &.expand {
             right: 119px;
@@ -169,12 +170,12 @@ export default {
         }
 
         &:active {
-            box-shadow: 0 0 0 1px rgba(255, 255, 255, 1), 0 0 0 6px fade(@lightGray, 50%)
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 1), 0 0 0 6px fade(@mainOrange, 35%)
         }
     }
 
     &.act4 {
-        background-color: @mainOrange;
+        background-color: @lightGray;
 
         &.expand {
             right: 112px;
@@ -182,37 +183,8 @@ export default {
         }
 
         &:active {
-            box-shadow: 0 0 0 1px rgba(255, 255, 255, 1), 0 0 0 6px fade(@mainOrange, 50%)
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 1), 0 0 0 6px fade(@lightGray, 35%)
         }
-    }
-}
-
-
-@keyframes animation1 {
-    to {
-        transform: translate3d((@subBtnSize/2) + 4vmin, (@subBtnSize/2) - 22.5vmin, 0);
-        opacity: 1;
-    }
-}
-
-@keyframes animation2 {
-    to {
-        transform: translate3d((@subBtnSize/2) - 11.4vmin, (@subBtnSize/2) - 20vmin, 0);
-        opacity: 1;
-    }
-}
-
-@keyframes animation3 {
-    to {
-        transform: translate3d((@subBtnSize/2) - 22.58vmin, (@subBtnSize/2) - 8.6vmin, 0);
-        opacity: 1;
-    }
-}
-
-@keyframes animation4 {
-    to {
-        transform: translate3d((@subBtnSize/2) - 22.58vmin, (@subBtnSize/2) + 6.8vmin, 0);
-        opacity: 1;
     }
 }
 </style>
