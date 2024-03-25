@@ -12,21 +12,12 @@
       <tr>
         <td>
           评分：
-          <van-stepper class="inline-stepper" :min="task.SCORE_UP" :max="task.SCORE_DN" :step="step" v-model="task.SCORE"
-            @change="handleChange(true)" @blur="handleStepBlur" />
+          <van-stepper class="inline-stepper" :min="task.SCORE_UP" :max="task.SCORE_DN" :step="step"
+            v-model="task.SCORE" @change="handleChange(true)" @blur="handleStepBlur" />
         </td>
         <td>
           添加图片：
           <span style="color:#999;">(最多4张)</span>
-
-
-          <!-- <van-action-sheet
-            v-model="showActions"
-            cancel-text="取消"
-            close-on-click-action
-            :actions="[{ name: '拍摄' }, { name: '从相册选择' }]"
-            @select="onSelectAction"
-          /> -->
         </td>
       </tr>
       <tr>
@@ -39,11 +30,11 @@
                 备注：
               </span>
               <br />
-              <van-button plain hairline color="#48B319" style="color:#48B319;" size="mini" v-bind:disabled="!task.COMMENT1"
-                @click="showPopup1">语库1</van-button>
+              <van-button plain hairline color="#48B319" style="color:#48B319;" size="mini"
+                v-bind:disabled="!task.COMMENT1" @click="showPopup1">语库1</van-button>
               <br />
-              <van-button plain hairline color="#EE0A24" style="color:#EE0A24;" size="mini" v-bind:disabled="!task.COMMENT2"
-                @click="showPopup2">语库2</van-button>
+              <van-button plain hairline color="#EE0A24" style="color:#EE0A24;" size="mini"
+                v-bind:disabled="!task.COMMENT2" @click="showPopup2">语库2</van-button>
             </div>
 
             <div style="flex: 1;">
@@ -57,7 +48,8 @@
           <div style="display: flex; height: 106px;">
             <div style="flex: 1;">
               <van-uploader ref="fcc" class="inline-uploader" v-model="task.IMG_LIST" max-count="4" multiple
-                preview-size="12vw" :after-read="afterRead" @delete="deleteImg"
+                accept="image/*;capture=camera" capture="camera" preview-size="12vw"
+                :preview-options="{ closeable: true }" :after-read="afterRead" @delete="deleteImg"
                 @click-preview="setPreviewState(true)" @close-preview="setPreviewState(false)" />
             </div>
 
@@ -85,7 +77,16 @@
         <div class="evaPickerRow" v-for="( str, i ) in comment2" :key="'yk2' + i" @click="putIn(str)">{{ str }}</div>
       </div>
     </van-popup>
+
+    <van-action-sheet v-model="showActions" cancel-text="取消" close-on-click-action
+      :actions="[ { name: '拍摄' }, { name: '从相册选择' } ]" @select="onSelectAction" />
+    <div v-if="openCamera" class="cameraWrap">
+      <button ref="takePic" @click.stop.prevent="savePicture" class="btnTakePic"></button>
+      <video autoplay ref="video" class="cameraScreen"></video>
+      <canvas ref="canvas" style="display: none;"></canvas>
+    </div>
   </div>
+
 </template>
 <script>
 import { Stepper, Uploader, Toast, Tag, ActionSheet, Button, Popup } from "vant";
@@ -248,10 +249,11 @@ export default {
   data() {
     return {
       showActions: false,
-      cameraOnly: "",
       isWx: platform() === 'wechat',
       showFastComment1: false,
       showFastComment2: false,
+      openCamera: false,
+      mediaStream: null,
     };
   },
   mounted_old() {
@@ -263,16 +265,102 @@ export default {
     // this.io.unobserve(this.$refs.panel);
   },
   mounted() {
-    if (platform() === 'wechat') {
-      this.patchVant();
+    const p = platform();
+    if (p === 'wechat') {
+      this.patchWx();
+    } else if (p === 'unkown') {
+      this.patchWindows();
     }
   },
   updated() {
-    if (platform() === 'wechat') {
-      this.patchVant();
+    const p = platform();
+    if (p === 'wechat') {
+      this.patchWx();
+    } else if (p === 'unkown') {
+      this.patchWindows();
     }
   },
   methods: {
+    async savePicture() {
+      const canvas = this.$refs.canvas;
+      const context = canvas.getContext("2d");
+      context.drawImage(this.$refs.video, 0, 0);
+      const base64 = canvas.toDataURL();
+      let file = await dataUrlToFile(base64);
+      let files = file;
+      // console.log(file);
+      this.mediaStream.getVideoTracks().forEach(videoTrack => {
+        videoTrack.stop();
+      });
+      // debugger;
+      // this.mediaStream.release();
+      this.mediaStream = null;
+      this.openCamera = false;
+      this.$refs.fcc.readFile(files);
+    },
+    processCamera() {
+      const video = this.$refs.video;
+      video.srcObject = this.mediaStream;
+      video.onloadedmetadata = () => {
+        // debugger;
+        // let rect = video.getBoundingClientRect();
+        const canvas = this.$refs.canvas;
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+      };
+    },
+    onSelectAction(item, i) {
+      setTimeout(() => {
+        if (i === 0) {
+          if (window.navigator.mediaDevices && window.navigator.mediaDevices.getUserMedia) {
+            // Good to go!
+            navigator.mediaDevices.getUserMedia({ video: { width: { exact: 1280 }, height: { exact: 720 } }, audio: false })
+              .then((localMediaStream) => {
+                this.openCamera = true;
+                this.mediaStream = localMediaStream;
+                this.$nextTick(() => {
+                  this.processCamera();
+                });
+              }).catch((error) => {
+                alert("拒绝访问, " + error.toString());
+              });
+          } else {
+            alert("当前平台不支持媒体获取");
+          }
+        } else {
+          this.$refs.fcc.chooseFile();
+        }
+      }, 2e2);
+    },
+
+    patchWindows() {
+      let vUploader = this.$refs.fcc;
+      if (vUploader) {
+        const fileIpt = vUploader.$refs.input;
+
+        if (
+          fileIpt &&
+          fileIpt.tagName === "INPUT" &&
+          fileIpt.style.visibility !== "hidden"
+        ) {
+          fileIpt.style.visibility = "hidden";
+          fileIpt.style.display = "none";
+
+          const iptWrapper = fileIpt.parentNode;
+          let doms = iptWrapper.parentNode.querySelectorAll(".van-uploader__preview > .photoChooser");
+          if (doms && doms.length) {
+            doms.forEach(dom => dom.remove());
+          }
+
+          let placeholder = document.createElement("div");
+          placeholder.className = "photoChooser";
+          iptWrapper.appendChild(placeholder);
+          placeholder.addEventListener("click", () => {
+            this.showActions = true;
+          });
+        }
+      }
+    },
     // async beforeRead(imgItem) {
     //   return new Promise((resolve, reject) => {
     //     debugger;
@@ -293,7 +381,7 @@ export default {
       this.showFastComment2 = true;
     },
 
-    patchVant() {
+    patchWx() {
       debugger;
       // patch vant-uploader to use wechat image choose style
       // if using lazy-render, this should be trigged at "updated"
@@ -311,7 +399,7 @@ export default {
 
           const iptWrapper = fileIpt.parentNode;
           let doms = iptWrapper.parentNode.querySelectorAll(".van-uploader__preview > .photoChooser");
-          if (doms) {
+          if (doms && doms.length) {
             // debugger;
             // iptWrapper.appendChild(dom);
             // console.log(doms);
@@ -467,12 +555,6 @@ export default {
       }
     },
 
-    // onSelectAction(item, i) {
-    //   this.cameraOnly = i === 0 ? "camera" : null;
-    //   setTimeout(() => {
-    //     this.$refs.fcc.chooseFile();
-    //   }, 2e2);
-    // },
 
     handleStepBlur(e) {
       // console.log(this.task.SCORE);
@@ -542,6 +624,36 @@ export default {
 </style>
 
 <style lang="less" scoped>
+.cameraWrap {
+  z-index: 9998;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000000;
+
+  .cameraScreen {
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+  }
+
+  .btnTakePic {
+    z-index: 9999;
+    position: fixed;
+    border-radius: 100%;
+    width: 60px;
+    height: 60px;
+    bottom: 20px;
+    left: 50%;
+    margin-left: -30px;
+    // border: 5px solid transparent;
+    box-shadow: 0 0 0 5px transparent, 0 0 0 6px fade(#fff, 35%)
+  }
+}
+
+
 .panel {
   // width: 94.7vw;
   min-height: 50vw;

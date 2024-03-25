@@ -274,7 +274,12 @@ export default {
 	mounted() {
 		//this.loadData();
 		this.urlPath = window.location.href.split('#')[0];
-		this.configWechat();
+		if(navigator.userAgent.toLowerCase().indexOf('micromessenger')>-1){
+			this.configWechat();
+		} else {
+
+		}
+
 	},
 	activated() {
 		document.title = '班级综评'
