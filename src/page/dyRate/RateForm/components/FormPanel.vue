@@ -81,6 +81,7 @@
     <van-action-sheet v-model="showActions" cancel-text="取消" close-on-click-action
       :actions="[ { name: '拍摄' }, { name: '从相册选择' } ]" @select="onSelectAction" />
     <div v-if="openCamera" class="cameraWrap">
+      <van-icon name="cross" color="#fff" size="22" style="z-index: 9999; position: fixed; top: 8px; left: 8px; " @click.stop.prevent="closeCamera" />
       <button ref="takePic" @click.stop.prevent="savePicture" class="btnTakePic"></button>
       <video autoplay ref="video" class="cameraScreen"></video>
       <canvas ref="canvas" style="display: none;"></canvas>
@@ -89,7 +90,7 @@
 
 </template>
 <script>
-import { Stepper, Uploader, Toast, Tag, ActionSheet, Button, Popup } from "vant";
+import { Stepper, Uploader, Toast, Tag, ActionSheet, Button, Popup, Icon } from "vant";
 // import ImageUploader from './Uploader';
 import wx from "weixin-js-sdk";
 import apiRouter from "../../../../config/api.js";
@@ -216,6 +217,7 @@ export default {
   },
   components: {
     // ImageUploader,
+    [ Icon.name ]: Icon,
     [ Stepper.name ]: Stepper,
     [ Uploader.name ]: Uploader,
     [ Toast.name ]: Toast,
@@ -281,6 +283,13 @@ export default {
     }
   },
   methods: {
+    closeCamera(){
+      this.mediaStream.getVideoTracks().forEach(videoTrack => {
+        videoTrack.stop();
+      });
+      this.mediaStream = null;
+      this.openCamera = false;
+    },
     async savePicture() {
       const canvas = this.$refs.canvas;
       const context = canvas.getContext("2d");
