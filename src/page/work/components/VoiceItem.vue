@@ -1,10 +1,11 @@
 <template>
-	<div class="voiceWrap" @click="emitClick">
+	<div class="voiceWrap" @click.stop="emitClick">
 		<div
 			:class="'voice' + (playing? ' playing':'')"
 			:style="'width: '+ voiceBarWidth +'em;' "
 		/>
 		<div class="voiceSeconds">{{seconds}}"</div>
+		<div class="continue" v-if="previous" @click.stop="emitContinue">继续播放</div>
 	</div>
 </template>
 <script>
@@ -22,6 +23,11 @@ export default {
 			required: false,
 			default: () => false,
 		},
+		previous: {
+			type: Boolean,
+			required: false,
+			default: () => false,
+		},
 	},
 	data() {
 		return {}
@@ -34,22 +40,35 @@ export default {
     methods:{
         emitClick(){
             this.$emit("click")
-        }
+        },
+		emitContinue() {
+			this.$emit('continue');
+		}
     }
 }
 </script>
 <style lang="less" scoped>
 .voiceWrap {
 	display: flex;
+	align-items: center;
 	margin-top: 0.5em;
 	font-size: 14px;
 
 	> .voiceSeconds {
-		flex: 1;
 		height: 30px;
 		line-height: 30px;
 		padding-left: 5px;
 		text-align: left;
+	}
+	> .continue {
+		width: 60px;
+    	text-align: center;
+		margin-left:1em;
+		background-color: #DEDEDE;
+		color:#666;
+		font-size: 10px;
+    	padding: 3px;
+		border-radius: 10px;
 	}
 }
 
