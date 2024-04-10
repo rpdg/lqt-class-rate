@@ -1,7 +1,7 @@
 <template>
   <div>
     <x-header class="title-header" :left-options="{preventGoBack: true}"
-      @on-click-back="goBack" 
+      @on-click-back="goBack"
       >{{(myInfo && checkMap.USER_ID===myInfo.userId)?'我':checkMap.USERNAME}}的作业</x-header>
 
     <div class="lqt-container lqt-wrapper" style="top: 1em">
@@ -14,7 +14,7 @@
             <div v-if="(checkMap.GREATLIST && checkMap.GREATLIST.length) && (checkMap.USER_ID===myInfo.userId)" style="color:#48b319;	padding: 10px; border-bottom: solid 1px #dedede;">
               老师推荐了优秀作业：
               <span v-for="(wp , index) in checkMap.GREATLIST"
-               :key="wp.USER_ID"><u :style="'text-decoration: ' + (wp.USER_ID === myInfo.userId? '':'underline')" 
+               :key="wp.USER_ID"><u :style="'text-decoration: ' + (wp.USER_ID === myInfo.userId? '':'underline')"
                   @click="goBrowseOthers(wp.USER_ID)"
                 >{{wp.NAME}}</u>{{index+1 < checkMap.GREATLIST.length? '、':'，'}}
               </span>
@@ -77,7 +77,7 @@
                 </div>
 
                 <div v-if="detail.sVoiceList"  class="answer-qs other-ans-voice">
-                  <voice-item v-for="(vDetail) in detail.sVoiceList" 
+                  <voice-item v-for="(vDetail) in detail.sVoiceList"
                     :seconds="~~vDetail.AUDIO_TIME"
                     :playing="vDetail.ID == currentMp3Id"
                     :key="vDetail.ID"
@@ -172,7 +172,7 @@
               <div class="homework-content">
                 <p class="homework-title">{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】{{detail.CONTENT}}</p>
                 <thumbs-grid v-if="detail.PICLIST && detail.PICLIST.length" :imgList="detail.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
-                
+
                 <checker style="margin-top: 16px;margin-left: -5px;" v-model="detail.STUANSWER[0].ANSWER"
                          default-item-class="demo3-item" selected-item-class="demo3-item-selected">
                   <checker-item :disabled="true"  key="1" value="true">
@@ -198,7 +198,7 @@
             <div v-if="detail.QUESTYPE == '6'">
               <div class="homework-content">
                 <p class="homework-title">{{detail.QUESNO}}.【{{quesTypeView[detail.QUESTYPE]}}】{{detail.CONTENT}}</p>
-                <thumbs-grid v-if="detail.PICLIST && detail.PICLIST.length" :imgList="detail.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />                
+                <thumbs-grid v-if="detail.PICLIST && detail.PICLIST.length" :imgList="detail.PICLIST" :picBase="picRootPath" :viewFunc="previewImage" />
                 <div style="margin-bottom: 12px" v-for="(sItem,sIndex) in detail.sAnswerList" :key="sIndex">
                   <input  readonly="readonly" class="qa-input" v-model="detail.sAnswerList[sIndex]" :placeholder="     '('+(sIndex+1)+')'"><br>
                   <div style="margin-top: 8px;font-size: 14px">({{sIndex+1}})答案：{{ detail.tAnswer[sIndex] }}</div>
@@ -253,7 +253,7 @@
         </em>
       </a>
       <!-- 留言板 -->
-      <a id="comment" @click="nextComment" 
+      <a id="comment" @click="nextComment"
           v-else-if="currentWork+1 === quesList.length"
          class="homework-btn homework-next clearfix" href="javascript:void(0)" style="opacity: 1; z-index: 5;">
         <span class="txt-change">留言板</span>
@@ -335,6 +335,9 @@ var mp3;
     },
     deactivated(){
       document.title = this.oldPageTitle;
+      this.wx.stopRecord();
+      this.audioPlayer && this.audioPlayer.pause();
+      this.voiceRecord && this.stopVoice(this.voiceRecord.localId);
     },
     updated() {
       if (this.$refs.location && this.$refs.location.offsetHeight) {
@@ -390,6 +393,7 @@ var mp3;
         showRecording: false,
         progress: 20,
         currentMp3Id:-1,
+			  audioPlayer: null,
       }
     },
 
@@ -402,7 +406,7 @@ var mp3;
         }
 
         let path = currentHomeworkUserId===checkUserId ? '/work-list-user?fresh=1':'/work-detail-done?workId='+this.workId;
-        
+
         this.$router.push({path})
       },
       goBrowseOthers(targetUserId){
@@ -428,7 +432,7 @@ var mp3;
           }
         });
 
-        
+
       },
 
       preWork() {
@@ -632,14 +636,30 @@ var mp3;
         });
       },
       playVoice(item) {
+
+        if (this.audioPlayer) {
+          this.audioPlayer.pause();
+          this.audioPlayer = null;
+        }
+
         let self = this;
         self.currentMp3Id = item.ID;
-        let mp3 = new Audio(item.URL);
-        setTimeout(function(){
-          self.currentMp3Id = -1;
-        } , (~~item.AUDIO_TIME) * 1000);
 
-        mp3.play();
+        this.audioPlayer = new Audio(item.URL);
+        this.audioPlayer.onloadeddata = async function () {
+          // debugger;
+          try {
+            await self.audioPlayer.play();
+            console.log('Playing audio');
+            setTimeout(function () {
+              self.currentMp3Id = -1;
+            }, (~~item.AUDIO_TIME) * 1000 + 5e2);
+          } catch (err) {
+            console.log('Failed to play, error: ' + err);
+            this.currentMp3Index = -1;
+          }
+        };
+
         // wx.downloadVoice({
         //   serverId: serverId, // 需要下载的音频的服务器端ID，由uploadVoice接口获得
         //   isShowProgressTips: 1, // 默认为1，显示进度提示

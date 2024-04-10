@@ -4,7 +4,7 @@
 			:class="'voice' + (playing? ' playing':'')"
 			:style="'width: '+ voiceBarWidth +'em;' "
 		/>
-		<div class="voiceSeconds">{{seconds}}''</div>
+		<div class="voiceSeconds">{{seconds}}"</div>
 	</div>
 </template>
 <script>
