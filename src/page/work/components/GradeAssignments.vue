@@ -34,8 +34,10 @@
 						v-html="comment.COMMENT.replace(/\n/gi, '<p />')" />
 
 					<!-- 录音留言 -->
-					<voice-item v-else-if="comment.COMMENT_TYPE === '2'" :seconds="comment.COMMENT[ 0 ].audio_time"
-						:playing="index === currentMp3Index" @click="playMP3(comment.COMMENT[ 0 ], index)" />
+					<voice-item v-else-if="comment.COMMENT_TYPE === '2'"
+						:seconds="comment.COMMENT[ 0 ].audio_time"
+						:playing="index === currentMp3Index"
+						 @click="playMP3(comment.COMMENT[ 0 ], index)" />
 
 					<!-- 图片留言 -->
 					<div v-else-if="comment.COMMENT_TYPE === '3'" class="commentImgContainer">
@@ -221,10 +223,13 @@ export default {
 			recordSecondsLeft: 60,
 			voiceBarWidth: 15,
 			voiceRecord: null,
-			isPlaying: false,
 			posting: false,
 			loading: true,
 			currentMp3Index: -1,
+			previousMp3Index: -1,
+      		previousMp3StopSecond: 0,
+			isPlaying: false,
+			mp3PlayTimer: 0,
 			audioPlayer: null,
 			myUserId: -1,
 			willRemove: false,
