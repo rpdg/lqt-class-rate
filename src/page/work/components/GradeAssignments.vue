@@ -60,7 +60,7 @@
 
 			<!-- 留言输入框 -->
 			<div class="inputerWrap" v-show="!voiceRecord && !isBrowseOnly && !imgTempList.length">
-				<van-icon name="orders-o" color="#48b319" size="30" style="	margin-left: -4px;" @click="popupPicker"
+				<van-icon name="orders-o" color="#48b319" size="64" style="	margin-left: -8px;" @click="popupPicker"
 					v-if="fromTeacher" />
 				<div class="areaWrap">
 					<van-field type="textarea" v-model="comment" rows="1" maxlength="200" :border="true"
@@ -931,7 +931,7 @@ export default {
 }
 
 .commentBtnWrap {
-	width: 30px;
+	width: 44px;
 	height: 100%;
 	display: flex;
 	flex-direction: column;
@@ -942,8 +942,8 @@ export default {
 }
 
 .bar-btn {
-	width: 26px;
-	height: 26px;
+	width: 40px;
+	height: 40px;
 	line-height: 26px;
 	font-family: 'icon';
 	font-size: 24px;
