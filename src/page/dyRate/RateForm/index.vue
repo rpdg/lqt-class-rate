@@ -8,7 +8,7 @@
 		</van-tabs>
 
 		<div v-if="inited">
-			<van-row v-if="viewMode===0">
+			<van-row v-if="viewMode === 0">
 				<van-col span="12">
 					<van-cell :title="optionChecked.NAME" is-link @click="showPicker(0)" />
 				</van-col>
@@ -31,16 +31,8 @@
 				<center v-if="loading" style="margin-top:1em;">
 					<van-loading size="24px">加载中...</van-loading>
 				</center>
-				<FormPanel
-					v-else
-					v-for="(item, index) in taskList"
-					:key="`${item.__hash}`"
-					:task="item"
-					:index="index"
-					:step="step"
-					:setPreviewState="setPreviewState"
-					@modify="handleModify"
-				/>
+				<FormPanel v-else v-for="(item, index) in taskList" :key="`${item.__hash}`" :task="item" :index="index"
+					:step="step" :setPreviewState="setPreviewState" @modify="handleModify" />
 			</div>
 			<div class="footer">
 				<van-button class="error" @click="doAbanden">弃填</van-button>
@@ -50,40 +42,24 @@
 
 		<!-- 选项列表 -->
 		<van-popup position="bottom" v-model="pickerShow0" :lazy-render="false">
-			<!-- <van-picker
-				ref="picker0"
-				value-key="NAME"
-				cancel-button-text="　"
-				show-toolbar
-				:columns="optionList"
-				@confirm="onOptionConfirm"
-			/>-->
 			<div class="popContainer">
-				<section class="popSection" v-if="viewMode===1">
-					<van-button
-						block
-						plain
-						hairline
-						size="small"
-						class="btnGrayBorder"
-						@click="onOptionConfirmNew(-1)"
-					>{{optionFullCheck.NAME}}</van-button>
+				<section class="popSection" v-if="viewMode === 1">
+					<van-button block plain hairline size="small" class="btnGrayBorder" @click="onOptionConfirm(-1)">{{
+			optionFullCheck.NAME }}</van-button>
 				</section>
 
-				<section class="popSection">
-					<van-button
-						v-for="(opt , index) in optionList"
-						:key="opt.CODE"
-						:class="getOptionButtonColor(opt)"
-						block
-						plain
-						hairline
-						size="small"
-						@click="onOptionConfirmNew(index)"
-					>{{opt.NAME}}</van-button>
-				</section>
+				<div v-for="(fold) in optionGroup" :key="fold.ID">
+					<div style="font-weight: bold; color: #666; margin-bottom: 10px;">{{ fold.NAME }}</div>
+					<section class="popSection">
+						<van-button v-for="(opt) in fold.DETAILS" :key="opt.CODE" :class="getOptionButtonColor(opt)"
+							block plain hairline size="small" @click="onOptionConfirm(opt[ '_FULL_INDEX_' ])">{{
+			opt.NAME
+		}}</van-button>
 
-				<color-sign v-if="viewMode===1" />
+					</section>
+				</div>
+
+				<color-sign v-if="viewMode === 1" />
 			</div>
 		</van-popup>
 
@@ -98,33 +74,18 @@
 				@confirm="onClassConfirm"
 			/>-->
 			<div class="popContainer">
-				<section class="popSection" v-if="viewMode===0">
-					<van-button
-						v-for="(grade , i) in gradeList"
-						:key="grade.GRADE_CODE"
-						block
-						plain
-						hairline
-						size="small"
-						class="btnGrayBorder"
-						@click="onGradeConfirm(grade)"
-					>{{grade.GRADE_NAME}}{{i>0?'年级':''}}</van-button>
+				<section class="popSection" v-if="viewMode === 0">
+					<van-button v-for="(grade, i) in gradeList" :key="grade.GRADE_CODE" block plain hairline
+						size="small" class="btnGrayBorder" @click="onGradeConfirm(grade)">{{ grade.GRADE_NAME }}{{ i > 0
+			? '年级' : '' }}</van-button>
 				</section>
 
-				<section class="popSection" v-for="(classes , index) in classList" :key="index">
-					<van-button
-						v-for="cls in classes"
-						:key="cls.CLASS_ID"
-						:class="getClassButtonColor(cls)"
-						block
-						plain
-						hairline
-						size="small"
-						@click="onClassConfirm(cls)"
-					>{{cls.CLASS_NAME}}</van-button>
+				<section class="popSection" v-for="(classes, index) in classList" :key="index">
+					<van-button v-for="cls in classes" :key="cls.CLASS_ID" :class="getClassButtonColor(cls)" block plain
+						hairline size="small" @click="onClassConfirm(cls)">{{ cls.CLASS_NAME }}</van-button>
 				</section>
 
-				<color-sign v-if="viewMode===0" />
+				<color-sign v-if="viewMode === 0" />
 			</div>
 		</van-popup>
 	</div>
@@ -156,16 +117,16 @@ const defaultGradeChecked = {
 
 export default {
 	components: {
-		[Dialog.Component.name]: Dialog.Component,
-		[Button.name]: Button,
-		[Row.name]: Row,
-		[Col.name]: Col,
-		[Cell.name]: Cell,
-		[Tab.name]: Tab,
-		[Tabs.name]: Tabs,
-		[Popup.name]: Popup,
-		[Loading.name]: Loading,
-		[Picker.name]: Picker,
+		[ Dialog.Component.name ]: Dialog.Component,
+		[ Button.name ]: Button,
+		[ Row.name ]: Row,
+		[ Col.name ]: Col,
+		[ Cell.name ]: Cell,
+		[ Tab.name ]: Tab,
+		[ Tabs.name ]: Tabs,
+		[ Popup.name ]: Popup,
+		[ Loading.name ]: Loading,
+		[ Picker.name ]: Picker,
 		ViewBox,
 		TitleBar,
 		XButton,
@@ -248,6 +209,7 @@ export default {
 			 * 评分选项数组
 			 */
 			optionList: [],
+			optionGroup: [],
 			optionIndex: -1,
 			optionFullCheck: defaultOptionChecked,
 
@@ -273,8 +235,8 @@ export default {
 	},
 	mounted() {
 		//this.loadData();
-		this.urlPath = window.location.href.split('#')[0];
-		if(navigator.userAgent.toLowerCase().indexOf('micromessenger')>-1){
+		this.urlPath = window.location.href.split('#')[ 0 ];
+		if (navigator.userAgent.toLowerCase().indexOf('micromessenger') > -1) {
 			this.configWechat();
 		} else {
 
@@ -282,7 +244,7 @@ export default {
 
 	},
 	activated() {
-		document.title = '班级综评'
+		document.title = '班级综评';
 		// console.log("form", this.$route.query);
 		// debugger;
 		this.seq_id = this.$route.query.id;
@@ -298,7 +260,7 @@ export default {
 		this.init();
 	},
 	deactivated() {
-		document.title = "绿蜻蜓"
+		document.title = "绿蜻蜓";
 	},
 	beforeRouteLeave(to, from, next) {
 		if (this.previewOn) {
@@ -322,7 +284,7 @@ export default {
 			if (this.optionIndex === -1) {
 				return this.optionFullCheck;
 			}
-			return this.optionList[this.optionIndex];
+			return this.optionList[ this.optionIndex ];
 		},
 		// classChecked() {
 		//   if (this.classCheckedId === -1) {
@@ -368,7 +330,7 @@ export default {
 							'chooseWXPay',
 						], // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
 					});
-					wx.error(function(res) {
+					wx.error(function (res) {
 						console.log(res);
 						// alert(res.errMsg);
 					});
@@ -400,7 +362,7 @@ export default {
 			this.dataModified = b;
 
 			if (b) {
-				window.onbeforeunload = function(e) {
+				window.onbeforeunload = function (e) {
 					e.preventDefault();
 					e.returnValue = '已有录入数据，确定放弃数据并离开页面？';
 				};
@@ -416,6 +378,7 @@ export default {
 
 			this.optionIndex = -1;
 			this.optionList = [];
+			this.optionGroup = [];
 
 			// this.classIndex = -1;
 			this.classChecked = defaultClassChecked;
@@ -434,8 +397,7 @@ export default {
 			// alert(JSON.stringify({ seq_id, detail_id, class_id, see_mode }));
 			try {
 				let result = await this.$http.get(
-					`${
-						apiRouter.CLASS_RATE_TASK_LIST2
+					`${apiRouter.CLASS_RATE_TASK_LIST2
 					}?seq_id=${seq_id}&obj_name=${obj_name}&obj_id=${class_id}&detail_id=${detail_id}&see_mode=${see_mode}`
 				);
 
@@ -444,10 +406,24 @@ export default {
 					if (respBody.code === 200) {
 						let { grade_list, class_list, detail_list, step_value, data_list } = respBody.data;
 
+						let opt_arr = [];
+						let fullIndex = 0;
+						detail_list.forEach((foldNode) => {
+							foldNode.DETAILS.forEach(item => {
+								item._FULL_INDEX_ = fullIndex;
+								opt_arr.push({
+									folderName: foldNode.NAME,
+									folderId: foldNode.ID,
+									...item
+								});
+								fullIndex++;
+							});
+						});
 						// if (this.viewMode === 1) {
 						// 	detail_list.unshift(defaultOptionChecked)
 						// }
-						this.optionList = detail_list;
+						this.optionList = opt_arr;
+						this.optionGroup = detail_list;
 
 						this.classList = class_list;
 
@@ -477,8 +453,8 @@ export default {
 						this.$nextTick(() => {
 							// debugger;
 							if (this.viewMode === 1) {
-								if (this.classList && this.classList.length && this.classList[0].length) {
-									this.classChecked = this.classList[0][0];
+								if (this.classList && this.classList.length && this.classList[ 0 ].length) {
+									this.classChecked = this.classList[ 0 ][ 0 ];
 									this.tabLabel = this.classChecked.CLASS_NAME;
 								}
 								// this.classIndex = 0;
@@ -489,7 +465,7 @@ export default {
 								// 	this.classIndex = 1
 								// }
 							} else {
-								this.tabLabel = this.gradeList[0].GRADE_NAME;
+								this.tabLabel = this.gradeList[ 0 ].GRADE_NAME;
 								this.optionIndex = 0;
 								// this.classIndex = -1;
 								// if (this.$refs.picker0) {
@@ -538,8 +514,7 @@ export default {
 			try {
 				// debugger;
 				let resp = await this.$http.get(
-					`${apiRouter.CLASS_RATE_TASK_LIST2}?seq_id=${
-						this.seq_id
+					`${apiRouter.CLASS_RATE_TASK_LIST2}?seq_id=${this.seq_id
 					}&obj_name=${obj_name}&obj_id=${class_id}&detail_id=${detail_id}&see_mode=${see_mode}`
 				);
 				if (resp.status === 200) {
@@ -568,8 +543,22 @@ export default {
 						this.taskList = data_list;
 
 						if (this.viewMode === 1) {
-							// detail_list.unshift(defaultOptionChecked)
-							this.optionList = detail_list;
+							// detail_list.unshift(defaultOptionChecked);
+							let opt_arr = [];
+							let fullIndex = 0;
+							detail_list.forEach((foldNode) => {
+								foldNode.DETAILS.forEach(item => {
+									item._FULL_INDEX_ = fullIndex;
+									opt_arr.push({
+										folderName: foldNode.NAME,
+										folderId: foldNode.ID,
+										...item
+									});
+									fullIndex++;
+								});
+							});
+							this.optionList = opt_arr;
+							this.optionGroup = detail_list;
 						} else {
 							grade_list.unshift(defaultGradeChecked);
 							this.gradeList = grade_list;
@@ -594,21 +583,56 @@ export default {
 				title: '弃填',
 				message: '确定将这些项目标记为弃填？',
 				confirmButtonText: '确定',
-			}).then(() => {
+			}).then(async () => {
+				let taskArr = JSON.parse(JSON.stringify(this.taskList));
+				let needTip = false;
+				taskArr.forEach((task) => {
+					if (task.SCORE != 0 || task.COMMENT) {
+						needTip = true;
+					}
+				});
+				if (needTip) {
+					let answer = await Dialog.confirm({
+						className: "dy-rate-dialog",
+						title: "",
+						message: "部分条目已有内容，弃填将不保留，确定弃填吗？",
+						confirmButtonText: "确定",
+					});
+					if (answer !== 'confirm') {
+						return;
+					}
+				}
 				this.doSubmit(1);
 			});
 		},
+
 		async doSubmit(is_give_up) {
 			let detail_arr = [];
 			let taskArr = JSON.parse(JSON.stringify(this.taskList));
+
+			let needTip = false;
 			taskArr.forEach((task) => {
 				detail_arr.push({
 					SCORE: '' + task.SCORE,
 					ID: task.ID,
 					COMMENT: task.COMMENT,
 				});
+				if (task.SCORE == 0 && !task.COMMENT) {
+					needTip = true;
+				}
 			});
 			// console.log(is_give_up, detail_arr);
+			if (needTip) {
+				let answer = await Dialog.confirm({
+					className: "dy-rate-dialog",
+					title: "",
+					message: "部分条目有备注而未评分，确定这样吗？",
+					confirmButtonText: "确定",
+				});
+				if (answer !== 'confirm') {
+					return;
+				}
+			}
 
 			try {
 				// debugger;
@@ -658,7 +682,7 @@ export default {
 									this.gradeChecked = defaultGradeChecked;
 									this.classChecked = defaultClassChecked;
 								}
-								this[`pickerShow${popId}`] = true;
+								this[ `pickerShow${popId}` ] = true;
 								this.fetchList();
 							}
 						} catch (e) {
@@ -680,16 +704,11 @@ export default {
 			}
 		},
 		toggleViewStyle() {
-			// console.log(this.viewMode);
-			// this.classIndex = 0;
-			// this.optionIndex = 0;
-			// this.classList = [defaultClassChecked];
-			// this.optionList = [defaultOptionChecked];
 			this.init();
 		},
 		showPicker(i) {
 			// console.log(i, this.viewMode);
-			this['pickerShow' + i] = true;
+			this[ 'pickerShow' + i ] = true;
 		},
 		onGradeConfirm(grade) {
 			if (!this.lastClickFromGrade || grade.GRADE_CODE !== this.gradeChecked.GRADE_CODE) {
@@ -698,12 +717,12 @@ export default {
 
 				if (this.viewMode === 1) {
 					this.optionIndex = 0;
-					this['pickerShow0'] = true;
+					this[ 'pickerShow0' ] = true;
 				}
 				this.lastClickFromGrade = true;
 				this.fetchList();
 			}
-			this['pickerShow1'] = false;
+			this[ 'pickerShow1' ] = false;
 		},
 		onClassConfirm(cls) {
 			let class_id = cls.CLASS_ID;
@@ -714,28 +733,14 @@ export default {
 
 				if (this.viewMode === 1) {
 					this.optionIndex = 0;
-					this['pickerShow0'] = true;
+					this[ 'pickerShow0' ] = true;
 				}
 				this.lastClickFromGrade = false;
 				this.fetchList();
 			}
-			this['pickerShow1'] = false;
+			this[ 'pickerShow1' ] = false;
 		},
-		// onClassConfirm(checkedItem, index) {
-		//   if (index !== this.classIndex) {
-		//     this.classIndex = index;
-
-		//     if (this.viewMode === 1) {
-		//       this.optionIndex = 0;
-		//       this.$refs.picker0 && this.$refs.picker0.setColumnIndex(0, 0);
-		//     }
-
-		//     this.fetchList();
-		//   }
-
-		//   this["pickerShow1"] = false;
-		// },
-		onOptionConfirmNew(index) {
+		onOptionConfirm(index) {
 			if (index != this.optionIndex) {
 				// console.log(this.optionIndex, index);
 				this.optionIndex = index;
@@ -743,36 +748,15 @@ export default {
 				if (this.viewMode === 0) {
 					this.gradeChecked = defaultGradeChecked;
 					this.classChecked = defaultClassChecked;
-					this['pickerShow1'] = true;
+					this[ 'pickerShow1' ] = true;
 				}
 
 				this.fetchList();
 			} else {
 			}
 
-			this['pickerShow0'] = false;
+			this[ 'pickerShow0' ] = false;
 		},
-		// onOptionConfirm(checkedItem, index) {
-		//   if (index !== this.optionIndex) {
-		//     // console.log(this.optionIndex, index);
-		//     this.optionIndex = index;
-
-		//     if (this.viewMode === 0) {
-		//       this.classIndex = 0;
-		//       this.$refs.picker1 && this.$refs.picker1.setColumnIndex(0, 0);
-		//     }
-
-		//     this.fetchList();
-		//   }
-
-		//   this["pickerShow0"] = false;
-
-		//   // console.log(
-		//   //   "onOptionConfirm",
-		//   //   JSON.parse(JSON.stringify(checkedItem)),
-		//   //   index
-		//   // );
-		// },
 		getOptionButtonColor(found) {
 			if (this.viewMode === 0) {
 				return 'btnGrayBorder';
@@ -832,6 +816,7 @@ export default {
 	.van-dialog__header {
 		font-weight: bold;
 	}
+
 	.van-dialog__message {
 		font-size: 16px;
 		font-weight: normal;
@@ -841,10 +826,12 @@ export default {
 	.van-button__text {
 		font-weight: bold;
 	}
+
 	.van-dialog__confirm {
 		// color: #ED561B;
 	}
 }
+
 .van-picker__confirm {
 	font-size: 16px;
 	color: #333;
@@ -859,11 +846,13 @@ export default {
 	flex-direction: column;
 	height: 100%;
 }
+
 .wapper {
 	position: relative;
 	height: 100%;
 	background-color: #fafafa;
 }
+
 .content {
 	position: absolute;
 	top: 0;
@@ -871,6 +860,7 @@ export default {
 	overflow: scroll;
 	width: 100%;
 }
+
 .footer {
 	position: fixed;
 	bottom: 0;
@@ -881,7 +871,7 @@ export default {
 	align-items: center;
 	padding: 15px;
 
-	> button {
+	>button {
 		flex: 1;
 		display: block;
 		color: #fff;
@@ -912,6 +902,7 @@ export default {
 	grid-gap: 20px;
 	align-content: start;
 }
+
 .popSection {
 	width: 100%;
 	display: grid;

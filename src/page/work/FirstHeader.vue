@@ -4,7 +4,7 @@
       <p >【{{headData.NAME}} {{headData.TYPENAME}}】</p>
       <p style="margin-left: 8px;">{{headData.ADDDATE.substr(5,5).replace(/-/g,'/')}} {{timeCode}} {{headData.TITLE}} </p>
     </div>
-    <span class="homework-deadline" style="text-align: right">{{headData.OUTDATE?new Date(headData.OUTDATE.replace(/-/g, '/')).format("yyyy-MM-dd"):''}}截止&nbsp;&nbsp;&nbsp;</span>
+    <span class="homework-deadline" style="text-align: right">{{headData.OUTDATE?new Date(headData.OUTDATE.replace(/-/g, '/')).format("yyyy/MM/dd"):''}}截止&nbsp;&nbsp;&nbsp;</span>
   </div>
 </template>
 
