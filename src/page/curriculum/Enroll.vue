@@ -23,7 +23,8 @@
         <!--</van-cell-group>-->
 
         <group class="scope-title-box">
-          <cell :title="'课程介绍：'+courseDetail.INTRO" style="padding: 1px 0px;align-items: start;">
+          <cell style="padding: 1px 0px;align-items: start;">
+            <span slot="title" v-html="'课程介绍：'+courseDetail.INTRO.replace(/\n/g,'<br>')"></span>
             <img slot="icon" width="20" style="display:block;margin-right:15px;margin-top: 3px;" src="@/assets/curriculum/title-1.png">
           </cell>
           <cell :title="'费用说明：'+courseDetail.FEE_CONTENT" style="padding: 1px 15px;padding-left: 36px;">
