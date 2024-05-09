@@ -5,7 +5,7 @@
 			:style="'width: '+ voiceBarWidth +'em;' "
 		/>
 		<div class="voiceSeconds">{{seconds}}"</div>
-		<div class="continue" v-if="previous" @click.stop="emitContinue">继续播放</div>
+		<div class="continue" v-if="previous && !playing" @click.stop="emitContinue">继续播放</div>
 	</div>
 </template>
 <script>
