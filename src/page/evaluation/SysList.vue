@@ -36,6 +36,10 @@ export default {
         //  this.getObjData();
     },
     activated() {
+    //    if(window.sessionStorage.getItem('sListFrom') === 'cList') {
+    //        window.sessionStorage.removeItem('sListFrom');
+    //        this.$router.go(-1);
+    //    };
         let userType = window.localStorage.getItem("USER_TYPE");
         this.userType = userType;
         if (userType == 'T_TEACHER') {
@@ -85,9 +89,19 @@ export default {
                         // TO_URL为 /app/zh/teacher/tea_zh_eval，说明有多个评价体系，转跳选取体系页面
                         //teacher/tea_ycb_class_view
                         if(data.TO_URL == '/app/zh/teacher/tea_ycb_class_view'){
-                            _this.$router.push({path: "eval-rank", query: {evalId: data.EVAL_ID, classId: data.CLASS_ID,singleFlag:true}})
+                            let isFromBack = _this.$route.query.bk;
+                            if(isFromBack){
+                                _this.goBack();
+                            } else {
+                                _this.$router.push({path: "/eval-rank", query: {evalId: data.EVAL_ID, classId: data.CLASS_ID,singleFlag:true}})
+                            }
                         }else if (data.TO_URL == '/app/zh/teacher/tea_zh_class') { // 直接传递EVAL_ID 班级页面
-                            _this.$router.push({path: '/eval-cList', query: {evalId: data.EVAL_ID}})
+                            let isFromBack = _this.$route.query.bk;
+                            if(isFromBack){
+                                _this.goBack();
+                            } else {
+                                _this.$router.push({path: '/eval-cList', query: {evalId: data.EVAL_ID}})
+                            }
                         } else {
                             //   /app/zh/teacher/tea_zh_eval
                             _this.showList = true;
@@ -121,7 +135,7 @@ export default {
                                 this.goBack();
                             } else {
                                 this.$router.push({
-                                    path: "eval-rank",
+                                    path: "/eval-rank",
                                     query: {evalId: data.EVAL_ID, classId: data.CLASS_ID}
                                 });
                             }
@@ -169,7 +183,8 @@ export default {
             if (userType === 'T_TEACHER') {
                 this.$router.push({path: '/'});
             } else{
-                window.location.href = '/weixin/wechat/v2/index.html#/evaluate/stu_home';
+                this.$router.push({path: '/evaluate/stu_home'});
+                // window.location.href = '/weixin/wechat/v2/index.html#/evaluate/stu_home';
             }
         }
 

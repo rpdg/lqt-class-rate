@@ -73,6 +73,7 @@ export default {
                     this.noticeUrl = res.noticeUrl;
                     this.userType = res.userType;
                     let isTeach = res.userType;
+                    window.localStorage.setItem('USER_TYPE', isTeach);
                     if (isTeach === 'T_TEACHER') {
                         this.isTeach = true;
                     } else {

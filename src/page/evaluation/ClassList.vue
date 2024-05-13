@@ -65,7 +65,7 @@ export default {
             this.$http.get(apiRouter.GET_CHECK_YCB_CLASS_VIEW+'?eval_id='+evalId+'&class_id='+classId)
                 .then((response) => {
                     if (response.body.data.HAS_YCB == true) {
-                        vm.$router.push({path: "eval-rank", query: {evalId: evalId, classId: classId}})
+                        vm.$router.push({path: "/eval-rank", query: {evalId: evalId, classId: classId}})
                     }else{
                         alert('该班级暂无综评统计');
                     }
@@ -78,8 +78,9 @@ export default {
         },
 
         goBack() {
-            this.$router.go(-1);
-
+            // window.sessionStorage.setItem('sListFrom', 'cList');
+            // this.$router.go(-1);
+            this.$router.push({path:"/eval-sList", query:{bk: 1}});
         }
 
     },
