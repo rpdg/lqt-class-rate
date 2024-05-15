@@ -183,8 +183,7 @@ export default {
             if (userType === 'T_TEACHER') {
                 this.$router.push({path: '/'});
             } else{
-                this.$router.push({path: '/evaluate/stu_home'});
-                // window.location.href = '/weixin/wechat/v2/index.html#/evaluate/stu_home';
+                window.location.href = '/weixin/wechat/v2/index.html#/evaluate/stu_home';
             }
         }
 
