@@ -36,7 +36,7 @@
 			</div>
 			<div class="footer">
 				<van-button class="error" @click="doAbanden">弃填</van-button>
-				<van-button class="submit" @click="doSubmit(0)">提交</van-button>
+				<van-button class="submit" @click="doSubmit(false)">提交</van-button>
 			</div>
 		</div>
 
@@ -45,7 +45,7 @@
 			<div class="popContainer">
 				<section class="popSection" v-if="viewMode === 1">
 					<van-button block plain hairline size="small" class="btnGrayBorder" @click="onOptionConfirm(-1)">{{
-			optionFullCheck.NAME }}</van-button>
+						optionFullCheck.NAME }}</van-button>
 				</section>
 
 				<div v-for="(fold) in optionGroup" :key="fold.ID">
@@ -53,8 +53,8 @@
 					<section class="popSection">
 						<van-button v-for="(opt) in fold.DETAILS" :key="opt.CODE" :class="getOptionButtonColor(opt)"
 							block plain hairline size="small" @click="onOptionConfirm(opt[ '_FULL_INDEX_' ])">{{
-			opt.NAME
-		}}</van-button>
+								opt.NAME
+							}}</van-button>
 
 					</section>
 				</div>
@@ -77,7 +77,7 @@
 				<section class="popSection" v-if="viewMode === 0">
 					<van-button v-for="(grade, i) in gradeList" :key="grade.GRADE_CODE" block plain hairline
 						size="small" class="btnGrayBorder" @click="onGradeConfirm(grade)">{{ grade.GRADE_NAME }}{{ i > 0
-			? '年级' : '' }}</van-button>
+							? '年级' : '' }}</van-button>
 				</section>
 
 				<section class="popSection" v-for="(classes, index) in classList" :key="index">
@@ -102,7 +102,7 @@ import { Col, Row, Cell, Button, Dialog, Tab, Tabs, Popup, Loading, Toast, Picke
 
 const defaultOptionChecked = {
 	CODE: '',
-	NAME: '所有评价项',
+	NAME: '所有评分项',
 };
 
 const defaultClassChecked = {
@@ -602,7 +602,7 @@ export default {
 						return;
 					}
 				}
-				this.doSubmit(1);
+				this.doSubmit(true);
 			});
 		},
 
@@ -610,27 +610,29 @@ export default {
 			let detail_arr = [];
 			let taskArr = JSON.parse(JSON.stringify(this.taskList));
 
-			let needTip = false;
-			taskArr.forEach((task) => {
-				detail_arr.push({
-					SCORE: '' + task.SCORE,
-					ID: task.ID,
-					COMMENT: task.COMMENT,
+			if (!is_give_up) {
+				let needTip = false;
+				taskArr.forEach((task) => {
+					detail_arr.push({
+						SCORE: '' + task.SCORE,
+						ID: task.ID,
+						COMMENT: task.COMMENT,
+					});
+					if (task.SCORE == 0 && task.COMMENT) {
+						needTip = true;
+					}
 				});
-				if (task.SCORE == 0 && !task.COMMENT) {
-					needTip = true;
-				}
-			});
-			// console.log(is_give_up, detail_arr);
-			if (needTip) {
-				let answer = await Dialog.confirm({
-					className: "dy-rate-dialog",
-					title: "",
-					message: "部分条目有备注而未评分，确定这样吗？",
-					confirmButtonText: "确定",
-				});
-				if (answer !== 'confirm') {
-					return;
+				// console.log(is_give_up, detail_arr);
+				if (needTip) {
+					let answer = await Dialog.confirm({
+						className: "dy-rate-dialog",
+						title: "",
+						message: "部分条目有备注而未评分，确定这样吗？",
+						confirmButtonText: "确定",
+					});
+					if (answer !== 'confirm') {
+						return;
+					}
 				}
 			}
 
