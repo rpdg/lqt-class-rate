@@ -641,7 +641,7 @@ export default {
 				// debugger;
 				const sendData = {
 					seq_id: this.seq_id,
-					is_give_up,
+					is_give_up: is_give_up ? 1 : 0,
 					detail_arr: JSON.stringify(detail_arr),
 				};
 
