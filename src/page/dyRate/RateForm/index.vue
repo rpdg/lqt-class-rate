@@ -610,18 +610,19 @@ export default {
 			let detail_arr = [];
 			let taskArr = JSON.parse(JSON.stringify(this.taskList));
 
-			if (!is_give_up) {
-				let needTip = false;
-				taskArr.forEach((task) => {
-					detail_arr.push({
-						SCORE: '' + task.SCORE,
-						ID: task.ID,
-						COMMENT: task.COMMENT,
-					});
-					if (task.SCORE == 0 && task.COMMENT) {
-						needTip = true;
-					}
+			let needTip = false;
+			taskArr.forEach((task) => {
+				detail_arr.push({
+					SCORE: '' + task.SCORE,
+					ID: task.ID,
+					COMMENT: task.COMMENT,
 				});
+				if (task.SCORE == 0 && task.COMMENT) {
+					needTip = true;
+				}
+			});
+
+			if (!is_give_up) {
 				// console.log(is_give_up, detail_arr);
 				if (needTip) {
 					let answer = await Dialog.confirm({
