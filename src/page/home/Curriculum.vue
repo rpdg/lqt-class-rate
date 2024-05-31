@@ -1,7 +1,7 @@
 <template>
   <div class="box">
     <back-title-bar title="发通知" />
-    <h3 class="title">请选择通知范围</h3>
+    <h3 class="title" style="margin-top: 47px;">请选择通知范围</h3>
     <div class="curriculum clearfix">
       <div class="curriculum-list clearfix" v-for="(items,index1) in curriculum">
         <h4><em>课</em><span>{{items.courseNmae}}</span></h4>
@@ -59,7 +59,7 @@ import BackTitleBar from "../../components/common/BackTitleBar.vue";
       this.showData();
     },
     methods: {
-      
+
       //  选择
       chooseBtn(item, groupIndex){
         if (typeof item.selected === 'undefined') {
