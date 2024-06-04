@@ -4,7 +4,7 @@
 		<div class="context clearfix">
 			<h3 class="title">评价条目：{{ nameBt }}</h3>
 			<ul class="maple-info">
-				<li @click="remarkInfo(item.ID, item.NAME)" v-for="(item, index) in getGradeData" :key="index">
+				<li @click="remarkInfo(item.ID, item.NAME, item.CLASS_TYPE)" v-for="(item, index) in getGradeData" :key="index">
 					<span>{{ item.NAME }}</span>
 				</li>
 			</ul>
@@ -50,10 +50,10 @@ export default {
 					console.log(response);
 				});
 		},
-		remarkInfo(classId, className) {
+		remarkInfo(classId, className, classType) {
 			window.location.href = `/weixin/wechat/v2/index.html#/evaluate/students?classId=${classId}&evalId=${
 				this.evalId
-			}&detailCode=${this.detailCode}&path=gradeList&className=${encodeURI(className)}&nameBt=${encodeURI(
+			}&detailCode=${this.detailCode}&path=gradeList&className=${encodeURI(className)}&classType=${classType}&nameBt=${encodeURI(
 				this.nameBt
 			)}`;
 
