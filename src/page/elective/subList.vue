@@ -1,67 +1,61 @@
 <template>
-	<div class="box" ref="msgBox">
-		<x-header
-			class="title-header"
-			:left-options="{preventGoBack: true}"
-			@on-click-back="goBack"
-		>{{courseTitle}}</x-header>
-		<div class="wapper">
-			<ul class="message" key="subjectListUl">
-				<li class="clearfix" v-for="(news,index) in messageData" :key="index">
-					<div class="message-icon"></div>
-					<a href="javascript:void(0);" @click="goCheck(news)" class="message-info">
-						<h3 style="color: #424242">{{news.TITLE_DATE}}</h3>
-						<p v-if="news.NOCHECK == 0" style="color: #777777">全勤</p>
-						<p v-else style="color: #777777">缺勤{{news.NOCHECK}}人</p>
-					</a>
-					<div class="message-handle" style="text-align:center;">
-						<a v-if="news.NOCHECK == 0" class="publishBtn inform" >全勤</a>
-						<a v-else class="publishBtn pubisnBtn" >有缺勤</a>
-						<div class="publishBtn pubisnBtn" style="margin-top:3px; font-size: 0.42857142857142855rem;" @click="confirmDelete(news.ID)">
-							<van-icon name="delete-o" style="vertical-align: middle;margin-top: -2px;margin-right:3px;" />撤销
-						</div>
-					</div>
-				</li>
-			</ul>
+  <div class="box" ref="msgBox">
+    <van-nav-bar class="title-return-top" :title="courseTitle" left-text="返回" right-text left-arrow
+      @click-left="goBack">
+      <template #right>
+        <van-button plain type="primary" size="mini" class="btnBlueBorder" @click="viewClassDetail">查看考勤</van-button>
+      </template>
+    </van-nav-bar>
+    <!-- <x-header class="title-header" :left-options="{ preventGoBack: true }"
+      @on-click-back="goBack">{{ courseTitle }}</x-header> -->
 
-			<div v-if="pageCount != page" class="more-title" @click="nextPage">
-				<a href="javascript:void(0)">点击查看更多</a>
-			</div>
-			<div v-else class="more-title">
-				<a v-if="!pageLoading" href="javascript:void(0)">到底啦</a>
-				<a v-else href="javascript:void(0)">加载中...</a>
-			</div>
+    <div class="wapper">
+      <ul class="message" key="subjectListUl">
+        <li class="clearfix" v-for="(news, index) in messageData" :key="index">
+          <div class="message-icon"></div>
+          <a href="javascript:void(0);" @click="goCheck(news)" class="message-info">
+            <h3 style="color: #424242">{{ news.TITLE_DATE }}</h3>
+            <p v-if="news.NOCHECK == 0" style="color: #777777">全勤</p>
+            <p v-else style="color: #777777">缺勤{{ news.NOCHECK }}人</p>
+          </a>
+          <div class="message-handle" style="text-align:center;">
+            <a v-if="news.NOCHECK == 0" class="publishBtn inform">全勤</a>
+            <a v-else class="publishBtn pubisnBtn">有缺勤</a>
+            <div class="publishBtn pubisnBtn" style="margin-top:3px; font-size: 0.42857142857142855rem;"
+              @click="confirmDelete(news.ID)">
+              <van-icon name="delete-o" style="vertical-align: middle;margin-top: -2px;margin-right:3px;" />撤销
+            </div>
+          </div>
+        </li>
+      </ul>
 
-			<p class="moreData" v-show="needShow">
-				<span>加载中...</span>
-			</p>
-			<p class="lastShow" v-show="lastShow">
-				<span>已经全部加载</span>
-			</p>
-			<div v-transfer-dom>
-				<confirm
-					v-model="popup"
-					:close-on-confirm="false"
-					:title="('确定删除作业？删除后无法恢复数据？')"
-					@on-confirm="onConfirm()"
-					confirmText="是，我要删除"
-				></confirm>
-			</div>
+      <div v-if="pageCount != page" class="more-title" @click="nextPage">
+        <a href="javascript:void(0)">点击查看更多</a>
+      </div>
+      <div v-else class="more-title">
+        <a v-if="!pageLoading" href="javascript:void(0)">到底啦</a>
+        <a v-else href="javascript:void(0)">加载中...</a>
+      </div>
 
-			<div class="releaseBtn">
-				<h1 class="typeBtn" @click="addToday()">新增</h1>
-			</div>
+      <p class="moreData" v-show="needShow">
+        <span>加载中...</span>
+      </p>
+      <p class="lastShow" v-show="lastShow">
+        <span>已经全部加载</span>
+      </p>
+      <div v-transfer-dom>
+        <confirm v-model="popup" :close-on-confirm="false" :title="('确定删除作业？删除后无法恢复数据？')" @on-confirm="onConfirm()"
+          confirmText="是，我要删除"></confirm>
+      </div>
 
-			<toast
-				v-model="showPositionValue"
-				type="text"
-				:time="800"
-				is-show-mask
-				width="140px"
-				:position="position"
-			>{{ toastMessage }}</toast>
-		</div>
-	</div>
+      <div class="releaseBtn">
+        <h1 class="typeBtn" @click="addToday()">新增</h1>
+      </div>
+
+      <toast v-model="showPositionValue" type="text" :time="800" is-show-mask width="140px" :position="position">{{
+        toastMessage }}</toast>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -75,9 +69,10 @@ import {
   Cell,
   Toast
 } from "vux";
-import { Dialog, Tab, Tabs, Icon } from "vant";
+import { Button, Dialog, Tab, Tabs, Icon, NavBar } from "vant";
 import Back from "../../components/common/Back.vue";
 import apiRouter from "../../config/api.js";
+
 
 export default {
   directives: {
@@ -93,11 +88,13 @@ export default {
     Cell,
     Toast,
     Dialog,
-    [Icon.name]: Icon,
-    [Tab.name]: Tab,
-    [Tabs.name]: Tabs
+    [ Button.name ]: Button,
+    [ Icon.name ]: Icon,
+    [ Tab.name ]: Tab,
+    [ Tabs.name ]: Tabs,
+    [ NavBar.name ]: NavBar,
   },
-  mounted() {},
+  mounted() { },
   activated() {
     this.page = 1;
     // if (this.$route.query.fresh && this.$route.query.fresh == "1") {
@@ -155,7 +152,7 @@ export default {
         finalList: [],
         noDoList: []
       },
-
+      iHaveOnlyOneCourse: false,
       selectTab: 0,
       id: "",
       page: 1,
@@ -213,7 +210,7 @@ export default {
           courseTitle: vm.courseTitle,
           courseId: vm.courseId,
           checkMainId: e.ID,
-          checkonDate : e.CHECKON_DATE
+          checkonDate: e.CHECKON_DATE
         }
       });
     },
@@ -224,10 +221,10 @@ export default {
       this.$http
         .get(
           apiRouter.GET_ADD_TCHECKON_MAIN +
-            "?courseId=" +
-            courseId +
-            "&check_date=" +
-            checkDateStr
+          "?courseId=" +
+          courseId +
+          "&check_date=" +
+          checkDateStr
         )
         .then(
           response => {
@@ -245,7 +242,11 @@ export default {
         );
     },
     goBack() {
-      this.$router.push({ path: "/ele-list" });
+      if (this.iHaveOnlyOneCourse) {
+        window.history.go(-2);
+      } else {
+        this.$router.push({ path: "/ele-list" });
+      }
     },
     goDetail(e) {
       this.$router.push({
@@ -253,18 +254,20 @@ export default {
         query: { courseId: e.courseId }
       });
     },
-
+    viewClassDetail() {
+      window.location.href = `/weixin/wechat/v2/index.html#/class_attendance/elective_course?from=teacher&courseName=${this.courseTitle}&courseId=${this.courseId}`;
+    },
     loadDataNext() {
       let vm = this;
       let courseId = vm.$route.query.courseId;
       this.$http
         .get(
           apiRouter.GET_ALL_CHECK_COURSE +
-            "?courseId=" +
-            courseId +
-            "&curPage=" +
-            vm.page +
-            "&pageSize=20"
+          "?courseId=" +
+          courseId +
+          "&curPage=" +
+          vm.page +
+          "&pageSize=20"
         )
         .then(
           response => {
@@ -290,15 +293,18 @@ export default {
       this.$http
         .get(
           apiRouter.GET_ALL_CHECK_COURSE +
-            "?courseId=" +
-            courseId +
-            "&curPage=" +
-            vm.page +
-            "&pageSize=20"
+          "?courseId=" +
+          courseId +
+          "&curPage=" +
+          vm.page +
+          "&pageSize=20"
         )
         .then(
           response => {
             if (response.body.code === 200) {
+              if (response.body.data.my_course_count === 1) { //&& response.body.data.is_my_course === 1
+                vm.iHaveOnlyOneCourse = true;
+              }
               let messageData = response.body.data.infoList;
               //vm.messageData = messageData;
 
@@ -324,6 +330,7 @@ export default {
 
 <style lang="less" scoped>
 @import "../../style/minxin.less";
+
 .wapper {
   position: absolute;
   top: 47px;
@@ -339,6 +346,7 @@ export default {
   .van-dialog__header {
     font-weight: bold;
   }
+
   .van-dialog__message {
     font-size: 16px;
     font-weight: normal;
@@ -348,14 +356,17 @@ export default {
   .van-button__text {
     font-weight: bold;
   }
+
   .van-dialog__confirm {
     // color: #ED561B;
   }
 }
+
 .van-picker__confirm {
   font-size: 16px;
   color: #333;
 }
+
 .message {
   width: 100%;
 }
@@ -507,6 +518,7 @@ a.delete {
 .back-div {
   padding-bottom: 100 / @baseSize;
 }
+
 .up-back {
   width: 100%;
   height: 100 / @baseSize;
@@ -562,6 +574,7 @@ a.delete {
 .box /deep/ .van-tabs__line {
   background-color: #48b319;
 }
+
 .box /deep/ .van-tab {
   border-bottom: 1px solid #dddddd;
 }
@@ -593,5 +606,13 @@ a.delete {
   display: block;
   line-height: 40px;
   color: #999;
+}
+
+
+.btnBlueBorder {
+  // border-color: #0093dd;
+  border: none;
+  color: #0093dd;
+  background-color: #ECF5FF;
 }
 </style>

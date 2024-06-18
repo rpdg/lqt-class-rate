@@ -8,10 +8,10 @@
 			left-arrow
 			@click-left="goBack"
 		>
-    <template #right>
+    <!-- <template #right>
       <van-button v-if="hasClass" plain type="primary" size="mini" class="btnBlueBorder" @click="viewClassDetail">查看考勤</van-button>
-    </template>
-  </van-nav-bar>
+    </template> -->
+  		</van-nav-bar>
 		<div class="wapper">
 			<ul class="message" key="kListUl">
 				<li class="clearfix" v-for="(item,index) in messageData" :key="index">
@@ -168,6 +168,13 @@ export default {
 				.then(
 					(response) => {
 						if (response.body.code === 200) {
+							if (response.body.data.infoList.length === 1) {
+								let e = response.body.data.infoList[0];
+								this.$router.push({
+									path: '/ele-sublist',
+									query: { courseTitle: e.NAME, courseId: e.ID },
+								});
+							}
 							let messageData = response.body.data.infoList
 							vm.pageLoading = false
 							vm.pageCount = Math.ceil(response.body.data.pageCount / 10)

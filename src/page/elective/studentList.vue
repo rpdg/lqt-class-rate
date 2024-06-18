@@ -1,147 +1,95 @@
 <template>
-	<div class="box">
-		<x-header
-			class="title-header"
-			:left-options="{preventGoBack: true}"
-			@on-click-back="goBack"
-		>{{courseTitle}}</x-header>
-		<div
-			style="width: 100vw; position: absolute; top: 57px; height: 38px; padding:0 20px; border-bottom: 1px #ddd dashed;"
-		>
-			考勤日期：{{checkonDate.getMonth()+1}}月{{checkonDate.getDate()}}日
-			<van-button
-				plain
-				hairline
-				size="mini"
-				type="info"
-				color="orange"
-				style="float:right;"
-				@click="showDatePicker=true"
-			>&nbsp; 修改 &nbsp;</van-button>
-			<van-calendar
-				:color="'#48B319'"
-				v-model="showDatePicker"
-				@confirm="onDatePickerConfirm"
-				:default-date="checkonDate"
-				:min-date="new Date(checkonDate.getTime() - 15552000000)"
-				:max-date="new Date"
-			/>
-		</div>
-		<div class="wapper">
-			<ul key="stuListUl">
-				<li
-					style="width: 33%;display: inline-block;margin-top: 0.72rem"
-					v-for="(item,index) in messageData"
-					:key="index"
-				>
-					<div style="width: 100%;text-align: center; ">
-						<div
-							@click="editCheck(item)"
-							style="width: 70%;height: 110px;display: inline-block;position: relative;"
-						>
-							<img style="width: 100%;height: 100%" :src="item.AVATAR" />
-							<img
-								v-if="item.STATUS != '1'"
-								style="width: 60%;position: absolute;bottom: 0;right: 0;"
-								src="@/assets/curriculum/duty.png"
-							/>
-						</div>
+  <div class="box">
+    <x-header class="title-header" :left-options="{ preventGoBack: true }" @on-click-back="goBack">{{ courseTitle
+      }}</x-header>
+    <div
+      style="width: 100vw; position: absolute; top: 57px; height: 38px; padding:0 20px; border-bottom: 1px #ddd dashed;">
+      考勤日期：{{ checkonDate.getMonth() + 1 }}月{{ checkonDate.getDate() }}日
+      <van-button plain hairline size="mini" type="info" color="orange" style="float:right;"
+        @click="showDatePicker = true">&nbsp; 修改 &nbsp;</van-button>
+      <van-calendar :color="'#48B319'" v-model="showDatePicker" @confirm="onDatePickerConfirm"
+        :default-date="checkonDate" :min-date="new Date(checkonDate.getTime() - 15552000000)" :max-date="new Date" />
+    </div>
+    <div class="wapper">
+      <ul key="stuListUl">
+        <li style="width: 33%;display: inline-block;margin-top: 0.72rem" v-for="(item, index) in messageData"
+          :key="index">
+          <div style="width: 100%;text-align: center; ">
+            <div @click="editCheck(item)" style="display: inline-block; position: relative;">
+              <div v-if="item.clsKqHtml" v-html="item.clsKqHtml" style="margin-bottom: 5px;"></div>
+              <div v-else-if="item.STATUS != '1'" :style="`color: ${attendanceStatusColorMap[ item.STATUS ]}`">{{
+                item.REMARK }}</div>
+              <img style="width: auto; max-height: 110px;" :src="item.AVATAR" />
+              <img v-if="item.STATUS != '1'" style="width: 60%; position: absolute;bottom: 0;right: 0;"
+                src="@/assets/curriculum/duty.png" />
+            </div>
+            <div>{{ item.SHORT_NAME }} {{ item.NAME }}</div>
+            <img @click="editDetail(item)" style="width: 20px;margin-top: 5px" src="@/assets/edit.png" />
+          </div>
+        </li>
+      </ul>
 
-						<div>{{item.SHORT_NAME}} {{item.NAME}}</div>
-						<img
-							v-if="!item.REMARK"
-							@click="editDetail(item)"
-							style="width: 20px;margin-top: 5px"
-							src="@/assets/edit.png"
-						/>
-						<span
-							v-else
-							@click="editDetail(item)"
-							style="color: #DDDDDD;margin-top: 8px;display: inline-block;"
-						>{{item.REMARK}}</span>
-					</div>
-				</li>
-			</ul>
+      <p class="moreData" v-show="needShow">
+        <span>加载中...</span>
+      </p>
+      <p class="lastShow" v-show="lastShow">
+        <span>已经全部加载</span>
+      </p>
+      <div v-transfer-dom>
+        <confirm v-model="popup" :close-on-confirm="false" :title="('确定删除作业？删除后无法恢复数据？')" @on-confirm="onConfirm()"
+          confirmText="是，我要删除"></confirm>
+      </div>
 
-			<p class="moreData" v-show="needShow">
-				<span>加载中...</span>
-			</p>
-			<p class="lastShow" v-show="lastShow">
-				<span>已经全部加载</span>
-			</p>
-			<div v-transfer-dom>
-				<confirm
-					v-model="popup"
-					:close-on-confirm="false"
-					:title="('确定删除作业？删除后无法恢复数据？')"
-					@on-confirm="onConfirm()"
-					confirmText="是，我要删除"
-				></confirm>
-			</div>
+      <toast v-model="showPositionValue" type="text" :time="800" is-show-mask width="140px" :position="position">{{
+        toastMessage }}</toast>
 
-			<toast
-				v-model="showPositionValue"
-				type="text"
-				:time="800"
-				is-show-mask
-				width="140px"
-				:position="position"
-			>{{ toastMessage }}</toast>
+      <div v-transfer-dom>
+        <confirm v-model="showDetail" show-input ref="confirm5" :title="studentInfo.SHORT_NAME + '-' + studentInfo.NAME"
+          @on-cancel="onCancel" @on-confirm="onConfirm5"></confirm>
+      </div>
 
-			<div v-transfer-dom>
-        <confirm
-          v-model="showDetail"
-          show-input
-          ref="confirm5"
-					:title="studentInfo.SHORT_NAME+'-'+studentInfo.NAME"
-					@on-cancel="onCancel"
-					@on-confirm="onConfirm5"
-          ></confirm>
-			</div>
+      <div v-if="showCheck" style="margin: 10px;overflow: hidden;">
+        <masker fullscreen style="border-radius: 2px;" :opacity="0.8">
+          <div slot="content" class="m-title">
+            <span style="font-size: 1.6em">{{ studentInfo.SHORT_NAME }}{{ studentInfo.NAME }} 本次考勤</span>
+            <br />
+            <span class="m-time">
+              <h1 class="listBtn chidao" @click="changeStauts('2')">迟到</h1>
+              <h1 class="listBtn zaotui" @click="changeStauts('3')">早退</h1>
+              <h1 class="listBtn kuangke" @click="changeStauts('6')">旷课</h1>
+              <h1 class="listBtn bingjia" @click="changeStauts('4')">病假</h1>
+              <h1 class="listBtn shijia" @click="changeStauts('5')">事假</h1>
+            </span>
 
-			<div v-if="showCheck" style="margin: 10px;overflow: hidden;">
-				<masker fullscreen style="border-radius: 2px;" :opacity="0.8">
-					<div slot="content" class="m-title">
-						<span style="font-size: 1.6em">{{ studentInfo.SHORT_NAME}}{{ studentInfo.NAME }} 本次考勤</span>
-						<br />
-						<span class="m-time">
-							<h1 class="listBtn chidao" @click="changeStauts('2')">迟到</h1>
-							<h1 class="listBtn zaotui" @click="changeStauts('3')">早退</h1>
-							<h1 class="listBtn kuangke" @click="changeStauts('6')">旷课</h1>
-							<h1 class="listBtn bingjia" @click="changeStauts('4')">病假</h1>
-							<h1 class="listBtn shijia" @click="changeStauts('5')">事假</h1>
-						</span>
+            <span class="m-time">
+              <h1 @click="hideStatus()">
+                <icon style="font-size: 2rem" type="clear"></icon>
+              </h1>
+            </span>
+          </div>
+        </masker>
+      </div>
 
-						<span class="m-time">
-							<h1 @click="hideStatus()">
-								<icon style="font-size: 2rem" type="clear"></icon>
-							</h1>
-						</span>
-					</div>
-				</masker>
-			</div>
-
-			<div v-if="showCheckDone" style="margin: 10px;overflow: hidden;">
-				<masker fullscreen style="border-radius: 2px;" :opacity="0.8">
-					<div slot="content" class="m-title">
-						<span
-							style="font-size: 1.6em"
-						>{{ studentInfo.SHORT_NAME}}{{ studentInfo.NAME }} 本次{{statusView[studentInfo.STATUS]}}</span>
-						<br />
-						<span class="m-time">
-							<h1 class="listBtnRow bingjia" @click="changeStauts('1')">改为到勤</h1>
-						</span>
-						<br />
-						<span class="m-time">
-							<h1 @click="hideStatus()">
-								<icon style="font-size: 2rem" type="clear"></icon>
-							</h1>
-						</span>
-					</div>
-				</masker>
-			</div>
-		</div>
-	</div>
+      <div v-if="showCheckDone" style="margin: 10px;overflow: hidden;">
+        <masker fullscreen style="border-radius: 2px;" :opacity="0.8">
+          <div slot="content" class="m-title">
+            <span style="font-size: 1.6em">{{ studentInfo.SHORT_NAME }}{{ studentInfo.NAME }}
+              本次{{ statusView[ studentInfo.STATUS ] }}</span>
+            <br />
+            <span class="m-time">
+              <h1 class="listBtnRow bingjia" @click="changeStauts('1')">改为到勤</h1>
+            </span>
+            <br />
+            <span class="m-time">
+              <h1 @click="hideStatus()">
+                <icon style="font-size: 2rem" type="clear"></icon>
+              </h1>
+            </span>
+          </div>
+        </masker>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="js">
@@ -162,6 +110,9 @@ import {
 import { Button, Tab, Tabs, Calendar } from "vant";
 import Back from "../../components/common/Back.vue";
 import apiRouter from "../../config/api.js";
+import { THEME_COLOR_MAP } from '../../config/colorMap';
+
+
 export default {
   directives: {
     TransferDom
@@ -177,12 +128,12 @@ export default {
     Toast,
     Masker,
     Icon,
-    [Calendar.name]: Calendar,
-    [Tab.name]: Tab,
-    [Button.name]: Button,
-    [Tabs.name]: Tabs
+    [ Calendar.name ]: Calendar,
+    [ Tab.name ]: Tab,
+    [ Button.name ]: Button,
+    [ Tabs.name ]: Tabs
   },
-  mounted() {},
+  mounted() { },
   activated() {
     // if (this.$route.query.fresh && this.$route.query.fresh == "1") {
     //   this.loadData();
@@ -212,6 +163,14 @@ export default {
         4: "病假",
         5: "事假",
         6: "旷课",
+      },
+      attendanceStatusColorMap: {
+        '1': THEME_COLOR_MAP[ 'mainGreen' ],
+        '2': THEME_COLOR_MAP[ 'warningRed' ],
+        '3': THEME_COLOR_MAP[ 'warningRed' ],
+        '4': THEME_COLOR_MAP[ 'mainOrange' ],
+        '5': THEME_COLOR_MAP[ 'mainOrange' ],
+        '6': THEME_COLOR_MAP[ 'warningRed' ],
       },
       studentInfo: {},
       showDatePicker: false,
@@ -311,7 +270,7 @@ export default {
         );
     },
     onConfirm5(value) {
-      if (!value.trim()){
+      if (!value.trim()) {
         this.$vux.toast.text('请输入备注');
         return;
       }
@@ -326,14 +285,14 @@ export default {
       this.$http
         .get(
           apiRouter.GET_CHANGE_TCHECKON_MAIN +
-            "?mainId=" +
-            checkMainId +
-            "&status=remark" +
-            // student.STATUS +
-            "&studentId=" +
-            student.ID +
-            "&remark=" +
-            value
+          "?mainId=" +
+          checkMainId +
+          "&status=remark" +
+          // student.STATUS +
+          "&studentId=" +
+          student.ID +
+          "&remark=" +
+          value
         )
         .then(
           response => {
@@ -366,13 +325,13 @@ export default {
       this.$http
         .get(
           apiRouter.GET_CHANGE_TCHECKON_MAIN +
-            "?mainId=" +
-            checkMainId +
-            "&status=" +
-            status +
-            "&studentId=" +
-            student.ID +
-            "&remark="
+          "?mainId=" +
+          checkMainId +
+          "&status=" +
+          status +
+          "&studentId=" +
+          student.ID +
+          "&remark="
         )
         .then(
           response => {
@@ -409,49 +368,24 @@ export default {
       this.$http
         .get(
           apiRouter.GET_STUDENT_CHECKON_LIST +
-            "?courseId=" +
-            courseId +
-            "&checkMainId=" +
-            checkMainId
+          "?courseId=" +
+          courseId +
+          "&checkMainId=" +
+          checkMainId
         )
         .then(
           response => {
             if (response.body.code === 200) {
-              // let messageData = [
-              //     {
-              //         "STATUS": "1", //考勤状态（1：到勤 2：迟到 3：早退 4：旷课 5：病假 6：事假）
-              //         "ID": "A10328", //学生id
-              //         "AVATAR": "/ID-PHOTO/2020-09-28/925dc983-e8a2-4d27-929c-e6849c360d37.jpg", //学生照片路径
-              //         "REMARK": "",
-              //         "SHORT_NAME": "六1班", //班级名称
-              //         "NAME": "段延庆" //学生姓名
-              //     },
-              //     {
-              //         "STATUS": "1",
-              //         "ID": "A11387",
-              //         "AVATAR": "/ID-PHOTO/2020-08-12/97f7cfa5-0389-4231-8d68-1661c0bda58b.jpg",
-              //         "REMARK": "",
-              //         "SHORT_NAME": "六3班",
-              //         "NAME": "杨扬"
-              //     },
-              //     {
-              //         "STATUS": "1",
-              //         "ID": "A10331",
-              //         "AVATAR": "/ID-PHOTO/2020-08-12/dc12a5b9-bac9-4683-b363-2d5d1101e68c.jpg",
-              //         "REMARK": "",
-              //         "SHORT_NAME": "六3班",
-              //         "NAME": "阮星竹"
-              //     },
-              //     {
-              //         "STATUS": "1",
-              //         "ID": "A11398",
-              //         "AVATAR": "/ID-PHOTO/2020-08-12/0cc10819-e0ff-4bb7-bcff-4463d7ec3dd3.JPG",
-              //         "REMARK": "",
-              //         "SHORT_NAME": "六3班",
-              //         "NAME": "李杰"
-              //     }
-              // ]
-              //response.body.data.infoList;
+              response.body.data.infoList.forEach(val => {
+                if (val.CLASS_KQ_STATUS) {
+                  val.clsKqHtml = val.CLASS_KQ_STATUS.split(",").map(s => {
+                    let v = s.split('_');
+                    let t = v[ 0 ] === 'AM' ? '上午' : v[ 0 ] === 'PM' ? '下午' : '全天';
+                    let b = response.body.data.class_kq_status[ v[ 1 ] ];
+                    return `<div style='font-size:12px;line-height:1em; color:${vm.attendanceStatusColorMap[ v[ 1 ] ]}'>${t}${b}(班)</div>`;
+                  }).join('');
+                }
+              });
               let messageData = response.body.data.infoList;
               vm.messageData = messageData;
             } else {
@@ -469,6 +403,7 @@ export default {
 
 <style lang="less" scoped>
 @import "../../style/minxin.less";
+
 .wapper {
   position: absolute;
   top: 95px;
@@ -477,6 +412,7 @@ export default {
   right: 0;
   overflow: scroll;
 }
+
 .message {
   width: 100%;
 }
@@ -617,6 +553,7 @@ a.delete {
 .back-div {
   padding-bottom: 100 / @baseSize;
 }
+
 .up-back {
   width: 100%;
   height: 100 / @baseSize;
@@ -672,6 +609,7 @@ a.delete {
 .box /deep/ .van-tabs__line {
   background-color: #48b319;
 }
+
 .box /deep/ .van-tab {
   border-bottom: 1px solid #dddddd;
 }
@@ -756,15 +694,19 @@ a.delete {
 .chidao {
   background: #fbc02d;
 }
+
 .zaotui {
   background: #1ba0e1;
 }
+
 .kuangke {
   background: #ff5e5e;
 }
+
 .bingjia {
   background: #48b31a;
 }
+
 .shijia {
   background: #9c26b0;
 }
