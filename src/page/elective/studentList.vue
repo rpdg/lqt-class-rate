@@ -382,7 +382,7 @@ export default {
                     let v = s.split('_');
                     let t = v[ 0 ] === 'AM' ? '上午' : v[ 0 ] === 'PM' ? '下午' : '全天';
                     let b = response.body.data.class_kq_status[ v[ 1 ] ];
-                    return `<div style='font-size:12px;line-height:1em; color:${vm.attendanceStatusColorMap[ v[ 1 ] ]}'>${t}${b}(班)</div>`;
+                    return `<div style='font-size:12px;line-height:1em; color:${vm.attendanceStatusColorMap[ v[ 1 ] ]}'>${t}${b} (班)</div>`;
                   }).join('');
                 }
               });
