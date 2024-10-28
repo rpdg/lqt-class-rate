@@ -48,7 +48,7 @@
           confirmText="是，我要删除"></confirm>
       </div>
 
-      <div class="releaseBtn">
+      <div class="releaseBtn" v-if="studentCount > 0">
         <h1 class="typeBtn" @click="addToday()">新增</h1>
       </div>
 
@@ -117,6 +117,7 @@ export default {
       courseId: "",
       courseTitle: "",
       showPositionValue: false,
+      studentCount: 0,
       position: "default",
       toastMessage: "",
       messageData: [],
@@ -310,6 +311,7 @@ export default {
 
               vm.pageCount = Math.ceil(response.body.data.pageCount / 10);
               vm.messageData = vm.messageData.concat(messageData);
+              vm.studentCount = ~~response.body.data.selcourseInfo.STU_COUNT;
             } else {
               alert(response.body.message);
             }
