@@ -323,7 +323,7 @@ export default {
         if (i === 0) {
           if (window.navigator.mediaDevices && window.navigator.mediaDevices.getUserMedia) {
             // Good to go!
-            navigator.mediaDevices.getUserMedia({ video: { width: { exact: 1280 }, height: { exact: 720 } }, audio: false })
+            navigator.mediaDevices.getUserMedia({ video: { width: { exact: 1280 }, height: { exact: 720 }, facingMode: 'environment' }, audio: false })
               .then((localMediaStream) => {
                 this.openCamera = true;
                 this.mediaStream = localMediaStream;
