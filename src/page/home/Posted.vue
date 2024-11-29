@@ -18,7 +18,16 @@
 					<!-- <input type="hidden" name="userList" v-model="userList">-->
 				</div>
 				<div class="scope-title-box">
-					<p class="scope-title">通知标题</p>
+					<p class="scope-title" style="padding:0 15px;display:flex; align-items: center;">
+            <span style="flex:1;">通知标题</span>
+            <!-- <span style="display: flex;align-items: center;">
+              <span>选择标签</span>
+              <van-icon name="arrow"  color="#C7C7C7" />
+            </span> -->
+            <van-dropdown-menu active-color="#000">
+              <van-dropdown-item v-model="selectedLabelCode" :options="labelOptions" />
+            </van-dropdown-menu>
+          </p>
 					<x-textarea
 						:max="50"
 						@on-focus="onEvent('focus')"
@@ -72,7 +81,7 @@
 				</div>
 				<div class="accessory-box">
 					<p class="accessory-title" style="margin-bottom: 20px;">通知附件</p>
-          
+
           <div class="mg-b-20 imgContainer" v-show="imgTempList.length + fileTempList.length > 0">
             <div class="" v-for="( pic , pIndex ) in imgTempList" :key="pic.newfileName" :data-id='pic.newfileName'
              v-long-press="1000"
@@ -91,11 +100,11 @@
               </span>
             </div>
           </div>
-          
+
           <van-uploader v-show="false"
-            ref="uploader" 
-            :accept='fileAccepts' 
-            :after-read='uploadHandler' 
+            ref="uploader"
+            :accept='fileAccepts'
+            :after-read='uploadHandler'
             :max-size="50 * 1024 * 1024"
             @oversize="onOversize"
             result-type="file"
@@ -130,9 +139,9 @@
 				>发布通知</x-button> -->
 
         <div  style="padding: 20px 15px;">
-          <van-button block color="#54B331" 
-            @click="goUploder" 
-            :loading="showLoading" 
+          <van-button block color="#54B331"
+            @click="goUploder"
+            :loading="showLoading"
             :disabled="showLoading">
               发布通知
           </van-button>
@@ -166,7 +175,7 @@ import {
   Cell,
   Radio,
 } from "vux";
-import { Button, Uploader ,Dialog, Toast} from 'vant';
+import { Button, Uploader ,Dialog, Toast, Icon,  DropdownMenu, DropdownItem} from 'vant';
 import { getSelectDates } from "../../utils/DateUtils";
 import apiRouter , { apiPath } from "../../config/api.js";
 
@@ -207,7 +216,10 @@ export default {
     Checker,
     CheckerItem,
     Radio,
-    [Button.name]:Button, 
+    [DropdownMenu.name]:DropdownMenu,
+    [DropdownItem.name]:DropdownItem,
+    [Icon.name]:Icon,
+    [Button.name]:Button,
     [Uploader.name]:Uploader
   },
   data() {
@@ -258,13 +270,17 @@ export default {
       isBack: ["允许", "不允许"],
       addressData: getSelectDates(),
       showAddress: false,
-      
+
       willRemove: false,
 			imgTempList: [],
 			fileTempList: [],
 			imgDelList: [],
 			fileDelList: [],
-      grade_choosed_classes : []
+      grade_choosed_classes : [],
+
+      noticeData: null,
+      labelOptions: [{text:'选择标签', value:''}],
+      selectedLabelCode:''
     };
   },
 
@@ -384,6 +400,12 @@ export default {
         });
       }
     } else if (path === "Notice") {
+      this.noticeData = JSON.parse(window.localStorage.NOTICE_DATA||'{}');
+      if(this.noticeData.labelList) {
+        this.labelOptions.push(...this.noticeData.labelList.map(item=>{
+          return {text: item.NAME, value: item.CODE}
+        }))
+      }
       let stringStore = JSON.stringify(this.schoolStore);
       let stringArray = this.schoolStore;
       if (stringStore === "[]" && stringStore.length === 2) {
@@ -676,7 +698,8 @@ export default {
           img_del: JSON.stringify(this.imgDelList),
           file_add: JSON.stringify(fileTempList),
           file_del: JSON.stringify(this.fileDelList),
-          imgList: JSON.stringify(this.serverId)
+          imgList: JSON.stringify(this.serverId),
+          label: this.selectedLabelCode
         };
 
         if(this.$route.query.path === 'Grade'){
@@ -736,136 +759,6 @@ export default {
     onEvent(event) {
       //   console.log('on', event)
     },
-
-    // 获取 微信接口 config 的配置参数
-    // getUrlConfig() {
-    //   let wiexin = apiRouter.GET_CONFIG + encodeURIComponent(this.urlPath);
-    //   this.$http.get(wiexin).then(
-    //     response => {
-    //       let data = response.body;
-    //       wx.config({
-    //         // debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-    //         appId: data.appId, // 必填，企业号的唯一标识，此处填写企业号corpid
-    //         timestamp: data.timestamp, // 必填，生成签名的时间戳
-    //         nonceStr: data.nonceStr, // 必填，生成签名的随机串
-    //         signature: data.signature, // 必填，签名，见附录1
-    //         jsApiList: [
-    //           "chooseImage",
-    //           "uploadImage",
-    //           "downloadImage",
-    //           "getLocalImgData",
-    //           "previewImage",
-    //           "chooseWXPay"
-    //         ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-    //       });
-    //       wx.error(function(res) {
-    //         //   alert(res)
-    //       });
-    //     },
-    //     response => {
-    //       // console.log("请求失败了!!!!")
-    //     }
-    //   );
-    // },
-
-    // // 上传图片
-    // onClickUp() {
-    //   let _this = this;
-    //   setTimeout(function(){
-    //     wx.chooseImage({
-    //       count: _this.imgaesMaxLenght - _this.localIdImgs.length, // 默认9
-    //       sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
-    //       sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
-    //       success: function(res) {
-    //         let localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-    //         if (window.__wxjs_is_wkwebview) {
-    //           //  _this.wxgetLocalImgData(localIds);
-    //           //  setTimeout(function (){
-    //           _this.wxgetLocalImgData(localIds);
-    //           //  }, 10);
-    //         } else {
-    //           localIds.forEach((item, index) => {
-    //             _this.localIdImgs.push(item);
-    //             if (_this.localIdImgs.length >= _this.imgaesMaxLenght) {
-    //               _this.imgLenght = false;
-    //             }
-    //           });
-    //         }
-    //         //  _this.wxuploadImage(localIds);
-    //         //  setTimeout(function (){
-    //         _this.wxuploadImage(localIds);
-    //         //  }, 10);
-    //       },
-    //       fail: function(res) {
-    //         console.log("失败");
-    //       }
-    //     });
-    //   } , 3e2)
-
-    // },
-
-    // wxuploadImage(localIds) {
-    //   let _this = this;
-    //   var i = 0;
-    //   var length = localIds.length;
-    //   var upload = function() {
-    //     let loacId = localIds[i];
-    //     if (window.__wxjs_is_wkwebview) {
-    //       if (loacId.indexOf("wxlocalresource") != -1) {
-    //         loacId = loacId.replace("wxlocalresource", "wxLocalResource");
-    //       }
-    //     }
-    //     wx.uploadImage({
-    //       localId: loacId, // 需要上传的图片的本地ID，由chooseImage接口获得
-    //       isShowProgressTips: 1, // 默认为1，显示进度提示
-    //       success: function(res) {
-    //         //    alert(res.serverId);
-    //         var serverId = {
-    //           id: "",
-    //           serverid: res.serverId
-    //         };
-    //         _this.serverId.push(serverId);
-    //         i++;
-    //         //  i < length && upload();
-    //         if (i < length) {
-    //           setTimeout(function() {
-    //             upload();
-    //           }, 10);
-    //         }
-    //       },
-    //       fail: function(error) {
-    //         alert("失败11");
-    //       }
-    //     });
-    //   };
-    //   upload();
-    // },
-    // wxgetLocalImgData(localIds) {
-    //   let _this = this;
-    //   var i = 0;
-    //   var length = localIds.length;
-    //   var upload = function() {
-    //     wx.getLocalImgData({
-    //       localId: localIds[i], // 图片的localID
-    //       success: function(res) {
-    //         let localData = res.localData; // localData是图片的base64数据，可以用img标签显示
-    //         localData = localData.replace("jgp", "jpeg");
-    //         _this.localIdImgs.push(localData);
-    //         if (_this.localIdImgs.length >= _this.imgaesMaxLenght) {
-    //           _this.imgLenght = false;
-    //         }
-    //         i++;
-    //         //  i < length && upload();
-    //         if (i < length) {
-    //           setTimeout(function() {
-    //             upload();
-    //           }, 10);
-    //         }
-    //       }
-    //     });
-    //   };
-    //   upload();
-    // },
 
     removeByValue(arr, val) {
       for (var i = 0; i < arr.length; i++) {

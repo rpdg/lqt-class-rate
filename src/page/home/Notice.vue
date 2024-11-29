@@ -262,6 +262,7 @@ export default {
       this.setSchool(arr);
       let noticeString = JSON.stringify(arr);
       window.localStorage.setItem("NOTICE", noticeString);
+      window.localStorage.setItem("NOTICE_DATA", JSON.stringify(this.deptData));
       this.$router.push({ path: "posted", query: { path: "Notice" } });
     },
 
