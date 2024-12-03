@@ -1,117 +1,77 @@
 <template>
-	<div class="box">
+  <div class="box">
     <back-title-bar title="发通知" />
-		<div class="wapper">
-			<div class="form-info clearfix" style="padding-top:20px;">
-				<!-- <p class="cancel-btn" @click="cancel()">取消发布</p> -->
+    <div class="wapper">
+      <div class="form-info clearfix" style="padding-top:20px;">
+        <!-- <p class="cancel-btn" @click="cancel()">取消发布</p> -->
 
-				<!--<form action="/" method="post">-->
-				<div class="scope clearfix">
-					<div @click="goBack()">
-						<cell class="scope-box" title="通知类型与发送范围" :value="this.objType.objectName" is-link></cell>
-					</div>
-					<!--<input type="hidden" name="type" v-model="type">-->
-					<input type="hidden" name="objectId" v-model="objectId" />
-					<div class="span-cell clearfix">
-						<span v-for="(item,index) in scope" :key="index">{{item}}</span>
-					</div>
-					<!-- <input type="hidden" name="userList" v-model="userList">-->
-				</div>
-				<div class="scope-title-box">
-					<p class="scope-title" style="padding:0 15px;display:flex; align-items: center;">
+        <!--<form action="/" method="post">-->
+        <div class="scope clearfix">
+          <div @click="goBack()">
+            <cell class="scope-box" title="通知类型与发送范围" :value="this.objType.objectName" is-link></cell>
+          </div>
+          <!--<input type="hidden" name="type" v-model="type">-->
+          <input type="hidden" name="objectId" v-model="objectId" />
+          <div class="span-cell clearfix">
+            <span v-for="(item, index) in scope" :key="index">{{ item }}</span>
+          </div>
+          <!-- <input type="hidden" name="userList" v-model="userList">-->
+        </div>
+        <div class="scope-title-box">
+          <p class="scope-title" style="padding:0 15px; display:flex; align-items: center;">
             <span style="flex:1;">通知标题</span>
-            <!-- <span style="display: flex;align-items: center;">
-              <span>选择标签</span>
-              <van-icon name="arrow"  color="#C7C7C7" />
-            </span> -->
-            <van-dropdown-menu active-color="#000">
-              <van-dropdown-item v-model="selectedLabelCode" :options="labelOptions" />
-            </van-dropdown-menu>
+            <popup-picker :data='labelOptions' v-model='selectedLabelCode' :display-format="formatV1"
+              class='v1'></popup-picker>
           </p>
-					<x-textarea
-						:max="50"
-						@on-focus="onEvent('focus')"
-						@on-blur="onEvent('blur')"
-						class="x-textarea"
-						placeholder="请输入通知标题"
-						:rows="2"
-						v-model="titleValue"
-					></x-textarea>
-					<!--<input type="hidden" name="title" v-model="titleValue">-->
-				</div>
+          <x-textarea :max="50" @on-focus="onEvent('focus')" @on-blur="onEvent('blur')" class="x-textarea"
+            placeholder="请输入通知标题" :rows="2" v-model="titleValue"></x-textarea>
+          <!--<input type="hidden" name="title" v-model="titleValue">-->
+        </div>
 
-				<div class="write-back">
-					<label class="write-back-left">通知是否允许回复</label>
-					<div class="write-back-right">
-						<checker
-							v-model="allow"
-							type="radio"
-							default-item-class="write-back-item"
-							selected-item-class="write-back-selected"
-							:radio-required="false"
-						>
-							<checker-item v-for="(item,i) in isBack" :key="i" :value="i">{{item}}</checker-item>
-						</checker>
-					</div>
-				</div>
+        <div class="write-back">
+          <label class="write-back-left">通知是否允许回复</label>
+          <div class="write-back-right">
+            <checker v-model="allow" type="radio" default-item-class="write-back-item"
+              selected-item-class="write-back-selected" :radio-required="false">
+              <checker-item v-for="(item, i) in isBack" :key="i" :value="i">{{ item }}</checker-item>
+            </checker>
+          </div>
+        </div>
 
-				<div class="scope-data-box">
-					<x-address
-						:title="title2"
-						v-model="timeData"
-						raw-value
-						:list="addressData"
-						hide-district
-						value-text-align="right"
-						class="x-address"
-					></x-address>
-				</div>
+        <div class="scope-data-box">
+          <x-address :title="title2" v-model="timeData" raw-value :list="addressData" hide-district
+            value-text-align="right" class="x-address"></x-address>
+        </div>
 
-				<div class="scope-title-box">
-					<p class="scope-title">通知内容</p>
-					<x-textarea
-						:max="1000"
-						@on-focus="onEvent('focus')"
-						@on-blur="onEvent('blur')"
-						class="x-textarea"
-						placeholder="请输入通知内容"
-						:rows="7"
-						v-model="contentValue"
-					></x-textarea>
-				</div>
-				<div class="accessory-box">
-					<p class="accessory-title" style="margin-bottom: 20px;">通知附件</p>
+        <div class="scope-title-box">
+          <p class="scope-title">通知内容</p>
+          <x-textarea :max="1000" @on-focus="onEvent('focus')" @on-blur="onEvent('blur')" class="x-textarea"
+            placeholder="请输入通知内容" :rows="7" v-model="contentValue"></x-textarea>
+        </div>
+        <div class="accessory-box">
+          <p class="accessory-title" style="margin-bottom: 20px;">通知附件</p>
 
           <div class="mg-b-20 imgContainer" v-show="imgTempList.length + fileTempList.length > 0">
-            <div class="" v-for="( pic , pIndex ) in imgTempList" :key="pic.newfileName" :data-id='pic.newfileName'
-             v-long-press="1000"
-             @long-press-start="removeTmpPic(pic , pIndex)"
-             @touchstart="startWillRemovePic(pic.newfileName)"
-             @touchmove="cancelWillRemovePic"
-             >
+            <div class="" v-for="( pic, pIndex ) in imgTempList" :key="pic.newfileName" :data-id='pic.newfileName'
+              v-long-press="1000" @long-press-start="removeTmpPic(pic, pIndex)"
+              @touchstart="startWillRemovePic(pic.newfileName)" @touchmove="cancelWillRemovePic">
               <img :src="pic.viewPath" class="deletable">
             </div>
-            <div class="" v-for="( file , fIndex) in fileTempList" :key="file.newfileName">
+            <div class="" v-for="( file, fIndex) in fileTempList" :key="file.newfileName">
               <span class="spRow">
                 <a :href="file.viewPath" target='_blank' :data-id='file.newfileName'>
-                  {{file.originalName}}
+                  {{ file.originalName }}
                 </a>
-                <van-button plain size='mini' color="#ee0a24" text='删除' @click="removeTmpFile(file ,fIndex)"/>
+                <van-button plain size='mini' color="#ee0a24" text='删除' @click="removeTmpFile(file, fIndex)" />
               </span>
             </div>
           </div>
 
-          <van-uploader v-show="false"
-            ref="uploader"
-            :accept='fileAccepts'
-            :after-read='uploadHandler'
-            :max-size="50 * 1024 * 1024"
-            @oversize="onOversize"
-            result-type="file"
-          >
-					</van-uploader>
-					<van-button @click="chooseFile" plain size='small' color="#54B331" text='上传'/>
-					<!-- <div class="accessory-img clearfix">
+          <van-uploader v-show="false" ref="uploader" :accept='fileAccepts' :after-read='uploadHandler'
+            :max-size="50 * 1024 * 1024" @oversize="onOversize" result-type="file">
+          </van-uploader>
+          <van-button @click="chooseFile" plain size='small' color="#54B331" text='上传' />
+          <!-- <div class="accessory-img clearfix">
 						<ul class="photo-img">
 							<li v-for="(item,index) in localIdImgs" :key="index">
 								<img :src="item" alt class="imgud" />
@@ -122,15 +82,15 @@
 							<img src="../../assets/addup.jpg" alt />
 						</a>
 					</div> -->
-				</div>
+        </div>
 
-				<!--<button-->
-				<!--@click="goUploder()"-->
-				<!--class="btn-uploder right"-->
-				<!--type="submit"-->
-				<!--&gt;发布通知-->
-				<!--</button>-->
-				<!-- <x-button
+        <!--<button-->
+        <!--@click="goUploder()"-->
+        <!--class="btn-uploder right"-->
+        <!--type="submit"-->
+        <!--&gt;发布通知-->
+        <!--</button>-->
+        <!-- <x-button
 					v-on:click.native="goUploder"
 					:show-loading="showLoading"
 					:disabled="showLoading"
@@ -138,16 +98,12 @@
 					type="submit"
 				>发布通知</x-button> -->
 
-        <div  style="padding: 20px 15px;">
-          <van-button block color="#54B331"
-            @click="goUploder"
-            :loading="showLoading"
-            :disabled="showLoading">
-              发布通知
+        <div style="padding: 20px 15px;">
+          <van-button block color="#54B331" @click="goUploder" :loading="showLoading" :disabled="showLoading">
+            发布通知
           </van-button>
         </div>
-
-				<!-- <toast
+        <!-- <toast
 					v-model="showPositionValue"
 					type="text"
 					:time="800"
@@ -155,14 +111,14 @@
 					:position="position"
 				>{{toastMessage}}</toast> -->
 
-				<!-- </form>-->
-			</div>
-		</div>
-	</div>
+        <!-- </form>-->
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import BackTitleBar from '../../components/common/BackTitleBar.vue'
+import BackTitleBar from '../../components/common/BackTitleBar.vue';
 import { mapGetters } from "vuex";
 import {
   // Toast,
@@ -174,32 +130,33 @@ import {
   XButton,
   Cell,
   Radio,
+  PopupPicker
 } from "vux";
-import { Button, Uploader ,Dialog, Toast, Icon,  DropdownMenu, DropdownItem} from 'vant';
+import { Button, Uploader, Dialog, Toast, Icon, DropdownMenu, DropdownItem } from 'vant';
 import { getSelectDates } from "../../utils/DateUtils";
-import apiRouter , { apiPath } from "../../config/api.js";
+import apiRouter, { apiPath } from "../../config/api.js";
 
 const getFileExt = function (fullName) {
-	if (fullName.lastIndexOf('.') === -1) {
-		return '';
-	}
-	return fullName.substr(fullName.lastIndexOf('.') + 1).toUpperCase();
+  if (fullName.lastIndexOf('.') === -1) {
+    return '';
+  }
+  return fullName.substr(fullName.lastIndexOf('.') + 1).toUpperCase();
 };
 
-const FileTypes_Image = ['PNG', 'JPG', 'JPEG', 'GIF', 'WEBP'];
+const FileTypes_Image = [ 'PNG', 'JPG', 'JPEG', 'GIF', 'WEBP' ];
 
 const getMobileOS = () => {
-	const ua = navigator.userAgent;
-	if (/android/i.test(ua)) {
-		return 'Android';
-	} else if (/iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) {
-		return 'iOS';
-	}
-	return 'Other';
+  const ua = navigator.userAgent;
+  if (/android/i.test(ua)) {
+    return 'Android';
+  } else if (/iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) {
+    return 'iOS';
+  }
+  return 'Other';
 };
 
 export default {
-  created: function() {
+  created: function () {
     //getSelectDates();
     //timeData()
     this.showTop();
@@ -216,16 +173,17 @@ export default {
     Checker,
     CheckerItem,
     Radio,
-    [DropdownMenu.name]:DropdownMenu,
-    [DropdownItem.name]:DropdownItem,
-    [Icon.name]:Icon,
-    [Button.name]:Button,
-    [Uploader.name]:Uploader
+    PopupPicker,
+    [ DropdownMenu.name ]: DropdownMenu,
+    [ DropdownItem.name ]: DropdownItem,
+    [ Icon.name ]: Icon,
+    [ Button.name ]: Button,
+    [ Uploader.name ]: Uploader
   },
   data() {
     return {
-			ossPath: roterOssPath,
-      fileAccepts: 	getMobileOS() === 'iOS' ? '.png,.jpg,.jpeg,.gif,.doc,.docx,.xls,.xlsx,.pdf,.ppt,.pptx,.rar,.zip,.7z,.tar,.mp4' : '*/*',
+      ossPath: roterOssPath,
+      fileAccepts: getMobileOS() === 'iOS' ? '.png,.jpg,.jpeg,.gif,.doc,.docx,.xls,.xlsx,.pdf,.ppt,.pptx,.rar,.zip,.7z,.tar,.mp4' : '*/*',
       //提交按钮状态
       showLoading: false,
       //
@@ -236,7 +194,7 @@ export default {
         serverId: []
       },
 
-      radio: ["允许", "不允许"],
+      radio: [ "允许", "不允许" ],
       radioValue: "允许",
 
       itemId: "",
@@ -256,7 +214,7 @@ export default {
       urlPath: "",
       commentFlag: true,
       objectName: "",
-      allow: localStorage.getItem('notice_can_reply')=='1'? 0 : 1,
+      allow: localStorage.getItem('notice_can_reply') == '1' ? 0 : 1,
       scope: [],
       titleValue: "",
       contentValue: "",
@@ -266,21 +224,27 @@ export default {
       toastMessage: "",
       title: "时间选择",
       title2: "通知发送时间",
-      timeData: ["今天", "立刻发送"],
-      isBack: ["允许", "不允许"],
+      timeData: [ "今天", "立刻发送" ],
+      isBack: [ "允许", "不允许" ],
       addressData: getSelectDates(),
       showAddress: false,
 
       willRemove: false,
-			imgTempList: [],
-			fileTempList: [],
-			imgDelList: [],
-			fileDelList: [],
-      grade_choosed_classes : [],
+      imgTempList: [],
+      fileTempList: [],
+      imgDelList: [],
+      fileDelList: [],
+      grade_choosed_classes: [],
 
       noticeData: null,
-      labelOptions: [{text:'选择标签', value:''}],
-      selectedLabelCode:''
+      labelOptions: [ [ { name: '选择标签', value: '', parent: 0 } ] ],
+      selectedLabelCode: [ '' ],
+      pickerData: [ [ { name: '选择标签', value: '' } ] ],
+      pickerVisible: false,
+      selectedValue: null,
+      formatV1: function (value, name) {
+        return `${name}`;
+      }
     };
   },
 
@@ -372,10 +336,10 @@ export default {
       }
     } else if (path === "Grade") {
       // debugger;
-      try{
+      try {
         let grade_choosed_classes_dic = JSON.parse(window.localStorage.CLASSES_CHOOSED);
         this.grade_choosed_classes = Object.values(grade_choosed_classes_dic);
-      }catch(e){
+      } catch (e) {
       }
       let stringStore = JSON.stringify(this.gradeStore);
       let stringArray = this.gradeStore;
@@ -400,11 +364,11 @@ export default {
         });
       }
     } else if (path === "Notice") {
-      this.noticeData = JSON.parse(window.localStorage.NOTICE_DATA||'{}');
-      if(this.noticeData.labelList) {
-        this.labelOptions.push(...this.noticeData.labelList.map(item=>{
-          return {text: item.NAME, value: item.CODE}
-        }))
+      this.noticeData = JSON.parse(window.localStorage.NOTICE_DATA || '{}');
+      if (this.noticeData.labelList) {
+        this.labelOptions[ 0 ].push(...this.noticeData.labelList.map(item => {
+          return { name: item.NAME, value: item.CODE, parent: 0 };
+        }));
       }
       let stringStore = JSON.stringify(this.schoolStore);
       let stringArray = this.schoolStore;
@@ -477,22 +441,22 @@ export default {
           let picObj = {
             viewPath: this.ossPath + '/upload' + item.url,
             newfileName: 'xxx-' + item.id
-          }
-          this.imgTempList.push(picObj)
+          };
+          this.imgTempList.push(picObj);
         });
 
         let files = stringArray.fileList;
         files.forEach(file => {
           file = Object.assign({
-            viewPath : this.ossPath + '/upload' + file.URL,
+            viewPath: this.ossPath + '/upload' + file.URL,
             newfileName: 'xxx-' + file.ID,
             originalName: file.FILENAME
-          } , file)
+          }, file);
           this.fileTempList.push({
-            viewPath : this.ossPath + '/upload' + file.URL,
+            viewPath: this.ossPath + '/upload' + file.URL,
             newfileName: 'xxx-' + file.ID,
             originalName: file.FILENAME
-          })
+          });
         });
 
         this.scope = [];
@@ -514,40 +478,40 @@ export default {
     // console.log(apiRouter.POST_SEND)
     this.showLoading = false;
     this.localIdImgs = [];
-    this.urlPath = window.location.href.split("#")[0];
+    this.urlPath = window.location.href.split("#")[ 0 ];
     // this.getUrlConfig();
   },
   methods: {
     onOversize(file) {
       Toast('文件不可超过50M');
     },
-    startWillRemovePic(key){
-        this.willRemove = true;
+    startWillRemovePic(key) {
+      this.willRemove = true;
     },
-    cancelWillRemovePic(){
+    cancelWillRemovePic() {
       if (this.willRemove) {
-				this.willRemove = false
-			}
+        this.willRemove = false;
+      }
     },
-    async removeTmpFile(file , i){
+    async removeTmpFile(file, i) {
       let answer = await Dialog.confirm({
-				className: 'dy-rate-dialog',
-				title: '',
-				message: '确定要删除吗？',
-				confirmButtonText: '确定',
-				messageAlign: 'center',
-			})
-			if (answer === 'confirm') {
-				let del = this.fileTempList.splice(i,1);
+        className: 'dy-rate-dialog',
+        title: '',
+        message: '确定要删除吗？',
+        confirmButtonText: '确定',
+        messageAlign: 'center',
+      });
+      if (answer === 'confirm') {
+        let del = this.fileTempList.splice(i, 1);
 
-        if (file.newfileName.startsWith('xxx-')){
-          this.fileDelList.push(file.newfileName.split('xxx-')[1]);
-        } else{
+        if (file.newfileName.startsWith('xxx-')) {
+          this.fileDelList.push(file.newfileName.split('xxx-')[ 1 ]);
+        } else {
           this.fileDelList.push(...del);
         }
-			}
+      }
     },
-    async removeTmpPic(pic , i){
+    async removeTmpPic(pic, i) {
       if (this.willRemove) {
         let answer = await Dialog.confirm({
           className: 'dy-rate-dialog',
@@ -555,24 +519,24 @@ export default {
           message: '确定要删除吗？',
           confirmButtonText: '确定',
           messageAlign: 'center',
-        })
+        });
         if (answer === 'confirm') {
-          let del = this.imgTempList.splice(i,1);
-          if (pic.newfileName.startsWith('xxx-')){
-            this.imgDelList.push(pic.newfileName.split('xxx-')[1]);
-          } else{
+          let del = this.imgTempList.splice(i, 1);
+          if (pic.newfileName.startsWith('xxx-')) {
+            this.imgDelList.push(pic.newfileName.split('xxx-')[ 1 ]);
+          } else {
             this.imgDelList.push(...del);
           }
         }
       }
     },
-    chooseFile(){
-			let self = this;
-      setTimeout(async function() {
+    chooseFile() {
+      let self = this;
+      setTimeout(async function () {
         self.$refs.uploader.chooseFile();
-      } , 3e2);
+      }, 3e2);
     },
-    async uploadHandler(fileItem){
+    async uploadHandler(fileItem) {
 
       let t = Toast.loading({
         message: '上传中...',
@@ -580,41 +544,41 @@ export default {
         duration: 0, // 持续展示 toast
       });
 
-        let ext = getFileExt(fileItem.file.name);
-        if(FileTypes_Image.includes(ext)){
-          await this.uploadPic(fileItem.file);
-        } else{
-          await this.uploadFile(fileItem.file);
-        }
-        t.clear();
+      let ext = getFileExt(fileItem.file.name);
+      if (FileTypes_Image.includes(ext)) {
+        await this.uploadPic(fileItem.file);
+      } else {
+        await this.uploadFile(fileItem.file);
+      }
+      t.clear();
     },
-    async uploadPic(pic){
-      let bodyFormData = new FormData()
-      bodyFormData.append('files', pic)
+    async uploadPic(pic) {
+      let bodyFormData = new FormData();
+      bodyFormData.append('files', pic);
 
       let self = this;
-      let resp = await this.$http.post( apiPath + '/file/h5/upload_pic', bodyFormData);
-      let result = resp.body
-      let {image_list} = result.data;
-			console.log(image_list);
+      let resp = await this.$http.post(apiPath + '/file/h5/upload_pic', bodyFormData);
+      let result = resp.body;
+      let { image_list } = result.data;
+      console.log(image_list);
       image_list.forEach(function (item) {
-						self.imgTempList.push(item)
-						console.log('self.imgTempList', self.imgTempList)
-			});
+        self.imgTempList.push(item);
+        console.log('self.imgTempList', self.imgTempList);
+      });
     },
-    async uploadFile(file){
-      let bodyFormData = new FormData()
-      bodyFormData.append('files', file)
+    async uploadFile(file) {
+      let bodyFormData = new FormData();
+      bodyFormData.append('files', file);
 
       let self = this;
-      let resp = await this.$http.post( apiPath + '/file/h5/upload_file', bodyFormData);
-      let result = resp.body
-      let {file_list} = result.data;
-			console.log(file_list);
+      let resp = await this.$http.post(apiPath + '/file/h5/upload_file', bodyFormData);
+      let result = resp.body;
+      let { file_list } = result.data;
+      console.log(file_list);
       file_list.forEach(function (item) {
-						self.fileTempList.push(item)
-						console.log('self.imgTempList', self.fileTempList)
-			});
+        self.fileTempList.push(item);
+        console.log('self.imgTempList', self.fileTempList);
+      });
     },
     showTop() {
       window.scrollTo(0, 0);
@@ -650,12 +614,12 @@ export default {
         this.commentFlag = false;
       }
 
-      let data = this.format(this.timeData[0]);
-      let time = this.timeData[1];
+      let data = this.format(this.timeData[ 0 ]);
+      let time = this.timeData[ 1 ];
       let dataDatime = data + " " + time;
 
       if (this.titleValue === "") {
-        Toast('请填写标题')
+        Toast('请填写标题');
         // this.position = position;
         // this.toastMessage = "请填写标题";
         // this.showPositionValue = true;
@@ -670,18 +634,18 @@ export default {
         //    console.log(this.userList);return
         let imgTempList = JSON.parse(JSON.stringify(this.imgTempList));
         let c = imgTempList.length;
-        while(c--) {
-          let pic = imgTempList[c];
-          if(pic.newfileName.startsWith('xxx-')){
-            imgTempList.splice(c , 1);
+        while (c--) {
+          let pic = imgTempList[ c ];
+          if (pic.newfileName.startsWith('xxx-')) {
+            imgTempList.splice(c, 1);
           }
         }
         let fileTempList = JSON.parse(JSON.stringify(this.fileTempList));
         c = fileTempList.length;
-        while(c--) {
-          let file = fileTempList[c];
-          if(file.newfileName.startsWith('xxx-')){
-            fileTempList.splice(c , 1);
+        while (c--) {
+          let file = fileTempList[ c ];
+          if (file.newfileName.startsWith('xxx-')) {
+            fileTempList.splice(c, 1);
           }
         }
 
@@ -699,10 +663,11 @@ export default {
           file_add: JSON.stringify(fileTempList),
           file_del: JSON.stringify(this.fileDelList),
           imgList: JSON.stringify(this.serverId),
-          label: this.selectedLabelCode
+          label: this.selectedLabelCode[ 0 ]
         };
+        debugger;
 
-        if(this.$route.query.path === 'Grade'){
+        if (this.$route.query.path === 'Grade') {
           sendObj.cls_mbrs = JSON.stringify(this.grade_choosed_classes);
         }
 
@@ -779,40 +744,44 @@ export default {
   }
 };
 </script>
+
+
 <style lang="less" scoped>
 @import "../../style/minxin.less";
 
-.imgContainer{
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
-	// padding-top: 20px;
+.imgContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  // padding-top: 20px;
 
   img.deletable {
     width: 100%;
-			pointer-events: none;
-			-webkit-touch-callout: none;
-		}
+    pointer-events: none;
+    -webkit-touch-callout: none;
+  }
 
-  .spRow{
+  .spRow {
     display: inline-flex;
   }
 
-  a{
+  a {
     font-size: 14px;
-		color: #005ba2;
-		text-decoration: none;
-		margin-right: 1em;
+    color: #005ba2;
+    text-decoration: none;
+    margin-right: 1em;
   }
 }
+
 .wapper {
-	position: absolute;
-	top: 47px;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	overflow: scroll;
+  position: absolute;
+  top: 47px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: scroll;
 }
+
 .form-info {
   padding-bottom: 100 / @baseSize;
   padding-top: 100 / @baseSize;
@@ -908,7 +877,18 @@ export default {
   font-size: @fontSize30;
   color: @color42;
   margin-top: 15 / @baseSize;
+
+  >.vux-cell-box {
+    &:before {
+      border-top: none !important;
+    }
+
+
+  }
+
 }
+
+
 
 .scope-title-box {
   border-bottom: 1px solid @colorDD;
@@ -990,6 +970,7 @@ export default {
 .photo-img li {
   margin-bottom: 20 / @baseSize;
 }
+
 .up-photo {
   margin-left: 20 / @baseSize;
 }
@@ -998,6 +979,7 @@ export default {
   margin-right: 22 / @baseSize;
   position: relative;
 }
+
 .photo-img li:last-child {
   margin-right: 0;
 }
@@ -1022,5 +1004,11 @@ export default {
   top: -25 / @baseSize;
   right: -25 / @baseSize;
   display: block;
+}
+</style>
+<style>
+.x-address .vux-cell-value,.v1 > div {
+  padding-right: 0 !important;
+  color: #999 !important;
 }
 </style>
