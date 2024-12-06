@@ -20,8 +20,8 @@
         <div class="scope-title-box">
           <p class="scope-title" style="padding:0 15px; display:flex; align-items: center;">
             <span style="flex:1;">通知标题</span>
-            <popup-picker :data='labelOptions' v-model='selectedLabelCode' :display-format="formatV1"
-              class='v1'></popup-picker>
+            <popup-picker v-if='objType.type === "DEPT"' :data='labelOptions' v-model='selectedLabelCode'
+              :display-format="formatV1" class='v1'></popup-picker>
           </p>
           <x-textarea :max="50" @on-focus="onEvent('focus')" @on-blur="onEvent('blur')" class="x-textarea"
             placeholder="请输入通知标题" :rows="2" v-model="titleValue"></x-textarea>
@@ -393,14 +393,21 @@ export default {
         });
       }
     } else if (path === "Message") {
+      debugger;
+      this.noticeData = JSON.parse(window.localStorage.NOTICE_DATA || '{}');
+      if (this.noticeData.labelList) {
+        this.labelOptions[ 0 ].push(...this.noticeData.labelList.map(item => {
+          return { name: item.NAME, value: item.CODE, parent: 0 };
+        }));
+      }
       let stringStore = JSON.stringify(this.messageStore);
       this.itemId = this.$route.query.itemId;
       let stringArray = this.messageStore;
-      if (stringStore === "[]" && stringStore.length === 2) {
-        this.userList = JSON.parse(window.localStorage.MESSAGE).userList;
-        this.titleValue = JSON.parse(window.localStorage.MESSAGE).title;
-        let cheoonOn = JSON.parse(window.localStorage.MESSAGE).commentFlag;
-        let imgs = JSON.parse(window.localStorage.MESSAGE).imgList;
+      if (stringArray && stringStore === "[]" && stringStore.length === 2) {
+        this.userList = JSON.parse(window.localStorage.MESSAGE || '{}').userList;
+        this.titleValue = JSON.parse(window.localStorage.MESSAGE || '{}').title;
+        let cheoonOn = JSON.parse(window.localStorage.MESSAGE || '{}').commentFlag;
+        let imgs = JSON.parse(window.localStorage.MESSAGE || '{}').imgList || [];
         this.serverId = imgs;
         imgs.forEach((item, index) => {
           this.localIdImgs.push(roterPath + item.url);
@@ -411,8 +418,8 @@ export default {
         } else {
           this.allow = 1;
         }
-        this.contentValue = JSON.parse(window.localStorage.MESSAGE).content;
-        this.objType = JSON.parse(window.localStorage.MESSAGE);
+        this.contentValue = JSON.parse(window.localStorage.MESSAGE || '{}').content;
+        this.objType = JSON.parse(window.localStorage.MESSAGE || '{}');
         this.objType.objectId = this.objType.objectId;
         this.objType.type = this.objType.type;
         this.objType.objectName = this.objType.objectName;
@@ -1007,7 +1014,8 @@ export default {
 }
 </style>
 <style>
-.x-address .vux-cell-value,.v1 > div {
+.x-address .vux-cell-value,
+.v1>div {
   padding-right: 0 !important;
   color: #999 !important;
 }
