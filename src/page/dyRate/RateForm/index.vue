@@ -581,7 +581,7 @@ export default {
 			Dialog.confirm({
 				className: 'dy-rate-dialog',
 				title: '弃填',
-				message: '确定将这些项目标记为弃填？',
+				message: '确定将本页项目数据清空并标记为弃填？',
 				confirmButtonText: '确定',
 			}).then(async () => {
 				let taskArr = JSON.parse(JSON.stringify(this.taskList));
@@ -612,14 +612,24 @@ export default {
 
 			let needTip = false;
 			taskArr.forEach((task) => {
-				detail_arr.push({
-					SCORE: '' + task.SCORE,
-					ID: task.ID,
-					COMMENT: task.COMMENT,
-				});
-				if (task.SCORE == 0 && task.COMMENT) {
-					needTip = true;
+				if (is_give_up) {
+					detail_arr.push({
+						SCORE: '0',
+						ID: task.ID,
+						COMMENT: '',
+					});
 				}
+				else {
+					detail_arr.push({
+						SCORE: '' + task.SCORE,
+						ID: task.ID,
+						COMMENT: task.COMMENT,
+					});
+					if (task.SCORE == 0 && task.COMMENT) {
+						needTip = true;
+					}
+				}
+
 			});
 
 			if (!is_give_up) {
