@@ -1,6 +1,6 @@
 <template>
 	<div class="box">
-    <back-title-bar :title="TOPIC_ID.length > 0 ? '取消编辑': '取消发布'" />
+    <back-title-bar :title="TOPIC_ID.length > 0 ? '取消编辑': '发布'" />
     <div class="wapper">
 
 		<!-- <div class="back-div" ref="heightBackPub" v-if="TOPIC_ID.length > 0">
@@ -9,7 +9,7 @@
 		<div class="back-div" ref="heightBackPub" v-else>
 			<p @click="backHome()" class="up-back">取消发布</p>
 		</div> -->
-		<div class="scope-title-box">
+		<div class="scope-title-box" style="margin-bottom: 8px;">
 			<x-textarea
 				:max="1000"
 				@on-focus="onEvent('focus')"
@@ -21,12 +21,15 @@
 				style="font-size: 16px"
 			></x-textarea>
 		</div>
-
-		<div class="send-type">
+    <div class="timecodeDiv" style="margin-top: 8px; margin-left: 15px; margin-right: 15px;">
+      <span v-for="(value, index) in tagList" :key="index" @click="checkTag(value.ID)"
+        :class="TAG_ID == value.ID ? 'checkedTag' : 'uncheckedTag'">{{ value.TITLE }}</span>
+    </div>
+		<div class="send-type" style="margin-top:15px;">
 			<div class="type-video">
 				<div class="accessory-box">
 					<div class="accessory-img clearfix">
-						<a class="up-photo" href="javascript:;" v-if="imgLenght" @click="uploaderInputVideo()">
+						<a class="up-photo" href="javascript:;" v-if="imgLenght" @click="uploaderInputVideo()"  style="margin-left:0;">
 							<img src="../../assets/addup.jpg" alt />
 							<div id="image-list" class="mui_uploader">
 								<input
@@ -158,6 +161,9 @@ export default {
     } else {
       _this.videoImg = false;
     }
+
+    this.TAG_ID = this.$route.query.tagId;
+    this.getSchoolTopicTags();
   },
   mounted() {
     // console.log("ref", this.$refs["videoFileInputer"]);
@@ -197,11 +203,43 @@ export default {
       toastMessage: "",
       popup: false,
       key: 1,
-      videoUrl:
-        "https://gz.lqtedu.com/weixin/VIDEO/5ae9fa28-6313-473b-9817-372680ec9562.mp4"
+
+      tagList: [],
+      checkedTag: null,
+      TAG_ID: '',
+
+      videoUrl: "https://gz.lqtedu.com/weixin/VIDEO/5ae9fa28-6313-473b-9817-372680ec9562.mp4"
     };
   },
   methods: {
+    getSchoolTopicTags() {
+      let _this = this;
+      _this.$http.get(apiRouter.SPACE_TAG + "?SPACE_ID=" + _this.SPACE_ID + "&TOPIC_ID=" + this.TOPIC_ID).then(response => {
+        if (response.status === 200) {
+          console.log(response.data.data);
+          _this.tagList = response.data.data;
+          for (let i = 0; i < _this.tagList.length; i++) {
+            if (_this.tagList[ i ].ID === _this.TAG_ID) {
+              _this.checkedTag = _this.tagList[ i ];
+              break;
+            }
+          }
+        }
+      });
+    },
+    checkTag(id) {
+      if (this.TAG_ID === id) {
+        this.TAG_ID = '';
+      } else {
+        this.TAG_ID = id;
+        for (let i = 0; i < this.tagList.length; i++) {
+          if (this.tagList[ i ].ID === this.TAG_ID) {
+            this.checkedTag = this.tagList[ i ];
+            break;
+          }
+        }
+      }
+    },
     downloadVideo() {
       // prompt形式调用
       let that = this;
@@ -408,6 +446,7 @@ export default {
         CONTENT: _this.contentValue,
         IMG_LIST: JSON.stringify(_this.videoFiles),
         TOPIC_ID: _this.TOPIC_ID,
+        tagId: _this.TAG_ID,
         DEL_LIST: JSON.stringify(_this.codeArr),
         IS_VIDEO: 1
       };
@@ -450,6 +489,27 @@ export default {
 
 <style lang="less" scoped>
 @import "../../style/minxin.less";
+
+
+.checkedTag {
+  display: inline-block;
+  font-size: 12px;
+  color: #fff;
+  background-color: #48B319;
+  border-radius: 1px;
+  margin-right: 10px;
+  padding: 5px 10px;
+}
+
+.uncheckedTag {
+  display: inline-block;
+  font-size: 12px;
+  color: #222;
+  background-color: #ddd;
+  border-radius: 1px;
+  margin-right: 10px;
+  padding: 5px 10px;
+}
 
 .back-div {
   padding-bottom: 100 / @baseSize;

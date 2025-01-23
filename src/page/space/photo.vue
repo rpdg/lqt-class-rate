@@ -1,27 +1,23 @@
 <template>
   <div class="form-info clearfix">
-    <back-title-bar :title="`取消${TOPIC_ID.length?'编辑':'发布'}`" />
+    <back-title-bar :title="`${TOPIC_ID.length ? '取消编辑' : '发布'}`" />
 
     <!-- <p class="cancel-btn" @click="backHome()" v-if="TOPIC_ID.length > 0">取消编辑</p>
     <p class="cancel-btn" @click="backHome()" v-else>取消发布</p> -->
 
     <div class="scope-title-box">
-      <x-textarea
-        :max="1000"
-        @on-focus="onEvent('focus')"
-        @on-blur="onEvent('blur')"
-        class="x-textarea"
-        placeholder="说点什么..."
-        :rows="7"
-        v-model="contentValue"
-        style="font-size: 16px"
-      >
+      <x-textarea :max="1000" @on-focus="onEvent('focus')" @on-blur="onEvent('blur')" class="x-textarea"
+        :placeholder="(checkedTag && checkedTag.COMMENT)?checkedTag.COMMENT:'说点什么...'" :rows="7" v-model="contentValue" style="font-size: 16px">
       </x-textarea>
     </div>
+    <div class="timecodeDiv" style="margin-top: 8px; margin-left: 15px; margin-right: 15px;">
+      <span v-for="(value, index) in tagList" :key="index" @click="checkTag(value.ID)"
+        :class="TAG_ID == value.ID ? 'checkedTag' : 'uncheckedTag'">{{ value.TITLE }}</span>
+    </div>
     <div class="accessory-box">
-      <div class="accessory-img clearfix">
+      <div class="accessory-img clearfix" style="margin-top:15px;">
         <ul class="photo-img">
-          <li v-for="(item,index) in localIdImgs" :key="index">
+          <li v-for="(item, index) in localIdImgs" :key="index">
             <img :src="item" alt="" class="imgud">
             <img src="../../assets/cancel.png" alt="" class="cancel" @click="clodesd(index)">
           </li>
@@ -36,42 +32,21 @@
     </div>
 
     <div style="text-align: right;">
-        <button
-            @click="delSubmit()"
-            class="btn-calie"
-            type="submit"
-            v-if="this.isDle === true"
-            >删除本条
-        </button>
-        <x-button
-          v-on:click.native="goUploder"
-          :show-loading="showLoading"
-          :disabled="showLoading"
-          class="btn-uploder right"
-          type="submit"
-        >发布
+      <button @click="delSubmit()" class="btn-calie" type="submit" v-if="this.isDle === true">删除本条
+      </button>
+      <x-button v-on:click.native="goUploder" :show-loading="showLoading" :disabled="showLoading"
+        class="btn-uploder right" type="submit">发布
       </x-button>
     </div>
 
 
-    <toast
-      v-model="showPositionValue"
-      type="text"
-      :time="800"
-      is-show-mask
-      :position="position"
-    >
-      {{toastMessage}}
+    <toast v-model="showPositionValue" type="text" :time="800" is-show-mask :position="position">
+      {{ toastMessage }}
     </toast>
 
     <div v-transfer-dom>
-      <confirm
-        v-model="popup"
-        :close-on-confirm="false"
-        :title="('是否确认删除？')"
-        @on-confirm="onConfirm()"
-        confirmText="是，我要删除"
-      >
+      <confirm v-model="popup" :close-on-confirm="false" :title="('是否确认删除？')" @on-confirm="onConfirm()"
+        confirmText="是，我要删除">
       </confirm>
     </div>
 
@@ -81,7 +56,7 @@
 </template>
 
 <script>
-  import BackTitleBar from "../../components/common/BackTitleBar.vue";
+import BackTitleBar from "../../components/common/BackTitleBar.vue";
 import {
   Toast,
   Checker,
@@ -99,18 +74,17 @@ import {
 } from "vux";
 import axios from "axios";
 import wx from "weixin-js-sdk";
-import { getSelectTimes } from "../../utils/TimeUtils";
 import apiRouter from "../../config/api.js";
 export default {
-  created: function() {
+  created: function () {
     //getSelectDates();
     //timeData()
     this.showTop();
     this.localIdImgs = [];
   },
   directives: {
-      TransferDom
-    },
+    TransferDom
+  },
   components: {
     BackTitleBar,
     Toast,
@@ -127,9 +101,9 @@ export default {
   },
   data() {
     return {
-      showLoading:false,
-      popup:false,
-      isDle:false,
+      showLoading: false,
+      popup: false,
+      isDle: false,
       imgLenght: true,
       imgaesMaxLenght: 9,
       value7: "",
@@ -176,34 +150,66 @@ export default {
       newImgList: "", // 附件
 
       newClassIds: "",
+      tagList: [],
+      checkedTag: null,
+      TAG_ID: '',
       TOPIC_ID: '',
-      SPACE_ID:''
+      SPACE_ID: ''
     };
   },
   created() {
     this.SPACE_ID = this.$route.query.SPACE_ID;
     this.TOPIC_ID = this.$route.query.TOPIC_ID;
+    this.TAG_ID = this.$route.query.tagId;
+    this.getSchoolTopicTags();
     if (this.TOPIC_ID) {
       this.ediltTopic();
-      this.isDle = true
+      this.isDle = true;
     }
   },
   mounted() {
     this.localIdImgs = [];
-    this.urlPath = window.location.href.split("#")[0];
+    this.urlPath = window.location.href.split("#")[ 0 ];
     this.showLoading = false;
     this.getUrlConfig();
   },
   methods: {
+    getSchoolTopicTags() {
+      let _this = this;
+      _this.$http.get(apiRouter.SPACE_TAG + "?SPACE_ID=" + _this.SPACE_ID + "&TOPIC_ID=" + this.TOPIC_ID).then(response => {
+        if (response.status === 200) {
+          console.log(response.data.data);
+          _this.tagList = response.data.data;
+          for (let i = 0; i < _this.tagList.length; i++) {
+            if (_this.tagList[ i ].ID === _this.TAG_ID) {
+              _this.checkedTag = _this.tagList[ i ];
+              break;
+            }
+          }
+        }
+      });
+    },
+    checkTag(id) {
+      if (this.TAG_ID === id) {
+        this.TAG_ID = '';
+      } else {
+        this.TAG_ID = id;
+        for (let i = 0; i < this.tagList.length; i++) {
+          if (this.tagList[ i ].ID === this.TAG_ID) {
+            this.checkedTag = this.tagList[ i ];
+            break;
+          }
+        }
+      }
+    },
     ediltTopic() {
       let _this = this;
       _this.$http
         .get(
           apiRouter.SPACE_DETAIL +
-            "?SPACE_ID=" +
-            this.SPACE_ID +
-            "&TOPIC_ID=" +
-            this.TOPIC_ID
+          "?SPACE_ID=" + this.SPACE_ID +
+          "&TOPIC_ID=" + this.TOPIC_ID +
+          "&tagId=" + this.TAG_ID
         )
         .then(response => {
           if (response.status === 200) {
@@ -220,36 +226,36 @@ export default {
     },
 
     // 删除本条记录
-      delSubmit(){
-        let _this = this;
-        _this.popup = true;
-      },
-      onConfirm (position,msg) {
-        let _this = this;
-        let url = apiRouter.SPACE_DEL +
+    delSubmit() {
+      let _this = this;
+      _this.popup = true;
+    },
+    onConfirm(position, msg) {
+      let _this = this;
+      let url = apiRouter.SPACE_DEL +
         "?SPACE_ID=" + _this.SPACE_ID +
-        "&TOPIC_ID=" + _this.TOPIC_ID
-        _this.$http.post(url).then(response => {
-          if (response.body.status === 200) {
-            setTimeout(_this.backHome, 1200);
-          } else {
-            _this.position = position;
-            _this.toastMessage = response.body.message;
-            _this.showPositionValue = true;
-          }
-        }, erro => {
-        });
+        "&TOPIC_ID=" + _this.TOPIC_ID;
+      _this.$http.post(url).then(response => {
+        if (response.body.status === 200) {
+          setTimeout(_this.backHome, 1200);
+        } else {
+          _this.position = position;
+          _this.toastMessage = response.body.message;
+          _this.showPositionValue = true;
+        }
+      }, erro => {
+      });
+      this.popup = false;
+      return;
+      this.$vux.loading.show({
+        transition: '',
+        text: 'processing'
+      });
+      setTimeout(() => {
+        this.$vux.loading.hide();
         this.popup = false;
-        return;
-        this.$vux.loading.show({
-          transition: '',
-          text: 'processing'
-        })
-        setTimeout(() => {
-          this.$vux.loading.hide()
-          this.popup = false
-        }, 1000)
-      },
+      }, 1000);
+    },
 
     showTop() {
       window.scrollTo(0, 0);
@@ -265,6 +271,16 @@ export default {
     goUploder(position, msg) {
       this.showLoading = true;
       let _this = this;
+      if (_this.TAG_ID) {
+        let picMinMun = ~~_this.checkedTag.PIC_NUM;
+        if (_this.localIdImgs.length < picMinMun) {
+          _this.position = position;
+          _this.toastMessage = "本主题至少上传" + picMinMun + "张图片";
+          _this.showPositionValue = true;
+          _this.showLoading = false;
+          return;
+        }
+      }
       if (_this.contentValue === "" || _this.contentValue.trim() == "") {   //   || _this.serverId.length === 0
         _this.position = position;
         _this.toastMessage = "请填写内容";
@@ -274,9 +290,10 @@ export default {
       } else {
         let sendObj = {
           SPACE_ID: _this.SPACE_ID,
-          CONTENT: _this.contentValue.replace(/＃/g,'#'),
+          CONTENT: _this.contentValue.replace(/＃/g, '#'),
           IMG_LIST: JSON.stringify(_this.serverId),
           TOPIC_ID: _this.TOPIC_ID,
+          tagId: _this.TAG_ID,
           IS_VIDEO: 0
         };
         console.log(sendObj);
@@ -310,7 +327,7 @@ export default {
       //this.showLoading = false;
     },
 
-    onEvent(event) {},
+    onEvent(event) { },
 
     // 获取 微信接口 config 的配置参数
     getUrlConfig() {
@@ -333,7 +350,7 @@ export default {
               "chooseWXPay"
             ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
           });
-          wx.error(function(res) {
+          wx.error(function (res) {
             //   alert(res)
           });
         },
@@ -347,12 +364,12 @@ export default {
     onClickUp() {
       let _this = this;
 
-      setTimeout(function(){
+      setTimeout(function () {
         wx.chooseImage({
           count: _this.imgaesMaxLenght - _this.localIdImgs.length, // 默认9
-          sizeType: ["original", "compressed"], // 可以指定是原图还是压缩图，默认二者都有
-          sourceType: ["album", "camera"], // 可以指定来源是相册还是相机，默认二者都有
-          success: function(res) {
+          sizeType: [ "original", "compressed" ], // 可以指定是原图还是压缩图，默认二者都有
+          sourceType: [ "album", "camera" ], // 可以指定来源是相册还是相机，默认二者都有
+          success: function (res) {
             let localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
             if (window.__wxjs_is_wkwebview) {
               //  _this.wxgetLocalImgData(localIds);
@@ -372,11 +389,11 @@ export default {
             _this.wxuploadImage(localIds);
             //  }, 10);
           },
-          fail: function(res) {
+          fail: function (res) {
             console.log("失败");
           }
         });
-      } , 3e2)
+      }, 3e2);
 
     },
 
@@ -384,8 +401,8 @@ export default {
       let _this = this;
       var i = 0;
       var length = localIds.length;
-      var upload = function() {
-        let loacId = localIds[i];
+      var upload = function () {
+        let loacId = localIds[ i ];
         if (window.__wxjs_is_wkwebview) {
           if (loacId.indexOf("wxlocalresource") != -1) {
             loacId = loacId.replace("wxlocalresource", "wxLocalResource");
@@ -394,7 +411,7 @@ export default {
         wx.uploadImage({
           localId: loacId, // 需要上传的图片的本地ID，由chooseImage接口获得
           isShowProgressTips: 1, // 默认为1，显示进度提示
-          success: function(res) {
+          success: function (res) {
             //    alert(res.serverId);
             var serverId = {
               id: "",
@@ -404,12 +421,12 @@ export default {
             i++;
             //  i < length && upload();
             if (i < length) {
-              setTimeout(function() {
+              setTimeout(function () {
                 upload();
               }, 10);
             }
           },
-          fail: function(error) {}
+          fail: function (error) { }
         });
       };
       upload();
@@ -418,10 +435,10 @@ export default {
       let _this = this;
       var i = 0;
       var length = localIds.length;
-      var upload = function() {
+      var upload = function () {
         wx.getLocalImgData({
-          localId: localIds[i], // 图片的localID
-          success: function(res) {
+          localId: localIds[ i ], // 图片的localID
+          success: function (res) {
             let localData = res.localData; // localData是图片的base64数据，可以用img标签显示
             localData = localData.replace("jgp", "jpeg");
             _this.localIdImgs.push(localData);
@@ -431,7 +448,7 @@ export default {
             i++;
             //  i < length && upload();
             if (i < length) {
-              setTimeout(function() {
+              setTimeout(function () {
                 upload();
               }, 10);
             }
@@ -462,6 +479,26 @@ export default {
 </script>
 <style lang="less" scoped>
 @import "../../style/minxin.less";
+
+.checkedTag {
+  display: inline-block;
+  font-size: 12px;
+  color: #fff;
+  background-color: #48B319;
+  border-radius: 1px;
+  margin-right: 10px;
+  padding: 5px 10px;
+}
+
+.uncheckedTag {
+  display: inline-block;
+  font-size: 12px;
+  color: #222;
+  background-color: #ddd;
+  border-radius: 1px;
+  margin-right: 10px;
+  padding: 5px 10px;
+}
 
 .form-info {
   padding-bottom: 100 / @baseSize;
@@ -643,6 +680,7 @@ export default {
   margin-right: 22 / @baseSize;
   position: relative;
 }
+
 .photo-img li:last-child {
   margin-right: 0;
 }
@@ -669,14 +707,14 @@ export default {
   display: block;
 }
 
-.btn-calie{
-    line-height: 80/@baseSize;
-    text-align: center;
-    font-size: @fontSize30;
-    color: @white;
-    width: 200/@baseSize;
-    background: #999999;
-    margin-right: 40/@baseSize;
-    margin-top: 80/@baseSize;
-  }
+.btn-calie {
+  line-height: 80/@baseSize;
+  text-align: center;
+  font-size: @fontSize30;
+  color: @white;
+  width: 200/@baseSize;
+  background: #999999;
+  margin-right: 40/@baseSize;
+  margin-top: 80/@baseSize;
+}
 </style>
