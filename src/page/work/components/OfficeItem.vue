@@ -74,19 +74,20 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+@import "../../../style/minxin.less";
 .itemRow {
 	font-size: 14px;
 
 	> .spFileName {
 		font-size: 14px;
-		color: #005ba2;
+		color: @darkBlue;
 		text-decoration: none;
 		margin-right: 1em;
 	}
 
 	> .spPreview {
 		font-size: 14px;
-		color: #48b319;
+		color: @green;
 		text-decoration: underline;
 	}
 }

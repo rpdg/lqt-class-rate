@@ -51,6 +51,7 @@
 </template>
 <script>
 import apiRouter from '../../config/api'
+import { THEME_COLOR_MAP } from '../../config/colorMap';
 import { Icon, Button, Popup } from 'vant'
 import VoiceItem from './components/VoiceItem.vue'
 import OfficeItem from './components/OfficeItem.vue'
@@ -72,7 +73,7 @@ export default {
 			ossPath: roterOssPath,
 			typeColor: {
 				1: '#48b319',
-				2: '#ee0a24',
+				2: THEME_COLOR_MAP[ 'warningRed' ],
 				4: '#666',
 				5: '#0093DD',
 			},

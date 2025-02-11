@@ -841,7 +841,7 @@ export default {
 	}
 
 	.van-dialog__confirm {
-		// color: #ED561B;
+		// color: #ED431E;
 	}
 }
 
@@ -890,7 +890,7 @@ export default {
 		color: #fff;
 
 		&.error {
-			background-color: #ed561b;
+			background-color: #ED431E;
 		}
 
 		&.submit {
@@ -928,8 +928,8 @@ export default {
 }
 
 .btnRedBorder {
-	border-color: #ed561b;
-	color: #ed561b;
+	border-color: #ED431E;
+	color: #ED431E;
 }
 
 .btnGreenBorder {

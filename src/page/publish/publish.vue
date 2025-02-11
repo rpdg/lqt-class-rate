@@ -68,7 +68,7 @@
             <a :href="file.viewPath" target='_blank' :data-id='file.newfileName'>
               {{ file.originalName }}
             </a>
-            <van-button plain size='mini' color="#ee0a24" text='删除' @click="removeTmpFile(file, fIndex)" />
+            <van-button plain size='mini' :color="THEME_COLOR_MAP[ 'warningRed' ]" text='删除' @click="removeTmpFile(file, fIndex)" />
           </span>
         </div>
       </div>
@@ -120,6 +120,7 @@ import { Button, Uploader, Dialog, Toast } from 'vant';
 import wx from "weixin-js-sdk";
 import { getSelectTimes } from "../../utils/TimeUtils";
 import apiRouter, { apiPath } from "../../config/api.js";
+import { THEME_COLOR_MAP } from '../../config/colorMap';
 
 
 const getFileExt = function (fullName) {

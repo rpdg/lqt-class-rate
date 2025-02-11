@@ -62,7 +62,7 @@
                 <a :href="file.viewPath" target='_blank' :data-id='file.newfileName'>
                   {{ file.originalName }}
                 </a>
-                <van-button plain size='mini' color="#ee0a24" text='删除' @click="removeTmpFile(file, fIndex)" />
+                <van-button plain size='mini' :color="THEME_COLOR_MAP[ 'warningRed' ]" text='删除' @click="removeTmpFile(file, fIndex)" />
               </span>
             </div>
           </div>
@@ -135,6 +135,7 @@ import {
 import { Button, Uploader, Dialog, Toast, Icon, DropdownMenu, DropdownItem } from 'vant';
 import { getSelectDates } from "../../utils/DateUtils";
 import apiRouter, { apiPath } from "../../config/api.js";
+import { THEME_COLOR_MAP } from '../../config/colorMap';
 
 const getFileExt = function (fullName) {
   if (fullName.lastIndexOf('.') === -1) {
@@ -774,7 +775,7 @@ export default {
 
   a {
     font-size: 14px;
-    color: #005ba2;
+    color: @darkBlue;
     text-decoration: none;
     margin-right: 1em;
   }

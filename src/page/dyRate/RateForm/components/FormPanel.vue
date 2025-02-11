@@ -33,7 +33,7 @@
               <van-button plain hairline color="#48B319" style="color:#48B319;" size="mini"
                 v-bind:disabled="!task.COMMENT1" @click="showPopup1">语库1</van-button>
               <br />
-              <van-button plain hairline color="#EE0A24" style="color:#EE0A24;" size="mini"
+              <van-button plain hairline :color="THEME_COLOR_MAP[ 'warningRed' ]" :style="`color:${THEME_COLOR_MAP[ 'warningRed' ]};`" size="mini"
                 v-bind:disabled="!task.COMMENT2" @click="showPopup2">语库2</van-button>
             </div>
 
@@ -56,7 +56,7 @@
             <div style="width: 38px; display: flex; align-items: end;">
               <van-tag style="font-size: 9px; padding: 2px 5px; margin-bottom: 8px;"
                 :color="task.WRITE_STATUS == '-1' ? '#EEE1E1' : task.WRITE_STATUS == '0' ? '#ECF5FF' : '#EBF9D9'"
-                :text-color="task.WRITE_STATUS == '-1' ? '#EE0A24' : task.WRITE_STATUS == '0' ? '#0093DD' : '#48B319'"
+                :text-color="task.WRITE_STATUS == '-1' ? THEME_COLOR_MAP[ 'warningRed' ] : task.WRITE_STATUS == '0' ? '#0093DD' : '#48B319'"
                 size="medium">{{ statusText }}</van-tag>
             </div>
 
@@ -90,6 +90,7 @@
 
 </template>
 <script>
+import { THEME_COLOR_MAP } from '../../../../config/colorMap';
 import { Stepper, Uploader, Toast, Tag, ActionSheet, Button, Popup, Icon } from "vant";
 // import ImageUploader from './Uploader';
 import wx from "weixin-js-sdk";
@@ -683,7 +684,7 @@ export default {
   }
 
   .van-tag--danger {
-    color: #ed561b;
+    color: #ED431E;
   }
 
   table {

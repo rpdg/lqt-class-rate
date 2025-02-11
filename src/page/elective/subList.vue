@@ -360,7 +360,7 @@ export default {
   }
 
   .van-dialog__confirm {
-    // color: #ED561B;
+    // color: #ED431E;
   }
 }
 

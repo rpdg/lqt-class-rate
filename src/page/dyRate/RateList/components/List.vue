@@ -60,7 +60,7 @@ export default {
     content: "";
     width: 8px;
     height: 8px;
-    background-color: #ee0a24;
+    background-color: #ed431e;
     border-radius: 100%;
     position: absolute;
     top: -3px;
@@ -125,7 +125,7 @@ export default {
   display: block;
 }
 .btn-red {
-  color: #ee0a24;
+  color: #ed431e;
 }
 .btn-green {
   color: @green;

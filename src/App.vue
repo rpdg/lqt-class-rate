@@ -130,7 +130,7 @@ hr {
 		font-weight: bold;
 	}
 	.van-dialog__confirm {
-		// color: #ED561B;
+		// color: #ED431E;
 	}
 }
 .van-picker__confirm {

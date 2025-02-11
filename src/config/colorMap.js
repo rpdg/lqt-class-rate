@@ -5,11 +5,6 @@ export const THEME_COLOR_LIST = [
 		value: '#FF6091',
 	},
 	{
-		desc: '灰蓝',
-		name: 'grayBlue',
-		value: '#0094B2',
-	},
-	{
 		desc: '标准粉',
 		name: 'mainPink',
 		value: '#E91D62',
@@ -22,7 +17,7 @@ export const THEME_COLOR_LIST = [
 	{
 		desc: '警示红',
 		name: 'warningRed',
-		value: '#EE0A24',
+		value: '#ED431E',
 	},
 	{
 		desc: '标准蓝',
@@ -32,22 +27,22 @@ export const THEME_COLOR_LIST = [
 	{
 		desc: '标准红',
 		name: 'mainRed',
-		value: '#ED561B',
+		value: '#ED431E',
 	},
 	{
 		desc: '深蓝',
 		name: 'darkBlue',
-		value: '#005BA2',
+		value: '#0077C0',
 	},
 	{
 		desc: '浅红',
 		name: 'lightRed',
-		value: '#FF8772',
+		value: '#F0603E',
 	},
 	{
 		desc: '浅紫',
 		name: 'lightPurple',
-		value: '#C27AC3',
+		value: '#B64A9E',
 	},
 	{
 		desc: '标准橙',
@@ -57,7 +52,7 @@ export const THEME_COLOR_LIST = [
 	{
 		desc: '标准紫',
 		name: 'mainPurple',
-		value: '#9A29AF',
+		value: '#AA1A79',
 	},
 	{
 		desc: '浅橙',
@@ -65,9 +60,9 @@ export const THEME_COLOR_LIST = [
 		value: '#FAC030',
 	},
 	{
-		desc: '标准褐',
+		desc: '标准棕',
 		name: 'mainBrown',
-		value: '#795549',
+		value: '#8E6558',
 	},
 	{
 		desc: '淡黄(背景)',
@@ -110,11 +105,6 @@ export const THEME_COLOR_LIST = [
 		value: '#C7C7C7',
 	},
 	{
-		desc: '草绿',
-		name: 'grassGreen',
-		value: '#9FCC00',
-	},
-	{
 		desc: '禁止灰（分割线同）',
 		name: 'lineDisable',
 		value: '#DEDEDE',
@@ -122,7 +112,7 @@ export const THEME_COLOR_LIST = [
 	{
 		desc: '浅绿',
 		name: 'lightGreen',
-		value: '#55D11D',
+		value: '#79D04B',
 	},
 	{
 		desc: '背景灰',
@@ -137,7 +127,7 @@ export const THEME_COLOR_LIST = [
 	{
 		desc: '深绿',
 		name: 'darkGreen',
-		value: '#006134',
+		value: '#248A26',
 	},
 ];
 

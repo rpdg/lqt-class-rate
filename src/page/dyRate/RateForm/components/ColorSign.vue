@@ -19,8 +19,8 @@ export default {
   margin-bottom: 20px;
 }
 .btnRedBorder {
-  border-color: #ed561b;
-  color: #ed561b;
+  border-color: #ED431E;
+  color: #ED431E;
   padding: 0 1em;
 }
 

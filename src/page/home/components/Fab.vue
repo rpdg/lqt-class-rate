@@ -45,7 +45,7 @@ export default {
 </script>
 <style lang="less" scoped>
 @mainGreen: #48b319;
-@mainRed: #ED561B;
+@mainRed: #ED431E;
 @mainBlue: #0093DD;
 @lightGray: #999999;
 @mainOrange: #FF8F03;
