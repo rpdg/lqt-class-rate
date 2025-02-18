@@ -7,8 +7,9 @@
             <!-- pinned icons -->
             <div v-if="topList.length > 0" class="pannel">
                 <div class="container">
-                    <HomeIcon v-for="( icon ) in topList" :key="'t_' + icon.code" :name="icon.name" :code="icon.code"
-                        :iconUrl="icon.iconUrl" :color="icon.color" :pageUrl="icon.pageUrl" />
+                    <HomeIcon v-for="(icon) in topList" :key="'t_' + icon.code" :name="icon.name" :code="icon.code"
+                        :deptCode="icon.dept_code" :iconUrl="icon.iconUrl" :color="icon.color"
+                        :pageUrl="icon.pageUrl" />
                 </div>
             </div>
 
@@ -16,14 +17,15 @@
             <div class="pannel" v-for="(menu) in menuList" :key="menu[ 'MENU_CODE' ]">
                 <div class="title">{{ menu[ 'MENU_NAME' ] }}</div>
                 <div class="container">
-                    <HomeIcon v-for="( icon ) in fullData[ menu[ 'MENU_CODE' ] ]" :key="icon.code" :name="icon.name"
-                        :code="icon.code" :iconUrl="icon.iconUrl" :color="icon.color" :pageUrl="icon.pageUrl" />
+                    <HomeIcon v-for="(icon) in fullData[ menu[ 'MENU_CODE' ] ]" :key="icon.code" :name="icon.name"
+                        :code="icon.code" :deptCode="icon.dept_code" :iconUrl="icon.iconUrl" :color="icon.color"
+                        :pageUrl="icon.pageUrl" />
                 </div>
             </div>
 
         </div>
 
-        <Fab v-if="isTeach"/>
+        <Fab v-if="isTeach" />
     </div>
 </template>
 

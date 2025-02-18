@@ -1,5 +1,5 @@
 <template>
-    <div class="wrap" @click="forward(code)">
+    <div class="wrap" @click="forward(code, deptCode)">
         <div class="iconWrap">
             <van-icon class="icon" :color="renderColor(color)" :name="iconUrl" style="font-weight: 900;" />
         </div>
@@ -10,6 +10,42 @@
 import { Dialog, Icon } from 'vant';
 import { THEME_COLOR_MAP } from '../../../config/colorMap';
 import wx from "weixin-js-sdk";
+
+
+/**
+ * 向 URL 添加或更新查询参数
+ * @param {string} url - 原始URL
+ * @param {Object} params - 要添加或更新的参数对象
+ * @returns {string} - 更新后的URL
+ */
+function addUrlParams(url, params) {
+    try {
+        const urlObj = new URL(url);
+
+        // 保存原有的 hash
+        const hash = urlObj.hash;
+
+        // 添加或更新所有参数
+        Object.entries(params).forEach(([ key, value ]) => {
+            urlObj.searchParams.set(key, value);
+        });
+
+        // 确保 hash 在最后
+        return urlObj.href.replace(hash, '') + hash;
+
+    } catch (e) {
+        // 如果 URL 解析失败，使用字符串处理方法
+        const [ baseUrl, hash = '' ] = url.split('#');
+        const separator = baseUrl.includes('?') ? '&' : '?';
+
+        // 将参数对象转换为查询字符串
+        const queryString = Object.entries(params)
+            .map(([ key, value ]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+            .join('&');
+
+        return `${baseUrl}${separator}${queryString}${hash ? '#' + hash : ''}`;
+    }
+}
 
 
 export default {
@@ -26,6 +62,10 @@ export default {
             type: String,
             required: true,
         },
+        deptCode: {
+            type: String,
+            required: true,
+        },
         color: {
             type: String,
             required: true,
@@ -39,17 +79,20 @@ export default {
         [ Icon.name ]: Icon,
     },
     methods: {
-        forward(code) {
+        forward(code, deptCode) {
             if (code === 'qr') {
                 this.scanMaterialQR();
                 return;
-            }
-            else if (code === 'ZH_MEDAL') {
+            } else if (code === 'ZH_MEDAL') {
                 this.scanQR();
                 return;
             }
 
-            const t = this.pageUrl.startsWith('/weixin/wechat/dist/index.html#/') ? '#' + this.pageUrl.split('#')[ 1 ] : this.pageUrl;
+            let t = this.pageUrl.startsWith('/weixin/wechat/dist/index.html#/') ? '#' + this.pageUrl.split('#')[ 1 ] : this.pageUrl;
+            if (deptCode) {
+                t = addUrlParams(url, { deptCode });
+            }
+
             window.location.assign(t);
         },
         renderColor(clr) {
