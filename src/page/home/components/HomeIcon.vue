@@ -90,7 +90,7 @@ export default {
 
             let t = this.pageUrl.startsWith('/weixin/wechat/dist/index.html#/') ? '#' + this.pageUrl.split('#')[ 1 ] : this.pageUrl;
             if (deptCode) {
-                t = addUrlParams(url, { deptCode });
+                t = addUrlParams(t, { deptCode });
             }
 
             window.location.assign(t);
