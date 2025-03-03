@@ -33,8 +33,9 @@
               <van-button plain hairline color="#48B319" style="color:#48B319;" size="mini"
                 v-bind:disabled="!task.COMMENT1" @click="showPopup1">语库1</van-button>
               <br />
-              <van-button plain hairline :color="THEME_COLOR_MAP[ 'warningRed' ]" :style="`color:${THEME_COLOR_MAP[ 'warningRed' ]};`" size="mini"
-                v-bind:disabled="!task.COMMENT2" @click="showPopup2">语库2</van-button>
+              <van-button plain hairline :color="THEME_COLOR_MAP[ 'warningRed' ]"
+                :style="`color:${THEME_COLOR_MAP[ 'warningRed' ]};`" size="mini" v-bind:disabled="!task.COMMENT2"
+                @click="showPopup2">语库2</van-button>
             </div>
 
             <div style="flex: 1;">
@@ -68,20 +69,21 @@
     <van-popup v-model="showFastComment1" position="bottom" :style="{ height: '80vh' }">
       <div class="evaPicker">
         <div class="evaPickerToolbar">语库1</div>
-        <div class="evaPickerRow" v-for="( str, i ) in comment1" :key="'yk1' + i" @click="putIn(str)">{{ str }}</div>
+        <div class="evaPickerRow" v-for="(str, i) in comment1" :key="'yk1' + i" @click="putIn(str)">{{ str }}</div>
       </div>
     </van-popup>
     <van-popup v-model="showFastComment2" position="bottom" :style="{ height: '80vh' }">
       <div class="evaPicker">
         <div class="evaPickerToolbar">语库2</div>
-        <div class="evaPickerRow" v-for="( str, i ) in comment2" :key="'yk2' + i" @click="putIn(str)">{{ str }}</div>
+        <div class="evaPickerRow" v-for="(str, i) in comment2" :key="'yk2' + i" @click="putIn(str)">{{ str }}</div>
       </div>
     </van-popup>
 
     <van-action-sheet v-model="showActions" cancel-text="取消" close-on-click-action
       :actions="[ { name: '拍摄' }, { name: '从相册选择' } ]" @select="onSelectAction" />
     <div v-if="openCamera" class="cameraWrap">
-      <van-icon name="cross" color="#fff" size="22" style="z-index: 9999; position: fixed; top: 8px; left: 8px; " @click.stop.prevent="closeCamera" />
+      <van-icon name="cross" color="#fff" size="22" style="z-index: 9999; position: fixed; top: 8px; left: 8px; "
+        @click.stop.prevent="closeCamera" />
       <button ref="takePic" @click.stop.prevent="savePicture" class="btnTakePic"></button>
       <video autoplay ref="video" class="cameraScreen"></video>
       <canvas ref="canvas" style="display: none;"></canvas>
@@ -94,7 +96,7 @@ import { THEME_COLOR_MAP } from '../../../../config/colorMap';
 import { Stepper, Uploader, Toast, Tag, ActionSheet, Button, Popup, Icon } from "vant";
 // import ImageUploader from './Uploader';
 import wx from "weixin-js-sdk";
-import apiRouter from "../../../../config/api.js";
+import apiRouter, { apiPath } from "../../../../config/api.js";
 
 async function imgCompress(src) {
   return new Promise((resolve, reject) => {
@@ -285,7 +287,7 @@ export default {
     }
   },
   methods: {
-    closeCamera(){
+    closeCamera() {
       this.mediaStream.getVideoTracks().forEach(videoTrack => {
         videoTrack.stop();
       });
@@ -503,19 +505,25 @@ export default {
     async uploadImage(imgItem) {
       try {
         imgItem.status = "uploading";
+        debugger;
 
-        let compressedImg = await imgCompress(imgItem.content);
 
-        const sendData = {
-          detail_id: this.task.ID,
-          baseImg: compressedImg
-        };
+        // let compressedImg = await imgCompress(imgItem.content);
+        // const sendData = {
+        //   detail_id: this.task.ID,
+        //   baseImg: compressedImg
+        // };
+        // let resp = await this.$http.post(
+        //   apiRouter.CLASS_RATE_UPLOAD_IMG,
+        //   sendData
+        // );
 
-        let resp = await this.$http.post(
-          apiRouter.CLASS_RATE_UPLOAD_IMG,
-          sendData
-        );
 
+        let bodyFormData = new FormData();
+        bodyFormData.append('uploadFile', imgItem.file);
+        let resp = await this.$http.post(apiPath + `/app/dyrate/upload_pic?detail_id=${this.task.ID}`, bodyFormData);
+
+        debugger;
         if (resp.status === 200) {
           let respBody = resp.body;
           if (respBody.code === 200) {
