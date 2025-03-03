@@ -183,6 +183,7 @@ export default {
   },
   data() {
     return {
+      THEME_COLOR_MAP: THEME_COLOR_MAP,
       ossPath: roterOssPath,
       fileAccepts: getMobileOS() === 'iOS' ? '.png,.jpg,.jpeg,.gif,.doc,.docx,.xls,.xlsx,.pdf,.ppt,.pptx,.rar,.zip,.7z,.tar,.mp4' : '*/*',
       //提交按钮状态

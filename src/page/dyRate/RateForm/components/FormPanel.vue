@@ -257,6 +257,7 @@ export default {
       showFastComment2: false,
       openCamera: false,
       mediaStream: null,
+      THEME_COLOR_MAP: THEME_COLOR_MAP,
     };
   },
   mounted_old() {

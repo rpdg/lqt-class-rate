@@ -68,6 +68,7 @@ export default {
 	},
 	data() {
 		return {
+			THEME_COLOR_MAP: THEME_COLOR_MAP,
 			oldPageTitle: '',
 			// @ts-ignore
 			ossPath: roterOssPath,

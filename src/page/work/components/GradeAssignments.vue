@@ -192,6 +192,7 @@ export default {
 	},
 	data() {
 		return {
+			THEME_COLOR_MAP: THEME_COLOR_MAP,
 			// @ts-ignore
 			ossPath: roterOssPath,
 			typeColor: {

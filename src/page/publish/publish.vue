@@ -163,6 +163,7 @@ export default {
   data() {
     const curDate = new Date();
     return {
+      THEME_COLOR_MAP: THEME_COLOR_MAP,
       timeMinus: 0,
       timeInputer: 0,
       timeCode: "",
