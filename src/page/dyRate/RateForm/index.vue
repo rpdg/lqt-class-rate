@@ -581,7 +581,7 @@ export default {
 			Dialog.confirm({
 				className: 'dy-rate-dialog',
 				title: '弃填',
-				message: '确定将本页项目数据清空并标记为弃填？',
+				message: '确定将本页数据清空并标记为弃填？',
 				confirmButtonText: '确定',
 			}).then(async () => {
 				let taskArr = JSON.parse(JSON.stringify(this.taskList));

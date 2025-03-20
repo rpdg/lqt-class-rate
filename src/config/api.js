@@ -13,6 +13,7 @@ const apiPath = process.env.API_BASE_URL;
 export { apiPath };
 
 const apiRouter = {
+  // 空间标签
   NOTICE_LASTSET: apiPath + "/app/notice/notice_last_set",
   NOTICE_TYPE: apiPath + "/app/notice/type",
   SCOPE_DEPT: apiPath + "/app/notice/scope",
@@ -20,6 +21,7 @@ const apiRouter = {
   SCOPE_OPTIONAL: apiPath + "/app/notice/scope",
   SCOPE_CURRICULUM: apiPath + "/app/notice/scope",
   SCOPE_GRADE: apiPath + "/app/notice/scope",
+  SPACE_TAG: apiPath + "/app/space/getSchoolTopic",
 
   // 查看通知
   LOOK_INFO: apiPath + "/app/notice/publist",
