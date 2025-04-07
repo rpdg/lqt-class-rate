@@ -15,7 +15,7 @@
 				@on-focus="onEvent('focus')"
 				@on-blur="onEvent('blur')"
 				class="x-textarea"
-				placeholder="说点什么…"
+				:placeholder="placeholderText"
 				:rows="7"
 				v-model="contentValue"
 				style="font-size: 16px"
@@ -27,9 +27,15 @@
     </div>
 		<div class="send-type" style="margin-top:15px;">
 			<div class="type-video">
-				<div class="accessory-box">
+				<div class="accessory-box" style="display: flex; gap: 10px;">
+					<div class="video-tnl" v-for="(item, index) in videoFiles" :key="index">
+						<img class="up-videos" :src="videoImgSrc" />
+						<!-- <img class="up-videos" src="http://gz.lqtedu.com/weixin/wechat/public/images/icon/videopng.png" alt=""> -->
+						<!-- <video :src="getimgUrl(videoFiles.videoUrl)" width="200" height="264" controls autobuffer v-if="videoFiles.videoUrl"></video> -->
+						<!-- <img src="../../assets/cancel.png" alt="" class="cancel" @click="clodesVideo(videoFiles)"> -->
+					</div>
 					<div class="accessory-img clearfix">
-						<a class="up-photo" href="javascript:;" v-if="imgLenght" @click="uploaderInputVideo()"  style="margin-left:0;">
+						<a class="up-photo" href="javascript:;" @click="uploaderInputVideo()"  style="margin-left:0;">
 							<img src="../../assets/addup.jpg" alt />
 							<div id="image-list" class="mui_uploader">
 								<input
@@ -41,12 +47,6 @@
 								/>
 							</div>
 						</a>
-					</div>
-					<div class="video-tnl" v-if="videoImg === true">
-						<img class="up-videos" :src="videoImgSrc" />
-						<!-- <img class="up-videos" src="http://gz.lqtedu.com/weixin/wechat/public/images/icon/videopng.png" alt=""> -->
-						<!-- <video :src="getimgUrl(videoFiles.videoUrl)" width="200" height="264" controls autobuffer v-if="videoFiles.videoUrl"></video> -->
-						<!-- <img src="../../assets/cancel.png" alt="" class="cancel" @click="clodesVideo(videoFiles)"> -->
 					</div>
 				</div>
 
@@ -189,7 +189,6 @@ export default {
       toastMessage: "",
       imgfileData: [],
       pathImgs: [],
-      videoFilesData: [],
       videoFiles: [],
       newVideoFiles: [],
       SPACE_ID: "CLASS-A10480",
@@ -207,6 +206,8 @@ export default {
       tagList: [],
       checkedTag: null,
       TAG_ID: '',
+      localIdImgs: [],
+      placeholderText : '说点什么…',
 
       videoUrl: "https://gz.lqtedu.com/weixin/VIDEO/5ae9fa28-6313-473b-9817-372680ec9562.mp4"
     };
@@ -235,6 +236,11 @@ export default {
         for (let i = 0; i < this.tagList.length; i++) {
           if (this.tagList[ i ].ID === this.TAG_ID) {
             this.checkedTag = this.tagList[ i ];
+            if (this.checkedTag.COMMENT) {
+              this.placeholderText = this.checkedTag.COMMENT;
+            } else {
+              this.placeholderText = '说点什么…';
+            }
             break;
           }
         }
@@ -357,8 +363,8 @@ export default {
         var len = files.length;
         var data = [];
         //  console.log('files::',files);
-        if (len > 1 || _this.videoFilesData.length + len > 1) {
-          alert("最多只能上传1张");
+        if (len > 1) {
+          alert("一次最多只能上传1个");
           e.target.value = "";
           return false;
         } else if (files[0].size > 104857600) {
@@ -377,7 +383,6 @@ export default {
         _this.goUploderVideo(data, function(re_file) {
           e.target.value = "";
           _this.videoFiles.push(re_file);
-          //_this.videoFilesData = _this.videoFilesData.concat(re_files);
           console.log("_this.videoFiles::", _this.videoFiles);
           if (_this.videoFiles.length > 0) {
             _this.imgLenght = false;
@@ -439,6 +444,17 @@ export default {
     submitVideo() {
       let _this = this;
       _this.showLoading = true;
+
+      if (_this.TAG_ID) {
+        let picMinMun = ~~_this.checkedTag.PIC_NUM;
+        if (_this.videoFiles.length < picMinMun) {
+          _this.showLoading = false;
+          _this.toastMessage = "本主题至少上传" + _this.checkedTag.PIC_NUM + "个视频";
+          _this.showPositionValue = true;
+          return;
+        }
+      }
+
       console.log(_this.videoFiles);
       var arrLen = [];
       let sendObj = {
@@ -668,7 +684,6 @@ export default {
   width: 150 / @baseSize;
   height: 150 / @baseSize;
   position: relative;
-  margin-top: 20px;
 }
 
 .up-videos {
