@@ -49,7 +49,7 @@
           <div style="display: flex; height: 106px;">
             <div style="flex: 1;">
               <van-uploader ref="fcc" class="inline-uploader" v-model="task.IMG_LIST" max-count="4" multiple
-                accept="image/*;capture=camera" capture="camera" preview-size="12vw"
+                accept="image/*" preview-size="12vw"
                 :preview-options="{ closeable: true }" :after-read="afterRead" @delete="deleteImg"
                 @click-preview="setPreviewState(true)" @close-preview="setPreviewState(false)" />
             </div>
@@ -274,7 +274,7 @@ export default {
     const p = platform();
     if (p === 'wechat') {
       this.patchWx();
-    } else if (p === 'unkown') {
+    } else {
       this.patchWindows();
     }
   },
@@ -282,7 +282,7 @@ export default {
     const p = platform();
     if (p === 'wechat') {
       this.patchWx();
-    } else if (p === 'unkown') {
+    } else {
       this.patchWindows();
     }
   },
