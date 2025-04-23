@@ -1,91 +1,64 @@
 <template>
-	<div class="box">
-    <back-title-bar :title="TOPIC_ID.length > 0 ? '取消编辑': '发布'" />
+  <div class="box">
+    <back-title-bar :title="TOPIC_ID.length > 0 ? '取消编辑' : '发布'" />
     <div class="wapper">
 
-		<!-- <div class="back-div" ref="heightBackPub" v-if="TOPIC_ID.length > 0">
+      <!-- <div class="back-div" ref="heightBackPub" v-if="TOPIC_ID.length > 0">
 			<p @click="backHome()" class="up-back">取消编辑</p>
 		</div>
 		<div class="back-div" ref="heightBackPub" v-else>
 			<p @click="backHome()" class="up-back">取消发布</p>
 		</div> -->
-		<div class="scope-title-box" style="margin-bottom: 8px;">
-			<x-textarea
-				:max="1000"
-				@on-focus="onEvent('focus')"
-				@on-blur="onEvent('blur')"
-				class="x-textarea"
-				:placeholder="placeholderText"
-				:rows="7"
-				v-model="contentValue"
-				style="font-size: 16px"
-			></x-textarea>
-		</div>
-    <div class="timecodeDiv" style="margin-top: 8px; margin-left: 15px; margin-right: 15px;">
-      <span v-for="(value, index) in tagList" :key="index" @click="checkTag(value.ID)"
-        :class="TAG_ID == value.ID ? 'checkedTag' : 'uncheckedTag'">{{ value.TITLE }}</span>
+      <div class="scope-title-box">
+        <x-textarea :max="1000" @on-focus="onEvent('focus')" @on-blur="onEvent('blur')"
+          :placeholder="placeholderText" :rows="7" v-model="contentValue"
+          style="font-size: 12px;margin-bottom: 8px; padding-bottom: 0;"></x-textarea>
+      </div>
+      <div class="timecodeDiv" style="margin-top:10px; margin-left: 15px; margin-right: 15px;">
+        <span v-for="(value, index) in tagList" :key="index" @click="checkTag(value.ID)"
+          :class="TAG_ID == value.ID ? 'checkedTag' : 'uncheckedTag'">{{ value.TITLE }}</span>
+      </div>
+      <div class="send-type" style="margin-top:10px;">
+        <div class="type-video">
+          <div class="accessory-box" style="display: flex; gap: 10px;">
+            <div class="video-tnl" v-for="(item, index) in videoFiles" :key="index">
+              <img class="up-videos" :src="videoImgSrc" />
+              <!-- <img class="up-videos" src="http://gz.lqtedu.com/weixin/wechat/public/images/icon/videopng.png" alt=""> -->
+              <!-- <video :src="getimgUrl(videoFiles.videoUrl)" width="200" height="264" controls autobuffer v-if="videoFiles.videoUrl"></video> -->
+              <!-- <img src="../../assets/cancel.png" alt="" class="cancel" @click="clodesVideo(videoFiles)"> -->
+            </div>
+            <div class="accessory-img clearfix">
+              <a class="up-photo" href="javascript:;" @click="uploaderInputVideo()" style="margin-left:0;">
+                <img src="../../assets/addup.jpg" alt />
+                <div id="image-list" class="mui_uploader">
+                  <input ref="videoFileInputer" id="uploaderInputVideo" class="mui_uploader_input" type="file"
+                    accept="video/*" />
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <div class="ps-info">
+            <p>注：视频最大支持100M，发布后需要后台处理，可能需等待几分钟后显示。</p>
+            <div style="text-align: right;">
+              <!-- <button @click="downloadVideo()" class="btn-calie" type="submit">下载视频</button> -->
+              <button @click="delSubmit()" class="btn-calie" type="submit" v-if="this.isDle === true">删除本条</button>
+              <button @click="submitVideo()" :show-loading="showLoading" :disabled="showLoading"
+                class="btn-uploder right" type="submit">发布</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <toast v-model="showPositionValue" type="text" :time="800" is-show-mask :position="position">{{ toastMessage }}
+      </toast>
+
+      <div v-transfer-dom>
+        <confirm v-model="popup" :close-on-confirm="false" :title="('是否确认删除？')" @on-confirm="onConfirm()"
+          confirmText="是，我要删除"></confirm>
+      </div>
     </div>
-		<div class="send-type" style="margin-top:15px;">
-			<div class="type-video">
-				<div class="accessory-box" style="display: flex; gap: 10px;">
-					<div class="video-tnl" v-for="(item, index) in videoFiles" :key="index">
-						<img class="up-videos" :src="videoImgSrc" />
-						<!-- <img class="up-videos" src="http://gz.lqtedu.com/weixin/wechat/public/images/icon/videopng.png" alt=""> -->
-						<!-- <video :src="getimgUrl(videoFiles.videoUrl)" width="200" height="264" controls autobuffer v-if="videoFiles.videoUrl"></video> -->
-						<!-- <img src="../../assets/cancel.png" alt="" class="cancel" @click="clodesVideo(videoFiles)"> -->
-					</div>
-					<div class="accessory-img clearfix">
-						<a class="up-photo" href="javascript:;" @click="uploaderInputVideo()"  style="margin-left:0;">
-							<img src="../../assets/addup.jpg" alt />
-							<div id="image-list" class="mui_uploader">
-								<input
-									ref="videoFileInputer"
-									id="uploaderInputVideo"
-									class="mui_uploader_input"
-									type="file"
-									accept="video/*"
-								/>
-							</div>
-						</a>
-					</div>
-				</div>
-
-				<div class="ps-info">
-					<p>注：视频最大支持100M，发布后需要后台处理，可能需等待几分钟后显示。</p>
-					<div style="text-align: right;">
-						<!-- <button @click="downloadVideo()" class="btn-calie" type="submit">下载视频</button> -->
-						<button @click="delSubmit()" class="btn-calie" type="submit" v-if="this.isDle === true">删除本条</button>
-						<button
-							@click="submitVideo()"
-							:show-loading="showLoading"
-							:disabled="showLoading"
-							class="btn-uploder right"
-							type="submit"
-						>发布</button>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<toast
-			v-model="showPositionValue"
-			type="text"
-			:time="800"
-			is-show-mask
-			:position="position"
-		>{{toastMessage}}</toast>
-
-		<div v-transfer-dom>
-			<confirm
-				v-model="popup"
-				:close-on-confirm="false"
-				:title="('是否确认删除？')"
-				@on-confirm="onConfirm()"
-				confirmText="是，我要删除"
-			></confirm>
-		</div>
-	</div>
-	</div>
+  </div>
 </template>
 
 <script>
@@ -146,7 +119,7 @@ export default {
     Toast,
     XTextarea
   },
-  created: function() {
+  created: function () {
     this.SPACE_ID = this.$route.query.SPACE_ID;
     this.TOPIC_ID = this.$route.query.TOPIC_ID;
 
@@ -168,7 +141,7 @@ export default {
   mounted() {
     // console.log("ref", this.$refs["videoFileInputer"]);
   },
-  updated() {},
+  updated() { },
 
   data() {
     return {
@@ -207,7 +180,7 @@ export default {
       checkedTag: null,
       TAG_ID: '',
       localIdImgs: [],
-      placeholderText : '说点什么…',
+      placeholderText: '说点什么…',
 
       videoUrl: "https://gz.lqtedu.com/weixin/VIDEO/5ae9fa28-6313-473b-9817-372680ec9562.mp4"
     };
@@ -218,7 +191,7 @@ export default {
       _this.$http.get(apiRouter.SPACE_TAG + "?SPACE_ID=" + _this.SPACE_ID + "&TOPIC_ID=" + this.TOPIC_ID).then(response => {
         if (response.status === 200) {
           console.log(response.data.data);
-          _this.tagList = response.data.data;
+          _this.tagList = response.data.data.filter(t => ~~t.PIC_NUM < 2);
           for (let i = 0; i < _this.tagList.length; i++) {
             if (_this.tagList[ i ].ID === _this.TAG_ID) {
               _this.checkedTag = _this.tagList[ i ];
@@ -237,7 +210,7 @@ export default {
           if (this.tagList[ i ].ID === this.TAG_ID) {
             this.checkedTag = this.tagList[ i ];
             if (this.checkedTag.COMMENT) {
-              this.placeholderText = this.checkedTag.COMMENT;
+              this.placeholderText = '说点什么…\n' + this.checkedTag.COMMENT;
             } else {
               this.placeholderText = '说点什么…';
             }
@@ -252,7 +225,7 @@ export default {
       this.$vux.confirm.show({
         title: "下载",
         content: "确定下载视频",
-        onCancel() {},
+        onCancel() { },
         onConfirm() {
           // downloadFile(that.videoUrl);
           const a = document.createElement("a");
@@ -303,7 +276,7 @@ export default {
             _this.showPositionValue = true;
           }
         },
-        erro => {}
+        erro => { }
       );
       this.popup = false;
       return;
@@ -323,13 +296,13 @@ export default {
       this.$http
         .get(
           apiRouter.SPACE_DETAIL +
-            "?" +
-            "SPACE_ID=" +
-            _this.SPACE_ID +
-            "&TOPIC_ID=" +
-            _this.TOPIC_ID +
-            "&IS_VIDEO=" +
-            1
+          "?" +
+          "SPACE_ID=" +
+          _this.SPACE_ID +
+          "&TOPIC_ID=" +
+          _this.TOPIC_ID +
+          "&IS_VIDEO=" +
+          1
         )
         .then(
           response => {
@@ -340,12 +313,12 @@ export default {
               if (_this.videoFiles.length > 0) {
                 _this.imgLenght = false;
                 _this.videoImg = true;
-                _this.videoImgSrc = roterPath + _this.videoFiles[0].showUrl;
-                _this.videoUrl = roterPath + _this.videoFiles[0].videoPath;
+                _this.videoImgSrc = roterPath + _this.videoFiles[ 0 ].showUrl;
+                _this.videoUrl = roterPath + _this.videoFiles[ 0 ].videoPath;
               }
             }
           },
-          erro => {}
+          erro => { }
         );
     },
 
@@ -358,7 +331,7 @@ export default {
       let _this = this;
       // let formData = new FormData();
       var f2 = document.querySelector("#uploaderInputVideo");
-      f2.onchange = function(e) {
+      f2.onchange = function (e) {
         var files = f2.files;
         var len = files.length;
         var data = [];
@@ -367,20 +340,20 @@ export default {
           alert("一次最多只能上传1个");
           e.target.value = "";
           return false;
-        } else if (files[0].size > 104857600) {
+        } else if (files[ 0 ].size > 104857600) {
           alert("视频最大为100M");
           e.target.value = "";
           return false;
         } else {
           var a = {
-            val: files[0]
+            val: files[ 0 ]
           };
           data.push(a);
         }
 
         // console.log(files[0].size , 100*1024*1024);
 
-        _this.goUploderVideo(data, function(re_file) {
+        _this.goUploderVideo(data, function (re_file) {
           e.target.value = "";
           _this.videoFiles.push(re_file);
           console.log("_this.videoFiles::", _this.videoFiles);
@@ -404,7 +377,7 @@ export default {
         alert("请选择文件");
       } else {
         for (var i = 0; i < len; i++) {
-          formData.append("file", data[i].val);
+          formData.append("file", data[ i ].val);
         }
         _this.$http.post(apiRouter.GET_VIDEO, formData).then(
           response => {
@@ -426,14 +399,14 @@ export default {
       console.log("obj::", obj);
       let _this = this;
       if (_this.TOPIC_ID) {
-        console.log(obj[0].mediaId);
-        console.log(obj[0].videoPath);
-        console.log(_this.videoFiles[0].videoPath);
-        if (obj[0].videoPath === this.videoFiles[0].videoPath) {
+        console.log(obj[ 0 ].mediaId);
+        console.log(obj[ 0 ].videoPath);
+        console.log(_this.videoFiles[ 0 ].videoPath);
+        if (obj[ 0 ].videoPath === this.videoFiles[ 0 ].videoPath) {
           _this.videoFiles = [];
           _this.videoImg = false;
           _this.imgLenght = true;
-          _this.codeArr.push(obj[0].mediaId);
+          _this.codeArr.push(obj[ 0 ].mediaId);
         }
       } else {
         _this.videoImg = false;
@@ -513,7 +486,7 @@ export default {
   color: #fff;
   background-color: #48B319;
   border-radius: 1px;
-  margin-right: 10px;
+  margin-right: 5px;
   padding: 5px 10px;
 }
 
@@ -523,13 +496,14 @@ export default {
   color: #222;
   background-color: #ddd;
   border-radius: 1px;
-  margin-right: 10px;
+  margin-right: 5px;
   padding: 5px 10px;
 }
 
 .back-div {
   padding-bottom: 100 / @baseSize;
 }
+
 .up-back {
   width: 100%;
   height: 100 / @baseSize;
@@ -576,6 +550,7 @@ export default {
 .photo-img li {
   margin-bottom: 20 / @baseSize;
 }
+
 .up-photo {
   margin-left: 20 / @baseSize;
   width: 150 / @baseSize;
@@ -588,6 +563,7 @@ export default {
   margin-right: 22 / @baseSize;
   position: relative;
 }
+
 // .photo-img li:last-child{
 //   margin-right: 0;
 // }
@@ -640,9 +616,10 @@ export default {
   background: rgba(0, 0, 0, 0.6);
   z-index: 999;
 }
+
 .ps-info p {
   color: #4caf50;
-  font-size: @fontSize28;
+  font-size: 12px;
   padding-left: 30 / @baseSize;
   padding-right: 30 / @baseSize;
   box-sizing: border-box;
@@ -656,6 +633,7 @@ export default {
   top: 0px;
   left: 0px;
 }
+
 .mui_uploader .mui_uploader_input {
   width: 150 / @baseSize;
   height: 150 / @baseSize;
@@ -691,14 +669,15 @@ export default {
   height: 150 / @baseSize;
   display: block;
 }
+
 .scope-title-box {
   border-bottom: 1px solid @colorDD;
-  margin-bottom: 30 / @baseSize;
 }
 </style>
 
 <style lang="less" scoped>
 @import "../../style/minxin.less";
+
 .wapper {
   position: absolute;
   top: 47px;

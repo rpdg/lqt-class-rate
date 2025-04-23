@@ -6,16 +6,17 @@
     <p class="cancel-btn" @click="backHome()" v-else>取消发布</p> -->
 
     <div class="scope-title-box">
-      <x-textarea :max="1000" @on-focus="onEvent('focus')" @on-blur="onEvent('blur')" class="x-textarea"
-        :placeholder="(checkedTag && checkedTag.COMMENT)?checkedTag.COMMENT:'说点什么...'" :rows="7" v-model="contentValue" style="font-size: 16px">
+      <x-textarea :max="1000" @on-focus="onEvent('focus')" @on-blur="onEvent('blur')"
+        :placeholder="(checkedTag && checkedTag.COMMENT) ? '说点什么...\n' + checkedTag.COMMENT : '说点什么...'" :rows="7"
+        v-model="contentValue" style="font-size: 12px;margin-bottom: 8px; padding-bottom: 0;">
       </x-textarea>
     </div>
-    <div class="timecodeDiv" style="margin-top: 8px; margin-left: 15px; margin-right: 15px;">
+    <div class="timecodeDiv" style="margin-top: 10px; margin-left: 15px; margin-right: 15px;">
       <span v-for="(value, index) in tagList" :key="index" @click="checkTag(value.ID)"
         :class="TAG_ID == value.ID ? 'checkedTag' : 'uncheckedTag'">{{ value.TITLE }}</span>
     </div>
     <div class="accessory-box">
-      <div class="accessory-img clearfix" style="margin-top:15px;">
+      <div class="accessory-img clearfix" style="margin-top:10px;">
         <ul class="photo-img">
           <li v-for="(item, index) in localIdImgs" :key="index">
             <img :src="item" alt="" class="imgud">
@@ -486,7 +487,7 @@ export default {
   color: #fff;
   background-color: #48B319;
   border-radius: 1px;
-  margin-right: 10px;
+  margin-right: 5px;
   padding: 5px 10px;
 }
 
@@ -496,7 +497,7 @@ export default {
   color: #222;
   background-color: #ddd;
   border-radius: 1px;
-  margin-right: 10px;
+  margin-right: 5px;
   padding: 5px 10px;
 }
 
@@ -544,9 +545,6 @@ export default {
   .mixin-padding(50/@baseSize, 50/@baseSize);
 }
 
-.x-textarea {
-  font-size: @fontSize24;
-}
 
 .weui-label {
   font-size: @fontSize30;
