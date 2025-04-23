@@ -129,6 +129,9 @@ export default {
                     var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
                     // alert('[' + result + ']');
                     try {
+                        if (/^\d{10}$/.test(result)) {
+                            result = '/app/zh/teacher/barcode?id=' + result;
+                        }
                         vm.$http.get(result).then(response => {
                             let result = response.body;
                             if (result.code != 200) {
