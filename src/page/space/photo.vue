@@ -32,12 +32,11 @@
       </div>
     </div>
 
-    <div style="text-align: right;">
+    <div style="display: flex; align-items: center; position: fixed; bottom: 15px; left: 15px; right: 15px;">
       <button @click="delSubmit()" class="btn-calie" type="submit" v-if="this.isDle === true">删除本条
       </button>
-      <x-button v-on:click.native="goUploder" :show-loading="showLoading" :disabled="showLoading"
-        class="btn-uploder right" type="submit">发布
-      </x-button>
+      <x-button v-on:click.native="goUploder" class="btn-uploder"
+       :show-loading="showLoading" :disabled="showLoading" type="submit">提交</x-button>
     </div>
 
 
@@ -517,10 +516,9 @@ export default {
   text-align: center;
   font-size: @fontSize30;
   color: @white;
-  width: 200 / @baseSize;
   background: @green;
-  margin-right: 40 / @baseSize;
-  margin-top: 80 / @baseSize;
+  border-radius: 2px;
+  flex: 1;
 }
 
 .cancel-btn {
@@ -710,9 +708,8 @@ export default {
   text-align: center;
   font-size: @fontSize30;
   color: @white;
-  width: 200/@baseSize;
   background: #999999;
-  margin-right: 40/@baseSize;
-  margin-top: 80/@baseSize;
+  border-radius: 2px;
+  flex: 1;
 }
 </style>

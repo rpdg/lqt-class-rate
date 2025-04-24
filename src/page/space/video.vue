@@ -10,9 +10,8 @@
 			<p @click="backHome()" class="up-back">取消发布</p>
 		</div> -->
       <div class="scope-title-box">
-        <x-textarea :max="1000" @on-focus="onEvent('focus')" @on-blur="onEvent('blur')"
-          :placeholder="placeholderText" :rows="7" v-model="contentValue"
-          style="font-size: 12px;margin-bottom: 8px; padding-bottom: 0;"></x-textarea>
+        <x-textarea :max="1000" @on-focus="onEvent('focus')" @on-blur="onEvent('blur')" :placeholder="placeholderText"
+          :rows="7" v-model="contentValue" style="font-size: 12px;margin-bottom: 8px; padding-bottom: 0;"></x-textarea>
       </div>
       <div class="timecodeDiv" style="margin-top:10px; margin-left: 15px; margin-right: 15px;">
         <span v-for="(value, index) in tagList" :key="index" @click="checkTag(value.ID)"
@@ -38,14 +37,13 @@
             </div>
           </div>
 
-          <div class="ps-info">
-            <p>注：视频最大支持100M，发布后需要后台处理，可能需等待几分钟后显示。</p>
-            <div style="text-align: right;">
-              <!-- <button @click="downloadVideo()" class="btn-calie" type="submit">下载视频</button> -->
-              <button @click="delSubmit()" class="btn-calie" type="submit" v-if="this.isDle === true">删除本条</button>
-              <button @click="submitVideo()" :show-loading="showLoading" :disabled="showLoading"
-                class="btn-uploder right" type="submit">发布</button>
-            </div>
+          <p class="ps-info-p">注：视频最大支持100M，发布后需要后台处理，可能需等待几分钟后显示。</p>
+
+          <div style="display: flex; align-items: center; position: fixed; bottom: 15px; left: 15px; right: 15px;">
+            <!-- <button @click="downloadVideo()" class="btn-calie" type="submit">下载视频</button> -->
+            <button @click="delSubmit()" class="btn-calie" type="submit" v-if="this.isDle === true">删除本条</button>
+            <button @click="submitVideo()" class="btn-uploder" :show-loading="showLoading" :disabled="showLoading"
+              type="submit">提交</button>
           </div>
         </div>
       </div>
@@ -595,12 +593,9 @@ export default {
   text-align: center;
   font-size: @fontSize30;
   color: @white;
-  width: 200 / @baseSize;
   background: @green;
-  margin-right: 40 / @baseSize;
-  margin-top: 80 / @baseSize;
-
   border-radius: 2px;
+  flex: 1;
 }
 
 .cancel-btn {
@@ -617,7 +612,7 @@ export default {
   z-index: 999;
 }
 
-.ps-info p {
+.ps-info-p {
   color: #4caf50;
   font-size: 12px;
   padding-left: 30 / @baseSize;
@@ -651,11 +646,9 @@ export default {
   text-align: center;
   font-size: @fontSize30;
   color: @white;
-  width: 200 / @baseSize;
   background: #999999;
-  margin-right: 40 / @baseSize;
-  margin-top: 80 / @baseSize;
   border-radius: 2px;
+  flex: 1
 }
 
 .video-tnl {
