@@ -42,8 +42,10 @@
           <div style="display: flex; align-items: center; position: fixed; bottom: 15px; left: 15px; right: 15px;">
             <!-- <button @click="downloadVideo()" class="btn-calie" type="submit">下载视频</button> -->
             <button @click="delSubmit()" class="btn-calie" type="submit" v-if="this.isDle === true">删除本条</button>
-            <button @click="submitVideo()" class="btn-uploder" :show-loading="showLoading" :disabled="showLoading"
-              type="submit">提交</button>
+            <!-- <button @click="submitVideo()" class="btn-uploder" :show- :disabled="showLoading || true"
+              type="submit">提交</button> -->
+            <van-button block :color="THEME_COLOR_MAP[ 'mainGreen' ]" style="flex: 1;" :loading="showLoading"
+              :disabled="showLoading || (checkedTag && ~~checkedTag.PIC_NUM === 1 && videoFiles.length < 1)" @click="submitVideo">提交</van-button>
           </div>
         </div>
       </div>
@@ -60,6 +62,7 @@
 </template>
 
 <script>
+import { THEME_COLOR_MAP } from '../../config/colorMap';
 import {
   Confirm,
   XTextarea,
@@ -74,8 +77,7 @@ import Back from "../../components/common/Back.vue";
 import BackTitleBar from "../../components/common/BackTitleBar.vue";
 //import Photo from "./photo.vue"
 import apiRouter from "../../config/api.js";
-import wx from "weixin-js-sdk";
-import { mapMutations } from "vuex";
+import { Button } from "vant";
 import img_pubVideo from "../../assets/pubVideo.png";
 
 function download(href, filename = "") {
@@ -109,6 +111,7 @@ export default {
   components: {
     Back,
     BackTitleBar,
+    [ Button.name ]: Button,
     Confirm,
     Group,
     XSwitch,
@@ -143,6 +146,7 @@ export default {
 
   data() {
     return {
+      THEME_COLOR_MAP: THEME_COLOR_MAP,
       showLoading: false,
       addFalse: false,
       videoImg: false,
@@ -196,12 +200,17 @@ export default {
               break;
             }
           }
+          if (_this.tagList.length > 0) {
+            _this.placeholderText = '说点什么…\n如发主题帖，请选择下方对应主题。';
+          }
         }
       });
     },
     checkTag(id) {
       if (this.TAG_ID === id) {
         this.TAG_ID = '';
+        this.checkedTag = null;
+        this.placeholderText = '说点什么…\n如发主题帖，请选择下方对应主题。';
       } else {
         this.TAG_ID = id;
         for (let i = 0; i < this.tagList.length; i++) {
@@ -210,7 +219,7 @@ export default {
             if (this.checkedTag.COMMENT) {
               this.placeholderText = '说点什么…\n' + this.checkedTag.COMMENT;
             } else {
-              this.placeholderText = '说点什么…';
+              this.placeholderText = '说点什么…\n如发主题帖，请选择下方对应主题。';
             }
             break;
           }
@@ -588,15 +597,15 @@ export default {
   display: block;
 }
 
-.btn-uploder {
-  line-height: 80 / @baseSize;
-  text-align: center;
-  font-size: @fontSize30;
-  color: @white;
-  background: @green;
-  border-radius: 2px;
-  flex: 1;
-}
+// .btn-uploder {
+//   line-height: 80 / @baseSize;
+//   text-align: center;
+//   font-size: @fontSize30;
+//   color: @white;
+//   background: @green;
+//   border-radius: 2px;
+//   flex: 1;
+// }
 
 .cancel-btn {
   width: 100%;

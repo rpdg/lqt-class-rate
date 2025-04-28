@@ -7,7 +7,7 @@
 
     <div class="scope-title-box">
       <x-textarea :max="1000" @on-focus="onEvent('focus')" @on-blur="onEvent('blur')"
-        :placeholder="(checkedTag && checkedTag.COMMENT) ? '说点什么...\n' + checkedTag.COMMENT : '说点什么...'" :rows="7"
+        :placeholder="placeholderText" :rows="7"
         v-model="contentValue" style="font-size: 12px;margin-bottom: 8px; padding-bottom: 0;">
       </x-textarea>
     </div>
@@ -35,8 +35,11 @@
     <div style="display: flex; align-items: center; position: fixed; bottom: 15px; left: 15px; right: 15px;">
       <button @click="delSubmit()" class="btn-calie" type="submit" v-if="this.isDle === true">删除本条
       </button>
-      <x-button v-on:click.native="goUploder" class="btn-uploder"
-       :show-loading="showLoading" :disabled="showLoading" type="submit">提交</x-button>
+      <!-- <x-button v-on:click.native="goUploder" class="btn-uploder" :show-loading="showLoading" :disabled="showLoading"
+        type="submit">提交</x-button> -->
+      <van-button block :color="THEME_COLOR_MAP[ 'mainGreen' ]" style="flex: 1;" :loading="showLoading"
+        :disabled="showLoading || (checkedTag && ~~checkedTag.PIC_NUM > localIdImgs.length)"
+        @click="goUploder">提交</van-button>
     </div>
 
 
@@ -56,6 +59,8 @@
 </template>
 
 <script>
+import { THEME_COLOR_MAP } from '../../config/colorMap';
+import { Button } from "vant";
 import BackTitleBar from "../../components/common/BackTitleBar.vue";
 import {
   Toast,
@@ -72,7 +77,6 @@ import {
   Datetime,
   TransferDomDirective as TransferDom
 } from "vux";
-import axios from "axios";
 import wx from "weixin-js-sdk";
 import apiRouter from "../../config/api.js";
 export default {
@@ -87,6 +91,7 @@ export default {
   },
   components: {
     BackTitleBar,
+    [ Button.name ]: Button,
     Toast,
     Group,
     XAddress,
@@ -101,6 +106,7 @@ export default {
   },
   data() {
     return {
+      THEME_COLOR_MAP: THEME_COLOR_MAP,
       showLoading: false,
       popup: false,
       isDle: false,
@@ -154,7 +160,8 @@ export default {
       checkedTag: null,
       TAG_ID: '',
       TOPIC_ID: '',
-      SPACE_ID: ''
+      SPACE_ID: '',
+      placeholderText: '说点什么…',
     };
   },
   created() {
@@ -186,17 +193,27 @@ export default {
               break;
             }
           }
+          if (_this.tagList.length > 0) {
+            _this.placeholderText = '说点什么…\n如发主题帖，请选择下方对应主题。';
+          }
         }
       });
     },
     checkTag(id) {
       if (this.TAG_ID === id) {
         this.TAG_ID = '';
+        this.checkedTag = null;
+        this.placeholderText = '说点什么…\n如发主题帖，请选择下方对应主题。';
       } else {
         this.TAG_ID = id;
         for (let i = 0; i < this.tagList.length; i++) {
           if (this.tagList[ i ].ID === this.TAG_ID) {
             this.checkedTag = this.tagList[ i ];
+            if (this.checkedTag.COMMENT) {
+              this.placeholderText = '说点什么…\n' + this.checkedTag.COMMENT;
+            } else {
+              this.placeholderText = '说点什么…\n如发主题帖，请选择下方对应主题。';
+            }
             break;
           }
         }
@@ -274,7 +291,7 @@ export default {
       if (_this.TAG_ID) {
         let picMinMun = ~~_this.checkedTag.PIC_NUM;
         if (_this.localIdImgs.length < picMinMun) {
-          _this.position = position;
+          // _this.position = position;
           _this.toastMessage = "本主题至少上传" + picMinMun + "张图片";
           _this.showPositionValue = true;
           _this.showLoading = false;
@@ -282,7 +299,7 @@ export default {
         }
       }
       if (_this.contentValue === "" || _this.contentValue.trim() == "") {   //   || _this.serverId.length === 0
-        _this.position = position;
+        // _this.position = position;
         _this.toastMessage = "请填写内容";
         _this.showPositionValue = true;
         _this.showLoading = false;
@@ -302,19 +319,19 @@ export default {
           response => {
             console.log(response);
             if (response.status === 200) {
-              _this.position = position;
+              // _this.position = position;
               _this.toastMessage = "发布成功";
               _this.showPositionValue = true;
               setTimeout(_this.backHome, 1200);
             } else {
-              _this.position = position;
+              // _this.position = position;
               _this.toastMessage = "发布失败";
               _this.showPositionValue = true;
               _this.showLoading = false;
             }
           },
           error => {
-            _this.position = position;
+            // _this.position = position;
             _this.toastMessage = "发布失败";
             _this.showPositionValue = true;
             _this.showLoading = false;
