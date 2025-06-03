@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <back-title-bar title="发通知" />
+    <back-title-bar :title="this.republishTitle||'发通知'" />
     <div class="wapper">
       <div class="form-info clearfix" style="padding-top:20px;">
         <!-- <p class="cancel-btn" @click="cancel()">取消发布</p> -->
@@ -21,10 +21,10 @@
           <p class="scope-title" style="padding:0 15px; display:flex; align-items: center;">
             <span style="flex:1;">通知标题</span>
             <popup-picker v-if='objType.type === "DEPT"' :data='labelOptions' v-model='selectedLabelCode'
-              :display-format="formatV1" class='v1'></popup-picker>
+              :display-format="formatV1" class='v1' :disabled="republishTitle==='只改内容不重发'"></popup-picker>
           </p>
           <x-textarea :max="50" @on-focus="onEvent('focus')" @on-blur="onEvent('blur')" class="x-textarea"
-            placeholder="请输入通知标题" :rows="2" v-model="titleValue"></x-textarea>
+            placeholder="请输入通知标题" :rows="2" v-model="titleValue" :readonly="republishTitle==='只改内容不重发'"></x-textarea>
           <!--<input type="hidden" name="title" v-model="titleValue">-->
         </div>
 
@@ -33,14 +33,14 @@
           <div class="write-back-right">
             <checker v-model="allow" type="radio" default-item-class="write-back-item"
               selected-item-class="write-back-selected" :radio-required="false">
-              <checker-item v-for="(item, i) in isBack" :key="i" :value="i">{{ item }}</checker-item>
+              <checker-item v-for="(item, i) in isBack" :key="i" :value="i" :disabled="republishTitle==='只改内容不重发' && i!=allow">{{ item }}</checker-item>
             </checker>
           </div>
         </div>
 
         <div class="scope-data-box">
           <x-address :title="title2" v-model="timeData" raw-value :list="addressData" hide-district
-            value-text-align="right" class="x-address"></x-address>
+            value-text-align="right" class="x-address" :disabled="republishTitle==='只改内容不重发'"></x-address>
         </div>
 
         <div class="scope-title-box">
@@ -100,7 +100,7 @@
 
         <div style="padding: 20px 15px;">
           <van-button block color="#54B331" @click="goUploder" :loading="showLoading" :disabled="showLoading">
-            发布通知
+            提交
           </van-button>
         </div>
         <!-- <toast
@@ -244,6 +244,8 @@ export default {
       pickerData: [ [ { name: '选择标签', value: '' } ] ],
       pickerVisible: false,
       selectedValue: null,
+      republish: false,
+      republishTitle :  '',
       formatV1: function (value, name) {
         return `${name}`;
       }
@@ -414,6 +416,19 @@ export default {
         imgs.forEach((item, index) => {
           this.localIdImgs.push(roterPath + item.url);
         });
+        let files = JSON.parse(window.localStorage.MESSAGE || '{}').fileList || [];
+        files.forEach(file => {
+          file = Object.assign({
+            viewPath: this.ossPath + '/upload' + file.URL,
+            newfileName: 'xxx-' + file.ID,
+            originalName: file.FILENAME
+          }, file);
+          this.fileTempList.push({
+            viewPath: this.ossPath + '/upload' + file.URL,
+            newfileName: 'xxx-' + file.ID,
+            originalName: file.FILENAME
+          });
+        });
 
         if (cheoonOn === true) {
           this.allow = 0;
@@ -425,6 +440,7 @@ export default {
         this.objType.objectId = this.objType.objectId;
         this.objType.type = this.objType.type;
         this.objType.objectName = this.objType.objectName;
+        this.republish = this.objType.republish;
         this.userList.forEach((item, index) => {
           this.scope.push(item.toName);
         });
@@ -437,10 +453,12 @@ export default {
         }
         this.titleValue = stringArray.title;
         this.contentValue = stringArray.content;
+
         this.objType = JSON.parse(window.localStorage.MESSAGE);
         this.objType.objectId = this.objType.objectId;
         this.objType.type = this.objType.type;
         this.objType.objectName = this.objType.objectName;
+        this.republish = this.objType.republish;
 
         let imgs = stringArray.imgList;
         this.serverId = imgs;
@@ -474,6 +492,8 @@ export default {
         });
         this.userList = stringArray.userList;
       }
+
+      this.republishTitle = this.republish ? '修改并重发' : '只改内容不重发';
     }
 
     if (this.localIdImgs.length >= this.imgaesMaxLenght) {
@@ -672,12 +692,15 @@ export default {
           file_add: JSON.stringify(fileTempList),
           file_del: JSON.stringify(this.fileDelList),
           imgList: JSON.stringify(this.serverId),
-          label: this.selectedLabelCode[ 0 ]
+          label: this.selectedLabelCode[ 0 ],
+          is_notify: this.republish ? 1 : 0,
         };
         debugger;
 
         if (this.$route.query.path === 'Grade') {
           sendObj.cls_mbrs = JSON.stringify(this.grade_choosed_classes);
+        } else if (this.objType.type ==='CLASS') {
+          sendObj.cls_mbrs = JSON.stringify(this.userList);
         }
 
         //  console.log(JSON.stringify(sendObj))
