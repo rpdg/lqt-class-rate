@@ -32,9 +32,9 @@
       </div>
     </div>
 
-    <div style="display: flex; align-items: center; position: fixed; bottom: 15px; left: 15px; right: 15px;">
-      <button @click="delSubmit()" class="btn-calie" type="submit" v-if="this.isDle === true">删除本条
-      </button>
+    <div style="display: flex; align-items: center; gap: 15px; position: fixed; bottom: 15px; left: 15px; right: 15px;">
+      <van-button block @click="delSubmit()" class="btn-calie" type="submit" v-if="this.isDle === true">删除本条
+      </van-button>
       <!-- <x-button v-on:click.native="goUploder" class="btn-uploder" :show-loading="showLoading" :disabled="showLoading"
         type="submit">提交</x-button> -->
       <van-button block :color="THEME_COLOR_MAP[ 'mainGreen' ]" style="flex: 1;" :loading="showLoading"
@@ -503,7 +503,7 @@ export default {
   color: #fff;
   background-color: #48B319;
   border-radius: 1px;
-  margin-right: 5px;
+  margin: 5px;
   padding: 5px 10px;
 }
 
@@ -513,7 +513,7 @@ export default {
   color: #222;
   background-color: #ddd;
   border-radius: 1px;
-  margin-right: 5px;
+  margin: 5px;
   padding: 5px 10px;
 }
 
