@@ -398,25 +398,31 @@ export default {
       }
     } else if (path === "Message") {
       debugger;
+      let msgObject = JSON.parse(window.localStorage.MESSAGE || '{}');
       this.noticeData = JSON.parse(window.localStorage.NOTICE_DATA || '{}');
       if (this.noticeData.labelList) {
         this.labelOptions[ 0 ].push(...this.noticeData.labelList.map(item => {
           return { name: item.NAME, value: item.CODE, parent: 0 };
         }));
+
+        if(msgObject.label) {
+          let labelCode = this.noticeData.labelList.find(item => item.NAME === msgObject.label)?.CODE??'';
+          this.selectedLabelCode[0] = labelCode;
+        }
       }
       let stringStore = JSON.stringify(this.messageStore);
       this.itemId = this.$route.query.itemId;
       let stringArray = this.messageStore;
       if (stringArray && stringStore === "[]" && stringStore.length === 2) {
-        this.userList = JSON.parse(window.localStorage.MESSAGE || '{}').userList;
-        this.titleValue = JSON.parse(window.localStorage.MESSAGE || '{}').title;
-        let cheoonOn = JSON.parse(window.localStorage.MESSAGE || '{}').commentFlag;
-        let imgs = JSON.parse(window.localStorage.MESSAGE || '{}').imgList || [];
+        this.userList = msgObject.userList;
+        this.titleValue = msgObject.title;
+        let cheoonOn = msgObject.commentFlag;
+        let imgs = msgObject.imgList || [];
         this.serverId = imgs;
         imgs.forEach((item, index) => {
           this.localIdImgs.push(roterPath + item.url);
         });
-        let files = JSON.parse(window.localStorage.MESSAGE || '{}').fileList || [];
+        let files = msgObject.fileList || [];
         files.forEach(file => {
           file = Object.assign({
             viewPath: this.ossPath + '/upload' + file.URL,
