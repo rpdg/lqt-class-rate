@@ -15,7 +15,8 @@
                 <p>
                     <span>我的</span>
                     <img v-if="userType === 'T_TEACHER'" class="user-type" src="../../../assets/teacher.png" alt="">
-                    <img v-else-if="userType === 'T_PARENT'" class="user-type" src="../../../assets/teacher3.png" alt="">
+                    <img v-else-if="userType === 'T_PARENT'" class="user-type" src="../../../assets/teacher3.png"
+                        alt="">
                     <img v-else="userType === 'T_STUDENT'" class="user-type" src="../../../assets/teacher2.png" alt="">
                 </p>
             </a>
@@ -39,15 +40,15 @@ export default {
             required: true,
         },
     }
-}
+};
 </script>
 <style lang="less" scoped>
 @import '../../../style/minxin.less';
 
 .tab-btn {
     width: 100%;
-    height: 100 / @baseSize;
-    line-height: 100 / @baseSize;
+    // height: 100 / @baseSize;
+    line-height: 50px;
     border-bottom: 1px solid #eee;
 }
 
@@ -59,7 +60,7 @@ export default {
 }
 
 .tab-btn li p span {
-    font-size: 36 / @baseSize;
+    font-size: 18px;
     color: #000000;
     padding-right: 0.2rem;
 }
@@ -69,10 +70,11 @@ export default {
 }
 
 .user-type {
-    position: absolute;
-    width: 39 / @baseSize;
-    height: 38 / @baseSize;
-    top: 0.55rem;
+    // position: absolute;
+    // top: 0.55rem;
+    width: 19px;
+    height: 19px;
+    vertical-align: text-bottom;
 }
 
 .border-bottom {

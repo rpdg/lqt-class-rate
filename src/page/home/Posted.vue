@@ -406,7 +406,8 @@ export default {
         }));
 
         if(msgObject.label) {
-          let labelCode = this.noticeData.labelList.find(item => item.NAME === msgObject.label)?.CODE??'';
+          let ll = this.noticeData.labelList.find(item => item.NAME === msgObject.label)
+          let labelCode = ll ? ll.CODE : '';
           this.selectedLabelCode[0] = labelCode;
         }
       }
