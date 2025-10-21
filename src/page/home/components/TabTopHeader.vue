@@ -1,13 +1,13 @@
 <template>
     <ul class="tab-btn clearfix">
         <li>
-            <a :href="spaceUrl">
-                <p><span>空间</span></p>
+            <a :href="spaceUrl" style="display: flex">
+                <p style="flex: 1; display: flex; align-items: center; width: 100%; justify-content: center;"><span>空间</span></p>
             </a>
         </li>
         <li>
-            <a :href="noticeUrl">
-                <p><span>通知</span></p>
+            <a :href="noticeUrl" style="display: flex">
+                <p style="flex: 1; display: flex; align-items: center; width: 100%; justify-content: center;"><span>通知</span></p>
             </a>
         </li>
         <li class="currt-actiove">
