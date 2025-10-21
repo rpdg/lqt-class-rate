@@ -11,8 +11,8 @@
             </a>
         </li>
         <li class="currt-actiove">
-            <a href="#">
-                <p>
+            <a href="#" style="display: flex">
+                <p style="flex: 1; display: flex; align-items: center; width: 100%; justify-content: center;">
                     <span>我的</span>
                     <img v-if="userType === 'T_TEACHER'" class="user-type" src="../../../assets/teacher.png" alt="">
                     <img v-else-if="userType === 'T_PARENT'" class="user-type" src="../../../assets/teacher3.png"
