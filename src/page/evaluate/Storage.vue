@@ -253,11 +253,11 @@
 <style lang="less" scoped>
   @import '../../style/minxin.less';
   .box{
-    padding-bottom: 80/@baseSize;
+    padding-bottom: 40px;
   }
   .sorage-number{
-    padding-left: 50/@baseSize;
-    padding-right:50/@baseSize;
+    padding-left: 25px;
+    padding-right:25px;
     box-sizing: border-box;
     position: relative;
   }
@@ -266,24 +266,24 @@
   }
   .sorage-left{
     position: absolute;
-    height: 100/@baseSize;
-    line-height: 100/@baseSize;
-    left: 50/@baseSize;
+    height: 50px;
+    line-height: 50px;
+    left: 25px;
     top:0;
-    width: 180/@baseSize;
+    width: 90px;
     overflow: hidden;
   }
 
   .sorage-right{
-    margin-left: 200/@baseSize;
+    margin-left: 100px;
   }
   .sorage-right-one{
-    height: 100/@baseSize;
-    line-height: 100/@baseSize;
+    height: 50px;
+    line-height: 50px;
     overflow: hidden;
   }
   .sorage-left{
-    font-size: 30/@baseSize;
+    font-size: 15px;
     color: #333333;
   }
 
@@ -305,8 +305,8 @@
     width: 100/3*1%;
     text-align: center;
     float: left;
-    height: 100/@baseSize;
-    line-height:100/@baseSize;
+    height: 50px;
+    line-height:50px;
   }
   .lexicon li:first-child{
     text-align: left;
@@ -316,11 +316,11 @@
   }
 
   .lexicon li span{
-    font-size: 30/@baseSize;
+    font-size: 15px;
     color: @green;
   }
   .sorage-right-textarea{
-  //  height: 170/@baseSize;
+  //  height: 65px;
     padding-top: 0.55rem;
   }
 
@@ -341,18 +341,18 @@
     font-size: @fontSize30;
   }
   .sorage-right-number .vux-number-input{
-    height: 50/@baseSize;
-    width: 50/@baseSize;
+    height: 25px;
+    width: 25px;
   }
 
   .pltne-btn {
     width: 100%;
-    height: 80/@baseSize;
-    line-height: 80/@baseSize;
+    height: 40px;
+    line-height: 40px;
     font-size: @fontSize30;
     color: @white;
     background: @green;
-    margin-top: 80/@baseSize;
+    margin-top: 40px;
     text-align: center;
     position: fixed;
     bottom:0;
@@ -363,7 +363,7 @@
   .div-cibg{
     width: 100%;
     height: 100%;
-    padding-bottom: 80/@baseSize;
+    padding-bottom: 40px;
 
     box-sizing: border-box;
     background:rgba(0, 0, 0, 0.3);
@@ -375,8 +375,8 @@
     overflow: scroll;
   }
   .list-ci li{
-    padding-left: 44/@baseSize;
-    padding-right: 44/@baseSize;
+    padding-left: 22px;
+    padding-right: 22px;
     border-bottom: 1px dashed #dddddd;
     padding-top:0.3rem;
     padding-bottom:0.3rem;
@@ -389,11 +389,11 @@
   }
   .list-ci li p em{
     display: inline-block;
-    width:50/@baseSize;
+    width:25px;
     position: absolute;
   }
   .list-ci li p span{
-    /*margin-left:50/@baseSize;*/
+    /*margin-left:25px;*/
     overflow : hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -402,22 +402,22 @@
   }
   .pop-title{
     width: 100%;
-    height: 100/@baseSize;
+    height: 50px;
     background:  @green;
     position: relative;
-    line-height:100/@baseSize;
+    line-height:50px;
     font-size: @fontSize30;
     color: white;
   }
 
   .clodesn-shouw{
     position: absolute;
-    right:44/@baseSize;
+    right:22px;
     top:0;
     display: block;
-    width: 80/@baseSize;
-    height: 100/@baseSize;
-    line-height:100/@baseSize;
+    width: 40px;
+    height: 50px;
+    line-height:50px;
     color: white;
   }
 

@@ -248,20 +248,20 @@ export default {
 <style lang="less" rel="stylesheet/less" scoped>
 @import "../../style/minxin.less";
 .box {
-  padding-bottom: 80 / @baseSize;
+  padding-bottom: 40px;
 }
 
 .title {
-  height: 60 / @baseSize;
+  height: 30px;
   background: @green;
-  padding-left: 30 / @baseSize;
+  padding-left: 15px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   font-size: @fontSize30;
   color: @white;
-  line-height: 60 / @baseSize;
-  margin-top: 100 / @baseSize;
+  line-height: 30px;
+  margin-top: 50px;
 }
 
 .curriculum-list {
@@ -269,27 +269,27 @@ export default {
 }
 
 .curriculum-list h4.titleTop {
-  .mixin-padding(30 / @baseSize, 30 / @baseSize);
-  height: 100 / @baseSize;
-  line-height: 100 / @baseSize;
+  .mixin-padding(15px, 15px);
+  height: 50px;
+  line-height: 50px;
   border-bottom: 1px solid @colorDD;
 }
 
 .curriculum-list h4.titleTop .titleTopLeft em {
-  width: 40 / @baseSize;
-  height: 40 / @baseSize;
-  line-height: 42 / @baseSize;
+  width: 20px;
+  height: 20px;
+  line-height: 21px;
   display: block;
   float: left;
   text-align: center;
   background: @green;
   border-radius: 4px;
   color: @white;
-  margin-top: 28 / @baseSize;
+  margin-top: 14px;
 }
 
 .curriculum-list h4.titleTop .titleTopLeft span {
-  margin-left: 20 / @baseSize;
+  margin-left: 10px;
   float: left;
   font-size: @fontSize30;
   color: @color42;
@@ -300,8 +300,8 @@ export default {
 }
 
 .curriculum-name .liclass {
-  .mixin-padding(30 / @baseSize, 30 / @baseSize);
-  line-height: 100 / @baseSize;
+  .mixin-padding(15px, 15px);
+  line-height: 50px;
   border-bottom: 1px solid @colorDD;
   display: flex;
   flex-wrap: wrap;
@@ -311,13 +311,13 @@ export default {
 }
 
 // .curriculum-name .liclass em {
-//   width: 38/@baseSize;
-//   height: 38/@baseSize;
+//   width: 19px;
+//   height: 19px;
 //   display: block;
 //   float: left;
 //   border: 1px solid @green;
 //   border-radius: 50%;
-//   margin-top: 28/@baseSize;
+//   margin-top: 14px;
 // }
 
 .curriculum-name .liclass em.icon {
@@ -325,9 +325,9 @@ export default {
 }
 
 .curriculum-name .liclass em.icon i {
-  width: 19 / @baseSize;
-  height: 20 / @baseSize;
-  margin-top: 9 / @baseSize;
+  width: 10px;
+  height: 10px;
+  margin-top: 5px;
   margin-left: auto;
   margin-right: auto;
   background: url("../../assets/checkmarks.png") no-repeat;
@@ -336,8 +336,8 @@ export default {
 }
 
 .liclass em {
-  width: 38 / @baseSize;
-  height: 38 / @baseSize;
+  width: 19px;
+  height: 19px;
   display: block;
   border: 1px solid @colorDD;
   border-radius: 5px;
@@ -352,7 +352,7 @@ export default {
 .liclass .detailDes {
   width: 100%;
   display: none;
-  margin-left: 58 / @baseSize;
+  margin-left: 29px;
   font-size: @fontSize30;
   color: @color42;
   line-height: 1em;
@@ -361,12 +361,12 @@ export default {
 
 .pltne-btn {
   width: 100%;
-  height: 80 / @baseSize;
-  line-height: 80 / @baseSize;
+  height: 40px;
+  line-height: 40px;
   font-size: @fontSize30;
   color: @white;
   background: @green;
-  margin-top: 80 / @baseSize;
+  margin-top: 40px;
   text-align: center;
   position: fixed;
   bottom: 0;
@@ -374,8 +374,8 @@ export default {
 
 .demo1-item {
   border: 1px solid @colorDD;
-  width: 38 / @baseSize;
-  height: 38 / @baseSize;
+  width: 19px;
+  height: 19px;
   display: flex;
   align-items: center;
 }
@@ -383,8 +383,8 @@ export default {
   border: 1px solid green;
 }
 .demo1-item-selected em {
-  width: 20 / @baseSize;
-  height: 20 / @baseSize;
+  width: 10px;
+  height: 10px;
   margin-left: auto;
   margin-right: auto;
   background: url("../../assets/checkmarks.png") no-repeat;
@@ -393,8 +393,8 @@ export default {
   display: block;
 }
 .curriculum-name .liclass .vux-checker-box {
-  width: 38 / @baseSize;
-  height: 38 / @baseSize;
+  width: 19px;
+  height: 19px;
 }
 
 .titleTop {
@@ -409,8 +409,8 @@ export default {
   align-items: center;
 }
 .chooesAll em {
-  width: 38 / @baseSize;
-  height: 38 / @baseSize;
+  width: 19px;
+  height: 19px;
   display: block;
   border: 1px solid @colorDD;
   border-radius: 5px;
@@ -426,9 +426,9 @@ export default {
 }
 
 .chooesAll em.icon i {
-  width: 19 / @baseSize;
-  height: 20 / @baseSize;
-  margin-top: 9 / @baseSize;
+  width: 10px;
+  height: 10px;
+  margin-top: 5px;
   margin-left: auto;
   margin-right: auto;
   background: url("../../assets/checkmarks.png") no-repeat;
@@ -441,8 +441,8 @@ export default {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100 / @baseSize;
-  line-height: 100 / @baseSize;
+  height: 50px;
+  line-height: 50px;
   z-index: 1;
   border-bottom: solid 1px #dedede;
 }

@@ -222,7 +222,7 @@
   @import '../../../style/minxin.less';
 
   .left-link{
-    height: 40/@baseSize;
+    height: 20px;
     vertical-align: top;
     float: left;
     margin-right: 8px;
@@ -237,13 +237,13 @@
   }
 
   .scope-title {
-    padding-left: 30 / @baseSize;
+    padding-left: 15px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     font-size: @fontSize30;
     color: @color42;
-    margin-top: 15 / @baseSize;
+    margin-top: 8px;
   }
 
   .x-textarea {
@@ -333,8 +333,8 @@
 
   .title-return-top {
     width: 100%;
-    height: 100/@baseSize;
-    line-height: 100/@baseSize;
+    height: 50px;
+    line-height: 50px;
     position: fixed;
     top: 0;
     left: 0;

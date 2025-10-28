@@ -70,7 +70,7 @@ export default {
 		},
 
 		goNewDetail(){
-			window.location.href = '/weixin/wechat/v2/index.html#/evaluate/records' 
+			window.location.href = '/weixin/wechat/v2/index.html#/evaluate/records'
 		} ,
 
 		evluatObj(evalId, detailCode, nameBt) {
@@ -100,55 +100,55 @@ export default {
 <style lang="less" scoped>
 @import '../../style/minxin.less';
 .title {
-	height: 60 / @baseSize;
+	height: 30px;
 	background: @green;
-	padding-left: 30 / @baseSize;
+	padding-left: 15px;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 	font-size: @fontSize30;
 	color: @white;
-	line-height: 60 / @baseSize;
+	line-height: 30px;
 }
 
 .maple-list {
 	width: 100%;
 }
 .maple-list h4 {
-	padding-left: 55 / @baseSize;
-	padding-right: 55 / @baseSize;
+	padding-left: 28px;
+	padding-right: 28px;
 	-webkit-background-origin: border-box;
 	background-origin: border-box;
-	height: 100 / @baseSize;
+	height: 50px;
 	border-bottom: 1px solid #dddddd;
-	line-height: 100 / @baseSize;
+	line-height: 50px;
 }
 .maple-list h4 em {
-	width: 40 / @baseSize;
-	height: 40 / @baseSize;
+	width: 20px;
+	height: 20px;
 	display: block;
 	float: left;
 	text-align: center;
-	line-height: 40 / @baseSize;
+	line-height: 20px;
 	background: @green;
 	border-radius: 4px;
 	color: @white;
-	margin-top: 28 / @baseSize;
+	margin-top: 14px;
 }
 .maple-list h4 span {
-	margin-left: 20 / @baseSize;
+	margin-left: 10px;
 	float: left;
 	color: @color42;
 	font-size: @fontSize30;
 }
 .maple-info li {
-	padding-left: 55 / @baseSize;
-	padding-right: 55 / @baseSize;
+	padding-left: 28px;
+	padding-right: 28px;
 	-webkit-background-origin: border-box;
 	background-origin: border-box;
-	height: 100 / @baseSize;
+	height: 50px;
 	border-bottom: 1px dashed #dddddd;
-	line-height: 100 / @baseSize;
+	line-height: 50px;
 }
 .maple-info li span {
 	color: #777777;
@@ -172,11 +172,11 @@ export default {
 }
 
 .grade-icon {
-	width: 40 / @baseSize;
-	height: 40 / @baseSize;
+	width: 20px;
+	height: 20px;
 	display: block;
 	text-align: center;
-	line-height: 40 / @baseSize;
+	line-height: 20px;
 	border-radius: 4px;
 	color: @white;
 	margin-right: 0.2rem;
@@ -218,18 +218,18 @@ export default {
 }
 
 .context {
-	margin-top: 100 / @baseSize;
+	margin-top: 50px;
 }
 
 .context .weui-cell {
 	width: 100%;
-	height: 100 / @baseSize;
+	height: 50px;
 	border-bottom: 0;
 	background: #f9f9f9;
 	padding-top: 0;
 	padding-bottom: 0;
-	padding-right: 55 / @baseSize;
-	padding-left: 55 / @baseSize;
+	padding-right: 28px;
+	padding-left: 28px;
 	font-size: @fontSize30;
 	color: @color42;
 }
@@ -252,13 +252,13 @@ export default {
 }
 
 .back-div {
-	padding-bottom: 100 / @baseSize;
+	padding-bottom: 50px;
 }
 .up-back {
 	width: 100%;
-	height: 100 / @baseSize;
+	height: 50px;
 	font-size: @fontSize36;
-	line-height: 100 / @baseSize;
+	line-height: 50px;
 	color: @white;
 	text-align: center;
 	position: fixed;
@@ -274,8 +274,8 @@ export default {
 	top: 0;
 	left: 0;
 	width: 100%;
-	height: 100 / @baseSize;
-	line-height: 100 / @baseSize;
+	height: 50px;
+	line-height: 50px;
 	z-index: 2;
 	border-bottom: solid 1px #dedede;
 }

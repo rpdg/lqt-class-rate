@@ -87,68 +87,68 @@
   @import '../../style/minxin.less';
   .class-list{
     width: 100%;
-    margin-bottom: 60/@baseSize;
+    margin-bottom: 30px;
   }
   .static-name{
     width: 100%;
-    height: 60/@baseSize;
+    height: 30px;
     color: @white;
     text-align: center;
-    line-height:60/@baseSize;
+    line-height:30px;
     font-size: @fontSize30;
     background: @color97;
   }
   .class-title{
-    .mixin-padding(50/@baseSize,50/@baseSize);
+    .mixin-padding(25px,25px);
     position: relative;
-    height: 50/@baseSize;
-    margin-top: 40/@baseSize;
+    height: 25px;
+    margin-top: 20px;
   }
   .class-left{
     display: inline-block;
     position: absolute;
-    top: 5/@baseSize;
-    left:50/@baseSize;
+    top: 3px;
+    left:25px;
     font-size:@fontSize30;
     color: @color42;
   }
   .class-info{
-    margin-left: 140/@baseSize;
+    margin-left: 70px;
   }
   .class-item,.group-item {
     border: 1px solid @color97;
-    margin-left: 15/@baseSize;
-    height: 50/@baseSize;
+    margin-left: 8px;
+    height: 25px;
     display: inline-block;
-    line-height: 52/@baseSize;
+    line-height: 26px;
     font-size: @fontSize24;
   }
   .class-item{
-    .mixin-padding(50/@baseSize,50/@baseSize);
+    .mixin-padding(25px,25px);
   }
   .group-item{
-    .mixin-padding(15/@baseSize,15/@baseSize);
-    margin-bottom:70/@baseSize;
+    .mixin-padding(8px,8px);
+    margin-bottom:35px;
   }
   .class-list .group-item{
     margin-left: 0;
-    margin-right:15/@baseSize;
+    margin-right:8px;
   }
   .class-item-selected,.group-item-selected {
     background: url("../../assets/combined.png") no-repeat right bottom;
-    background-size:25/@baseSize 24/@baseSize ;
+    background-size:13px 12px ;
     border-color: @green;
   }
 
   .class-gomt{
-    .mixin-padding(50/@baseSize,50/@baseSize);
+    .mixin-padding(25px,25px);
   }
   .complete-btn{
     width: 100%;
-    height: 80/@baseSize;
+    height: 40px;
     background:@green;
     text-align: center;
-    line-height:80/@baseSize;
+    line-height:40px;
     color: @white;
     font-size:@fontSize30;
     position: absolute;

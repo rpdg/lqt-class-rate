@@ -1491,11 +1491,11 @@ a#button-confirm {
 
 .cancel-btn {
 	width: 100%;
-	height: 100 / @baseSize;
+	height: 50px;
 	font-size: @fontSize36;
 	color: @white;
 	text-align: center;
-	line-height: 100 / @baseSize;
+	line-height: 50px;
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -1509,8 +1509,8 @@ a#button-confirm {
 	top: 0;
 	left: 0;
 	width: 100%;
-	// height: 100 / @baseSize;
-	// line-height: 100 / @baseSize;
+	// height: 50px;
+	// line-height: 50px;
 	z-index: 1;
 	border-bottom: solid 1px #dedede;
 }
@@ -1529,7 +1529,7 @@ a#button-confirm {
 }
 
 .lqt-wrapper {
-	// margin-top: 100 / @baseSize !important;
+	// margin-top: 50px !important;
 	flex: 1;
 	overflow: scroll;
 	background-color: #fff !important;

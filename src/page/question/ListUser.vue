@@ -1366,11 +1366,11 @@
 
   .cancel-btn {
     width: 100%;
-    height: 100/@baseSize;
+    height: 50px;
     font-size: @fontSize36;
     color: @white;
     text-align: center;
-    line-height: 100/@baseSize;
+    line-height: 50px;
     position: fixed;
     top: 0;
     left: 0;
@@ -1380,8 +1380,8 @@
 
   .title-return-top {
     width: 100%;
-    height: 100/@baseSize;
-    line-height: 100/@baseSize;
+    height: 50px;
+    line-height: 50px;
     position: fixed;
     top: 0;
     left: 0;
@@ -1394,8 +1394,8 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 100/@baseSize;
-      line-height: 100/@baseSize;
+      height: 50px;
+      line-height: 50px;
       z-index: 1;
       border-bottom: solid 1px #dedede;
   }

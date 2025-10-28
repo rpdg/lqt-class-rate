@@ -393,75 +393,75 @@ export default {
 }
 .class-list {
   width: 100%;
-  margin-bottom: 60 / @baseSize;
+  margin-bottom: 30px;
 }
 .static-name {
   width: 100%;
-  height: 60 / @baseSize;
+  height: 30px;
   color: @white;
   // text-align: center;
-  line-height: 60 / @baseSize;
+  line-height: 30px;
   font-size: @fontSize30;
   background: @color97;
-  padding-left: 30 / @baseSize;
+  padding-left: 15px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
 .class-title {
-  .mixin-padding(30 / @baseSize, 30 / @baseSize);
+  .mixin-padding(15px, 15px);
   position: relative;
-  height: 50 / @baseSize;
-  margin-top: 40 / @baseSize;
+  height: 25px;
+  margin-top: 20px;
 }
 .class-left {
   display: inline-block;
   position: absolute;
-  top: 2 / @baseSize;
-  left: 30 / @baseSize;
+  top: 1px;
+  left: 15px;
   font-size: @fontSize30;
   color: @color42;
 }
 .class-info {
-  margin-left: 140 / @baseSize;
+  margin-left: 70px;
 }
 .class-item,
 .group-item {
   border: 1px solid @color97;
-  margin-right: 15 / @baseSize;
-  height: 50 / @baseSize;
+  margin-right: 8px;
+  height: 25px;
   display: inline-block;
-  line-height: 52 / @baseSize;
+  line-height: 26px;
   font-size: @fontSize24;
 }
 .class-item,
 .group-info {
-  .mixin-padding(40 / @baseSize, 40 / @baseSize);
+  .mixin-padding(20px, 20px);
 }
 .group-item {
-  .mixin-padding(15 / @baseSize, 15 / @baseSize);
-  margin-bottom: 30 / @baseSize;
+  .mixin-padding(8px, 8px);
+  margin-bottom: 15px;
 }
 .class-list .group-item {
   margin-left: 0;
-  margin-right: 15 / @baseSize;
+  margin-right: 8px;
 }
 .class-item-selected,
 .group-item-selected {
   background: url("../../assets/combined.png") no-repeat right bottom;
-  background-size: 25 / @baseSize 24 / @baseSize;
+  background-size: 13px 12px;
   border-color: @green;
 }
 
 .class-gomt {
-  .mixin-padding(30 / @baseSize, 30 / @baseSize);
+  .mixin-padding(15px, 15px);
 }
 .complete-btn {
   width: 100%;
-  height: 80 / @baseSize;
+  height: 40px;
   background: @green;
   text-align: center;
-  line-height: 80 / @baseSize;
+  line-height: 40px;
   color: @white;
   font-size: @fontSize30;
 }
@@ -473,19 +473,19 @@ export default {
 }
 
 .class-name-bottom {
-  margin-bottom: 30 / @baseSize;
+  margin-bottom: 15px;
 }
 
 .border-redue {
   border-radius: 4px;
-  margin-bottom: 30 / @baseSize;
+  margin-bottom: 15px;
 }
 .class-name {
   font-size: @fontSize30;
   color: @color42;
-  margin-top: 60 / @baseSize;
+  margin-top: 30px;
 }
 .class-info-padding {
-  margin-top: 30 / @baseSize;
+  margin-top: 15px;
 }
 </style>

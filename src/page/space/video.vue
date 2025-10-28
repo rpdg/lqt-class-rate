@@ -508,14 +508,14 @@ export default {
 }
 
 .back-div {
-  padding-bottom: 100 / @baseSize;
+  padding-bottom: 50px;
 }
 
 .up-back {
   width: 100%;
-  height: 100 / @baseSize;
+  height: 50px;
   font-size: @fontSize36;
-  line-height: 100 / @baseSize;
+  line-height: 50px;
   color: @white;
   text-align: center;
   position: fixed;
@@ -526,13 +526,13 @@ export default {
 }
 
 .accessory-box {
-  .mixin-padding(30 / @baseSize, 30 / @baseSize);
+  .mixin-padding(15px, 15px);
 }
 
 .accessory-title {
   font-size: @fontSize30;
   color: @color42;
-  margin-top: 15 / @baseSize;
+  margin-top: 8px;
 }
 
 .form-info .vux-label {
@@ -540,7 +540,7 @@ export default {
 }
 
 // .accessory-img {
-//   margin-top: 50/@baseSize;
+//   margin-top: 25px;
 // }
 
 .weui-cell__ft,
@@ -555,19 +555,19 @@ export default {
 }
 
 .photo-img li {
-  margin-bottom: 20 / @baseSize;
+  margin-bottom: 10px;
 }
 
 .up-photo {
-  margin-left: 20 / @baseSize;
-  width: 150 / @baseSize;
-  height: 150 / @baseSize;
+  margin-left: 10px;
+  width: 75px;
+  height: 75px;
   display: block;
   position: relative;
 }
 
 .photo-img li {
-  margin-right: 22 / @baseSize;
+  margin-right: 11px;
   position: relative;
 }
 
@@ -578,8 +578,8 @@ export default {
 .photo-img li,
 .photo-img li img.imgud,
 .up-photo img {
-  width: 150 / @baseSize;
-  height: 150 / @baseSize;
+  width: 75px;
+  height: 75px;
 }
 
 .photo-img li img.imgud,
@@ -588,17 +588,17 @@ export default {
 }
 
 .cancel {
-  width: 50 / @baseSize;
-  height: 50 / @baseSize;
-  font-size: 50 / @baseSize;
+  width: 25px;
+  height: 25px;
+  font-size: 25px;
   position: absolute;
-  top: -25 / @baseSize;
-  right: -25 / @baseSize;
+  top: -13px;
+  right: -13px;
   display: block;
 }
 
 // .btn-uploder {
-//   line-height: 80 / @baseSize;
+//   line-height: 40px;
 //   text-align: center;
 //   font-size: @fontSize30;
 //   color: @white;
@@ -609,11 +609,11 @@ export default {
 
 .cancel-btn {
   width: 100%;
-  height: 100 / @baseSize;
+  height: 50px;
   font-size: @fontSize36;
   color: @white;
   text-align: center;
-  line-height: 100 / @baseSize;
+  line-height: 50px;
   position: fixed;
   top: 0;
   left: 0;
@@ -624,23 +624,23 @@ export default {
 .ps-info-p {
   color: #4caf50;
   font-size: 12px;
-  padding-left: 30 / @baseSize;
-  padding-right: 30 / @baseSize;
+  padding-left: 15px;
+  padding-right: 15px;
   box-sizing: border-box;
-  margin-top: 30 / @baseSize;
+  margin-top: 15px;
 }
 
 .mui_uploader {
-  width: 150 / @baseSize;
-  height: 150 / @baseSize;
+  width: 75px;
+  height: 75px;
   position: absolute;
   top: 0px;
   left: 0px;
 }
 
 .mui_uploader .mui_uploader_input {
-  width: 150 / @baseSize;
-  height: 150 / @baseSize;
+  width: 75px;
+  height: 75px;
   display: block;
   opacity: 0;
 }
@@ -651,7 +651,7 @@ export default {
 }
 
 .btn-calie {
-  line-height: 80 / @baseSize;
+  line-height: 40px;
   text-align: center;
   font-size: @fontSize30;
   color: @white;
@@ -661,14 +661,14 @@ export default {
 }
 
 .video-tnl {
-  width: 150 / @baseSize;
-  height: 150 / @baseSize;
+  width: 75px;
+  height: 75px;
   position: relative;
 }
 
 .up-videos {
-  width: 150 / @baseSize;
-  height: 150 / @baseSize;
+  width: 75px;
+  height: 75px;
   display: block;
 }
 

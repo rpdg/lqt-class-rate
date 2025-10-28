@@ -518,13 +518,13 @@ export default {
 }
 
 .scope-title {
-  padding-left: 30 / @baseSize;
+  padding-left: 15px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   font-size: @fontSize30;
   color: @color42;
-  margin-top: 15 / @baseSize;
+  margin-top: 8px;
 }
 
 .x-textarea {
@@ -533,8 +533,8 @@ export default {
 
 .title-return-top {
   width: 100%;
-  height: 100/@baseSize;
-  line-height: 100/@baseSize;
+  height: 50px;
+  line-height: 50px;
   position: fixed;
   top: 0;
   left: 0;
@@ -546,8 +546,8 @@ export default {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100/@baseSize;
-  line-height: 100/@baseSize;
+  height: 50px;
+  line-height: 50px;
   z-index: 1;
   border-bottom: solid 1px #dedede;
 }

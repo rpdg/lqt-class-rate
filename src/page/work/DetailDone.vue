@@ -1270,11 +1270,11 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100/@baseSize;
-  line-height: 100/@baseSize;
+  height: 50px;
+  line-height: 50px;
   z-index: 1;
   border-bottom: solid 1px #dedede;
-  padding-bottom: 100/@baseSize;
+  padding-bottom: 50px;
 }
 
 .title-header /deep/ .vux-header-title {

@@ -247,8 +247,8 @@ export default {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100/@baseSize;
-    line-height: 100/@baseSize;
+    height: 50px;
+    line-height: 50px;
     z-index: 1;
     border-bottom: solid 1px #dedede;
 }
@@ -268,7 +268,7 @@ export default {
 }
 
 .content {
-    margin-top: 100/@baseSize;
+    margin-top: 50px;
 }
 
 .title-detail {
@@ -289,17 +289,17 @@ export default {
 }
 
 .tab-check {
-    margin-top: 100/@baseSize;
+    margin-top: 50px;
 }
 
 .pltne-btn {
     width: 90%;
-    height: 80/@baseSize;
-    line-height: 80/@baseSize;
+    height: 40px;
+    line-height: 40px;
     font-size: @fontSize30;
     color: @white;
     background: @green;
-    //margin-top: 80/@baseSize;
+    //margin-top: 40px;
     text-align: center;
     margin: 1em auto;
 }

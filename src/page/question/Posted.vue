@@ -999,42 +999,42 @@ export default {
   margin-right: 0;
 }
 .right-link {
-  height: 40 / @baseSize;
+  height: 20px;
   vertical-align: top;
   float: right;
   margin-right: 14px;
 }
 
 .form-info {
-  /*padding-bottom: 100/@baseSize;
-    padding-top: 100/@baseSize;*/
+  /*padding-bottom: 50px;
+    padding-top: 50px;*/
   background: #ffffff !important;
 }
 
 .img-t {
-  width: 80 / @baseSize;
-  height: 80 / @baseSize;
+  width: 40px;
+  height: 40px;
   display: block;
 }
 
 .btn-uploder {
-  line-height: 80 / @baseSize;
+  line-height: 40px;
   text-align: center;
   font-size: @fontSize30;
   color: @white;
-  width: 200 / @baseSize;
+  width: 100px;
   background: @green;
-  margin-right: 40 / @baseSize;
-  margin-top: 80 / @baseSize;
+  margin-right: 20px;
+  margin-top: 40px;
 }
 
 .cancel-btn {
   width: 100%;
-  height: 100 / @baseSize;
+  height: 50px;
   font-size: @fontSize36;
   color: @white;
   text-align: center;
-  line-height: 100 / @baseSize;
+  line-height: 50px;
   position: fixed;
   top: 0;
   left: 0;
@@ -1047,7 +1047,7 @@ export default {
   font-size: @fontSize30;
   color: @color42;
   line-height: 1.5rem;
-  .mixin-padding(50 / @baseSize, 50 / @baseSize);
+  .mixin-padding(25px, 25px);
 }
 
 .x-textarea {
@@ -1068,23 +1068,23 @@ export default {
 }
 
 .span-cell {
-  .mixin-padding(30 / @baseSize, 30 / @baseSize);
-  margin-top: 20 / @baseSize;
-  margin-bottom: 20 / @baseSize;
+  .mixin-padding(15px, 15px);
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .span-cell span {
   border: 1px solid @green;
   border-radius: 4px;
-  .mixin-padding(20 / @baseSize, 20 / @baseSize);
+  .mixin-padding(10px, 10px);
   font-size: @fontSize24;
   color: @color42;
-  height: 50 / @baseSize;
-  line-height: 52 / @baseSize;
+  height: 25px;
+  line-height: 26px;
   display: inline-block;
   float: left;
-  margin-right: 20 / @baseSize;
-  margin-bottom: 20 / @baseSize;
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
 
 .scope,
@@ -1093,14 +1093,14 @@ export default {
 }
 
 .scope-title {
-  padding-left: 30 / @baseSize;
+  padding-left: 15px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   font-size: @fontSize30;
   color: @color42;
   /*color: #9B9B9B;;*/
-  margin-top: 15 / @baseSize;
+  margin-top: 8px;
 }
 
 .scope-title-box {
@@ -1114,33 +1114,33 @@ export default {
 }
 
 .write-back {
-  line-height: 90 / @baseSize;
-  height: 90 / @baseSize;
-  .mixin-padding(30 / @baseSize, 30 / @baseSize);
+  line-height: 45px;
+  height: 45px;
+  .mixin-padding(15px, 15px);
   position: relative;
 }
 
 .write-back-left {
   display: inline-block;
   position: absolute;
-  line-height: 90 / @baseSize;
-  height: 90 / @baseSize;
-  left: 30 / @baseSize;
+  line-height: 45px;
+  height: 45px;
+  left: 15px;
   font-size: @fontSize30;
 }
 
 .write-back-right {
-  margin-left: 280 / @baseSize;
+  margin-left: 140px;
 }
 
 .write-back-item {
   border: 1px solid @color97;
-  margin-left: 15 / @baseSize;
-  height: 50 / @baseSize;
+  margin-left: 8px;
+  height: 25px;
   display: inline-block;
-  line-height: 52 / @baseSize;
+  line-height: 26px;
   font-size: @fontSize24;
-  .mixin-padding(30 / @baseSize, 30 / @baseSize);
+  .mixin-padding(15px, 15px);
   color: @color97;
   border-radius: 4px;
 }
@@ -1148,14 +1148,14 @@ export default {
 .write-back-selected,
 .write-back-selected {
   background: url("../../assets/combined.png") no-repeat right bottom;
-  background-size: 25 / @baseSize 24 / @baseSize;
+  background-size: 13px 12px;
   border-color: @green;
   color: @color42;
 }
 
 .accessory-box {
-  /*30/@baseSize*/
-  .mixin-padding(30 / @baseSize, 15px);
+  /*15px*/
+  .mixin-padding(15px, 15px);
   padding-top: 1rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid #dddddd;
@@ -1165,7 +1165,7 @@ export default {
   font-size: @fontSize30;
   color: @color42;
   /*color: #9B9B9B;*/
-  margin-top: 15 / @baseSize;
+  margin-top: 8px;
 }
 
 .form-info .vux-label {
@@ -1173,7 +1173,7 @@ export default {
 }
 
 .accessory-img {
-  margin-top: 50 / @baseSize;
+  margin-top: 25px;
   border: 1px solid #dddddd;
   //padding: 10px;
   padding: 5px 5px 5px 12px;
@@ -1191,15 +1191,15 @@ export default {
 }
 
 .photo-img li {
-  margin-bottom: 20 / @baseSize;
+  margin-bottom: 10px;
 }
 
 .up-photo {
-  margin-left: 20 / @baseSize;
+  margin-left: 10px;
 }
 
 .photo-img li {
-  margin-right: 22 / @baseSize;
+  margin-right: 11px;
   position: relative;
 }
 
@@ -1210,8 +1210,8 @@ export default {
 .photo-img li,
 .photo-img li img.imgud,
 .up-photo img {
-  width: 120 / @baseSize;
-  height: 120 / @baseSize;
+  width: 60px;
+  height: 60px;
 }
 
 .photo-img li img.imgud,
@@ -1220,12 +1220,12 @@ export default {
 }
 
 .cancel {
-  width: 50 / @baseSize;
-  height: 50 / @baseSize;
-  font-size: 50 / @baseSize;
+  width: 25px;
+  height: 25px;
+  font-size: 25px;
   position: absolute;
-  top: -25 / @baseSize;
-  right: -25 / @baseSize;
+  top: -13px;
+  right: -13px;
   display: block;
 }
 

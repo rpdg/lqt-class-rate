@@ -63,7 +63,7 @@
     methods: {
       goBack(){
         window.location.replace(roterPath + "/weixin/wechat/dist/index.jsp")
-      }      
+      }
   },
   data(){
     return {
@@ -77,13 +77,13 @@
 <style lang="less" type="text/less" scoped>
   @import '../../style/minxin.less';
   .back-div{
-    padding-bottom: 100/@baseSize;
+    padding-bottom: 50px;
   }
   .up-back{
     width: 100%;
-    height: 100/@baseSize;
+    height: 50px;
     font-size:@fontSize36;
-    line-height: 100/@baseSize;
+    line-height: 50px;
     color: @white;
     text-align: center;
     position: fixed;
@@ -94,25 +94,25 @@
   }
 
   .payroll-div{
-    padding-bottom: 100/@baseSize;
+    padding-bottom: 50px;
   }
   .payroll-title{
       width: 100%;
-      height: 100/@baseSize;
+      height: 50px;
       font-size:@fontSize36;
-      line-height: 100/@baseSize;
+      line-height: 50px;
       color: @white;
       text-align: center;
       position: fixed;
-      top:100/@baseSize;
+      top:50px;
       left:0;
       z-index: 999;
   }
   .payroll-title h1{
     display: flex;
     justify-content: space-between;
-    padding-left: 40/@baseSize;
-    padding-right: 40/@baseSize;
+    padding-left: 20px;
+    padding-right: 20px;
     border-bottom: 1px solid #AAB2C0;
     box-sizing: border-box;
     background: #ffffff;
@@ -127,16 +127,16 @@
    }
    .payroll-list-d{
      width: 100%;
-     padding-bottom: 100/@baseSize;
+     padding-bottom: 50px;
    }
    .payroll-list-d li{
      display: flex;
     justify-content: space-between;
-    padding-left: 40/@baseSize;
-     padding-right: 40/@baseSize;
+    padding-left: 20px;
+     padding-right: 20px;
      box-sizing: border-box;
-     padding-top: 20/@baseSize;
-     padding-bottom: 20/@baseSize;
+     padding-top: 10px;
+     padding-bottom: 10px;
      flex-flow:row;
    }
    .payroll-list-d li:last-child i{
@@ -147,11 +147,11 @@
       font-size: @fontSize30;
       color: #666666;
       width: 80%;
-      overflow:hidden; 
+      overflow:hidden;
       text-overflow:ellipsis;
-      display:-webkit-box; 
+      display:-webkit-box;
       -webkit-box-orient:vertical;
-      -webkit-line-clamp:2; 
+      -webkit-line-clamp:2;
     }
    .payroll-list-d li:nth-child(even){
      background: #F4F9EE;
@@ -164,9 +164,9 @@
 
 .payroll-bottom{
       width: 100%;
-      height: 100/@baseSize;
+      height: 50px;
       font-size:@fontSize36;
-      line-height: 100/@baseSize;
+      line-height: 50px;
       color: @white;
       text-align: center;
       position: fixed;
@@ -177,13 +177,13 @@
 }
    .payroll-bottom p{
      width: 100%;
-     height: 100/@baseSize;
+     height: 50px;
      display: flex;
      justify-content: space-between;
      align-items: center;
      border-top: 1px solid #AAB2C0;
-     padding-left: 40/@baseSize;
-     padding-right: 40/@baseSize;
+     padding-left: 20px;
+     padding-right: 20px;
      box-sizing: border-box;
 
    }

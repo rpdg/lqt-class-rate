@@ -62,10 +62,10 @@
   @import '../../style/minxin.less';
   .type-h2{
     width: 100%;
-    height: 60/@baseSize;
+    height: 30px;
     background:@green;
-    line-height: 60/@baseSize;
-    .mixin-padding(50/@baseSize,0);
+    line-height: 30px;
+    .mixin-padding(25px,0);
     color: @white;
     font-size: @fontSize30;
   }
@@ -73,20 +73,20 @@
     width: 100%;
   }
   .type-list{
-    .mixin-padding(50/@baseSize,50/@baseSize);
-    height: 100/@baseSize;
+    .mixin-padding(25px,25px);
+    height: 50px;
     border-bottom: 1px solid @colorDD;
-    line-height: 99/@baseSize;
+    line-height: 50px;
   }
   .type-name{
     font-size:@fontSize30;
     color: @color42;
   }
   .type-icon{
-    width:14/@baseSize;
-    height:24/@baseSize;
+    width:7px;
+    height:12px;
     background: url("../../assets/chevron right.png");
     background-size: 100% 100%;
-    margin-top: 38/@baseSize;
+    margin-top: 19px;
   }
 </style>

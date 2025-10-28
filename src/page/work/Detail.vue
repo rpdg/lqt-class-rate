@@ -107,7 +107,7 @@
                           :playing="playingVoice && (vDetail.localId == currentMp3Id)"
                         />
                       </span>
-                      
+
                         <!-- <p class="voice-play"
                            @touchstart="gotouchstart('voice',detail.voiceList,vIndex)"
                            @touchmove="gotouchmove()"
@@ -533,7 +533,7 @@ async function dataUrlToFile(dataUrl, fileName) {
               sizeType: ['compressed'], // 可以指定是原图还是压缩图，默认二者都有
               sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
               success : async (res)=> {
-                  // 
+                  //
                   try {
                       self.$vux.loading.show({ text: '上传中...' });
 
@@ -564,17 +564,17 @@ async function dataUrlToFile(dataUrl, fileName) {
                         // setTimeout(function(){
                         //   ele.scrollIntoView({block: "start", inline: "end", behavior :'smooth'});
                         // }, 350);
-                        
-                        
+
+
                       }
                   } catch(err){
                     throw err;
                   } finally{
                     self.$vux.loading.hide();
                   }
-                  
+
                   // .then(response => {
-                  //     _this.$vux.loading.hide(); 
+                  //     _this.$vux.loading.hide();
                   //     if (response.status == '200') {
                   //         if (response.body.code == '-1') {
                   //             _this.$vux.toast.text(response.body.message);
@@ -593,7 +593,7 @@ async function dataUrlToFile(dataUrl, fileName) {
               }
             });
         }, 3e2)
-        
+
       },
       async readWxImages(localIds) {
         let files = [];
@@ -862,7 +862,7 @@ async function dataUrlToFile(dataUrl, fileName) {
             for(let j = 0 ;j<detail.sAnswerList.length;j++ ){
               debugger;
 
-              
+
               detail.sAnswerList[j] = (detail.sAnswerList[j] || '').replace(/('|‘)/g, '’').replace(/,/g, '，').trim();
 
               if(!detail.sAnswerList[j]){
@@ -876,7 +876,7 @@ async function dataUrlToFile(dataUrl, fileName) {
 
               detail.sAnswerList[j] = vm.filterEmoji(detail.sAnswerList[j]);
 
-              
+
               // if(!this.checkAngle(detail.sAnswerList[i])){
               //   vm.$vux.toast.show({
               //     text: '不能输入英文符号',
@@ -1082,7 +1082,7 @@ async function dataUrlToFile(dataUrl, fileName) {
               setTimeout(function(){
                 _this.editFlag = false;
               }, 1e2)
-              
+
             }else{
               alert(response.data.message);
             }
@@ -1156,9 +1156,9 @@ async function dataUrlToFile(dataUrl, fileName) {
       //@@@@@@@@@@@@@@@@@@@@@@@@   录音    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       startVoice(detail) {
         // if (!authonStore.shallAskRecorderPermission()){
-          // return 
+          // return
         // }
-        
+
         let self = this;
 
         if (this.debounceTimer) {
@@ -1192,7 +1192,7 @@ async function dataUrlToFile(dataUrl, fileName) {
               }
             });
         }, 3e2);
-        
+
         //$('body').append('<span id="recording" class="recording-show"></span>');
       },
       endVoice(detail) {
@@ -1830,8 +1830,8 @@ async function dataUrlToFile(dataUrl, fileName) {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100/@baseSize;
-    line-height: 100/@baseSize;
+    height: 50px;
+    line-height: 50px;
     z-index: 1;
     border-bottom: solid 1px #dedede;
   }
@@ -1962,7 +1962,7 @@ async function dataUrlToFile(dataUrl, fileName) {
 }
 .homework-bar,.qs-bar{
   position: unset !important;
-} 
+}
 
 .homework-bar .pre-loc{
   position: relative;

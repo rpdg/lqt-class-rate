@@ -269,27 +269,27 @@
   }
 
   .message li {
-    .mixin-padding(30/@baseSize, 30/@baseSize);
+    .mixin-padding(15px, 15px);
     border-bottom: 1px solid @colorDD;
-    height: 160/@baseSize;
+    height: 80px;
     position: relative;
   }
 
   .message-icon {
-    width: 100/@baseSize;
-    height: 100/@baseSize;
+    width: 50px;
+    height: 50px;
     background: url("../../assets/eval/pj.png") no-repeat left;
     background-size: 100% 100%;
     position: absolute;
-    top: 30/@baseSize;
-    left: 30/@baseSize;
+    top: 15px;
+    left: 15px;
     border-radius: 3px;
   }
 
   .message-info {
-    margin-left: 125/@baseSize;
-    margin-right: 100/@baseSize;
-    padding-top: 40/@baseSize;
+    margin-left: 63px;
+    margin-right: 50px;
+    padding-top: 20px;
     display: block;
   }
 
@@ -297,7 +297,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    line-height: 40/@baseSize;
+    line-height: 20px;
     font-size: @fontSize30;
     color: @color42;
   }
@@ -308,36 +308,36 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    margin-top: 10/@baseSize;;
+    margin-top: 5px;;
   }
 
   .message-handle {
     position: absolute;
-    top: 24/@baseSize;
-    right: 30/@baseSize;
+    top: 12px;
+    right: 15px;
     text-align: right;
   }
 
   .message-handle a {
-    padding-top: 8/@baseSize;
-    padding-bottom: 8/@baseSize;
+    padding-top: 4px;
+    padding-bottom: 4px;
     display: block;
   }
 
   .edlit-molde {
-    width: 172/@baseSize;
-    height: 142/@baseSize;
+    width: 86px;
+    height: 71px;
     position: absolute;
-    right: 130/@baseSize;
+    right: 65px;
     background: url("../../assets/xbg.png") no-repeat;
     background-size: 100% 100%;
-    top: 60/@baseSize;
+    top: 30px;
     z-index: 9;
   }
 
   .edlit-molde a {
-    padding-bottom: 16/@baseSize;
-    padding-top: 20/@baseSize;
+    padding-bottom: 8px;
+    padding-top: 10px;
     display: block;
     font-size: @fontSize24;
   }
@@ -348,30 +348,30 @@
   }
 
   .edlit-molde a.revamp em {
-    width: 22/@baseSize;
-    height: 23/@baseSize;
+    width: 11px;
+    height: 12px;
     background: url("../../assets/new.png") no-repeat 0;
     background-size: 100% 100%;
     display: inline-block;
     float: left;
-    margin-top: 5/@baseSize;
-    margin-left: 30/@baseSize;
-    margin-right: 10/@baseSize;
+    margin-top: 3px;
+    margin-left: 15px;
+    margin-right: 5px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
   }
 
   a.delete em {
-    width: 18/@baseSize;
-    height: 22/@baseSize;
+    width: 9px;
+    height: 11px;
     background: url("../../assets/trash.png") no-repeat 0;
     background-size: 100% 100%;
     display: inline-block;
     float: left;
-    margin-top: 5/@baseSize;
-    margin-left: 30/@baseSize;
-    margin-right: 10/@baseSize;
+    margin-top: 3px;
+    margin-left: 15px;
+    margin-right: 5px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -404,29 +404,29 @@
   }
 
   .moreData, .lastShow {
-    height: 80/@baseSize;
-    line-height: 80/@baseSize;
+    height: 40px;
+    line-height: 40px;
     text-align: center;
 
   }
 
   .moreData span {
-    height: 50/@baseSize;
+    height: 25px;
     background: url("../../assets/loading.gif") no-repeat;
     background-size: contain;
-    padding-left: 45/@baseSize;
+    padding-left: 23px;
   }
 
 
   .back-div {
-    padding-bottom: 100/@baseSize;
+    padding-bottom: 50px;
   }
 
   .up-back {
     width: 100%;
-    height: 100/@baseSize;
+    height: 50px;
     font-size: @fontSize36;
-    line-height: 100/@baseSize;
+    line-height: 50px;
     color: @white;
     text-align: center;
     position: fixed;
@@ -451,8 +451,8 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 100/@baseSize;
-    line-height: 100/@baseSize;
+    height: 50px;
+    line-height: 50px;
     z-index: 1;
     border-bottom: solid 1px #dedede;
   }
@@ -472,7 +472,7 @@
   }
 
   .tab-check {
-    margin-top: 100/@baseSize;
+    margin-top: 50px;
   }
 
   .box /deep/ .van-tab--active {
@@ -490,16 +490,16 @@
   }
 
   .typeBtn {
-    width: 125 / @baseSize;
-    height: 125 / @baseSize;
-    line-height: 125 / @baseSize;
+    width: 63px;
+    height: 63px;
+    line-height: 63px;
     text-align: center;
     border-radius: 50%;
     font-size: @fontSize36;
     color: @white;
     position: fixed;
-    bottom: 45 / @baseSize;
-    right: 40 / @baseSize;
+    bottom: 23px;
+    right: 20px;
     background: @green;
     z-index: 10;
   }

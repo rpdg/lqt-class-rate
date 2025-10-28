@@ -83,7 +83,7 @@
         let choosedClass = {}
 
         this.curriculum.forEach((course, index) => {
-          
+
           course.members.forEach((member) => {
             if (member.selected) {
               choices.push(...member.users);
@@ -99,7 +99,7 @@
               member.users.forEach((user,index)=>{
                 if(user.selected){
                   choices.push(user);
-                  
+
                   choosedClass[member.toObjectId+member.typeCode] = {
                     toName: member.toName ,
                     toObjectId: member.toObjectId ,
@@ -208,18 +208,18 @@
 <style lang="less" scoped>
   @import '../../style/minxin.less';
 .box{
-  padding-bottom:80/@baseSize;
+  padding-bottom:40px;
 }
   .title {
-    height: 60/@baseSize;
+    height: 30px;
     background: @green;
-    padding-left: 30/@baseSize;
+    padding-left: 15px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     font-size: @fontSize30;
     color: @white;
-    line-height: 60/@baseSize;
+    line-height: 30px;
     margin-top: 47px;
   }
 
@@ -228,27 +228,27 @@
   }
 
   .curriculum-list h4 {
-    .mixin-padding(30/@baseSize, 30/@baseSize);
-    height: 100/@baseSize;
-    line-height: 100/@baseSize;
+    .mixin-padding(15px, 15px);
+    height: 50px;
+    line-height: 50px;
     border-bottom: 1px solid @colorDD;
   }
 
   .curriculum-list h4 em {
-    width: 40/@baseSize;
-    height: 40/@baseSize;
+    width: 20px;
+    height: 20px;
     display: block;
     float: left;
     text-align: center;
-    line-height: 40/@baseSize;
+    line-height: 20px;
     background: @green;
     border-radius: 4px;
     color: @white;
-    margin-top: 28/@baseSize;
+    margin-top: 14px;
   }
 
   .curriculum-list h4 span {
-    margin-left: 20/@baseSize;
+    margin-left: 10px;
     float: left;
     font-size: @fontSize30;
     color: @color42;
@@ -259,18 +259,18 @@
   }
 
   .curriculum-name li {
-    .mixin-padding(30/@baseSize, 30/@baseSize);
-    height: 100/@baseSize;
-    line-height: 104/@baseSize;
+    .mixin-padding(15px, 15px);
+    height: 50px;
+    line-height: 52px;
     border-bottom: 1px solid @colorDD;
     overflow: hidden;
   }
   .curricu-left em {
-    width: 38/@baseSize;
-    height: 38/@baseSize;
+    width: 19px;
+    height: 19px;
     display: block;
     float: left;
-    margin-top: 28/@baseSize;
+    margin-top: 14px;
     border: 1px solid @green;
     border-radius: 4px;
   }
@@ -279,9 +279,9 @@
   }
 
   .curricu-left em.icon i {
-    width: 19/@baseSize;
-    height: 20/@baseSize;
-    margin-top: 9/@baseSize;
+    width: 10px;
+    height: 10px;
+    margin-top: 5px;
     margin-left: auto;
     margin-right: auto;
     background: url("../../assets/checkmarks.png") no-repeat;
@@ -290,31 +290,31 @@
   }
 
   .curricu-left span {
-    margin-left: 20/@baseSize;
+    margin-left: 10px;
     font-size: @fontSize30;
     color: @color42;
   }
 
   .pltne-btn {
     width: 100%;
-    height: 80/@baseSize;
-    line-height: 80/@baseSize;
+    height: 40px;
+    line-height: 40px;
     font-size: @fontSize30;
     color: @white;
     background: @green;
-    margin-top: 80/@baseSize;
+    margin-top: 40px;
     text-align: center;
     position: fixed;
     bottom:0;
   }
 
   .curricu-right{
-    height: 100/@baseSize;
+    height: 50px;
     overflow: hidden;
   }
   .curricu-right span {
-    width: 200/@baseSize;
-    height: 100/@baseSize;
+    width: 100px;
+    height: 50px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -325,14 +325,14 @@
   }
 
   .curricu-right em {
-    width: 14/@baseSize;
-    height: 24/@baseSize;
+    width: 7px;
+    height: 12px;
     background: url("../../assets/chevron right.png");
     background-size: 100% 100%;
     display: block;
     float: right;
-    margin-top: 38/@baseSize;
-    margin-left: 20/@baseSize;
+    margin-top: 19px;
+    margin-left: 10px;
   }
 
 </style>

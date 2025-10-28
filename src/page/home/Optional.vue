@@ -134,18 +134,18 @@
 <style lang="less" scoped>
   @import '../../style/minxin.less';
 .box{
-  padding-bottom: 80/@baseSize;
+  padding-bottom: 40px;
 }
   .title {
-    height: 60/@baseSize;
+    height: 30px;
     background: @green;
-    padding-left: 30/@baseSize;
+    padding-left: 15px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     font-size: @fontSize30;
     color: @white;
-    line-height: 60/@baseSize;
+    line-height: 30px;
   }
 
   .curriculum-list {
@@ -153,27 +153,27 @@
   }
 
   .curriculum-list h4 {
-    .mixin-padding(30/@baseSize, 30/@baseSize);
-    height: 100/@baseSize;
-    line-height: 100/@baseSize;
+    .mixin-padding(15px, 15px);
+    height: 50px;
+    line-height: 50px;
     border-bottom: 1px solid @colorDD;
   }
 
   .curriculum-list h4 em {
-    width: 40/@baseSize;
-    height: 40/@baseSize;
+    width: 20px;
+    height: 20px;
     display: block;
     float: left;
     text-align: center;
-    line-height: 40/@baseSize;
+    line-height: 20px;
     background: @green;
     border-radius: 4px;
     color: @white;
-    margin-top: 28/@baseSize;
+    margin-top: 14px;
   }
 
   .curriculum-list h4 span {
-    margin-left: 20/@baseSize;
+    margin-left: 10px;
     float: left;
     font-size: @fontSize30;
     color: @color42;
@@ -184,20 +184,20 @@
   }
 
   .curriculum-name li {
-    .mixin-padding(30/@baseSize, 30/@baseSize);
-    height: 100/@baseSize;
-    line-height: 104/@baseSize;
+    .mixin-padding(15px, 15px);
+    height: 50px;
+    line-height: 52px;
     border-bottom: 1px solid @colorDD;
   }
 
   .curriculum-name li em {
-    width: 38/@baseSize;
-    height: 38/@baseSize;
+    width: 19px;
+    height: 19px;
     display: block;
     float: left;
     border: 1px solid @green;
     border-radius: 4px;
-    margin-top: 28/@baseSize;
+    margin-top: 14px;
   }
 
   .curriculum-name li em.icon {
@@ -205,9 +205,9 @@
   }
 
   .curriculum-name li em.icon i {
-    width: 19/@baseSize;
-    height: 20/@baseSize;
-    margin-top: 9/@baseSize;
+    width: 10px;
+    height: 10px;
+    margin-top: 5px;
     margin-left: auto;
     margin-right: auto;
     background: url("../../assets/checkmarks.png") no-repeat;
@@ -216,19 +216,19 @@
   }
 
   .curriculum-name li span {
-    margin-left: 20/@baseSize;
+    margin-left: 10px;
     font-size: @fontSize30;
     color: @color42;
   }
 
   .pltne-btn {
     width: 100%;
-    height: 80/@baseSize;
-    line-height: 80/@baseSize;
+    height: 40px;
+    line-height: 40px;
     font-size: @fontSize30;
     color: @white;
     background: @green;
-    margin-top: 80/@baseSize;
+    margin-top: 40px;
     text-align: center;
     position: fixed;
     bottom:0;

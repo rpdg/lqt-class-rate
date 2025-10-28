@@ -110,13 +110,13 @@
   }
 
   .scope-title {
-    padding-left: 30 / @baseSize;
+    padding-left: 15px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     font-size: @fontSize30;
     color: @color42;
-    margin-top: 15 / @baseSize;
+    margin-top: 8px;
   }
 
   .x-textarea {

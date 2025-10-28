@@ -591,7 +591,7 @@ export default {
 @import "../../style/minxin.less";
 
 .realContent {
-  margin-top: 100 / @baseSize;
+  margin-top: 50px;
 }
 
 .title-header {
@@ -600,8 +600,8 @@ export default {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100 / @baseSize;
-  line-height: 100 / @baseSize;
+  height: 50px;
+  line-height: 50px;
   z-index: 1000;
   border-bottom: solid 1px #dedede;
 }
@@ -626,8 +626,8 @@ export default {
 }
 
 .class-schedule {
-  padding-left: 40 / @baseSize;
-  padding-right: 40 / @baseSize;
+  padding-left: 20px;
+  padding-right: 20px;
   font-size: 15px;
 }
 
@@ -701,14 +701,14 @@ export default {
 }
 
 .back-div {
-  padding-bottom: 100 / @baseSize;
+  padding-bottom: 50px;
 }
 
 .up-back {
   width: 100%;
-  height: 100 / @baseSize;
+  height: 50px;
   font-size: @fontSize36;
-  line-height: 100 / @baseSize;
+  line-height: 50px;
   color: @white;
   text-align: center;
   position: fixed;
@@ -719,21 +719,21 @@ export default {
 }
 
 .payroll-div {
-  padding-bottom: 100 / @baseSize;
+  padding-bottom: 50px;
   position: relative;
   z-index: 100;
 }
 
 .payroll-title {
   width: 100%;
-  height: 100 / @baseSize;
+  height: 50px;
   font-size: @fontSize36;
-  //line-height: 100/@baseSize;
+  //line-height: 50px;
   line-height: 50px;
   color: @white;
   text-align: center;
   position: fixed;
-  //top: 100/@baseSize;
+  //top: 50px;
   left: 0;
   z-index: 10;
 }
@@ -741,8 +741,8 @@ export default {
 .payroll-title h1 {
   display: flex;
   justify-content: space-between;
-  padding-left: 40 / @baseSize;
-  padding-right: 40 / @baseSize;
+  padding-left: 20px;
+  padding-right: 20px;
   border-bottom: 1px solid #aab2c0;
   box-sizing: border-box;
   background: #ffffff;
@@ -765,15 +765,15 @@ export default {
 
 .payroll-list {
   width: 100%;
-  padding-bottom: 100 / @baseSize;
+  padding-bottom: 50px;
 }
 
 .payroll-list li {
   display: flex;
   justify-content: space-between;
-  line-height: 90 / @baseSize;
-  padding-left: 40 / @baseSize;
-  padding-right: 40 / @baseSize;
+  line-height: 45px;
+  padding-left: 20px;
+  padding-right: 20px;
   box-sizing: border-box;
 }
 
@@ -793,17 +793,17 @@ export default {
 
 .payroll-list-d {
   width: 100%;
-  padding-bottom: 100 / @baseSize;
+  padding-bottom: 50px;
 }
 
 .payroll-list-d li {
   display: flex;
   justify-content: space-between;
-  padding-left: 40 / @baseSize;
-  padding-right: 40 / @baseSize;
+  padding-left: 20px;
+  padding-right: 20px;
   box-sizing: border-box;
-  padding-top: 20 / @baseSize;
-  padding-bottom: 20 / @baseSize;
+  padding-top: 10px;
+  padding-bottom: 10px;
   flex-flow: row;
   font-size: @fontSize30;
 }
@@ -833,9 +833,9 @@ export default {
 
 .payroll-bottom {
   width: 100%;
-  height: 100 / @baseSize;
+  height: 50px;
   font-size: @fontSize36;
-  line-height: 100 / @baseSize;
+  line-height: 50px;
   color: @white;
   text-align: center;
   position: fixed;
@@ -847,13 +847,13 @@ export default {
 
 .payroll-bottom p {
   width: 100%;
-  height: 100 / @baseSize;
+  height: 50px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-top: 1px solid #aab2c0;
-  padding-left: 40 / @baseSize;
-  padding-right: 40 / @baseSize;
+  padding-left: 20px;
+  padding-right: 20px;
   box-sizing: border-box;
 }
 
@@ -869,16 +869,16 @@ export default {
   align-content: center;
   flex-direction: column;
   align-items: center;
-  height: calc(100% - 500 / @baseSize);
+  height: calc(100% - 250px);
 }
 
 .empty img {
-  width: 208 / @baseSize;
+  width: 104px;
   display: block;
 }
 
 .empty span {
-  padding-top: 74 / @baseSize;
+  padding-top: 37px;
   font-size: @fontSize30;
   color: #bbbbbb;
 }
@@ -897,15 +897,15 @@ figure {
 
 .user-type {
   position: absolute;
-  width: 39 / @baseSize;
-  height: 38 / @baseSize;
+  width: 20px;
+  height: 19px;
   top: 0.55rem;
 }
 
 .tab-btn {
   width: 100%;
-  height: 100 / @baseSize;
-  line-height: 100 / @baseSize;
+  height: 50px;
+  line-height: 50px;
   border-bottom: 1px solid #eee;
 }
 .tab-btn li {
@@ -915,7 +915,7 @@ figure {
   position: relative;
 }
 .tab-btn li p span {
-  font-size: 36 / @baseSize;
+  font-size: 18px;
   color: #000000;
   padding-right: 0.2rem;
 }
@@ -941,7 +941,7 @@ figure {
 .mune-title {
   line-height: 0.6rem;
   padding-left: 0.2rem;
-  font-size: 30 / @baseSize;
+  font-size: 15px;
   color: @color42;
   margin-right: 0.5rem;
   margin-left: 1rem;
@@ -957,7 +957,7 @@ figure {
   float: left;
   width: 25%;
   padding: 0rem 0.5rem;
-  /* height: 180/@baseSize;*/
+  /* height: 90px;*/
   text-align: center;
   box-sizing: border-box;
 }
@@ -966,38 +966,38 @@ figure {
 }
 
 .iocn-list li[type="ZH"] img {
-  width: 45 / @baseSize;
-  height: 110 / @baseSize;
+  width: 23px;
+  height: 55px;
 }
 
 .link-class {
-  height: 180 / @baseSize;
+  height: 90px;
 }
 .icon {
-  width: 45 / @baseSize;
-  height: 110 / @baseSize;
+  width: 23px;
+  height: 55px;
 }
 
 .iocn-list .name {
   text-align: center;
   white-space: nowrap;
-  height: 55 / @baseSize;
-  line-height: 55 / @baseSize;
-  font-size: 22 / @baseSize;
+  height: 28px;
+  line-height: 28px;
+  font-size: 11px;
   color: @color42;
 }
 
 .messageBtn {
-  width: 125 / @baseSize;
-  height: 125 / @baseSize;
-  line-height: 125 / @baseSize;
+  width: 63px;
+  height: 63px;
+  line-height: 63px;
   text-align: center;
   border-radius: 50%;
   font-size: @fontSize26;
   color: @white;
   position: fixed;
-  bottom: 45 / @baseSize;
-  left: 40 / @baseSize;
+  bottom: 23px;
+  left: 20px;
   background: #ff5e5e;
   z-index: 10;
 }
@@ -1007,9 +1007,9 @@ figure {
   -webkit-transition: All 0.4s ease-in-out;
   -moz-transition: All 0.4s ease-in-out;
   -o-transition: All 0.4s ease-in-out;
-  width: 90 / @baseSize;
-  height: 90 / @baseSize;
-  /*line-height: 87 / @baseSize;
+  width: 45px;
+  height: 45px;
+  /*line-height: 44px;
     width: 32px;
     height: 32px;
     line-height: 26px;*/
@@ -1018,8 +1018,8 @@ figure {
   font-size: @fontSize36;
   color: @green;
   position: fixed;
-  bottom: 45 / @baseSize;
-  right: 40 / @baseSize;
+  bottom: 23px;
+  right: 20px;
   background: @white;
   z-index: 10;
   /*border: 2px solid #48B319;*/
@@ -1033,9 +1033,9 @@ figure {
 }
 
 .send {
-  /*width: 100 / @baseSize;
-    height: 100 / @baseSize;
-    line-height: 100 / @baseSize;
+  /*width: 50px;
+    height: 50px;
+    line-height: 50px;
     */
   width: 32px;
   height: 32px;
@@ -1054,8 +1054,8 @@ figure {
 .send-vote,
 .send-work {
   position: fixed;
-  bottom: 43 / @baseSize;
-  right: 37 / @baseSize;
+  bottom: 22px;
+  right: 19px;
   z-index: 5;
 }
 .send-notice {

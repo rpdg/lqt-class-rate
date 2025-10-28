@@ -72,25 +72,25 @@ export default {
 .message li {
   padding: 0 15px;
   border-bottom: 1px solid @colorDD;
-  height: 160 / @baseSize;
+  height: 80px;
   position: relative;
 }
 
 .message-icon {
-  width: 100 / @baseSize;
-  height: 100 / @baseSize;
+  width: 50px;
+  height: 50px;
   background: url("./dyRate07.png") no-repeat left;
   background-size: 100% 100%;
   position: absolute;
-  top: 30 / @baseSize;
-  left: 30 / @baseSize;
+  top: 15px;
+  left: 15px;
   border-radius: 3px;
 }
 
 .message-info {
-  margin-left: 125 / @baseSize;
-  margin-right: 100 / @baseSize;
-  padding-top: 40 / @baseSize;
+  margin-left: 63px;
+  margin-right: 50px;
+  padding-top: 20px;
   display: block;
 }
 
@@ -98,7 +98,7 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  line-height: 40 / @baseSize;
+  line-height: 20px;
   font-size: @fontSize30;
   color: @color42;
 }
@@ -109,19 +109,19 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-top: 10 / @baseSize;
+  margin-top: 5px;
 }
 
 .message-handle {
   position: absolute;
-  top: 30 / @baseSize;
-  right: 30 / @baseSize;
+  top: 15px;
+  right: 15px;
   text-align: right;
 }
 
 .message-handle a {
-  padding-top: 8 / @baseSize;
-  padding-bottom: 8 / @baseSize;
+  padding-top: 4px;
+  padding-bottom: 4px;
   display: block;
 }
 .btn-red {
