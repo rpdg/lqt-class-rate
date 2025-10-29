@@ -421,8 +421,15 @@ export default {
         let imgs = msgObject.imgList || [];
         this.serverId = imgs;
         imgs.forEach((item, index) => {
-          this.localIdImgs.push(roterPath + item.url);
+          this.localIdImgs.push(this.ossPath + '/upload' + item.url);
+          let picObj = {
+            viewPath: this.ossPath + '/upload' + item.url,
+            newfileName: 'xxx-' + item.id
+          };
+          this.imgTempList.push(picObj);
         });
+debugger;
+console.log("this.localIdImgs", this.localIdImgs, "\nthis.imgTempList", this.imgTempList);
         let files = msgObject.fileList || [];
         files.forEach(file => {
           file = Object.assign({
@@ -471,14 +478,15 @@ export default {
         this.serverId = imgs;
         this.localIdImgs = [];
         imgs.forEach((item, index) => {
-          this.localIdImgs.push(roterPath + item.url);
+          this.localIdImgs.push(this.ossPath + '/upload' + item.url);
           let picObj = {
             viewPath: this.ossPath + '/upload' + item.url,
             newfileName: 'xxx-' + item.id
           };
           this.imgTempList.push(picObj);
         });
-
+debugger;
+console.log("this.localIdImgs", this.localIdImgs, "this.imgTempList", this.imgTempList);
         let files = stringArray.fileList;
         files.forEach(file => {
           file = Object.assign({
