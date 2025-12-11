@@ -235,7 +235,7 @@ export default {
             this.contentValue = response.data.data.CONTENT;
             this.serverId = imgs;
             imgs.forEach((item, index) => {
-              this.localIdImgs.push(roterPath + item.url);
+              this.localIdImgs.push(response.data.data.BASE_URL + item.url);
             });
             console.log(response);
           }
