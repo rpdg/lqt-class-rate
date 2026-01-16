@@ -1,7 +1,7 @@
 <template>
   <div class="box">
     <x-header class="title-header" :left-options="{ preventGoBack: true }" @on-click-back="goBack">{{ courseTitle
-      }}</x-header>
+    }}</x-header>
     <div
       style="width: 100vw; position: absolute; top: 57px; height: 38px; padding:0 20px; border-bottom: 1px #ddd dashed;">
       考勤日期：{{ checkonDate.getMonth() + 1 }}月{{ checkonDate.getDate() }}日
@@ -20,8 +20,8 @@
               <div v-else-if="item.STATUS != '1'" :style="`color: ${attendanceStatusColorMap[ item.STATUS ]}`">{{
                 item.REMARK }}</div>
               <img style="width: auto; max-height: 110px;" :src="item.AVATAR" />
-              <img v-if="item.STATUS != '1'" style="width: 60%; position: absolute;bottom: 0;right: 0;"
-                src="@/assets/curriculum/duty.png" />
+              <img v-if="item.STATUS != '1'" style="width: 60px; position: absolute;bottom: 0;right: 0;"
+                :src="getAttendanceImage(item.STATUS)" />
             </div>
             <div>{{ item.SHORT_NAME }} {{ item.NAME }}</div>
             <img @click="editDetail(item)" style="width: 20px;margin-top: 5px" src="@/assets/edit.png" />
@@ -53,19 +53,20 @@
           <div slot="content" class="m-title">
             <span style="font-size: 1.6em">{{ studentInfo.SHORT_NAME }}{{ studentInfo.NAME }} 本次考勤</span>
             <br />
-            <span class="m-time">
-              <h1 class="listBtn chidao" @click="changeStauts('2')">迟到</h1>
-              <h1 class="listBtn zaotui" @click="changeStauts('3')">早退</h1>
-              <h1 class="listBtn kuangke" @click="changeStauts('6')">旷课</h1>
-              <h1 class="listBtn bingjia" @click="changeStauts('4')">病假</h1>
-              <h1 class="listBtn shijia" @click="changeStauts('5')">事假</h1>
-            </span>
+            <div class="m-time">
+              <div class="row" v-for="(row, rowIndex) in rows" :key="rowIndex">
+                <div :class="'listBtn ' + (item.PARAM2 === 'mainRed' ? 'kuangke' : 'chidao')" v-for="item in row"
+                  :key="item.CODE" @click="changeStauts(item.CODE)">
+                  {{ item.NAME }}
+                </div>
+              </div>
+            </div>
 
-            <span class="m-time">
+            <div class="m-time">
               <h1 @click="hideStatus()">
                 <icon style="font-size: 2rem" type="clear"></icon>
               </h1>
-            </span>
+            </div>
           </div>
         </masker>
       </div>
@@ -74,17 +75,17 @@
         <masker fullscreen style="border-radius: 2px;" :opacity="0.8">
           <div slot="content" class="m-title">
             <span style="font-size: 1.6em">{{ studentInfo.SHORT_NAME }}{{ studentInfo.NAME }}
-              本次{{ statusView[ studentInfo.STATUS ] }}</span>
+              本次{{ statusMap[ studentInfo.STATUS ].NAME }}</span>
             <br />
-            <span class="m-time">
+            <div class="m-time">
               <h1 class="listBtnRow bingjia" @click="changeStauts('1')">改为到勤</h1>
-            </span>
+            </div>
             <br />
-            <span class="m-time">
+            <div class="m-time">
               <h1 @click="hideStatus()">
                 <icon style="font-size: 2rem" type="clear"></icon>
               </h1>
-            </span>
+            </div>
           </div>
         </masker>
       </div>
@@ -108,10 +109,15 @@ import {
   Icon
 } from "vux";
 import { Button, Tab, Tabs, Calendar } from "vant";
-import Back from "../../components/common/Back.vue";
-import apiRouter from "../../config/api.js";
-import { THEME_COLOR_MAP } from '../../config/colorMap';
-
+import Back from "@/components/common/Back.vue";
+import apiRouter from "@/config/api.js";
+import { THEME_COLOR_MAP } from '@/config/colorMap';
+import img0 from "@/assets/attandence/0.png";
+import img2 from "@/assets/attandence/2.png";
+import img3 from "@/assets/attandence/3.png";
+import img4 from "@/assets/attandence/4.png";
+import img5 from "@/assets/attandence/5.png";
+import img6 from "@/assets/attandence/6.png";
 
 export default {
   directives: {
@@ -156,14 +162,7 @@ export default {
   },
   data() {
     return {
-      statusView: {
-        1: "到勤",
-        2: "迟到",
-        3: "早退",
-        4: "病假",
-        5: "事假",
-        6: "旷课",
-      },
+      statusMap: {},
       attendanceStatusColorMap: {
         '1': THEME_COLOR_MAP[ 'mainGreen' ],
         '2': THEME_COLOR_MAP[ 'warningRed' ],
@@ -189,12 +188,7 @@ export default {
       topListCategory: [],
 
       active: 0,
-      allCategoryList: [],
-      totalCourselist: [],
-      checkObj: {
-        finalList: [],
-        noDoList: []
-      },
+
 
       selectTab: 0,
       id: "",
@@ -216,7 +210,43 @@ export default {
         "/weixin/wechat/views/homework/homework-view.jsp?homeworkId="
     };
   },
+  computed: {
+    list() {
+      return Object.values(this.statusMap);
+    },
+    rows() {
+      const total = this.list.length;
+
+      // ≤ 5：一行
+      if (total <= 5) {
+        return [ this.list ];
+      }
+
+      // > 5：两行
+      const upperCount = Math.floor(total / 2);
+      const upper = this.list.slice(0, upperCount);
+      const lower = this.list.slice(upperCount);
+
+      return [ upper, lower ];
+    }
+  },
   methods: {
+    getAttendanceImage(status) {
+      switch (status) {
+        case '2':
+          return img2;
+        case '3':
+          return img3;
+        case '4':
+          return img4;
+        case '5':
+          return img5;
+        case '6':
+          return img6;
+        default:
+          return img0;
+      }
+    },
     editDetail(item) {
       // debugger;
       this.studentInfo = item;
@@ -382,12 +412,16 @@ export default {
                     let v = s.split('_');
                     let t = v[ 0 ] === 'AM' ? '上午' : v[ 0 ] === 'PM' ? '下午' : '全天';
                     let b = response.body.data.class_kq_status[ v[ 1 ] ];
-                    return `<div style='font-size:12px;line-height:1em; color:${vm.attendanceStatusColorMap[ v[ 1 ] ]}'>${t}${b} (班)</div>`;
+                    return `<div style='font-size:12px;line-height:1em; color:${vm.attendanceStatusColorMap[ v[ 1 ] ]}'>${t}${b} (2222班222)</div>`;
                   }).join('');
                 }
               });
-              let messageData = response.body.data.infoList;
-              vm.messageData = messageData;
+              let statusMap = {};
+              Object.values(response.body.data.sel_kq_status).filter(val => (val.IS_ENABLE === '1' && val.PARAM2 !== 'mainGreen')).forEach(val => {
+                statusMap[ val.CODE ] = val;
+              });
+              vm.statusMap = statusMap;
+              vm.messageData = response.body.data.infoList;
             } else {
               alert(response.body.message);
             }
@@ -657,7 +691,6 @@ a.delete {
 .m-time {
   font-size: 12px;
   padding-top: 1rem;
-  display: inline-block;
   margin-top: 5px;
 }
 
