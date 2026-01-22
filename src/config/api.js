@@ -123,8 +123,8 @@ const apiRouter = {
   GET_TEACHER_COURSE: apiPath + "/wechat/selCourseH5/getTeacherCourse",
   GET_ALL_CHECK_COURSE: apiPath + "/wechat/selCourseH5/getAllCheckonList",
   GET_ADD_TCHECKON_MAIN: apiPath + "/wechat/selCourseH5/addTcheckonMain",
-  GET_STUDENT_CHECKON_LIST:
-    apiPath + "/wechat/selCourseH5/getAllStudentCheckonList",
+  GET_STUDENT_CHECKON_LIST: apiPath + "/wechat/selCourseH5/getAllStudentCheckonList",
+  GET_STUDENT_CHECKON_LIST2: apiPath + "/wechat/selCourseH5/getAllStudentCheckonList_v2",
   GET_CHANGE_TCHECKON_MAIN: apiPath + "/wechat/selCourseH5/changeTcheckonMain",
   DEL_EXISTED_CHECKON: apiPath + "/wechat/selCourseH5/checkon_del",
   UPDATE_CHECKON_DATE: apiPath + "/wechat/selCourseH5/chg_checkon_date",

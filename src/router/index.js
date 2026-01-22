@@ -99,7 +99,6 @@ import StdEvaList from '../page/evaluation/StdEvaList.vue'
 import EvalClassList from '../page/evaluation/ClassList.vue'
 import EvalSysList from '../page/evaluation/SysList.vue'
 
-import Eval1 from '../page/evaluation/studentList.vue'
 import EvalRank from '../page/evaluation/EvaRank.vue'
 
 
@@ -506,11 +505,6 @@ export default new Router({
     },
 
 
-    {
-      path: '/eval1',
-      name: 'eval1',
-      component: Eval1
-    },
     {
       path: '/eval-rank',
       name: 'evalRank',

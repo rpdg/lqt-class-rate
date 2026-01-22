@@ -16,14 +16,13 @@
           :key="index">
           <div style="width: 100%;text-align: center; ">
             <div @click="editCheck(item)" style="display: inline-block; position: relative;">
-              <div v-if="item.clsKqHtml" v-html="item.clsKqHtml" style="margin-bottom: 5px;"></div>
-              <div v-else-if="item.STATUS != '1'" :style="`color: ${attendanceStatusColorMap[ item.STATUS ]}`">{{
-                item.REMARK }}</div>
-              <img style="width: auto; max-height: 110px;" :src="item.AVATAR" />
-              <img v-if="item.STATUS != '1'" style="width: 60px; position: absolute;bottom: 0;right: 0;"
-                :src="getAttendanceImage(item.STATUS)" />
+              <div v-if="item.status != '1'" :style="`color: ${attendanceStatusColorMap[ item.status ]}`">{{
+                item.remark }}</div>
+              <img style="width: auto; max-height: 110px;" :src="item.avatar" />
+              <img v-if="item.status != '1'" style="width: 60px; position: absolute;bottom: 0;right: 0;"
+                :src="getAttendanceImage(item.status)" />
             </div>
-            <div>{{ item.SHORT_NAME }} {{ item.NAME }}</div>
+            <div>{{ item.className }} {{ item.studentName }}</div>
             <img @click="editDetail(item)" style="width: 20px;margin-top: 5px" src="@/assets/edit.png" />
           </div>
         </li>
@@ -44,15 +43,20 @@
         toastMessage }}</toast>
 
       <div v-transfer-dom>
-        <confirm v-model="showDetail" show-input ref="confirm5" :title="studentInfo.SHORT_NAME + '-' + studentInfo.NAME"
+        <confirm v-model="showDetail" show-input ref="confirm5" :title="studentInfo.className + '-' + studentInfo.studentName"
           @on-cancel="onCancel" @on-confirm="onConfirm5"></confirm>
       </div>
 
       <div v-if="showCheck" style="margin: 10px;overflow: hidden;">
         <masker fullscreen style="border-radius: 2px;" :opacity="0.8">
           <div slot="content" class="m-title">
-            <span style="font-size: 1.6em">{{ studentInfo.SHORT_NAME }}{{ studentInfo.NAME }} 本次考勤</span>
-            <br />
+            <div style="font-size: 1.6em">{{ studentInfo.className }}{{ studentInfo.studentName }} 本次考勤</div>
+            <div v-if="studentInfo.classKqRefs.length" style="margin-top: 25px;">
+              （班主任考勤：{{ studentInfo.classKqRefs[0].timeTypeName }}<span style="color: #fbc02d;">{{ studentInfo.classKqRefs[0].statusName }}</span>）
+            </div>
+            <div v-else-if="studentInfo.leaveInfo">
+              （{{ studentInfo.leaveInfo.leaveTimeTypeName }}<span style="color: #fbc02d;">{{ studentInfo.leaveInfo.leaveTypeName }}</span>）
+            </div>
             <div class="m-time">
               <div class="row" v-for="(row, rowIndex) in rows" :key="rowIndex">
                 <div :class="'listBtn ' + (item.PARAM2 === 'mainRed' ? 'kuangke' : 'chidao')" v-for="item in row"
@@ -74,9 +78,14 @@
       <div v-if="showCheckDone" style="margin: 10px;overflow: hidden;">
         <masker fullscreen style="border-radius: 2px;" :opacity="0.8">
           <div slot="content" class="m-title">
-            <span style="font-size: 1.6em">{{ studentInfo.SHORT_NAME }}{{ studentInfo.NAME }}
-              本次{{ statusMap[ studentInfo.STATUS ].NAME }}</span>
-            <br />
+            <span style="font-size: 1.6em">{{ studentInfo.className }}{{ studentInfo.studentName }}
+              本次{{  studentInfo.statusName }}</span>
+            <div v-if="studentInfo.classKqRefs.length" style="margin-top: 25px;">
+              （班主任考勤：{{ studentInfo.classKqRefs[0].timeTypeName }}<span style="color: #fbc02d;">{{ studentInfo.classKqRefs[0].statusName }}</span>）
+            </div>
+            <div v-else-if="studentInfo.leaveInfo">
+              （{{ studentInfo.leaveInfo.leaveTimeTypeName }}<span style="color: #fbc02d;">{{ studentInfo.leaveInfo.leaveTypeName }}</span>）
+            </div>
             <div class="m-time">
               <h1 class="listBtnRow bingjia" @click="changeStauts('1')">改为到勤</h1>
             </div>
@@ -253,7 +262,7 @@ export default {
       this.showDetail = true;
     },
     editCheck(item) {
-      if (item.STATUS == "1") {
+      if (item.status == "1") {
         this.showCheck = true;
       } else {
         this.showCheckDone = true;
@@ -320,7 +329,7 @@ export default {
           "&status=remark" +
           // student.STATUS +
           "&studentId=" +
-          student.ID +
+          student.studentId +
           "&remark=" +
           value
         )
@@ -360,7 +369,7 @@ export default {
           "&status=" +
           status +
           "&studentId=" +
-          student.ID +
+          student.studentId +
           "&remark="
         )
         .then(
@@ -397,7 +406,7 @@ export default {
       let checkMainId = vm.$route.query.checkMainId;
       this.$http
         .get(
-          apiRouter.GET_STUDENT_CHECKON_LIST +
+          apiRouter.GET_STUDENT_CHECKON_LIST2 +
           "?courseId=" +
           courseId +
           "&checkMainId=" +
@@ -406,22 +415,12 @@ export default {
         .then(
           response => {
             if (response.body.code === 200) {
-              response.body.data.infoList.forEach(val => {
-                if (val.CLASS_KQ_STATUS) {
-                  val.clsKqHtml = val.CLASS_KQ_STATUS.split(",").map(s => {
-                    let v = s.split('_');
-                    let t = v[ 0 ] === 'AM' ? '上午' : v[ 0 ] === 'PM' ? '下午' : '全天';
-                    let b = response.body.data.class_kq_status[ v[ 1 ] ];
-                    return `<div style='font-size:12px;line-height:1em; color:${vm.attendanceStatusColorMap[ v[ 1 ] ]}'>${t}${b} (2222班222)</div>`;
-                  }).join('');
-                }
-              });
               let statusMap = {};
               Object.values(response.body.data.sel_kq_status).filter(val => (val.IS_ENABLE === '1' && val.PARAM2 !== 'mainGreen')).forEach(val => {
                 statusMap[ val.CODE ] = val;
               });
               vm.statusMap = statusMap;
-              vm.messageData = response.body.data.infoList;
+              vm.messageData = response.body.data.dataList;
             } else {
               alert(response.body.message);
             }
@@ -690,7 +689,7 @@ a.delete {
 
 .m-time {
   font-size: 12px;
-  padding-top: 1rem;
+  padding-top: 20px;
   margin-top: 5px;
 }
 
