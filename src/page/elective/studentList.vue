@@ -52,10 +52,10 @@
           <div slot="content" class="m-title">
             <div style="font-size: 1.6em">{{ studentInfo.className }}{{ studentInfo.studentName }} 本次考勤</div>
             <div v-if="studentInfo.classKqRefs.length" style="margin-top: 25px;">
-              （班主任考勤：{{ studentInfo.classKqRefs[0].timeTypeName }}<span style="color: #fbc02d;">{{ studentInfo.classKqRefs[0].statusName }}</span>）
+              （班主任考勤：{{ studentInfo.classKqRefs[0].timeTypeName }}<span style="color: #FF8F03;">{{ studentInfo.classKqRefs[0].statusName }}</span>）
             </div>
             <div v-else-if="studentInfo.leaveInfo">
-              （{{ studentInfo.leaveInfo.leaveTimeTypeName }}<span style="color: #fbc02d;">{{ studentInfo.leaveInfo.leaveTypeName }}</span>）
+              （{{ studentInfo.leaveInfo.leaveTimeTypeName }}<span style="color: #FF8F03;">{{ studentInfo.leaveInfo.leaveTypeName }}</span>）
             </div>
             <div class="m-time">
               <div class="row" v-for="(row, rowIndex) in rows" :key="rowIndex">
@@ -81,10 +81,10 @@
             <span style="font-size: 1.6em">{{ studentInfo.className }}{{ studentInfo.studentName }}
               本次{{  studentInfo.statusName }}</span>
             <div v-if="studentInfo.classKqRefs.length" style="margin-top: 25px;">
-              （班主任考勤：{{ studentInfo.classKqRefs[0].timeTypeName }}<span style="color: #fbc02d;">{{ studentInfo.classKqRefs[0].statusName }}</span>）
+              （班主任考勤：{{ studentInfo.classKqRefs[0].timeTypeName }}<span style="color: #FF8F03;">{{ studentInfo.classKqRefs[0].statusName }}</span>）
             </div>
             <div v-else-if="studentInfo.leaveInfo">
-              （{{ studentInfo.leaveInfo.leaveTimeTypeName }}<span style="color: #fbc02d;">{{ studentInfo.leaveInfo.leaveTypeName }}</span>）
+              （{{ studentInfo.leaveInfo.leaveTimeTypeName }}<span style="color: #FF8F03;">{{ studentInfo.leaveInfo.leaveTypeName }}</span>）
             </div>
             <div class="m-time">
               <h1 class="listBtnRow bingjia" @click="changeStauts('1')">改为到勤</h1>
@@ -706,6 +706,7 @@ a.delete {
   z-index: 10;
   display: inline-block;
   margin: 1em 5px;
+  font-size: 12px;
 }
 
 .listBtnRow {
@@ -724,7 +725,7 @@ a.delete {
 }
 
 .chidao {
-  background: #fbc02d;
+  background: #FF8F03;
 }
 
 .zaotui {
