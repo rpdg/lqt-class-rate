@@ -171,7 +171,7 @@ export default {
   },
   data() {
     return {
-      statusMap: {},
+      statusArr: [],
       attendanceStatusColorMap: {
         '1': THEME_COLOR_MAP[ 'mainGreen' ],
         '2': THEME_COLOR_MAP[ 'warningRed' ],
@@ -221,7 +221,7 @@ export default {
   },
   computed: {
     list() {
-      return Object.values(this.statusMap);
+      return this.statusArr;
     },
     rows() {
       const total = this.list.length;
@@ -415,11 +415,9 @@ export default {
         .then(
           response => {
             if (response.body.code === 200) {
-              let statusMap = {};
-              Object.values(response.body.data.sel_kq_status).filter(val => (val.IS_ENABLE === '1' && val.PARAM2 !== 'mainGreen')).forEach(val => {
-                statusMap[ val.CODE ] = val;
+              vm.statusArr =  response.body.data.sel_kq_status_arr.filter(val => {
+                return val.IS_ENABLE === '1' && val.PARAM2 !== 'mainGreen';
               });
-              vm.statusMap = statusMap;
               vm.messageData = response.body.data.dataList;
             } else {
               alert(response.body.message);
@@ -699,13 +697,13 @@ a.delete {
   line-height: 60px;
   text-align: center;
   border-radius: 50%;
-  font-size: @fontSize34;
   bottom: 23px;
   right: 20px;
   color: @white;
   z-index: 10;
   display: inline-block;
   margin: 1em 5px;
+  // padding: 5px 10px;
   font-size: 12px;
 }
 
