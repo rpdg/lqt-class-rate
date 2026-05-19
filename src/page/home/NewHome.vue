@@ -3,7 +3,7 @@
         <TabTopHeader :noticeUrl="noticeUrl" :spaceUrl="spaceUrl" :userType="userType" />
 
         <div class="pannelContainer">
-
+            <div class="pannel" style="color:#48B319; text-align:center; font-size: 16px;">{{ greeting }}</div>
             <!-- pinned icons -->
             <div v-if="topList.length > 0" class="pannel">
                 <div class="container">
@@ -52,6 +52,7 @@ export default {
             noticeUrl: '',
             urlPath: encodeURIComponent(window.location.href.split('#')[ 0 ]),
             userType: '',
+            greeting: '',
             isTeach: false,
             fullData: null,
             menuList: [],
@@ -82,6 +83,7 @@ export default {
                     } else {
                         this.isTeach = false;
                     }
+                    this.greeting = res.greetingText || '欢迎使用';
                     this.fullData = res;
                     this.menuList = res.menu_list;
                     this.topList = res.top_list;
