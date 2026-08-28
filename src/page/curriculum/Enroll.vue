@@ -398,6 +398,13 @@ export default {
 
           }
 
+          if(!_this.userInfo) {
+            _this.userInfo = {};
+          }
+          if(_this.curData.stuMap && _this.curData.stuMap.NAME){
+            _this.userInfo.greetingName = _this.curData.stuMap.NAME + '同学';
+          }
+
           if (_this.curData.selTime && _this.curData.selTime.OPEN_TIME) {
             let sStartDate = _this.curData.selTime.OPEN_TIME.replace(/\-/g, "/");
             _this.startTime = new Date(sStartDate).getTime() - new Date().getTime();
