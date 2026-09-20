@@ -3,235 +3,351 @@
     <back-title-bar title="发通知" />
     <h3 class="title" style="margin-top: 47px;">请选择通知范围</h3>
     <div class="curriculum clearfix">
-      <div class="curriculum-list clearfix" v-for="(items,index1) in curriculum">
-        <h4><em>课</em><span>{{items.courseNmae}}</span></h4>
+      <div class="curriculum-list clearfix" v-for="(items, index1) in curriculum">
+        <h4><em>课</em><span>{{ items.courseNmae }}</span></h4>
         <ul class="curriculum-name">
-          <li class="cleafix" @click="chooseBtn(item,index1)" v-for="(item,index2) in items.members">
-            <em :class="{ icon: item.selected }"><i></i></em>
-            <span>{{item.toName}}</span>
+          <li class="cleafix" v-for="(item, index2) in items.members">
+            <div class="curricu-left left" @click="chooseBtn(item, index1, index2)">
+              <em :class="{ icon: item.selected }"><i></i></em>
+              <span>{{ item.toName }}</span>
+            </div>
+            <div class="curricu-right right" @click="choosePoser(item, index1, index2)">
+              <span>{{ showChoiceHint(item) }}</span>
+              <em> </em>
+            </div>
           </li>
         </ul>
       </div>
     </div>
-    <p class="pltne-btn" @click="pltneBtn('middle','请选择')">完成</p>
-    <toast
-      v-model="showPositionValue"
-      type="text"
-      :time="800"
-      is-show-mask
-      :position="position"
-    >
-      {{toastMessage}}
+    <p class="pltne-btn" @click="pltneBtn()">完成</p>
+    <toast v-model="showPositionValue" type="text" :time="800" is-show-mask :position="position">
+      {{ toastMessage }}
     </toast>
   </div>
 </template>
 
 <script>
-  import { Toast } from 'vux'
+import { Toast } from 'vux';
 import BackTitleBar from "../../components/common/BackTitleBar.vue";
-  import apiRouter from "../../config/api.js"
-  import {mapGetters,mapMutations} from 'vuex'
-  export default {
-    components: {
-      BackTitleBar,
-      Toast
-    },
-    computed: {
-      ...mapGetters([
-        "choolesType"
-      ])
-    },
-    created(){
-      let stringStore = JSON.stringify(this.choolesType);
-      if( stringStore === "{}" &&  stringStore.length === 2 ){
-        this.objType = JSON.parse(window.localStorage.type);
-        this.objType.objectId = this.objType.objectId;
-        this.objType.type = this.objType.type;
-        this.objType.objectName = this.objType.objectName;
-      }else{
-        this.objType = this.choolesType;
-        this.objType.objectId = this.objType.objectId;
-        this.objType.type = this.objType.type;
-        this.objType.objectName = this.objType.objectName;
-      }
-    },
-    mounted(){
-      this.showData();
-    },
-    methods: {
-
-      //  选择
-      chooseBtn(item, groupIndex){
-        if (typeof item.selected === 'undefined') {
-          item.selected = true;
-        } else {
-          item.selected = !item.selected;
-        }
-        this.$set(this.curriculum, groupIndex, this.curriculum[groupIndex]);
-      },
-      pltneBtn(position,msg){
-        let choices = [];
-        this.curriculum.forEach((course, index) => {
-          course.members.forEach((student) => {
-            if (student.selected) {
-              choices.push(student);
-            }
-          });
-        });
-
-        this.curriculumMeans(choices);
-        let curriculumString = JSON.stringify(choices)
-        window.localStorage.setItem("CURRICULUM",curriculumString)
-        if( curriculumString === "[]" && curriculumString.length === 2 ){
-          this.position = position
-          this.toastMessage=msg
-          this.showPositionValue = true
-        }else{
-          this.$router.push({path: "posted",query:{path:"curriculum"}})
-        }
-
-      },
-      // 请求数据
-      showData(){
-        let _this = this;
-        let pathUrl = apiRouter.SCOPE_CURRICULUM+"?"+
-          'objectId=' + this.objType.objectId +
-          "&type=" + this.objType.type +
-          "&objectName=" + this.objType.objectName;
-        this.$http.get(pathUrl).then(response => {
-          return _this.curriculum = response.body.data;
-        }, response => {
-          alert("请求失败了!!!!")
-        });
-      },
-      ...mapMutations({
-        curriculumMeans:"SET_CURRICULUM"
-      })
-    },
-    data(){
-      return {
-        isActive: false,
-        curriculum:[],
-
-        showPositionValue: false,
-        showToast: true,
-        position: 'default',
-        toastMessage: '',
-
-        objType:{
-          type:"",
-          objectId:"",
-          objectName:""
-        }
-
-
-      }
+import apiRouter from "../../config/api.js";
+import { mapGetters, mapMutations } from 'vuex';
+export default {
+  components: {
+    BackTitleBar,
+    Toast
+  },
+  computed: {
+    ...mapGetters([
+      "choolesType"
+    ])
+  },
+  created() {
+    let stringStore = JSON.stringify(this.choolesType);
+    if (stringStore === "{}" && stringStore.length === 2) {
+      this.objType = JSON.parse(window.localStorage.type);
+      this.objType.objectId = this.objType.objectId;
+      this.objType.type = this.objType.type;
+      this.objType.objectName = this.objType.objectName;
+    } else {
+      this.objType = this.choolesType;
+      this.objType.objectId = this.objType.objectId;
+      this.objType.type = this.objType.type;
+      this.objType.objectName = this.objType.objectName;
     }
+  },
+  mounted() {
+    this.showData();
+  },
+  methods: {
+
+    //  选择
+    chooseBtn(item, groupIndex, index2) {
+      if (typeof item.selected === 'undefined') {
+        item.selected = true;
+      } else {
+        item.selected = !item.selected;
+      }
+      if (item.selected) {
+        this.curriculum[ groupIndex ].members[ index2 ].users.forEach((user, index) => {
+          user.selected = false;
+        });
+      }
+      if (item.selected) {
+        for (let i = 0; i < item.users.length; i++) {
+          item.users[ i ].selected = true;
+        }
+      } else {
+        for (let i = 0; i < item.users.length; i++) {
+          item.users[ i ].selected = false;
+        }
+      }
+      this.$set(this.curriculum, groupIndex, this.curriculum[ groupIndex ]);
+    },
+    pltneBtn() {
+      let path = this.$route.name;
+      let choices = [];
+      let choosedClass = {};
+
+      this.curriculum.forEach((course, index) => {
+
+        course.members.forEach((member) => {
+          if (member.selected) {
+            choices.push(...member.users);
+
+            choosedClass[ member.toObjectId + member.typeCode ] = {
+              toName: member.toName,
+              toObjectId: member.toObjectId,
+              toObjectName: member.toObjectName,
+              typeCode: member.typeCode
+            };
+
+          } else {
+            member.users.forEach((user, index) => {
+              if (user.selected) {
+                choices.push(user);
+
+                choosedClass[ member.toObjectId + member.typeCode ] = {
+                  toName: member.toName,
+                  toObjectId: member.toObjectId,
+                  toObjectName: member.toObjectName,
+                  typeCode: member.typeCode
+                };
+
+              }
+            });
+          }
+        });
+
+        // this.choosedClass = choosedClass;
+      });
+
+      debugger;
+      this.curriculumMeans(choices);
+      let curriculumString = JSON.stringify(choices);
+      window.localStorage.setItem("CURRICULUM", curriculumString);
+      window.localStorage.setItem("CLASSES_CHOOSED", JSON.stringify(choosedClass));
+
+      if (curriculumString === "[]" && curriculumString.length === 2) {
+        this.position = position;
+        this.toastMessage = msg;
+        this.showPositionValue = true;
+      } else {
+        this.$router.push({ path: "posted", query: { path: "curriculum" } });
+      }
+
+    },
+
+    choosePoser(item, index1, index2) {
+      let self = this;
+      self.setNameData(item.users);
+      this.$router.push({
+        path: 'select', query: {
+          onItemClick: function (item, index3, other) {
+            self.onItemClick(item, index1, index2, index3, other);
+          }
+        }
+      });
+    },
+
+    // 请求数据
+    showData() {
+      let _this = this;
+      let pathUrl = apiRouter.SCOPE_CURRICULUM + "?" +
+        'objectId=' + this.objType.objectId +
+        "&type=" + this.objType.type +
+        "&objectName=" + this.objType.objectName;
+      this.$http.get(pathUrl).then(response => {
+        return _this.curriculum = response.body.data;
+      }, response => {
+        alert("请求失败了!!!!");
+      });
+    },
+
+    onItemClick: function (item, index1, index2, index3, other) {
+      let gradeBean = this.curriculum[ index1 ];
+      let memebersBean = gradeBean.members;
+      let classBean = memebersBean[ index2 ];
+      if (other) {
+        classBean.selected = true;
+      } else {
+        classBean.selected = false;
+      }
+      this.$set(classBean, index3, item);
+      this.$set(gradeBean, index2, classBean);
+      this.$set(this.curriculum, index1, gradeBean);
+    },
+
+    showChoiceHint: function (member) {
+      let msg = '';
+      member.users.forEach((user, index) => {
+        if (user.selected) {
+          msg += user.toName + ",";
+        }
+      });
+      if (msg.length === 0) {
+        msg = '请选择';
+      }
+      // return msg.substring(0,msg.length-1) ;
+      return msg;
+    },
+    ...mapMutations({
+      setUsers: "SET_USERS",
+      setNameData: 'SET_NAMEDATA',
+      curriculumMeans: "SET_CURRICULUM"
+    })
+  },
+  data() {
+    return {
+      isActive: false,
+      curriculum: [],
+
+      showPositionValue: false,
+      showToast: true,
+      position: 'default',
+      toastMessage: '',
+
+      objType: {
+        type: "",
+        objectId: "",
+        objectName: ""
+      }
+
+
+    };
   }
+};
 </script>
 
 <style lang="less" scoped>
-  @import '../../style/minxin.less';
-.box{
+@import '../../style/minxin.less';
+
+.box {
   padding-bottom: 40px;
 }
 
-  .title {
-    height: 30px;
-    background: @green;
-    padding-left: 15px;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    font-size: @fontSize30;
-    color: @white;
-    line-height: 30px;
-  }
+.title {
+  height: 30px;
+  background: @green;
+  padding-left: 15px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  font-size: @fontSize30;
+  color: @white;
+  line-height: 30px;
+  margin-top: 47px;
+}
 
-  .curriculum-list {
-    width: 100%;
-  }
+.curriculum-list {
+  width: 100%;
+}
 
-  .curriculum-list h4 {
-    .mixin-padding(15px, 15px);
-    height: 50px;
-    line-height: 50px;
-    border-bottom: 1px solid @colorDD;
-  }
+.curriculum-list h4 {
+  .mixin-padding(15px, 15px);
+  height: 50px;
+  line-height: 50px;
+  border-bottom: 1px solid @colorDD;
+}
 
-  .curriculum-list h4 em {
-    width: 20px;
-    height: 20px;
-    display: block;
-    float: left;
-    text-align: center;
-    line-height: 20px;
-    background: @green;
-    border-radius: 4px;
-    color: @white;
-    margin-top: 14px;
-  }
+.curriculum-list h4 em {
+  width: 20px;
+  height: 20px;
+  display: block;
+  float: left;
+  text-align: center;
+  line-height: 20px;
+  background: @green;
+  border-radius: 4px;
+  color: @white;
+  margin-top: 14px;
+}
 
-  .curriculum-list h4 span {
-    margin-left: 10px;
-    float: left;
-    font-size: @fontSize30;
-    color: @color42;
-  }
+.curriculum-list h4 span {
+  margin-left: 10px;
+  float: left;
+  font-size: @fontSize30;
+  color: @color42;
+}
 
-  .curriculum-name {
-    width: 100%;
-  }
+.curriculum-name {
+  width: 100%;
+}
 
-  .curriculum-name li {
-    .mixin-padding(15px, 15px);
-    height: 50px;
-    line-height: 52px;
-    border-bottom: 1px solid @colorDD;
-  }
+.curriculum-name li {
+  .mixin-padding(15px, 15px);
+  height: 50px;
+  line-height: 52px;
+  border-bottom: 1px solid @colorDD;
+  overflow: hidden;
+}
 
-  .curriculum-name li em {
-    width: 19px;
-    height: 19px;
-    display: block;
-    float: left;
-    border: 1px solid @green;
-    border-radius: 4px;
-    margin-top: 14px;
-  }
+.curricu-left em {
+  width: 19px;
+  height: 19px;
+  display: block;
+  float: left;
+  margin-top: 14px;
+  border: 1px solid @green;
+  border-radius: 4px;
+}
 
-  .curriculum-name li em.icon {
-    border: 1px solid @green;
-  }
+.curricu-left em.icon {}
 
-  .curriculum-name li em.icon i {
-    width: 10px;
-    height: 10px;
-    margin-top: 5px;
-    margin-left: auto;
-    margin-right: auto;
-    background: url("../../assets/checkmarks.png") no-repeat;
-    background-size: 100% 100%;
-    display: block;
-  }
+.curricu-left em.icon i {
+  width: 10px;
+  height: 10px;
+  margin-top: 5px;
+  margin-left: auto;
+  margin-right: auto;
+  background: url("../../assets/checkmarks.png") no-repeat;
+  background-size: 100% 100%;
+  display: block;
+}
 
-  .curriculum-name li span {
-    margin-left: 10px;
-    font-size: @fontSize30;
-    color: @color42;
-  }
+.curricu-left span {
+  margin-left: 10px;
+  font-size: @fontSize30;
+  color: @color42;
+}
 
-  .pltne-btn {
-    width: 100%;
-    height: 40px;
-    line-height: 40px;
-    font-size: @fontSize30;
-    color: @white;
-    background: @green;
-    margin-top: 40px;
-    text-align: center;
-    position: fixed;
-    bottom:0;
-  }
+.pltne-btn {
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  font-size: @fontSize30;
+  color: @white;
+  background: @green;
+  margin-top: 40px;
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+}
 
+.curricu-right {
+  height: 50px;
+  overflow: hidden;
+}
+
+.curricu-right span {
+  width: 100px;
+  height: 50px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: @fontSize30;
+  color: @color42;
+  display: inline-block;
+  text-align: right;
+}
+
+.curricu-right em {
+  width: 7px;
+  height: 12px;
+  background: url("../../assets/chevron right.png");
+  background-size: 100% 100%;
+  display: block;
+  float: right;
+  margin-top: 19px;
+  margin-left: 10px;
+}
 </style>

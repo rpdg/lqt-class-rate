@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <back-title-bar :title="this.republishTitle||'发通知'" />
+    <back-title-bar :title="this.republishTitle || '发通知'" />
     <div class="wapper">
       <div class="form-info clearfix" style="padding-top:20px;">
         <!-- <p class="cancel-btn" @click="cancel()">取消发布</p> -->
@@ -21,10 +21,10 @@
           <p class="scope-title" style="padding:0 15px; display:flex; align-items: center;">
             <span style="flex:1;">通知标题</span>
             <popup-picker v-if='objType.type === "DEPT"' :data='labelOptions' v-model='selectedLabelCode'
-              :display-format="formatV1" class='v1' :disabled="republishTitle==='只改内容不重发'"></popup-picker>
+              :display-format="formatV1" class='v1' :disabled="republishTitle === '只改内容不重发'"></popup-picker>
           </p>
           <x-textarea :max="50" @on-focus="onEvent('focus')" @on-blur="onEvent('blur')" class="x-textarea"
-            placeholder="请输入通知标题" :rows="2" v-model="titleValue" :readonly="republishTitle==='只改内容不重发'"></x-textarea>
+            placeholder="请输入通知标题" :rows="2" v-model="titleValue" :readonly="republishTitle === '只改内容不重发'"></x-textarea>
           <!--<input type="hidden" name="title" v-model="titleValue">-->
         </div>
 
@@ -33,14 +33,15 @@
           <div class="write-back-right">
             <checker v-model="allow" type="radio" default-item-class="write-back-item"
               selected-item-class="write-back-selected" :radio-required="false">
-              <checker-item v-for="(item, i) in isBack" :key="i" :value="i" :disabled="republishTitle==='只改内容不重发' && i!=allow">{{ item }}</checker-item>
+              <checker-item v-for="(item, i) in isBack" :key="i" :value="i"
+                :disabled="republishTitle === '只改内容不重发' && i != allow">{{ item }}</checker-item>
             </checker>
           </div>
         </div>
 
         <div class="scope-data-box">
           <x-address :title="title2" v-model="timeData" raw-value :list="addressData" hide-district
-            value-text-align="right" class="x-address" :disabled="republishTitle==='只改内容不重发'"></x-address>
+            value-text-align="right" class="x-address" :disabled="republishTitle === '只改内容不重发'"></x-address>
         </div>
 
         <div class="scope-title-box">
@@ -52,17 +53,18 @@
           <p class="accessory-title" style="margin-bottom: 20px;">通知附件</p>
 
           <div class="mg-b-20 imgContainer" v-show="imgTempList.length + fileTempList.length > 0">
-            <div class="" v-for="( pic, pIndex ) in imgTempList" :key="pic.newfileName" :data-id='pic.newfileName'
+            <div class="" v-for="(pic, pIndex) in imgTempList" :key="pic.newfileName" :data-id='pic.newfileName'
               v-long-press="1000" @long-press-start="removeTmpPic(pic, pIndex)"
               @touchstart="startWillRemovePic(pic.newfileName)" @touchmove="cancelWillRemovePic">
               <img :src="pic.viewPath" class="deletable">
             </div>
-            <div class="" v-for="( file, fIndex) in fileTempList" :key="file.newfileName">
+            <div class="" v-for="(file, fIndex) in fileTempList" :key="file.newfileName">
               <span class="spRow">
                 <a :href="file.viewPath" target='_blank' :data-id='file.newfileName'>
                   {{ file.originalName }}
                 </a>
-                <van-button plain size='mini' :color="THEME_COLOR_MAP[ 'warningRed' ]" text='删除' @click="removeTmpFile(file, fIndex)" />
+                <van-button plain size='mini' :color="THEME_COLOR_MAP[ 'warningRed' ]" text='删除'
+                  @click="removeTmpFile(file, fIndex)" />
               </span>
             </div>
           </div>
@@ -245,7 +247,7 @@ export default {
       pickerVisible: false,
       selectedValue: null,
       republish: false,
-      republishTitle :  '',
+      republishTitle: '',
       formatV1: function (value, name) {
         return `${name}`;
       }
@@ -316,6 +318,11 @@ export default {
         });
       }
     } else if (path === "curriculum") {
+      try {
+        let grade_choosed_classes_dic = JSON.parse(window.localStorage.CLASSES_CHOOSED);
+        this.grade_choosed_classes = Object.values(grade_choosed_classes_dic);
+      } catch (e) {
+      }
       let stringStore = JSON.stringify(this.curriculumStore);
       let stringArray = this.curriculumStore;
       if (stringStore === "[]" && stringStore.length === 2) {
@@ -405,10 +412,10 @@ export default {
           return { name: item.NAME, value: item.CODE, parent: 0 };
         }));
 
-        if(msgObject.label) {
-          let ll = this.noticeData.labelList.find(item => item.NAME === msgObject.label)
+        if (msgObject.label) {
+          let ll = this.noticeData.labelList.find(item => item.NAME === msgObject.label);
           let labelCode = ll ? ll.CODE : '';
-          this.selectedLabelCode[0] = labelCode;
+          this.selectedLabelCode[ 0 ] = labelCode;
         }
       }
       let stringStore = JSON.stringify(this.messageStore);
@@ -428,8 +435,8 @@ export default {
           };
           this.imgTempList.push(picObj);
         });
-debugger;
-console.log("this.localIdImgs", this.localIdImgs, "\nthis.imgTempList", this.imgTempList);
+        debugger;
+        console.log("this.localIdImgs", this.localIdImgs, "\nthis.imgTempList", this.imgTempList);
         let files = msgObject.fileList || [];
         files.forEach(file => {
           file = Object.assign({
@@ -485,8 +492,8 @@ console.log("this.localIdImgs", this.localIdImgs, "\nthis.imgTempList", this.img
           };
           this.imgTempList.push(picObj);
         });
-debugger;
-console.log("this.localIdImgs", this.localIdImgs, "this.imgTempList", this.imgTempList);
+        debugger;
+        console.log("this.localIdImgs", this.localIdImgs, "this.imgTempList", this.imgTempList);
         let files = stringArray.fileList;
         files.forEach(file => {
           file = Object.assign({
@@ -712,9 +719,9 @@ console.log("this.localIdImgs", this.localIdImgs, "this.imgTempList", this.imgTe
         };
         debugger;
 
-        if (this.$route.query.path === 'Grade') {
+        if (this.$route.query.path === 'Grade' || this.$route.query.path === 'curriculum') {
           sendObj.cls_mbrs = JSON.stringify(this.grade_choosed_classes);
-        } else if (this.objType.type ==='CLASS') {
+        } else if (this.objType.type === 'CLASS') {
           sendObj.cls_mbrs = JSON.stringify(this.userList);
         }
 
