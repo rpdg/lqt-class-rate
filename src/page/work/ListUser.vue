@@ -1,82 +1,57 @@
 <template>
 	<div
-		style="display: flex;flex-direction: column; height: 100vh; overflow: hidden; background-color: #fff !important"
-	>
+		style="display: flex;flex-direction: column; height: 100vh; overflow: hidden; background-color: #fff !important">
 		<!-- 返回组件 -->
-		<x-header
-			class="title-header"
-			:left-options="{preventGoBack: true}"
-			@on-click-back="goBack"
-			:title="`我的作业`"
-		>
+		<x-header class="title-header" :left-options="{ preventGoBack: true }" @on-click-back="goBack" :title="`我的作业`">
 			<template slot="right">
-				<van-icon
-					name="label-o"
-					color="#48B319"
-					size="16"
-					style="margin-right: 8px;"
-					@click="showConfigure"
-				/>
+				<div style="display: flex; align-items: center; gap: 15px">
+					<span
+						@click="getFullList()"
+						style='font-size:10px; text-align: center; color: #ED431E; margin-bottom: 2px;
+						border: 1px solid #ED431E; border-radius: 6px; width:20px; height: 20px;'>今</span>
+					<van-icon name="label-o" color="#48B319" size="16" @click="showConfigure" />
+				</div>
+
 			</template>
 		</x-header>
 		<div class="lqt-wrapper" ref="listWrapper">
-			<van-list
-				class="lqt-list"
-				id="homework"
-				v-model="pageLoading"
-				:finished="pageNum > 0 && (pageNum===pageCount || pageCount===0)"
-				:finished-text="pageLoading? `加载中...` : dataList.length ? `到底啦` : `暂无数据`"
-				@load="loadNextPage"
-				:immediate-check="false"
-			>
+			<van-list class="lqt-list" id="homework" v-model="pageLoading"
+				:finished="pageNum > 0 && (pageNum === pageCount || pageCount === 0)"
+				:finished-text="pageLoading ? `加载中...` : dataList.length ? `到底啦` : `暂无数据`" @load="loadNextPage"
+				:immediate-check="false">
 				<div class="it clearfix it-m" v-show="false">不知道为啥，但是只能加这个样式才正常</div>
-				<div
-					class="it clearfix it-m"
-					style="display: list-item; list-style: none;"
-					v-for="item in dataList"
-					:key="item.ID"
-					@click="goDetail(item)"
-				>
+				<div class="it clearfix it-m" style="display: list-item; list-style: none;" v-for="item in dataList"
+					:key="item.ID" @click="goDetail(item)">
 					<div class="list-title">
 						<a class="link" href="javascript:void(0)">
 							<span
-								:class="'title-common single-line '+ ((item.CAN_CHANGE == 1 || !item.ANID )?'new':'')"
-								:style="'background-color:'+item.COLOR"
-							>
-								<p>{{item.NAME}}</p>
+								:class="'title-common single-line ' + ((item.CAN_CHANGE == 1 || !item.ANID) ? 'new' : '')"
+								:style="'background-color:' + item.COLOR">
+								<p>{{ item.NAME }}</p>
 							</span>
 						</a>
 					</div>
 					<div class="list-content" style="padding-left: 6px">
 						<div class="content-wapper">
 							<a class="link" style="max-width: 240px;" href="javascript:void(0)">
-								<p class="content-title">【{{item.TYPENAME}}】{{item.TITLE}}</p>
+								<p class="content-title">【{{ item.TYPENAME }}】{{ item.TITLE }}</p>
 								<p class="content-info" style="line-height: 2.1em;font-size: 0.9em;padding-left: 7px;">
-									{{item.OUTDATE.substr(5 , 5) }}截止
+									{{ item.OUTDATE.substr(5, 5) }}截止
 									<span>
-										<div v-if="item.IS_GREAT==='1'" class="perfectTag">优秀</div>
+										<div v-if="item.IS_GREAT === '1'" class="perfectTag">优秀</div>
 									</span>
 								</p>
 							</a>
 						</div>
-						<em v-if="!item.ANID" class="icon-next status-view" :style=" 'color:#d9534f'">未完成</em>
-						<em
-							v-else-if="item.CAN_CHANGE == 1"
-							class="icon-next status-view"
-							:style=" 'color:#ED9C28'"
-						>待订正</em>
-						<em
-							v-else-if="item.TYPE !=1  && item.DZ_FLAG != '1'"
-							class="icon-next status-view"
-							:style=" 'color:#666666'"
-						>待批阅</em>
-						<em
-							v-else-if="item.TYPE !=1  && item.DZ_FLAG == '1'"
-							class="icon-next status-view"
-							:style=" 'color:#0093dd'"
-						>已订正</em>
+						<em v-if="!item.ANID" class="icon-next status-view" :style="'color:#ED431E'">未完成</em>
+						<em v-else-if="item.CAN_CHANGE == 1" class="icon-next status-view"
+							:style="'color:#ED9C28'">待订正</em>
+						<em v-else-if="item.TYPE != 1 && item.DZ_FLAG != '1'" class="icon-next status-view"
+							:style="'color:#666666'">待批阅</em>
+						<em v-else-if="item.TYPE != 1 && item.DZ_FLAG == '1'" class="icon-next status-view"
+							:style="'color:#0093dd'">已订正</em>
 						<!-- type = 1  -->
-						<em v-else class="icon-next status-view" :style=" 'color:#48B319'">已批阅</em>
+						<em v-else class="icon-next status-view" :style="'color:#48B319'">已批阅</em>
 					</div>
 				</div>
 			</van-list>
@@ -84,85 +59,103 @@
 		<van-popup position="bottom" style="height: 50vh;" v-model="isShowConfigure" class="evaPicker">
 			<div class="evaPickerToolbar">作业科目过滤</div>
 			<div class="evaRecord">
-				<van-button
-					v-for="course in courseList"
-					:key="course.COURSE_CODE"
-					plain
-					hairline
-					type="primary"
-					size="small"
-					class="btnGreenBorder"
-					@click="filteCourse(course.COURSE_CODE)"
-				>{{course.COURSE_NAME}}</van-button>
+				<van-button v-for="course in courseList" :key="course.COURSE_CODE" plain hairline type="primary"
+					size="small" class="btnGreenBorder" @click="filteCourse(course.COURSE_CODE)">{{ course.COURSE_NAME
+					}}</van-button>
 			</div>
 		</van-popup>
 	</div>
 </template>
 
 <script>
-import apiRouter from '../../config/api.js'
-import { XHeader } from 'vux'
-import { Icon, Popup, List, Button } from 'vant'
+import apiRouter from '../../config/api.js';
+import { XHeader } from 'vux';
+import { Icon, Popup, List, Button , Toast} from 'vant';
 
 // @ts-ignore
 export default {
 	components: {
 		XHeader,
-		[Icon.name]: Icon,
-		[Popup.name]: Popup,
-		[List.name]: List,
-		[Button.name]: Button,
+		[ Icon.name ]: Icon,
+		[ Popup.name ]: Popup,
+		[ List.name ]: List,
+		[ Button.name ]: Button,
 	},
 	activated() {
-		this.courseCode = sessionStorage.getItem('lqt-stu-homework-filter') || ''
-		this.pageCount = 1
-		this.pageNum = 0
-		this.dataList.length = 0
-		this.courseList.length = 1
-		this.$refs['listWrapper'].scrollTo(0, 0)
-		this.pageLoading = true
-		this.loadNextPage()
+		this.courseCode = sessionStorage.getItem('lqt-stu-homework-filter') || '';
+		this.pageCount = 1;
+		this.pageNum = 0;
+		this.dataList.length = 0;
+		this.courseList.length = 1;
+		this.$refs[ 'listWrapper' ].scrollTo(0, 0);
+		this.pageLoading = true;
+		this.loadNextPage();
 
-		this.oldPageTitle = document.title
-		document.title = '作业'
+		this.oldPageTitle = document.title;
+		document.title = '作业';
 	},
 	deactivated() {
-		document.title = this.oldPageTitle
+		document.title = this.oldPageTitle;
 	},
 
 	methods: {
 		goBack() {
 			//debugger;
-			this.$router.push({ path: '/' })
+			this.$router.push({ path: '/' });
 		},
 		showConfigure() {
-			this.isShowConfigure = true
+			this.isShowConfigure = true;
 		},
 		filteCourse(curCode) {
 			if (curCode !== this.courseCode) {
-				this.isShowConfigure = false
-				this.courseCode = curCode
-				this.pageCount = 1
-				this.pageNum = 0
-				this.dataList.length = 0
-				this.$refs['listWrapper'].scrollTo(0, 0)
-				this.loadNextPage()
-				sessionStorage.setItem('lqt-stu-homework-filter', curCode)
+				this.isShowConfigure = false;
+				this.courseCode = curCode;
+				this.pageCount = 1;
+				this.pageNum = 0;
+				this.dataList.length = 0;
+				this.$refs[ 'listWrapper' ].scrollTo(0, 0);
+				this.loadNextPage();
+				sessionStorage.setItem('lqt-stu-homework-filter', curCode);
 			}
 		},
+		getFullList() {
+			let self = this;
+			this.$http
+				.post(apiRouter.Get_Homework_Full_List)
+				.then(
+					(response) => {
+						if (response.body.status === 1) {
+							self.fullList = response.body.data.hkList;
+							self.pageLoading = false;
+							if(self.fullList.length > 0) {
+								self.$router.push({
+									path: 'work-full-list',
+								});
+							} else {
+								Toast.fail('今日暂无作业');
+							}
+						} else {
+							alert(response.body.message);
+						}
+					},
+					(response) => {
+						alert('请求失败了!!!!');
+					}
+				);
+		},
 		loadNextPage() {
-			let self = this
-			self.pageLoading = true
-			self.pageNum = self.pageNum + 1
+			let self = this;
+			self.pageLoading = true;
+			self.pageNum = self.pageNum + 1;
 			this.$http
 				.get(
 					apiRouter.GET_HOMEWORK_LIST +
-						'?curPage=' +
-						self.pageNum +
-						'&pageSize=' +
-						self.pageSize +
-						'&courseCode=' +
-						self.courseCode
+					'?curPage=' +
+					self.pageNum +
+					'&pageSize=' +
+					self.pageSize +
+					'&courseCode=' +
+					self.courseCode
 				)
 				.then(
 					(response) => {
@@ -170,54 +163,55 @@ export default {
 							if (self.pageNum === 1) {
 								self.pageCount = Math.ceil(
 									response.body.data.pageCount / this.pageSize
-								)
-								if (self.courseList.length===1 && response.body.data.course_list) {
-									self.courseList.push(...response.body.data.course_list)
+								);
+								if (self.courseList.length === 1 && response.body.data.course_list) {
+									self.courseList.push(...response.body.data.course_list);
 								}
 							}
-							self.dataList.push(...response.body.data.infoList)
-							self.pageLoading = false
+							self.dataList.push(...response.body.data.infoList);
+							self.pageLoading = false;
 						} else {
-							alert(response.body.message)
+							alert(response.body.message);
 						}
 					},
 					(response) => {
-						alert('请求失败了!!!!')
+						alert('请求失败了!!!!');
 					}
-				)
+				);
 		},
 		//跳转详情页
 		goDetail(e) {
 			/**
-        // 根据是否完成跳转页面
-        // ANID:空为未完成，有id则已完成
-        // CAN_CHANGE:默认值为0 如果被老师驳回则为1算未完成，需要和ANID一起判断
-       */
-			this.scrollTop = document.documentElement.scrollTop
+		// 根据是否完成跳转页面
+		// ANID:空为未完成，有id则已完成
+		// CAN_CHANGE:默认值为0 如果被老师驳回则为1算未完成，需要和ANID一起判断
+	   */
+			this.scrollTop = document.documentElement.scrollTop;
 			if (e.CAN_CHANGE == 1) {
 				this.$router.push({
 					path: 'work-user-rev',
 					query: { workId: e.WORKID, anId: e.ANID },
-				})
-				return
+				});
+				return;
 			}
-			let flag = e.CAN_CHANGE == 0 && e.ANID
-			let path = 'work-detail'
+			let flag = e.CAN_CHANGE == 0 && e.ANID;
+			let path = 'work-detail';
 			if (flag) {
-				path = 'work-detail-done'
+				path = 'work-detail-done';
 			}
 
 			this.$router.push({
 				path: path,
 				query: { workId: e.WORKID, anId: e.ANID },
-			})
+			});
 		},
 	},
 	data() {
 		return {
 			oldPageTitle: '',
 			dataList: [],
-			courseList: [{ COURSE_CODE: '', COURSE_NAME: '全部科目' }],
+			fullList: [],
+			courseList: [ { COURSE_CODE: '', COURSE_NAME: '全部科目' } ],
 			pageSize: 20,
 			pageNum: 0,
 			pageCount: 1,
@@ -225,9 +219,9 @@ export default {
 			scrollTop: 0,
 			isShowConfigure: false,
 			courseCode: '',
-		}
+		};
 	},
-}
+};
 </script>
 
 <style lang="less" scoped>
@@ -250,14 +244,14 @@ export default {
 	display: flex;
 	flex-direction: column;
 
-	> .evaPickerToolbar {
+	>.evaPickerToolbar {
 		height: 44px;
 		line-height: 44px;
 		font-size: 16px;
 		text-align: center;
 	}
 
-	> .evaPickerRow {
+	>.evaPickerRow {
 		height: 40px;
 		line-height: 40px;
 		font-size: 14px;
@@ -265,7 +259,7 @@ export default {
 		border-bottom: 1px dashed #c7c7c7;
 	}
 
-	> .evaRecord {
+	>.evaRecord {
 		margin: 0;
 	}
 }
@@ -554,7 +548,7 @@ a:hover {
 }
 
 .icon-radio .icon-radio-point.active,
-.icon-radio input:checked + .icon-radio-point {
+.icon-radio input:checked+.icon-radio-point {
 	display: block;
 	width: 12px;
 	height: 12px;
@@ -583,7 +577,7 @@ a:hover {
 	left: 0;
 }
 
-.icon-checkbox input:checked + .icon-checkbox-point {
+.icon-checkbox input:checked+.icon-checkbox-point {
 	display: block;
 }
 

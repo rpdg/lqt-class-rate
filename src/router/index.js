@@ -69,6 +69,7 @@ import ListUser from "../page/question/ListUser.vue"
 
 
 import WorkListUser from "../page/work/ListUser.vue"
+import WorkFullList from "../page/work/FullList.vue"
 import WorkDetail from "../page/work/Detail.vue"
 import WorkDetailDone from "../page/work/DetailDone.vue"
 import WorkUserRevised from "../page/work/RevisedNew.vue"
@@ -393,6 +394,11 @@ export default new Router({
       path: '/work-list-user',
       name: 'workListUser',
       component: WorkListUser
+    },
+    {
+      path: '/work-full-list',
+      name: 'workFullList',
+      component: WorkFullList
     },
     {
       path: '/work-detail',
