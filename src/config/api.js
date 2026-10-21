@@ -97,6 +97,7 @@ const apiRouter = {
   GET_HOMEWORK_COUNT: apiPath + "/wechat/homeworkH5/getHomeWorkCount", //查询作业总数
   GET_HOMEWORK_TOP10: apiPath + "/wechat/homeworkH5/getHomeWorkTop10", //查询作业总数<10的列表接口
   GET_HOMEWORK_LIST: apiPath + "/wechat/homeworkH5/getHomeWorkListTest", //查询登录用户指定页的作业列表
+  Get_Homework_Full_List: apiPath + "/wechat/homeworkH5/getTodayHomework", //查询登录用户的作业列表(全量)
 
   GET_HOMEWORK_STU_VIEW: apiPath + "/wechat/homeworkH5/homeworkStuView", //查询答题题目（做作业）
   GET_HOMEWORK_STU_ANSWER: apiPath + "/wechat/homeworkH5/homeworkStuAnswer", //会返回题目和答案的(看答案)
